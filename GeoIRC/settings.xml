@@ -309,6 +309,7 @@
           <entry key="Ctrl|U" value="charunderline" />
           <entry key="Ctrl|O" value="charnormal" />
           <entry key="Ctrl|K" value="charcolour" />
+          <entry key="Ctrl|V" value="extendedpaste" />
           <entry key="|Tab" value="completenick" />
           <entry key="Shift|Tab" value="focus_on_input_field" />
         </map>
@@ -335,6 +336,12 @@
           <entry key="nick completion prefix" value="" />
           <entry key="quit message" value="http://geoirc.berlios.de" />
         </map>
+        <node name="paste flood">
+          <map>
+            <entry key="allowance" value="4" />
+            <entry key="delay" value="1000" />
+          </map>
+        </node>
         <node name="word memory">
           <map>
             <entry key="minimum word length" value="4" />

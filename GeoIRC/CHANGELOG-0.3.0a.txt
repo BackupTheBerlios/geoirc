@@ -79,6 +79,12 @@ Fixed multiple info-panes bug.
 Pistos 2003-09-05
 
 Added mIRC/VisualIRC formatting support.  Added /gui/format/mirc colours/
-settings subtree.
+settings subtree.  Added "charbold", "charitalic", "charunderline",
+"charcolour", "charnormal" commands (intended to be mapped to hotkeys or mouse
+operations).
 Pistos 2003-09-08 and 2003-09-09
 
+Added multi-line paste via an extendedpaste command.  Unbound the default
+Ctrl-V keybinding for the input field.  Added "/misc/paste flood/allowance" and
+"/misc/paste flood/delay" settings.
+Pistos 2003-09-10

@@ -34,6 +34,11 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -85,7 +90,8 @@ public class GeoIRC
         FocusListener,
         ComponentListener,
         WindowListener,
-        DCCAgent
+        DCCAgent,
+        InputFieldOwner
 {
     protected Vector remote_machines;
     protected DisplayManager display_manager;
@@ -172,6 +178,16 @@ public class GeoIRC
         input_field.grabFocus();
         input_field.addActionListener( this );
         input_field.addFocusListener( this );
+        
+        // Disable Ctrl-V, so that we can use our own Ctrl-V handler so
+        // we can paste multiple lines in the input_field.
+        InputMap map = input_field.getInputMap();
+        KeyStroke pastekeystroke = KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.CTRL_MASK );
+        while( map != null )
+        {
+            map.remove( pastekeystroke );
+            map = map.getParent();
+        }
         
         // Un-map the Tab-related default mappings which have to do with focus traversal.
         input_field.setFocusTraversalKeysEnabled( false );
@@ -810,6 +826,10 @@ public class GeoIRC
     // When the user presses enter in the input field, this method is called.
     public void actionPerformed( ActionEvent event )
     {
+        useInputField();
+    }
+    public void useInputField()
+    {
         String text = input_field.getText();
         if( ( text == null ) || ( text.equals( "" ) ) )
         {
@@ -902,8 +922,7 @@ public class GeoIRC
         
         // Clear the input field.
         input_field.setText( "" );
-        
-    }    
+    }
 
     public void focusGained( FocusEvent e ) { }
     public void focusLost( FocusEvent e )
@@ -1351,6 +1370,19 @@ public class GeoIRC
                     System.exit( 0 );
                 }
                 break;
+            case CMD_EXTENDED_PASTE:
+                try
+                {
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    Transferable contents = clipboard.getContents( null );
+                    String text = (String) contents.getTransferData( DataFlavor.stringFlavor );
+                    
+                    MultilinePaster mp = new MultilinePaster( this, settings_manager, input_field, text );
+                    mp.start();
+                }
+                catch( UnsupportedFlavorException e ) { }
+                catch( IOException e ) { }
+                break;
             case CMD_FOCUS_ON_INPUT_FIELD:
                 input_field.grabFocus();
                 break;
@@ -1400,6 +1432,13 @@ public class GeoIRC
                             "First switch to a window associated with a server."
                         );
                     }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_JOIN ]
+                        + " <channel to join>"
+                    );
                 }
                 break;
             case CMD_KILL_PROCESS:
@@ -1653,7 +1692,12 @@ public class GeoIRC
                         result = CommandExecutor.EXEC_SUCCESS;
                     }
                 }
-
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_NEW_WINDOW ] + " <filter>"
+                    );
+                }
                 break;
             case CMD_NEXT_HISTORY_ENTRY:
                 if( input_history_pointer > MOST_RECENT_ENTRY )
@@ -1752,6 +1796,13 @@ public class GeoIRC
                             "First switch to a window associated with a server."
                         );
                     }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_PART ]
+                        + " <channel to part>"
+                    );
                 }
                 break;
             case CMD_PLAY:

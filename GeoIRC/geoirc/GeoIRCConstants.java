@@ -96,7 +96,8 @@ public interface GeoIRCConstants
         "charitalic",
         "charunderline",
         "charcolour",
-        "charnormal"
+        "charnormal",
+        "extendedpaste"
     };
     
     public static final String[] IRC_CMDS =
@@ -135,6 +136,7 @@ public interface GeoIRCConstants
     public static final int CMD_EXEC_PY_METHOD = 53;
     public static final int CMD_EXEC_WITH_WINDOW = 56;
     public static final int CMD_EXIT = 31;
+    public static final int CMD_EXTENDED_PASTE = 68;
     public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
@@ -377,4 +379,6 @@ public interface GeoIRCConstants
     static final char MIRC_UNDERLINE_CONTROL_CHAR = '\037';  // 37 octal == 31 decimal
     static final char MIRC_NORMAL_CONTROL_CHAR = '\017';  // 17 octal == 15 decimal
 
+    static final int DEFAULT_PASTE_FLOOD_ALLOWANCE = 4;
+    static final int DEFAULT_PASTE_FLOOD_DELAY = 1000;  // milliseconds
 }
