@@ -66,6 +66,7 @@ public class GeoIRC
     protected Vector remote_machines;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
+    protected boolean listening_to_servers;
 
     protected LinkedList input_history;
     protected int input_history_pointer;
@@ -85,6 +86,8 @@ public class GeoIRC
     
     public GeoIRC( String settings_filepath )
     {
+        listening_to_servers = false;
+        
         settings_manager = new SettingsManager(
             display_manager,
             ( settings_filepath == null ) ? DEFAULT_SETTINGS_FILEPATH : settings_filepath
@@ -188,6 +191,7 @@ public class GeoIRC
         
         settings_manager.listenToPreferences();
         display_manager.beginListening();
+        listening_to_servers = true;
 
         show();
     }
@@ -248,8 +252,11 @@ public class GeoIRC
     {
         Server s = new Server( this, display_manager, hostname, port );
         remote_machines.add( s );
-        recordConnections();
-        GITextWindow window = display_manager.addServerWindow( s );
+        if( listening_to_servers )
+        {
+            recordConnections();
+        }
+        //GITextWindow window = display_manager.addServerWindow( s );
         
         return s;
     }
@@ -317,6 +324,7 @@ public class GeoIRC
             if( type.equals( "Server") )
             {
                 Server s = addServer( hostname, Integer.toString( port ) );
+                s.connect( current_nick );
             }
             else
             {
@@ -551,7 +559,7 @@ public class GeoIRC
                         }
                     }
                     Server s = addServer( host, port );
-                    // SETMGR
+                    display_manager.addServerWindow( s );
                     s.connect( current_nick );
                 }
                 else

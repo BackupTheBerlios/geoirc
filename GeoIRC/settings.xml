@@ -16,6 +16,13 @@
       <node name="connections">
         <map />
         <node name="0">
+          <map>
+            <entry key="type" value="class geoirc.Server" />
+            <entry key="hostname" value="irc.freenode.net" />
+            <entry key="port" value="6667" />
+          </map>
+        </node>
+        <node name="1">
           <map />
         </node>
       </node>
@@ -50,12 +57,23 @@
           <node name="1">
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="ooga" />
-              <entry key="x" value="25" />
-              <entry key="y" value="213" />
+              <entry key="title" value="from=Jaykul" />
+              <entry key="x" value="211" />
+              <entry key="y" value="122" />
               <entry key="height" value="500" />
               <entry key="width" value="700" />
-              <entry key="filter" value="ooga" />
+              <entry key="filter" value="from=Jaykul" />
+            </map>
+          </node>
+          <node name="2">
+            <map>
+              <entry key="type" value="class geoirc.GITextWindow" />
+              <entry key="title" value="irc.freenode.net" />
+              <entry key="x" value="20" />
+              <entry key="y" value="20" />
+              <entry key="height" value="500" />
+              <entry key="width" value="700" />
+              <entry key="filter" value="irc.freenode.net" />
             </map>
           </node>
         </node>
