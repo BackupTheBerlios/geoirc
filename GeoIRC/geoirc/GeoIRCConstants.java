@@ -19,8 +19,8 @@ public interface GeoIRCConstants
     static final String GEOIRC_VERSION = "0.3.4a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
-	static final String GEOIRC_HOMEPAGE = "http://geoirc.berlios.de";
-	static final String GEOIRC_DEVPAGE = "http://developer.berlios.de/projects/geoirc";
+    static final String GEOIRC_HOMEPAGE = "http://geoirc.berlios.de";
+    static final String GEOIRC_DEVPAGE = "http://developer.berlios.de/projects/geoirc";
     static final String DEFAULT_NEW_CONTENT_TITLE_PREFIX = "*";
     
     static final boolean GOD_IS_GOOD = true;
@@ -88,9 +88,9 @@ public interface GeoIRCConstants
         "killprocess",
         "execwithwindow",
         "topic",
-        "list_dcc_chat_requests",
-        "accept_dcc_chat",
-        "reject_dcc_chat",
+        "list_dcc_requests",
+        "accept_dcc_request",
+        "reject_dcc_request",
         "resetscriptenvironment",
         "hidequalities",
         "charbold",
@@ -137,7 +137,7 @@ public interface GeoIRCConstants
     };
     
     public static final int UNKNOWN_COMMAND = -1;
-    public static final int CMD_ACCEPT_DCC_CHAT = 59;
+    public static final int CMD_ACCEPT_DCC_REQUEST = 59;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_CHAR_BOLD = 63;
@@ -171,8 +171,8 @@ public interface GeoIRCConstants
     public static final int CMD_KILL_PROCESS = 55;
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_CONNECTIONS = 13;
-    public static final int CMD_LIST_DCC_CHAT_REQUESTS = 58;
-    public static final int CMD_LIST_DCC_CHAT_OFFERS = 70;
+    public static final int CMD_LIST_DCC_REQUESTS = 58;
+    public static final int CMD_LIST_DCC_OFFERS = 70;
     public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_LOGS = 50;
@@ -209,7 +209,7 @@ public interface GeoIRCConstants
     public static final int CMD_QUIT = 78;
     public static final int CMD_QUOTE = 45;
     public static final int CMD_RAW = 46;
-    public static final int CMD_REJECT_DCC_CHAT = 60;
+    public static final int CMD_REJECT_DCC_REQUEST = 60;
     public static final int CMD_REMOVE_LOG = 49;
     public static final int CMD_RESET_SCRIPT_ENVIRONMENT = 61;
     public static final int CMD_RESTORE_WINDOW = 82;
@@ -447,6 +447,8 @@ public interface GeoIRCConstants
     
     static final int STAGE_SCRIPTING = 0;
     static final int STAGE_PROCESSING = 1;
+
+    static final int DEFAULT_MAX_DCC_SEND_FILESIZE = 20480000;  // bytes
     
     static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
     static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
