@@ -1126,6 +1126,11 @@ public class Server
                         + " from=" + nick;
                 }
                 
+                boolean notices_in_active = settings_manager.getBoolean(
+                    "/gui/notices in active window",
+                    true
+                );
+                
                 User user = getUserByNick( nick );
                 if( user != null )
                 {
@@ -1141,6 +1146,7 @@ public class Server
                                 transformed_message[ MSG_QUALITIES ] += " " + FILTER_SPECIAL_CHAR + "self";
                                 break;
                             case STAGE_PROCESSING:
+                                if( ! notices_in_active )
                                 {
                                     String query_window_title = Util.getQueryWindowFilter( nick );
 
@@ -1249,10 +1255,18 @@ public class Server
                             );
 
                             extractVariables( text, transformed_message[ MSG_QUALITIES ] );
-                            windows_printed_to += display_manager.println(
-                                timestamp + text,
-                                transformed_message[ MSG_QUALITIES ]
-                            );
+                            if( notices_in_active )
+                            {
+                                windows_printed_to++;
+                                display_manager.printlnToActiveTextPane( timestamp + text );
+                            }
+                            else
+                            {
+                                windows_printed_to += display_manager.println(
+                                    timestamp + text,
+                                    transformed_message[ MSG_QUALITIES ]
+                                );
+                            }
                             trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
@@ -1562,7 +1576,7 @@ public class Server
                                                 + nick + " :"
                                                 + CTCP_MARKER 
                                                 + CTCP_CMDS[ CTCP_CMD_PING ]
-                                                + ( ( args != null ) ? " " + args[ 0 ] : "" )
+                                                + " " + arg_string
                                                 + CTCP_MARKER
                                             );
                                             break;

@@ -1207,9 +1207,11 @@ public class GeoIRC
             text_pane.copy();
         }
         
-        if( e.getButton() == MouseEvent.BUTTON3 )
+        //if( e.getButton() == MouseEvent.BUTTON3 )
+        if( javax.swing.SwingUtilities.isMiddleMouseButton( e ) )
         {
-            input_field.paste();
+            //input_field.paste();
+            execute( CMDS[ CMD_EXTENDED_PASTE ] );
         }
         
         input_field.grabFocus();

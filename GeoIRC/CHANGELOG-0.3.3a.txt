@@ -66,3 +66,10 @@ netseeker 2003-10-06
 
 Added CTCP PING response.
 Pistos 2003-10-06
+
+Fixed mouse-button pasting so that it's the middle mouse button, not the right
+mouse button.  Multi-line pastes also work by click now, too.
+Pistos 2003-10-06
+
+Added "/gui/notices in active window" setting.
+Pistos 2003-10-06

@@ -100,6 +100,7 @@
           <entry key="main frame width" value="1280" />
           <entry key="main frame height" value="1024" />
           <entry key="main frame state" value="6" />
+          <entry key="notices in active window" value="true" />
         </map>
         <node name="desktop">
           <map />
