@@ -57,6 +57,9 @@
       </node>
       <node name="connections">
         <map />
+        <node name="0">
+          <map />
+        </node>
       </node>
       <node name="dcc">
         <map>
@@ -101,7 +104,7 @@
             <node name="1">
               <map>
                 <entry key="type" value="1" />
-                <entry key="title" value="GeoIRC Desktop Pane" />
+                <entry key="title" value="(4) GeoIRC" />
                 <entry key="parent" value="0" />
                 <entry key="split rank" value="-1" />
               </map>

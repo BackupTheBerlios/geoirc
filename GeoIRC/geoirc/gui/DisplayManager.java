@@ -404,7 +404,11 @@ public class DisplayManager
         return dock(
             location,
             userIndexToTrueIndex( pane_user_index ),
-            userIndexToTrueIndex( partner_user_index )
+            (
+                partner_user_index == NO_PARTNER_USER_INDEX_SPECIFIED
+                ? DESKTOP_PANE_INDEX
+                : userIndexToTrueIndex( partner_user_index )
+            )
         );
     }
     
@@ -424,7 +428,14 @@ public class DisplayManager
             || ( location == DOCK_RIGHT )
         )
         {
-            if( isUserPane( pane_index, INCLUDE_SPLIT_PANES ) && isUserPane( partner_index, INCLUDE_SPLIT_PANES ) )
+            if(
+                pane_index != partner_index
+                && isUserPane( pane_index, INCLUDE_SPLIT_PANES )
+                && (
+                    isUserPane( partner_index, INCLUDE_SPLIT_PANES )
+                    || partner_index == DESKTOP_PANE_INDEX
+                )
+            )
             {
             
                 GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( pane_index );
@@ -480,7 +491,7 @@ public class DisplayManager
                                 pane,
                                 partner
                             );
-                            split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
+                            split_pane.setDividerLocation( 100 );
                             gipw.setSplitRank( SPLIT_PRIMARY );
                             partner_gipw.setSplitRank( SPLIT_SECONDARY );
                         }
@@ -492,7 +503,7 @@ public class DisplayManager
                                 partner, 
                                 pane
                             );
-                            split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
+                            split_pane.setDividerLocation( 100 );
                             gipw.setSplitRank( SPLIT_SECONDARY );
                             partner_gipw.setSplitRank( SPLIT_PRIMARY );
                         }
@@ -504,7 +515,7 @@ public class DisplayManager
                                 partner, 
                                 pane
                             );
-                            split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
+                            split_pane.setDividerLocation( 100 );
                             gipw.setSplitRank( SPLIT_SECONDARY );
                             partner_gipw.setSplitRank( SPLIT_PRIMARY );
                         }
@@ -516,7 +527,7 @@ public class DisplayManager
                                 pane,
                                 partner
                             );
-                            split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
+                            split_pane.setDividerLocation( 100 );
                             gipw.setSplitRank( SPLIT_PRIMARY );
                             partner_gipw.setSplitRank( SPLIT_SECONDARY );
                         }
@@ -556,6 +567,11 @@ public class DisplayManager
                 partner_gipw.setParent( split_gipw );
                 
                 recordDesktopState();
+                
+                if( partner_index == DESKTOP_PANE_INDEX )
+                {
+                    geo_irc.invalidate();
+                }
 
                 success = true;
             }

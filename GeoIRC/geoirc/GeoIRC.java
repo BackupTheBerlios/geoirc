@@ -1842,7 +1842,7 @@ public class GeoIRC
                 {
                     int location = DOCK_NOWHERE;
                     int pane_index = -1;
-                    int partner_index = DESKTOP_PANE_INDEX;
+                    int partner_index = NO_PARTNER_USER_INDEX_SPECIFIED;
                     
                     for( int i = 0; i < DOCK_STR.length; i++ )
                     {
