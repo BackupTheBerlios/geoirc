@@ -8,6 +8,8 @@ package geoirc.util;
 
 import geoirc.DisplayManager;
 import geoirc.GeoIRCConstants;
+
+import java.awt.Color;
 import java.util.*;
 
 /**
@@ -137,4 +139,20 @@ public class Util implements GeoIRCConstants
         
         return retval;
     }
+    
+	public static String colorToHexString(Color color)
+	{
+		int[] col = { color.getRed(), color.getGreen(), color.getBlue() };
+		StringBuffer hex = new StringBuffer();
+		
+		for(int i = 0; i < col.length; i++)
+		{
+			if(col[i] == 0)
+				hex.append("00");
+			else
+				hex.append(Integer.toHexString(col[i]));			
+		}
+		
+		return hex.toString();
+	}    
 }
