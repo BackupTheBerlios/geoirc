@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -55,9 +56,14 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private List panels;
     private Frame parent;
     private ValidationListener validation_listener;
-    private InputChangeListener change_listener;
     private Set invalid_input_components = new HashSet();
 
+    /**
+     * Creates a new instance of SettingsDialog
+     * @param title the windows title
+     * @param settings_manager the settings manager used to load and save settings
+     * @param display_manager display manager, used for debug logging
+     */
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
         super(display_manager.getGeoIRCInstance(), title, true);
@@ -98,6 +104,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             setResizable(true);
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            addWindowListener(this);
             initComponents();
             //pack();
         }
@@ -107,6 +114,11 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         }
     }
 
+    /**
+     * Creates a new instance of SettingsDialog 
+     * @param settings_manager the settings manager used to load and save settings
+     * @param display_manager display manager, used for debug logging
+     */
     public SettingsDialog(XmlProcessable settings_manager, DisplayManager display_manager)
     {
         this("GeoIRC Settings", settings_manager, display_manager);
@@ -228,7 +240,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
 
     void Ok_actionPerformed(ActionEvent e)
     {
-        hide();
+        this.setVisible(false);
 
         saveAllPanelData();
         close();
@@ -325,15 +337,45 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         settings_manager.setInt(SETTINGS_PATH + "main frame wx", getWidth());
         settings_manager.setInt(SETTINGS_PATH + "main frame wy", getHeight());
         settings_manager.setInt(SETTINGS_PATH + "divider location", jSplitPane1.getDividerLocation());
-
-        //now save the values of all registered input components 
-        //save_handler.save();
     }
 
     public void windowOpened(WindowEvent arg0)
     {}
+
     public void windowClosing(WindowEvent arg0)
     {
+        boolean should_save = false;
+        Iterator it = this.panels.iterator();
+
+        while (it.hasNext())
+        {
+            Object obj = it.next();
+            if (obj instanceof BaseSettingsPanel)
+            {
+                BaseSettingsPanel pane = (BaseSettingsPanel)obj;
+                if (pane.hasChanges() == true || pane.hasChangesInChilds() == true)
+                {
+                    should_save = true;
+                    break;
+                }
+            }
+        }
+
+        if (should_save == true)
+        {
+            int result =
+                JOptionPane.showConfirmDialog(
+                    this,
+                    "You did made changes, would you like to save before closing?",
+                    "Changes detected",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION)
+            {
+                this.setVisible(false);
+                saveAllPanelData();
+            }
+        }
+
         close();
         dispose();
     }

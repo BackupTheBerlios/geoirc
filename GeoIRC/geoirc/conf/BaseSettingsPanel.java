@@ -293,6 +293,22 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
         return has_changes;
     }
     
+    public boolean hasChangesInChilds()
+    {        
+        boolean should_save = false;
+        
+        for( Iterator cit = getChilds().iterator(); cit.hasNext(); )
+        {
+            if( ((BaseSettingsPanel)cit.next()).hasChanges() == true )
+            {
+                return true; 
+            }
+                                   
+        }
+        
+        return should_save;        
+    }
+    
     public boolean hasErrors()
     {
         return !has_errors_set.isEmpty();
