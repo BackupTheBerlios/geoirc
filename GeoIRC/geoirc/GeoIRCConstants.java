@@ -53,7 +53,10 @@ public interface GeoIRCConstants
         "dockwindow",
         "newinfowindow",
         "newtextwindow",
-        "exit"
+        "exit",
+        "listdockedwindows",
+        "floatwindow",
+        "undockwindow"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -62,10 +65,12 @@ public interface GeoIRCConstants
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_EXIT = 31;
+    public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_CHANNELS = 15;
+    public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_SERVERS = 13;
     public static final int CMD_LIST_WINDOWS = 27;
@@ -88,6 +93,7 @@ public interface GeoIRCConstants
     public static final int CMD_SET_FILTER = 17;
     public static final int CMD_SET_TITLE = 18;
     public static final int CMD_SWITCH_WINDOW = 21;
+    public static final int CMD_UNDOCK_WINDOW = 34;
     
     static final String [] IRCMSGS =
     {

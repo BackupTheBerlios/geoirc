@@ -972,4 +972,17 @@ public class DisplayManager
             printlnDebug( Integer.toString( i ) + ": " + giw.getTitle() );
         }
     }
+    
+    public void listDockedPanes()
+    {
+        GIPane pane;
+        for( int i = 0, n = docked_panes.size(); i < n; i++ )
+        {
+            pane = (GIPane) docked_panes.elementAt( i );
+            printlnDebug(
+                Integer.toString( i ) + ": "
+                + pane.getTitle()
+            );
+        }
+    }
 }
