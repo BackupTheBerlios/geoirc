@@ -33,12 +33,14 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     protected boolean paint_mirc_codes;
     
     public GITextPane(
+        MouseListener mouse_listener,
         DisplayManager display_manager,
         SettingsManager settings_manager,
         String title
     )
     {
         this(
+            mouse_listener,
             display_manager,
             settings_manager,
             title,
@@ -47,6 +49,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     }
 
     public GITextPane(
+        MouseListener mouse_listener,
         DisplayManager display_manager,
         SettingsManager settings_manager,
         String title,
@@ -63,6 +66,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         text_pane = new JTextPane();
         text_pane.setEditable( false );
         text_pane.addKeyListener( display_manager );
+        text_pane.addMouseListener( mouse_listener );
         
         setViewportView( text_pane );
         setVerticalScrollBarPolicy(

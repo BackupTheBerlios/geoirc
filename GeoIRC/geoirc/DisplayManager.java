@@ -199,7 +199,7 @@ public class DisplayManager
     protected GITextPane addTextPane( String title, String filter )
     {
         GITextPane gitp = new GITextPane(
-            this, settings_manager, title, filter
+            geoirc, this, settings_manager, title, filter
         );
         panes.add( gitp );
         return gitp;

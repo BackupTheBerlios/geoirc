@@ -47,6 +47,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -66,6 +68,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -96,6 +99,7 @@ public class GeoIRC
         FocusListener,
         ComponentListener,
         WindowListener,
+        MouseListener,
         DCCAgent,
         InputFieldOwner
 {
@@ -137,6 +141,8 @@ public class GeoIRC
     protected String preferred_nick;
     
     protected Set conversation_words;
+    
+    protected boolean mouse_button_depressed;
 
     /* **************************************************************** */
     
@@ -274,6 +280,7 @@ public class GeoIRC
         dcc_chat_requests = new Vector();
         dcc_chat_offers = new Vector();
         audio_clips = new Hashtable();
+        mouse_button_depressed = false;
         
         // Open the curtains!
 
@@ -1041,6 +1048,7 @@ public class GeoIRC
     public void focusGained( FocusEvent e ) { }
     public void focusLost( FocusEvent e )
     {
+        /*
         Component thief = e.getOppositeComponent();
         if(
             ( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
@@ -1064,6 +1072,12 @@ public class GeoIRC
             display_manager.printlnDebug( "Focus stolen by: " 
             + thief.getClass().toString() );
         }
+         */
+        
+        if( ! mouse_button_depressed )
+        {
+            input_field.grabFocus();
+        }
     }
 
     public void componentHidden(ComponentEvent e) { }
@@ -1078,17 +1092,38 @@ public class GeoIRC
         recordMainFrameState();
     }
 
-    public void windowActivated(WindowEvent e)
+    public void windowActivated( WindowEvent e )
     {
         variable_manager.setInt( "lines_unread", 0 );
         setTitle( BASE_GEOIRC_TITLE );
     }
-    public void windowClosed(WindowEvent e) { }
-    public void windowClosing(WindowEvent e) { }
-    public void windowDeactivated(WindowEvent e) { }
-    public void windowDeiconified(WindowEvent e) { }
-    public void windowIconified(WindowEvent e) { }
-    public void windowOpened(WindowEvent e) { }
+    public void windowClosed( WindowEvent e ) { }
+    public void windowClosing( WindowEvent e ) { }
+    public void windowDeactivated( WindowEvent e ) { }
+    public void windowDeiconified( WindowEvent e ) { }
+    public void windowIconified( WindowEvent e ) { }
+    public void windowOpened( WindowEvent e ) { }
+
+    public void mouseClicked( MouseEvent e ) { }
+    public void mouseEntered( MouseEvent e ) { }
+    public void mouseExited( MouseEvent e ) { }
+    public void mousePressed( MouseEvent e )
+    {
+        mouse_button_depressed = true;
+    }
+    public void mouseReleased( MouseEvent e )
+    {
+        mouse_button_depressed = false;
+        
+        Component component = e.getComponent();
+        if( component instanceof JTextPane )
+        {
+            JTextPane text_pane = (JTextPane) component;
+            text_pane.copy();
+        }
+        
+        input_field.grabFocus();
+    }
     
     /* *********************************************************************
      *
