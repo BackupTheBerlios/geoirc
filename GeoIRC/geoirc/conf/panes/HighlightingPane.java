@@ -10,6 +10,7 @@ import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.JValidatingTable;
+import geoirc.conf.SettingsDialog;
 import geoirc.conf.Storable;
 import geoirc.conf.TableCellColorRenderer;
 import geoirc.conf.TitlePane;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -53,6 +55,8 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
     private JValidatingTable table;
     private JButton delButton;
+    private JButton upButton;
+    private JButton downButton;
 
     /**
      * @param settings
@@ -97,11 +101,49 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         table.getColumnModel().getColumn(3).setPreferredWidth(70);
 
         JScrollPane scroller = new JScrollPane(table);
-        addComponent(scroller, 0, 1, 4, 1, 0, 0);
+        addComponent(scroller, 0, 1, 4, 4, 0, 0);
 
         //Set up renderer and editor for the color column.
         table.setDefaultRenderer(Color.class, new TableCellColorRenderer(true));
         setUpColorEditor(table);
+
+        try
+        {
+            upButton = new JButton(new ImageIcon(SettingsDialog.class.getResource("images/up.png")));
+            downButton = new JButton(new ImageIcon(SettingsDialog.class.getResource("images/down.png")));
+        }
+        catch (Exception e)
+        {
+            upButton = new JButton("up");
+            downButton = new JButton("down");
+        }
+        upButton.setEnabled(false);
+        downButton.setEnabled(false);
+        
+        addComponent(upButton, 5, 1, 1, 1, 0, 0);
+        addComponent(downButton, 5, 4, 1, 1, 0, 0, GridBagConstraints.SOUTHWEST);
+        
+        upButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                int pos = table.getSelectedRow();
+                Object target = ltm.getRow(pos - 1);
+                ltm.setRow(pos - 1,ltm.getRow(pos));
+                ltm.setRow(pos, target);
+            }
+        });
+
+        downButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                int pos = table.getSelectedRow();
+                Object target = ltm.getRow(pos + 1);
+                ltm.setRow(pos + 1,ltm.getRow(pos));
+                ltm.setRow(pos, target);
+            }
+        });
 
         delButton = new JButton("delete");
         delButton.setEnabled(false);
@@ -123,10 +165,11 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             }
         });
 
-        addComponent(delButton, 0, 2, 1, 1, 0, 0);
-        addComponent(button, 3, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
-        addHorizontalLayoutStopper(4, 2);
-        addLayoutStopper(0, 3);
+        addComponent(delButton, 0, 5, 1, 1, 0, 0);
+        addComponent(button, 3, 5, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
+               
+        addHorizontalLayoutStopper(6, 5);
+        addLayoutStopper(0, 6);
 
         ListSelectionModel rowSM = table.getSelectionModel();
         rowSM.addListSelectionListener(new ListSelectionListener()
@@ -139,6 +182,34 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
                 ListSelectionModel lsm = (ListSelectionModel)e.getSource();
                 delButton.setEnabled(!lsm.isSelectionEmpty());
+                
+                if(lsm.isSelectionEmpty())
+                {
+                   upButton.setEnabled(false);
+                   downButton.setEnabled(false); 
+                }
+                else
+                {
+                    int pos = table.getSelectedRow();
+                    
+                    if( pos == 0 )
+                    {
+                        upButton.setEnabled(false);
+                    }
+                    else
+                    {
+                        upButton.setEnabled(true);
+                    }
+                    
+                    if( pos == table.getRowCount() - 1 )
+                    {
+                        downButton.setEnabled(false);
+                    }
+                    else
+                    {
+                        downButton.setEnabled(true);
+                    }                                       
+                }
             }
         });
     }
@@ -371,6 +442,17 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         {
             data.remove(row);
             fireTableDataChanged();
+        }
+        
+        public Object getRow(int row)
+        {
+            return data.get(row);
+        }
+        
+        public void setRow(int row, Object rowdata)
+        {
+            data.set(row, rowdata);
+            fireTableDataChanged();            
         }
     }
 
