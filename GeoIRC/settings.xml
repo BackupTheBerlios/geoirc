@@ -42,16 +42,22 @@
         <node name="5">
           <map>
             <entry key="alias" value="openurl" />
-            <entry key="expansion" value="exec C:\Program Files\Opera7\opera.exe &amp;1" />
+            <entry key="expansion" value="exec C:\Programme\MozillaFirebird\MozillaFirebird.exe &amp;1" />
           </map>
         </node>
         <node name="6">
           <map>
             <entry key="alias" value="openlasturl" />
-            <entry key="expansion" value="exec C:\Program Files\Opera7\opera.exe %lasturl" />
+            <entry key="expansion" value="exec C:\Programme\MozillaFirebird\MozillaFirebird.exe %lasturl" />
           </map>
         </node>
         <node name="7">
+          <map>
+            <entry key="alias" value="op" />
+            <entry key="expansion" value="msg chanserv op #geoirc" />
+          </map>
+        </node>
+        <node name="8">
           <map />
         </node>
       </node>
@@ -85,21 +91,22 @@
           <map>
             <entry key="confirm receive" value="true" />
             <entry key="default download directory" value="./downloads/" />
+            <entry key="name" value="true" />
           </map>
         </node>
       </node>
       <node name="gui">
         <map>
-          <entry key="skin1" value="themes/aqua/gtk/gtkrc" />
-          <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
+          <entry key="skin1" value="D:\Editors\eclipse\workspace\GeoIRC\themes\whistler\kde\kde.themerc" />
+          <entry key="skin2" value="D:\Editors\eclipse\workspace\GeoIRC\themes\whistler\gtk\gtkrc" />
           <entry key="windowbar position" value="top" />
           <entry key="nudge amount" value="28" />
           <entry key="new content button colour" value="ff0000" />
-          <entry key="main frame x" value="0" />
-          <entry key="main frame y" value="0" />
-          <entry key="main frame width" value="1280" />
-          <entry key="main frame height" value="1024" />
-          <entry key="main frame state" value="6" />
+          <entry key="main frame x" value="67" />
+          <entry key="main frame y" value="34" />
+          <entry key="main frame width" value="1015" />
+          <entry key="main frame height" value="756" />
+          <entry key="main frame state" value="0" />
         </map>
         <node name="desktop">
           <map />
@@ -109,14 +116,14 @@
               <map>
                 <entry key="pane" value="2" />
                 <entry key="location" value="2" />
-                <entry key="divider location" value="825" />
+                <entry key="divider location" value="563" />
               </map>
             </node>
             <node name="1">
               <map>
                 <entry key="pane" value="3" />
                 <entry key="location" value="1" />
-                <entry key="divider location" value="1067" />
+                <entry key="divider location" value="803" />
               </map>
             </node>
           </node>
@@ -158,9 +165,9 @@
                 <entry key="title" value="#geoirc and irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="779" />
-                <entry key="width" value="1048" />
-                <entry key="state" value="1" />
+                <entry key="height" value="517" />
+                <entry key="width" value="784" />
+                <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
@@ -170,9 +177,9 @@
                 <entry key="title" value="irc.freenode.net and %raw and not %printed" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="779" />
-                <entry key="width" value="1048" />
-                <entry key="state" value="1" />
+                <entry key="height" value="517" />
+                <entry key="width" value="784" />
+                <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
               </map>
@@ -182,7 +189,7 @@
         <node name="format">
           <map>
             <entry key="timestamp" value="HH:mm:ss" />
-            <entry key="maximum nick width" value="20" />
+            <entry key="maximum nick width" value="120" />
           </map>
           <node name="mirc colours">
             <map>
@@ -207,7 +214,7 @@
         </node>
         <node name="info windows">
           <map>
-            <entry key="sort order" value="1" />
+            <entry key="sort order" value="0" />
           </map>
         </node>
         <node name="input field">
@@ -218,13 +225,22 @@
             <entry key="background colour" value="ffffff" />
           </map>
         </node>
+        <node name="settings gui">
+          <map>
+            <entry key="main frame x" value="137" />
+            <entry key="main frame y" value="91" />
+            <entry key="main frame wx" value="801" />
+            <entry key="main frame wy" value="532" />
+            <entry key="divider location" value="228" />
+          </map>
+        </node>
         <node name="text windows">
           <map>
-            <entry key="font face" value="Lucida Console" />
-            <entry key="font size" value="14" />
-            <entry key="default foreground colour" value="cccccc" />
-            <entry key="default background colour" value="000000" />
-            <entry key="alternate background colour" value="000000" />
+            <entry key="font face" value="Tahoma" />
+            <entry key="font size" value="13" />
+            <entry key="default foreground colour" value="000000" />
+            <entry key="default background colour" value="ffffff" />
+            <entry key="alternate background colour" value="ffffff" />
           </map>
           <node name="highlighting">
             <map />
@@ -232,28 +248,28 @@
               <map>
                 <entry key="filter" value="not from=%self" />
                 <entry key="regexp" value=".*[Pp]istos.*" />
-                <entry key="format" value="bg0000ff" />
+                <entry key="format" value="fg666600" />
               </map>
             </node>
             <node name="1">
               <map>
                 <entry key="filter" value="from=%self" />
                 <entry key="regexp" value=".*" />
-                <entry key="format" value="fgff9933" />
+                <entry key="format" value="fg006699" />
               </map>
             </node>
             <node name="2">
               <map>
                 <entry key="filter" value="" />
                 <entry key="regexp" value="&lt;(.+?)&gt; .*" />
-                <entry key="format" value="fgffffff" />
+                <entry key="format" value="fg000000" />
               </map>
             </node>
             <node name="3">
               <map>
                 <entry key="filter" value="" />
                 <entry key="regexp" value="^-(.+?)- .*" />
-                <entry key="format" value="fgffffff" />
+                <entry key="format" value="fg006666" />
               </map>
             </node>
             <node name="4">
@@ -264,34 +280,31 @@
       </node>
       <node name="keyboard">
         <map>
-          <entry key="Alt|Left" value="previouswindow" />
-          <entry key="Alt|Right" value="nextwindow" />
-          <entry key="|Down" value="next_history_entry" />
-          <entry key="|Up" value="previous_history_entry" />
-          <entry key="Ctrl|Up" value="nudgeup" />
-          <entry key="Ctrl|Down" value="nudgedown" />
-          <entry key="|Page Up" value="pageup" />
-          <entry key="|Page Down" value="pagedown" />
-          <entry key="|F2" value="nick Pistos|GeoIRC" />
+          <entry key="Alt|Links" value="previouswindow" />
+          <entry key="Alt|Rechts" value="nextwindow" />
+          <entry key="|Unten" value="next_history_entry" />
+          <entry key="|Oben" value="previous_history_entry" />
+          <entry key="Strg|Oben" value="nudgeup" />
+          <entry key="Strg|Unten" value="nudgedown" />
+          <entry key="|Bild auf" value="pageup" />
+          <entry key="|Bild ab" value="pagedown" />
+          <entry key="|F2" value="nick netseeker|GeoIRC" />
           <entry key="|F3" value="nick GeoIRC_User" />
-          <entry key="|F9" value="nick Pistos" />
+          <entry key="|F9" value="nick netseeker" />
           <entry key="|F12" value="openlasturl" />
-          <entry key="Ctrl|1" value="switchwindow .*geoshell.*" />
-          <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
-          <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
-          <entry key="Ctrl|4" value="switchwindow .*statfreak.*" />
-          <entry key="Ctrl|5" value="switchwindow .*christian.*" />
-          <entry key="Ctrl|9" value="switchwindow Pistos" />
-          <entry key="Ctrl|0" value="switchwindow .*%raw.*" />
-          <entry key="Ctrl|B" value="charbold" />
-          <entry key="Ctrl|N" value="charitalic" />
-          <entry key="Ctrl|U" value="charunderline" />
-          <entry key="Ctrl|O" value="charnormal" />
-          <entry key="Ctrl|K" value="charcolour" />
-          <entry key="Ctrl|U" value="clearinputfield" />
-          <entry key="Ctrl|V" value="extendedpaste" />
-          <entry key="|Tab" value="completenick" />
-          <entry key="Shift|Tab" value="focus_on_input_field" />
+          <entry key="Strg|1" value="switchwindow .*geoshell.*" />
+          <entry key="Strg|2" value="switchwindow .*geoirc.*" />
+          <entry key="Strg|9" value="switchwindow netseeker" />
+          <entry key="Strg|0" value="switchwindow .*%raw.*" />
+          <entry key="Strg|B" value="charbold" />
+          <entry key="Strg|I" value="charitalic" />
+          <entry key="Strg|U" value="charunderline" />
+          <entry key="Strg|O" value="charnormal" />
+          <entry key="Strg|K" value="charcolour" />
+          <entry key="Strg|V" value="extendedpaste" />
+          <entry key="|Tabulator" value="completenick" />
+          <entry key="Umschalt|Tabulator" value="focus_on_input_field" />
+          <entry key="|F10" value="op" />
         </map>
       </node>
       <node name="logs">
@@ -330,9 +343,10 @@
       </node>
       <node name="personal">
         <map>
-          <entry key="nick1" value="GeoIRC_User" />
-          <entry key="nick2" value="GeoIRC|User" />
+          <entry key="nick1" value="_netseeker" />
+          <entry key="nick2" value="netseeker|GeoIRC" />
           <entry key="nick3" value="GeoIRCUser" />
+          <entry key="name" value="netseeker" />
         </map>
         <node name="ctcp">
           <map>
@@ -342,7 +356,7 @@
         </node>
         <node name="ident">
           <map>
-            <entry key="username" value="GeoIRC_User" />
+            <entry key="username" value="netseeker" />
             <entry key="os" value="Unknown OS" />
           </map>
         </node>
@@ -352,7 +366,7 @@
         <node name="0">
           <map>
             <entry key="filter" value="" />
-            <entry key="regexp" value=".*[Pp]istos.*" />
+            <entry key="regexp" value=".*[Nn]etseeker.*" />
             <entry key="command" value="play ./bloop.wav" />
           </map>
         </node>

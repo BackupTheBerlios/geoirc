@@ -90,7 +90,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
         table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(patternField));
 
-        table.setPreferredScrollableViewportSize(new Dimension(500, 200));
+        table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(140);
         table.getColumnModel().getColumn(1).setPreferredWidth(200);
         table.getColumnModel().getColumn(2).setPreferredWidth(90);

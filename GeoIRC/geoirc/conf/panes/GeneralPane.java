@@ -84,7 +84,7 @@ public class GeneralPane extends BaseSettingsPanel implements Storable
 
         value = settings_manager.getString(path + "os", "");
         addComponent(new JLabel("OS"), 0, 7, 1, 1, 0, 0);
-        save_handler.register(addComponent(new JValidatingTextField(".+", value, 180), 1, 7, 1, 1, 1, 1), path + "os");
+        save_handler.register(addComponent(new JValidatingTextField(".+", value, 180), 1, 7, 1, 1, 1, 0), path + "os");
 
         path = "/personal/ctcp/";
         addComponent(new TitlePane("CTCP"), 0, 8, 10, 1, 0, 0);
@@ -98,9 +98,7 @@ public class GeneralPane extends BaseSettingsPanel implements Storable
         rule = rules.getValueRule("USER_INFO");
         value = settings_manager.getString(path + "userinfo", rule.getValue().toString());
         addComponent(new JLabel("Userinfo"), 0, 10, 1, 1, 0, 0);
-        save_handler.register(addComponent(new JValidatingTextField(".+", value, 180), 1, 10, 1, 1, 1, 1), path + "userinfo");
-        
-        addLayoutStopper(0, 11);
+        save_handler.register(addComponent(new JValidatingTextField(".+", value, 180), 1, 10, 1, 1, 1, 1), path + "userinfo");        
     }
 
     /* (non-Javadoc)

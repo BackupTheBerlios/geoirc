@@ -97,5 +97,15 @@
             <pattern>.+</pattern>
             <javaType>java.lang.String</javaType>					
 		</rule>
+		<rule name="COMAND_ALIAS_NAME">
+			<default>new alias</default>
+            <pattern>.+</pattern>
+            <javaType>java.lang.String</javaType>					
+		</rule>		
+		<rule name="COMAND_ALIAS_COMMAND">
+			<default></default>
+            <pattern>.+</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>		
 	</defaults>
 </geoirc>

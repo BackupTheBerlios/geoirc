@@ -12,6 +12,7 @@ import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 import geoirc.util.Util;
 
@@ -25,8 +26,6 @@ import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -44,8 +43,6 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
     private JTable table;
     private JButton delButton = new JButton("delete");
     private JButton addButton = new JButton("new");
-    private JValidatingTextField custom_alias_field = new JValidatingTextField(".+?", "", 80);
-    private JValidatingTextField custom_command_field = new JValidatingTextField(".+?", "", 250);
     private JButton addCustomButton = new JButton("add");
 
     /**
@@ -62,27 +59,21 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
     {
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setRowHeight(18);
-
-        //setting up table cell with combo box for commands
+        table.setRowHeight(18);        
+        table.setToolTipText("Click into a cell to edit values");
+        
+        //setting up table cell for alias name
+        ValueRule rule = rules.getValueRule("COMAND_ALIAS_NAME");
+        final JValidatingTextField alias_field = new JValidatingTextField(rule.getPattern(), rule.getName());
+        alias_field.setToolTipText("click to edit, hit return to apply your change");
         TableColumn cmdColumn = table.getColumnModel().getColumn(1);
-        JComboBox cmdCombo = new JComboBox();
-        cmdCombo.addItem("");
-        for (int i = 0; i < CMDS.length; i++)
-        {
-            cmdCombo.addItem(CMDS[i].toLowerCase());
-        }
-        cmdColumn.setCellEditor(new DefaultCellEditor(cmdCombo));
+        cmdColumn.setCellEditor(new DefaultCellEditor(alias_field));
 
-        //setting up table cell with combo box for irc commands
-        TableColumn ircCmdColumn = table.getColumnModel().getColumn(2);
-        JComboBox ircCombo = new JComboBox();
-        ircCombo.addItem("");
-        for (int i = 0; i < IRC_CMDS.length; i++)
-        {
-            ircCombo.addItem(IRC_CMDS[i]);
-        }
-        ircCmdColumn.setCellEditor(new DefaultCellEditor(ircCombo));
+        //setting up table cell for commands
+        rule = rules.getValueRule("COMAND_ALIAS_COMMAND");
+        final JValidatingTextField command_field = new JValidatingTextField(rule.getPattern(), rule.getName());
+        cmdColumn = table.getColumnModel().getColumn(1);
+        cmdColumn.setCellEditor(new DefaultCellEditor(command_field));
 
         addComponent(new TitlePane("Command Aliases"), 0, 0, 5, 1, 0, 0);
         String path = "/command aliases/";
@@ -100,18 +91,14 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
             nodePath = path + String.valueOf(i) + "/";
         }
 
-        table.setPreferredScrollableViewportSize(new Dimension(550, 200));
+        table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(120);
-        table.getColumnModel().getColumn(1).setPreferredWidth(80);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(250);
+        table.getColumnModel().getColumn(1).setPreferredWidth(380);
         JScrollPane scroller = new JScrollPane(table);
         addComponent(scroller, 0, 1, 5, 1, 0, 0);
 
-        addComponent(new JLabel("name"), 0, 2, 1, 1, 0, 0);
-        addComponent(custom_alias_field, 1, 2, 1, 1, 0, 0);
-        addComponent(new JLabel("command string"), 2, 2, 1, 1, 0, 0);
-        addComponent(custom_command_field, 3, 2, 2, 1, 0, 0, GridBagConstraints.NORTHEAST);
+        addComponent(delButton, 0, 2, 2, 1, 0, 0);
+        addComponent(addButton, 4, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
 
         delButton.setEnabled(false);
         delButton.addActionListener(new ActionListener()
@@ -131,11 +118,8 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
             }
         });
 
-        addComponent(delButton, 0, 3, 2, 1, 0, 0);
-        addComponent(addButton, 4, 3, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
-
-        addHorizontalLayoutStopper(5, 4);
-        addLayoutStopper(0, 5);
+        addHorizontalLayoutStopper(5, 2);
+        addLayoutStopper(0, 3);
 
         ListSelectionModel rowSM = table.getSelectionModel();
         rowSM.addListSelectionListener(new ListSelectionListener()
@@ -199,7 +183,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
 
     class LittleTableModel extends AbstractTableModel
     {
-        final String[] columnNames = { "Alias", "Command", "IRC Command", "Parameter" };
+        final String[] columnNames = { "Alias", "Command" };
         List data = new ArrayList();
 
         /* (non-Javadoc)
@@ -242,21 +226,11 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
                     ret = ca.getAlias();
                     break;
                 case 1 :
-                    ret = ca.getCommand();
+                    ret = ca.getExpansion();
                     if (ret == null)
                         ret = "";
                     else
                         ret = ((String)ret);
-                    break;
-                case 2 :
-                    ret = ca.getIRCCommand();
-                    if (ret == null)
-                        ret = "";
-                    else
-                        ret = ((String)ret);
-                    break;
-                case 3 :
-                    ret = ca.getParamString();
                     break;
             }
             return ret;
@@ -279,13 +253,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
                     ca.setAlias((String)value);
                     break;
                 case 1 :
-                    ca.setCommand((String)value);
-                    break;
-                case 2 :
-                    ca.setIRCCommand((String)value);
-                    break;
-                case 3 :
-                    ca.setParamString((String)value);
+                    ca.setExpansion((String)value);
                     break;
             }
             fireTableDataChanged();

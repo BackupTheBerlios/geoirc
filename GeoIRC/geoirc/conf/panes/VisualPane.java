@@ -207,7 +207,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         addComponent(new JLabel("Nicknames sort order"), 0, 16, 1, 1, 0, 0);
         String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending" };        
         sortBox = new JComboBox(sort_options);
-        addComponent(sortBox, 1, 16, 1, 1, 0, 0);
+        addComponent(sortBox, 1, 16, 2, 1, 0, 0);
         sortBox.setSelectedItem(value);
         addLayoutStopper(0, 17);
     }
