@@ -8,6 +8,7 @@ package geoirc;
 
 import java.awt.*;
 import java.beans.PropertyVetoException;
+import java.util.StringTokenizer;
 import java.util.regex.*;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -112,35 +113,34 @@ public class GITextWindow extends JScrollInternalFrame
     
     public void appendLine( String text )
     {
-        appendLine( text, "normal" );
+        append( text + "\n" );
     }
     
-    public void appendLine( String text, String style )
+    synchronized public void append( String text )
     {
-        append( text + "\n", style );
-    }
-
-    public void append( String text )
-    {
-        append( text, "normal" );
-    }
-    
-    synchronized public void append( String text, String style_string )
-    {
-        Style style = text_pane.getStyle( style_string );
-        if( style == null )
-        {
-            style = default_style;
-        }
+        // Split this string into fragments along the style markings.
         
-        try
+        StringTokenizer st = new StringTokenizer( text, Character.toString( STYLE_ESCAPE_CHAR ) );
+        boolean first_had_escape_char = ( text.charAt( 0 ) == STYLE_ESCAPE_CHAR );
+        
+        while( st.hasMoreTokens() )
         {
-            document.insertString( document.getLength(), text, style );
-        }
-        catch( BadLocationException e )
-        {
-            e.printStackTrace();
-        }
+        
+            Style style = text_pane.getStyle( style_string );
+            if( style == null )
+            {
+                style = default_style;
+            }
+
+            try
+            {
+                document.insertString( document.getLength(), text, style );
+            }
+            catch( BadLocationException e )
+            {
+                e.printStackTrace();
+            }
+        }        
 
         SwingUtilities.invokeLater(
             new Runnable()
