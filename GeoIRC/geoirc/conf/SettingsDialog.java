@@ -112,7 +112,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
             }
         };
 
-        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
+        this.panels = initPanels();
 
         try
         {
@@ -156,6 +156,11 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         rootPane.registerKeyboardAction(escape_listener, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         return rootPane;
+    }
+
+    private List initPanels()
+    {
+        return SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
     }
 
     private void initComponents() throws Exception
@@ -287,7 +292,47 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
                     {
                         JOptionPane.showMessageDialog(
                             SettingsDialog.this,
-                            "An error occured during export. Settings could not be exported.");
+                            "An error occured during export. Settings could not be successfully exported.");
+                    }
+                }
+            }
+        });
+
+        imp_settings_button.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                final JFileChooser chooser = new JFileChooser(".");
+                chooser.setDialogTitle("Restore settings backup");
+                ExtensionFileFilter filter = new ExtensionFileFilter("xml");
+                filter.addExlusion("settings.xml");
+                chooser.setFileFilter(filter);
+                chooser.setAcceptAllFileFilterUsed(false);
+                int ret = chooser.showOpenDialog(SettingsDialog.this);
+
+                if (ret == JOptionPane.YES_OPTION)
+                {
+                    File file = chooser.getSelectedFile();
+
+                    if (!settings_manager.loadSettingsFromXML(file.getPath()))
+                    {
+                        JOptionPane.showMessageDialog(
+                            SettingsDialog.this,
+                            "An error occured during import. Settings could not be successfully imported.");
+                    }
+                    else
+                    {
+                        if (parent instanceof GeoIRC)
+                        {
+                            ((GeoIRC)parent).applySettings();
+                        }
+                        panels = initPanels();
+                        categoryTree = buildCategoryTree();
+                        SettingsDialog.this.validate();
+                        
+                        JOptionPane.showMessageDialog(
+                            SettingsDialog.this,
+                            "Settings succesfully restored.");                        
                     }
                 }
             }

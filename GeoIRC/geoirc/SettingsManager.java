@@ -86,17 +86,19 @@ public class SettingsManager
     
     public boolean loadSettingsFromXML()
     {
+        return loadSettingsFromXML( filepath );
+    }
+    
+    public boolean loadSettingsFromXML(String filepath)
+    {
         InputStream is = null;
         boolean success = false;
         try {
             is = new BufferedInputStream(new FileInputStream( filepath ));
-            /* TODO: check whether this is necessary. 
-             * root is already assigned so why remove the top
-             * node and assign it again?
-            */
             root.removeNode();
             root = Preferences.userNodeForPackage( GeoIRC.class );
             root.importPreferences( is );
+            is.close();
             success = true;
         }
         catch( BackingStoreException e )
@@ -118,31 +120,10 @@ public class SettingsManager
         
         return success;
     }
-    
+
     public boolean saveSettingsToXML()
     {
-        boolean success = false;
-        
-        if( ! any_load_failure )
-        {
-            try {
-                root.flush();
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream( filepath )); 
-                root.exportSubtree( out );
-                out.close();
-                success = true;
-            } catch (IOException e) {
-                printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
-            } catch (BackingStoreException e) {
-                printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
-            }
-        }
-        else
-        {
-            printlnDebug( "Settings not saved due to previous settings load failure." );
-        }
-        
-        return success;
+        return saveSettingsToXML( filepath );
     }
 
     public boolean saveSettingsToXML(String filepath)

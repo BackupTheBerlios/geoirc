@@ -13,15 +13,12 @@ import java.util.List;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * Class providing ...
- * Common usage:
- * 
  * @author netseeker aka Michael Manske
- * TODO Add source documentation
  */
 public class ExtensionFileFilter extends FileFilter
 {
     private List extensions = new ArrayList();
+    private List exlusions = new ArrayList();
            
     /**
      * 
@@ -59,7 +56,7 @@ public class ExtensionFileFilter extends FileFilter
      */
     public boolean accept(File file)
     {
-        if( file.isDirectory() )
+        if( file.isDirectory() || this.exlusions.contains( file.getName() ) )
         {
             return false;
         }
@@ -97,4 +94,8 @@ public class ExtensionFileFilter extends FileFilter
         return desc.toString();
     }
 
+    public void addExlusion( String file_name )
+    {
+        this.exlusions.add( file_name );
+    }
 }
