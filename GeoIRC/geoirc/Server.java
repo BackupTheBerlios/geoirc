@@ -11,26 +11,34 @@ import java.awt.Component;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Vector;
 import javax.swing.*;
 
 /**
  *
  * @author  Pistos
  */
-public class Server extends RemoteMachine
+public class Server
+    extends RemoteMachine
+    implements GeoIRCConstants
 {
     protected ServerReader server_reader;
+    protected Vector channels;
+    protected boolean listening_to_channels;
     
     public Server(
         GeoIRC parent,
         DisplayManager display_manager,
+        SettingsManager settings_manager,
         String hostname,
         String port
     )
     {
-        super( parent, display_manager, hostname, port );
+        super( parent, display_manager, settings_manager, hostname, port );
         
+        listening_to_channels = false;
         server_reader = null;
+        channels = new Vector();
     }
     
     // Returns whether a connection has been established.
@@ -68,8 +76,95 @@ public class Server extends RemoteMachine
         {
             display_manager.printlnDebug( e.getMessage() );
         }
+        
+        boolean connected = isConnected();
+        if( connected )
+        {
+            restoreChannels();
+            listening_to_channels = true;
+        }
                 
         return isConnected();
+    }
+
+    public void addChannel( String channel )
+    {
+        if( isConnected() )
+        {
+            channels.add( channel );
+        }
+        if( listening_to_channels )
+        {
+            recordChannels();
+        }
+    }
+    
+    public boolean removeChannel( String channel )
+    {
+        boolean result = channels.remove( channel );
+        if( listening_to_channels )
+        {
+            recordChannels();
+        }
+        return result;
+    }
+    
+    public String [] getChannels()
+    {
+        String [] retval = new String [ 0 ];
+        return (String []) channels.toArray( retval );
+    }
+
+    protected void recordChannels()
+    {
+        String server_id = geoirc.getRemoteMachineID( this );
+        String nodepath = "/connections/" + server_id + "/channels/";
+        settings_manager.removeNode( nodepath );
+        
+        int n = channels.size();
+        String channel;
+        String i_str;
+        
+        for( int i = 0; i < n; i++ )
+        {
+            i_str = Integer.toString( i );
+            channel = (String) channels.elementAt( i );
+            
+            settings_manager.putString(
+                nodepath + i_str + "/name",
+                channel
+            );
+        }
+    }
+    
+    protected void restoreChannels()
+    {
+        String server_id = geoirc.getRemoteMachineID( this );
+        int i = 0;
+        String i_str;
+        
+        String channel;
+        
+        while( GOD_IS_GOOD )
+        {
+            i_str = Integer.toString( i );
+            
+            channel = settings_manager.getString(
+                "/connections/" + server_id + "/channels/" + i_str + "/name",
+                ""
+            );
+            if( channel.equals( "" ) )
+            {
+                // No more channels stored in the settings.
+                break;
+            }
+            
+            geoirc.execute( CMDS[ CMD_SEND_RAW ] + " JOIN " + channel );
+            // TODO: Check if the channel was actually joined.
+            addChannel( channel );
+            
+            i++;
+        }
     }
     
 }

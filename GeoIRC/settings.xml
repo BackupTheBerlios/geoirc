@@ -21,6 +21,14 @@
             <entry key="hostname" value="irc.freenode.net" />
             <entry key="port" value="6667" />
           </map>
+          <node name="channels">
+            <map />
+            <node name="0">
+              <map>
+                <entry key="name" value="#geoirc" />
+              </map>
+            </node>
+          </node>
         </node>
         <node name="1">
           <map />
@@ -47,10 +55,10 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="debug" />
-              <entry key="x" value="270" />
-              <entry key="y" value="127" />
-              <entry key="height" value="500" />
-              <entry key="width" value="700" />
+              <entry key="x" value="1" />
+              <entry key="y" value="545" />
+              <entry key="height" value="210" />
+              <entry key="width" value="1133" />
               <entry key="filter" value="debug" />
             </map>
           </node>
@@ -68,12 +76,12 @@
           <node name="2">
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="#geoshell on irc.freenode.net" />
+              <entry key="title" value="#geoirc on irc.freenode.net" />
               <entry key="x" value="20" />
               <entry key="y" value="20" />
               <entry key="height" value="500" />
               <entry key="width" value="700" />
-              <entry key="filter" value="irc.freenode.net AND #geoshell" />
+              <entry key="filter" value="irc.freenode.net AND #geoirc" />
             </map>
           </node>
         </node>

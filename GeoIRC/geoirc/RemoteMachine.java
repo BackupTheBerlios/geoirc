@@ -18,6 +18,7 @@ public class RemoteMachine
     public static final int DEFAULT_PORT = 6667;
 
     protected DisplayManager display_manager;
+    protected SettingsManager settings_manager;
     protected String hostname;
     protected int port;
     protected GeoIRC geoirc;
@@ -32,6 +33,7 @@ public class RemoteMachine
     public RemoteMachine(
         GeoIRC parent,
         DisplayManager display_manager,
+        SettingsManager settings_manager,
         String hostname,
         String port
     )
@@ -50,6 +52,7 @@ public class RemoteMachine
         this.hostname = hostname;
         this.port = i_port;
         this.display_manager = display_manager;
+        this.settings_manager = settings_manager;
         geoirc = parent;
         
         socket = null;

@@ -31,39 +31,6 @@ public class GeoIRC
         CommandExecutor,
         FocusListener
 {
-    public static final String [] CMDS =
-    {
-        "sendraw",
-        "newwindow",
-        "join",
-        "me", // emote/action
-        "listfonts",
-        "newserver",
-        "nick",
-        "nextwindow",
-        "previouswindow",
-        "next_history_entry",
-        "previous_history_entry",
-        "server",
-        "changeserver",
-        "listservers"
-    };
-    public static final int UNKNOWN_COMMAND = -1;
-    public static final int CMD_ACTION = 3;
-    public static final int CMD_CHANGE_SERVER = 12;
-    public static final int CMD_JOIN = 2;
-    public static final int CMD_LIST_FONTS = 4;
-    public static final int CMD_LIST_SERVERS = 13;
-    public static final int CMD_NEW_SERVER = 5;
-    public static final int CMD_NEW_TEXT_WINDOW = 1;
-    public static final int CMD_NEXT_HISTORY_ENTRY = 9;
-    public static final int CMD_NEXT_WINDOW = 7;
-    public static final int CMD_NICK = 6;
-    public static final int CMD_PREVIOUS_WINDOW = 8;
-    public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
-    public static final int CMD_SEND_RAW = 0;
-    public static final int CMD_SERVER = 11;
-    
     protected static final int MAX_HISTORY_SIZE = 30;
     protected static final int MOST_RECENT_ENTRY = 0;
     
@@ -260,7 +227,7 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, hostname, port );
+        Server s = new Server( this, display_manager, settings_manager, hostname, port );
         remote_machines.add( s );
         if( listening_to_servers )
         {
@@ -345,6 +312,18 @@ public class GeoIRC
             
             i++;
         }
+    }
+    
+    public String getRemoteMachineID( RemoteMachine rm )
+    {
+        int id = remote_machines.indexOf( rm );
+        String retval = null;
+        if( id > -1 )
+        {
+            retval = Integer.toString( id );
+        }
+        
+        return retval;
     }
     
     /** This method is called from within the constructor to
@@ -560,15 +539,35 @@ public class GeoIRC
                 if( args != null )
                 {
                     //Server s = (Server) display_manager.getSelectedRemoteMachine();
-                    Server s = (Server) current_remote_machine;
-                    if( s != null )
+                    if( current_remote_machine instanceof Server )
                     {
-                        GITextWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
-                        if( window != null )
+                        Server s = (Server) current_remote_machine;
+                        if( s != null )
                         {
-                            execute( CMDS[ CMD_SEND_RAW ] + " " + command );
-                            result = CommandExecutor.EXEC_SUCCESS;
+                            GITextWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
+                            if( window != null )
+                            {
+                                execute( CMDS[ CMD_SEND_RAW ] + " " + command );
+                                // TODO: Check if the channel was actually joined...
+                                s.addChannel( args[ 0 ] );
+                                result = CommandExecutor.EXEC_SUCCESS;
+                            }
                         }
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug( "First use /changeserver <server id>" );
+                    }
+                }
+                break;
+            case CMD_LIST_CHANNELS:
+                if( current_remote_machine instanceof Server )
+                {
+                    Server s = (Server) current_remote_machine;
+                    String [] channels = s.getChannels();
+                    for( int i = 0; i < channels.length; i++ )
+                    {
+                        display_manager.printlnDebug( channels[ i ] );
                     }
                 }
                 break;
@@ -592,8 +591,8 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_SERVER:
             case CMD_NEW_SERVER:
+            case CMD_SERVER:
                 if( args != null )
                 {
                     String host = args[ 0 ];
@@ -660,6 +659,25 @@ public class GeoIRC
                 {
                     display_manager.printlnDebug( "Current nick: " + current_nick );
                     display_manager.printlnDebug( "/nick <new nickname>" );
+                }
+                break;
+            case CMD_PART:
+                if( args != null )
+                {
+                    if( current_remote_machine instanceof Server )
+                    {
+                        Server s = (Server) current_remote_machine;
+                        if( s != null )
+                        {
+                            execute( CMDS[ CMD_SEND_RAW ] + " " + command );
+                            s.removeChannel( args[ 0 ] );
+                            result = CommandExecutor.EXEC_SUCCESS;
+                        }
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug( "First use /changeserver <server id>" );
+                    }
                 }
                 break;
             case CMD_PREVIOUS_HISTORY_ENTRY:

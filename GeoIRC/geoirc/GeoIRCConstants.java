@@ -16,6 +16,43 @@ public interface GeoIRCConstants
 {
     static final boolean GOD_IS_GOOD = true;
     
+    public static final String [] CMDS =
+    {
+        "sendraw",
+        "newwindow",
+        "join",
+        "me", // emote/action
+        "listfonts",
+        "newserver",
+        "nick",
+        "nextwindow",
+        "previouswindow",
+        "next_history_entry",
+        "previous_history_entry",
+        "server",
+        "changeserver",
+        "listservers",
+        "part",
+        "listchannels"
+    };
+    public static final int UNKNOWN_COMMAND = -1;
+    public static final int CMD_ACTION = 3;
+    public static final int CMD_CHANGE_SERVER = 12;
+    public static final int CMD_JOIN = 2;
+    public static final int CMD_LIST_CHANNELS = 15;
+    public static final int CMD_LIST_FONTS = 4;
+    public static final int CMD_LIST_SERVERS = 13;
+    public static final int CMD_NEW_SERVER = 5;
+    public static final int CMD_NEW_TEXT_WINDOW = 1;
+    public static final int CMD_NEXT_HISTORY_ENTRY = 9;
+    public static final int CMD_NEXT_WINDOW = 7;
+    public static final int CMD_NICK = 6;
+    public static final int CMD_PART = 14;
+    public static final int CMD_PREVIOUS_WINDOW = 8;
+    public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
+    public static final int CMD_SEND_RAW = 0;
+    public static final int CMD_SERVER = 11;
+    
     static final String [] IRCMSGS =
     {
         "PRIVMSG"

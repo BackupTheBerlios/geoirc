@@ -28,3 +28,5 @@ Pistos 2003-07-06
 Dissociated (disassociated?) RemoteMachines from GITextWindows, opting instead
 to go for a current_remote_machine sort of system.  We'll see how this goes.
 Pistos 2003-07-06
+
+Added code which saves and restores channel membership.
