@@ -9,7 +9,9 @@ package geoirc;
 import geoirc.util.Util;
 import java.util.Hashtable;
 import java.util.Vector;
-import org.python.core.*;
+import org.python.core.PyMethod;
+import org.python.core.PyObject;
+import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
 /**
@@ -18,7 +20,6 @@ import org.python.util.PythonInterpreter;
  */
 public class PythonScriptInterface
 {
-    
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;

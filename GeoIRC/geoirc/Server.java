@@ -1490,15 +1490,19 @@ public class Server
                         );
                         break;
                     case STAGE_PROCESSING:
+                    {
                         expecting_pong = false;
-                        display_manager.println(
-                            i18n_manager.getString(
-                                "pong received",
-                                new Object [] { Server.this.toString() }
-                            ),
+                        String text = i18n_manager.getString(
+                            "pong received",
+                            new Object [] { Server.this.toString() }
+                        );
+                        windows_printed_to += display_manager.println(
+                            text,
                             transformed_message[ MSG_QUALITIES ]
                         );
+                        trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
                         break;
+                    }
                 }
             }
             else if( ( irc_code.equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) ) && ( tokens.length > 3 ) )

@@ -85,8 +85,6 @@ import org.python.core.PyMethod;
 import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
-import tcl.lang.Interp;
-import tcl.lang.ReflectObject;
 import tcl.lang.TclException;
 
 import com.l2fprod.gui.plaf.skin.CompoundSkin;
