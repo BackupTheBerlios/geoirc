@@ -1,7 +1,7 @@
 /*
- * SoundManager.java
+ * TriggerManager.java
  *
- * Created on July 7, 2003, 8:30 AM
+ * Created on August 6, 2003, 12:03 PM
  */
 
 package geoirc;
@@ -12,21 +12,23 @@ import java.util.Vector;
  *
  * @author  Pistos
  */
-public class SoundManager implements GeoIRCConstants
+public class TriggerManager implements GeoIRCConstants
 {
     protected Vector triggers;
+    protected CommandExecutor executor;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
     
     // No default constructor
-    private SoundManager() { }
+    private TriggerManager() { }
     
-    /** Creates a new instance of SoundManager */
-    public SoundManager(
+    public TriggerManager(
+        CommandExecutor executor,
         SettingsManager settings_manager,
         DisplayManager display_manager
     )
     {
+        this.executor = executor;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         triggers = new Vector();
@@ -35,31 +37,32 @@ public class SoundManager implements GeoIRCConstants
         String i_str;
         String filter;
         String regexp;
-        String filename;
+        String command;
+        
         while( GOD_IS_GOOD )
         {
             i_str = Integer.toString( i );
             
-            filename = settings_manager.getString(
-                "/sound/triggers/" + i_str + "/filename",
+            command = settings_manager.getString(
+                "/triggers/" + i_str + "/command",
                 ""
             );
-            if( filename.equals( "" ) )
+            if( command.equals( "" ) )
             {
                 // No more triggers stored in the settings.
                 break;
             }
             
             regexp = settings_manager.getString(
-                "/sound/triggers/" + i_str + "/regexp",
+                "/triggers/" + i_str + "/regexp",
                 ""
             );
             filter = settings_manager.getString(
-                "/sound/triggers/" + i_str + "/filter",
+                "/triggers/" + i_str + "/filter",
                 ""
             );
             
-            addTrigger( filter, regexp, filename );
+            addTrigger( filter, regexp, command );
             
             i++;
         }
@@ -68,22 +71,22 @@ public class SoundManager implements GeoIRCConstants
     public void check( String message, String qualities )
     {
         int n = triggers.size();
-        SoundTrigger st;
+        Trigger trigger;
         for( int i = 0; i < n; i++ )
         {
-            st = (SoundTrigger) triggers.elementAt( i );
-            st.check( message, qualities );
+            trigger = (Trigger) triggers.elementAt( i );
+            trigger.check( message, qualities );
         }
     }
     
-    protected boolean addTrigger( String filter, String regexp, String sound_file )
+    protected boolean addTrigger( String filter, String regexp, String command )
     {
         boolean success = true;
-        SoundTrigger st;
+        Trigger trigger;
         try
         {
-            st = new SoundTrigger( display_manager, filter, regexp, sound_file );
-            triggers.add( st );
+            trigger = new Trigger( executor, display_manager, filter, regexp, command );
+            triggers.add( trigger );
         }
         catch( java.util.regex.PatternSyntaxException e )
         {

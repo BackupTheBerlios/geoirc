@@ -1,7 +1,7 @@
 /*
- * SoundTrigger.java
+ * Trigger.java
  *
- * Created on July 7, 2003, 8:04 AM
+ * Created on August 6, 2003, 12:05 PM
  */
 
 package geoirc;
@@ -18,26 +18,30 @@ import java.util.regex.*;
  *
  * @author  Pistos
  */
-public class SoundTrigger
+public class Trigger
 {
-    String filter;
-    DisplayManager display_manager;
-    Pattern regexp;
-    AudioClip clip;
+    protected String filter;
+    protected CommandExecutor executor;
+    protected DisplayManager display_manager;
+    protected Pattern regexp;
+    protected String command;
     
     // No default constructor.
-    private SoundTrigger() { }
+    private Trigger() { }
     
-    public SoundTrigger(
+    public Trigger(
+        CommandExecutor executor,
         DisplayManager display_manager,
         String filter,
         String regexp_str,
-        String sound_file
+        String command
     )
     throws PatternSyntaxException
     {
+        this.executor = executor;
         this.display_manager = display_manager;
         this.filter = filter;
+        this.command = command;
 
         try
         {
@@ -53,27 +57,10 @@ public class SoundTrigger
             throw e;
         }
         
-        URL url = null;
-        clip = null;
-        try
-        {
-            url = new File( sound_file ).toURL(); 
-            clip = Applet.newAudioClip( url );
-        }
-        catch ( MalformedURLException e )
-        {
-            display_manager.printlnDebug( e.getMessage() );
-            display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
-        }
-        if( clip == null )
-        {
-            display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
-        }
-        
     }
     
     /* Check against a message which has certain qualities.
-     * Play the sound if the check passes.
+     * Execute the command if the check passes.
      */
     public boolean check( String message, String qualities )
     {
@@ -92,7 +79,7 @@ public class SoundTrigger
         
         if( passed )
         {
-            clip.play();
+            executor.execute( command );
         }
         
         return passed;

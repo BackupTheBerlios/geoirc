@@ -40,14 +40,14 @@ public class Server
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        SoundManager sound_manager,
+        TriggerManager trigger_manager,
         InfoManager info_manager,
         VariableManager variable_manager,
         String hostname,
         String port
     )
     {
-        super( parent, display_manager, settings_manager, sound_manager, hostname, port );
+        super( parent, display_manager, settings_manager, trigger_manager, hostname, port );
         
         listening_to_channels = false;
         server_reader = null;
@@ -498,7 +498,7 @@ public class Server
                         ) + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                     
                     if( nick.equals( current_nick ) )
                     {
@@ -575,7 +575,7 @@ public class Server
                         ) + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NOTICE ] ) )
                 {
@@ -661,7 +661,7 @@ public class Server
                         timestamp + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
                 {
@@ -689,7 +689,7 @@ public class Server
                         ) + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                     
                     if( nick.equals( current_nick ) )
                     {
@@ -855,7 +855,7 @@ public class Server
                         timestamp + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
                 {
@@ -901,7 +901,7 @@ public class Server
                         ) + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
                 {
@@ -939,7 +939,7 @@ public class Server
                         ) + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) )
                 {
@@ -967,7 +967,7 @@ public class Server
                         ) + text,
                         qualities
                     );
-                    sound_manager.check( text, qualities );
+                    trigger_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_WELCOME ] ) )
                 {

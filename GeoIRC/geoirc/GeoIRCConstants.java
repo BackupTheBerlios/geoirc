@@ -22,6 +22,7 @@ public interface GeoIRCConstants
     static final boolean GOD_IS_GOOD = true;
     
     static final int DEFAULT_IDENT_PORT = 113;
+    static final int DEFAULT_PORT = 6667;
     
     public static final String [] CMDS =
     {
@@ -68,7 +69,8 @@ public interface GeoIRCConstants
         "exec",
         "listmembers",
         "showqualities",
-        "exec2"
+        "exec2",
+        "play"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -103,6 +105,7 @@ public interface GeoIRCConstants
     public static final int CMD_PAGE_DOWN = 36;
     public static final int CMD_PAGE_UP = 35;
     public static final int CMD_PART = 14;
+    public static final int CMD_PLAY = 44;
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_PRINT = 25;

@@ -29,6 +29,7 @@ package geoirc;
 import com.l2fprod.gui.plaf.skin.*;
 import geoirc.util.InputStreamReaderThread;
 import geoirc.util.Util;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
@@ -60,10 +61,12 @@ public class GeoIRC
     protected Vector remote_machines;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
-    protected SoundManager sound_manager;
+    protected TriggerManager trigger_manager;
     protected AliasManager alias_manager;
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
+    
+    protected Hashtable audio_clips;
     
     protected IdentServer ident_server;
     
@@ -269,9 +272,10 @@ public class GeoIRC
         setupFullKeyMapping( KeyEvent.VK_9 );
         setupFullKeyMapping( KeyEvent.VK_0 );
         
-        // Sound
+        // Triggers
         
-        sound_manager = new SoundManager( settings_manager, display_manager );
+        audio_clips = new Hashtable();
+        trigger_manager = new TriggerManager( this, settings_manager, display_manager );
         
         // Command aliases.
         
@@ -382,7 +386,7 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, variable_manager, hostname, port );
+        Server s = new Server( this, display_manager, settings_manager, trigger_manager, info_manager, variable_manager, hostname, port );
         remote_machines.add( s );
         if( listening_to_connections )
         {
@@ -982,30 +986,6 @@ public class GeoIRC
                 }
                 break;
             case CMD_EXEC:
-                if( arg_string != null )
-                {
-                    Runtime rt = Runtime.getRuntime();
-                    try
-                    {
-                        rt.exec( arg_string );
-                    }
-                    catch( IOException e )
-                    {
-                        Util.printException(
-                            display_manager, e, 
-                            "I/O exception during external execution."
-                        );
-                    }
-                }
-                else
-                {
-                    display_manager.printlnDebug(
-                        "/"
-                        + CMDS[ CMD_EXEC ]
-                        + " <program to execute, with any arguments>"
-                    );
-                }
-                break;
             case CMD_EXEC2:
                 if( arg_string != null )
                 {
@@ -1020,8 +1000,16 @@ public class GeoIRC
                         final BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
                         final BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
                         
-                        new InputStreamReaderThread( this, display_manager, out ).start();
-                        new InputStreamReaderThread( this, display_manager, err ).start();
+                        new InputStreamReaderThread(
+                            (command_id == CMD_EXEC) ? null : this,
+                            display_manager,
+                            out
+                        ).start();
+                        new InputStreamReaderThread(
+                            (command_id == CMD_EXEC) ? null : this,
+                            display_manager,
+                            err
+                        ).start();
                     }
                     catch( IOException e )
                     {
@@ -1328,6 +1316,43 @@ public class GeoIRC
                             "First switch to a window associated with a server."
                         );
                     }
+                }
+                break;
+            case CMD_PLAY:
+                if( args != null )
+                {
+                    String sound_file = arg_string;
+                    java.net.URL url = null;
+                    AudioClip clip = null;
+                    
+                    if( audio_clips.contains( sound_file ) )
+                    {
+                        clip = (AudioClip) audio_clips.get( sound_file );
+                    }
+                    else
+                    {
+                        try
+                        {
+                            url = new File( sound_file ).toURL(); 
+                            clip = java.applet.Applet.newAudioClip( url );
+                            audio_clips.put( sound_file, clip );
+                        }
+                        catch ( java.net.MalformedURLException e )
+                        {
+                            display_manager.printlnDebug( e.getMessage() );
+                            display_manager.printlnDebug( "Failed to load audio file '" + sound_file + "'" );
+                        }
+                    }
+                    
+                    if( clip != null )
+                    {
+                        clip.play();
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug( "Failed to load audio file '" + sound_file + "'" );
+                    }
+                    
                 }
                 break;
             case CMD_PREVIOUS_HISTORY_ENTRY:
