@@ -132,6 +132,20 @@ public class ServerReader
                     + " part"
                 );
             }
+            else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
+            {
+                String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
+                String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
+                String text = nick + " has quit (" + message + ").";
+                display_manager.println(
+                    GeoIRC.getATimeStamp(
+                        settings_manager.getString( "/gui/format/timestamp", "" )
+                    ) + text,
+                    server.toString()
+                    + " from=" + nick
+                    + " quit"
+                );
+            }
 
         }
         
