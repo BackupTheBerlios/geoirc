@@ -122,4 +122,14 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         
         return success;
     }
+    
+    public void activate()
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).selectFrameAndAssociatedButtons();
+                break;
+        }
+    }
 }

@@ -58,6 +58,19 @@
       <node name="connections">
         <map />
         <node name="0">
+          <map>
+            <entry key="type" value="class geoirc.Server" />
+            <entry key="hostname" value="irc.freenode.net" />
+            <entry key="port" value="6667" />
+          </map>
+          <node name="channels">
+            <map />
+            <node name="0">
+              <map />
+            </node>
+          </node>
+        </node>
+        <node name="1">
           <map />
         </node>
       </node>
@@ -104,55 +117,120 @@
             <node name="1">
               <map>
                 <entry key="type" value="1" />
-                <entry key="title" value="GeoIRC" />
-                <entry key="parent" value="0" />
-                <entry key="split rank" value="-1" />
+                <entry key="title" value="GeoIRC Desktop Pane" />
+                <entry key="parent" value="3" />
+                <entry key="split rank" value="1" />
               </map>
             </node>
-            <node name="2">
-              <map>
-                <entry key="type" value="3" />
-                <entry key="title" value="%debug" />
-                <entry key="parent" value="5" />
-                <entry key="split rank" value="-1" />
-                <entry key="filter" value="%debug" />
-              </map>
-            </node>
-            <node name="3">
+            <node name="10">
               <map>
                 <entry key="type" value="2" />
-                <entry key="title" value="x" />
+                <entry key="title" value="z" />
                 <entry key="parent" value="-1" />
                 <entry key="split rank" value="-1" />
-                <entry key="x" value="120" />
-                <entry key="y" value="120" />
+                <entry key="x" value="60" />
+                <entry key="y" value="60" />
                 <entry key="height" value="500" />
                 <entry key="width" value="700" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
               </map>
             </node>
-            <node name="4">
+            <node name="11">
               <map>
                 <entry key="type" value="3" />
-                <entry key="title" value="x" />
-                <entry key="parent" value="3" />
+                <entry key="title" value="z" />
+                <entry key="parent" value="10" />
                 <entry key="split rank" value="-1" />
-                <entry key="filter" value="x" />
+                <entry key="filter" value="z" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="type" value="3" />
+                <entry key="title" value="%debug" />
+                <entry key="parent" value="3" />
+                <entry key="split rank" value="0" />
+                <entry key="filter" value="%debug" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="type" value="5" />
+                <entry key="title" value="GeoIRC" />
+                <entry key="parent" value="0" />
+                <entry key="split rank" value="-1" />
+                <entry key="orientation" value="0" />
+                <entry key="divider location" value="154" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="2" />
+                <entry key="title" value="irc.freenode.net and %raw and not %printed" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
               </map>
             </node>
             <node name="5">
               <map>
+                <entry key="type" value="3" />
+                <entry key="title" value="irc.freenode.net and %raw and not %printed" />
+                <entry key="parent" value="4" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="irc.freenode.net and %raw and not %printed" />
+              </map>
+            </node>
+            <node name="6">
+              <map>
                 <entry key="type" value="2" />
-                <entry key="title" value="%debug" />
+                <entry key="title" value="x" />
                 <entry key="parent" value="-1" />
                 <entry key="split rank" value="-1" />
-                <entry key="x" value="140" />
-                <entry key="y" value="140" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
                 <entry key="height" value="500" />
                 <entry key="width" value="700" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
+              </map>
+            </node>
+            <node name="7">
+              <map>
+                <entry key="type" value="3" />
+                <entry key="title" value="x" />
+                <entry key="parent" value="6" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="x" />
+              </map>
+            </node>
+            <node name="8">
+              <map>
+                <entry key="type" value="2" />
+                <entry key="title" value="y" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="40" />
+                <entry key="y" value="40" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+              </map>
+            </node>
+            <node name="9">
+              <map>
+                <entry key="type" value="3" />
+                <entry key="title" value="y" />
+                <entry key="parent" value="8" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="y" />
               </map>
             </node>
           </node>
@@ -243,8 +321,8 @@
       </node>
       <node name="keyboard">
         <map>
-          <entry key="Alt|Left" value="previouswindow" />
-          <entry key="Alt|Right" value="nextwindow" />
+          <entry key="Alt|Left" value="previouspane" />
+          <entry key="Alt|Right" value="nextpane" />
           <entry key="|Down" value="next_history_entry" />
           <entry key="|Up" value="previous_history_entry" />
           <entry key="Ctrl|Up" value="nudgeup" />

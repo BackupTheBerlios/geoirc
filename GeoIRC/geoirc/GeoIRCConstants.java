@@ -38,8 +38,8 @@ public interface GeoIRCConstants
         "listfonts",
         "newserver",
         "nick",
-        "nextwindow",
-        "previouswindow",
+        "nextpane",
+        "previouspane",
         "next_history_entry",
         "previous_history_entry",
         "server",
@@ -195,7 +195,7 @@ public interface GeoIRCConstants
     public static final int CMD_NEW_TEXT_WINDOW = 30;
     public static final int CMD_NEW_WINDOW = 1;
     public static final int CMD_NEXT_HISTORY_ENTRY = 9;
-    public static final int CMD_NEXT_WINDOW = 7;
+    public static final int CMD_NEXT_PANE = 7;
     public static final int CMD_NICK = 6;
     public static final int CMD_NUDGE_DOWN = 38;
     public static final int CMD_NUDGE_UP = 37;
@@ -205,7 +205,7 @@ public interface GeoIRCConstants
     public static final int CMD_PART = 14;
     public static final int CMD_PLAY = 44;
     public static final int CMD_POSITION_WINDOW = 84;
-    public static final int CMD_PREVIOUS_WINDOW = 8;
+    public static final int CMD_PREVIOUS_PANE = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_PRINT = 47;
     public static final int CMD_PRINT_ACTIVE = 75;
@@ -297,8 +297,8 @@ public interface GeoIRCConstants
     static final int CTCP_CMD_DCC = 4;
     static final int CTCP_CMD_PING = 5;
     
-    static final boolean NEXT_WINDOW = false;
-    static final boolean PREVIOUS_WINDOW = true;
+    static final boolean NEXT_PANE = false;
+    static final boolean PREVIOUS_PANE = true;
     
     static final int SHIFT_ = InputEvent.SHIFT_DOWN_MASK;
     static final int CTRL_ = InputEvent.CTRL_DOWN_MASK;
@@ -337,6 +337,8 @@ public interface GeoIRCConstants
     static final int WINDOW_MAXIMUM_HEIGHT = 5000;
     static final Dimension GI_WINDOW_MINIMUM_SIZE = new Dimension( WINDOW_MINIMUM_WIDTH, WINDOW_MINIMUM_HEIGHT );
     static final Dimension DEFAULT_DESKTOP_PANE_SIZE = new Dimension( 500, 300 );
+    static final int MINIMUM_PANE_BAR_BUTTON_WIDTH = 20;  // pixels
+    static final int MAXIMUM_PANE_BAR_BUTTON_WIDTH = 200;  // pixels
     
     static final String STYLE_ESCAPE_SEQUENCE = Character.toString( (char) 255 );
     static final String STYLE_TERMINATION_SEQUENCE = ";";

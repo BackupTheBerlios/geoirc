@@ -78,7 +78,7 @@ public class DisplayManager
     
     protected Vector inactive_info_panes;
     protected Vector active_info_panes;
-    protected Vector panes;
+    protected PaneVector panes;
     protected Vector frames;
     
     protected GIPaneWrapper last_activated_pane;
@@ -96,6 +96,7 @@ public class DisplayManager
     public DisplayManager(
         GeoIRC parent,
         JMenuBar menu_bar,
+        org.jscroll.components.ResizableToolBar pane_bar,
         SettingsManager settings_manager,
         VariableManager variable_manager,
         I18nManager i18n_manager,
@@ -113,7 +114,7 @@ public class DisplayManager
 
         inactive_info_panes = new Vector();
         active_info_panes = new Vector();
-        panes = new Vector();
+        panes = new PaneVector( pane_bar );
         frames = new Vector();
 
         GIPaneWrapper gipw = new GIPaneWrapper(
@@ -856,21 +857,19 @@ public class DisplayManager
         return success;
     }
     
-    public boolean switchToNextWindow( boolean previous )
+    public boolean switchToNextPane( boolean previous )
     {
-        /*
-        if( ( windows == null ) || ( windows.size() < 2 ) )
+        if( ( panes == null ) || ( panes.size() < 4 ) )
         {
             return false;
         }
         
-        JScrollInternalFrame jif;
-        JScrollInternalFrame next_window = (JScrollInternalFrame) windows.elementAt( 0 );
-        int n = windows.size();
-        for( int i = 0; i < n; i++ )
+        GIPaneWrapper gipw;
+        GIPaneWrapper next_pane = (GIPaneWrapper) panes.elementAt( 2 );
+        for( int i = 2, n = panes.size(); i < n; i++ )
         {
-            jif = (JScrollInternalFrame) windows.elementAt( i );
-            if( jif == last_activated_frame )
+            gipw = (GIPaneWrapper) panes.elementAt( i );
+            if( gipw == last_activated_pane )
             {
                 int next_index = i + ( previous ? -1 : 1 );
                 if( next_index == n )
@@ -882,16 +881,11 @@ public class DisplayManager
                     next_index = n - 1;
                 }
                 
-                next_window = (JScrollInternalFrame) windows.elementAt( next_index );
-                
-                break;
+                next_pane = (GIPaneWrapper) panes.elementAt( next_index );
             }
         }
         
-        next_window.selectFrameAndAssociatedButtons();
-         */
-        
-        // TODO: switchToNextPane( boolean previous )
+        next_pane.getFrame().activate();
         
         return true;
     }

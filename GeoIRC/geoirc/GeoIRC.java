@@ -83,6 +83,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.jscroll.components.ResizableToolBar;
+
 /**
  *
  * @author  Pistos
@@ -140,6 +142,8 @@ public class GeoIRC
     protected boolean mouse_button_depressed;
     protected boolean use_skinning;
     
+    protected ResizableToolBar pane_bar;
+    
     /* **************************************************************** */
     
     public GeoIRC()
@@ -185,6 +189,9 @@ public class GeoIRC
         input_field.addActionListener( this );
         input_field.addFocusListener( this );
         input_field.addMouseListener( this );
+
+        pane_bar = new ResizableToolBar( MINIMUM_PANE_BAR_BUTTON_WIDTH, MAXIMUM_PANE_BAR_BUTTON_WIDTH );
+        getContentPane().add( pane_bar, java.awt.BorderLayout.NORTH );
         
         // Disable Ctrl-V, so that we can use our own Ctrl-V handler so
         // we can paste multiple lines in the input_field.
@@ -207,7 +214,7 @@ public class GeoIRC
         input_saved = false;
 
         display_manager = new DisplayManager(
-            this, menu_bar, settings_manager, variable_manager, i18n_manager, input_field
+            this, menu_bar, pane_bar, settings_manager, variable_manager, i18n_manager, input_field
         );
 
         applySettings();
@@ -1823,7 +1830,6 @@ public class GeoIRC
                         {
                             display_manager.printlnDebug( i18n_manager.getString( "dock failed" ) );
                         }
-                        pack();
                     }
                 }
                 else
@@ -2392,8 +2398,8 @@ public class GeoIRC
                     input_field.setText( (String) input_history.get( input_history_pointer ) );
                 }
                 break;
-            case CMD_NEXT_WINDOW:
-                display_manager.switchToNextWindow( NEXT_WINDOW );
+            case CMD_NEXT_PANE:
+                display_manager.switchToNextPane( NEXT_PANE );
                 break;
             case CMD_NICK:
                 if( args != null )
@@ -2603,8 +2609,8 @@ public class GeoIRC
                     input_field.setText( (String) input_history.get( input_history_pointer ) );
                 }
                 break;
-            case CMD_PREVIOUS_WINDOW:
-                display_manager.switchToNextWindow( PREVIOUS_WINDOW );
+            case CMD_PREVIOUS_PANE:
+                display_manager.switchToNextPane( PREVIOUS_PANE );
                 break;
             case CMD_PRINT:
                 if( arg_string != null )
@@ -2982,7 +2988,6 @@ public class GeoIRC
                         {
                             index = Integer.parseInt( args[ 0 ] );
                             display_manager.undock( index );
-                            pack();
                             problem = false;
                         } catch( NumberFormatException e ) { }
                     }

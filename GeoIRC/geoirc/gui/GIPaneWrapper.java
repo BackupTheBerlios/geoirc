@@ -22,6 +22,7 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     protected int type;
     protected GIFrameWrapper frame;
     protected GIPaneWrapper parent;
+    protected GIPaneBarButton button;
     
     // docking position in split pane parent (if any)
     protected int split_rank;
@@ -36,6 +37,7 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         frame = null;
         split_rank = SPLIT_NOT_SPLIT_MEMBER;
         parent = null;
+        button = null;
     }
     
     public Container getPane()
@@ -55,7 +57,21 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     
     public GIFrameWrapper getFrame()
     {
-        return frame;
+        if( frame != null )
+        {
+            return frame;
+        }
+        else
+        {
+            if( parent != null )
+            {
+                return parent.getFrame();
+            }
+            else
+            {
+                return frame;  // null
+            }
+        }
     }
     
     public int getSplitRank()
@@ -85,6 +101,16 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     public GIPaneWrapper getParent()
     {
         return parent;
+    }
+    
+    public GIPaneBarButton getAssociatedButton()
+    {
+        return button;
+    }
+    
+    public void setAssociatedButton( GIPaneBarButton button )
+    {
+        this.button = button;
     }
     
     public void setParent( GIPaneWrapper parent )
