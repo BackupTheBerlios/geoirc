@@ -122,7 +122,8 @@ public interface GeoIRCConstants
         "listpanes",
         "activatepane",
         "activatetextpane",
-        "activatepanebyindex"
+        "activatepanebyindex",
+        "newexternalwindow"
     };
     
     public static final String[] IRC_CMDS =
@@ -196,6 +197,7 @@ public interface GeoIRCConstants
     public static final int CMD_MAXIMIZE_WINDOW = 80;
     public static final int CMD_MINIMIZE_WINDOW = 81;
     public static final int CMD_MSG = 20;
+    public static final int CMD_NEW_EXTERNAL_WINDOW = 92;
     public static final int CMD_NEW_INFO_WINDOW = 29;
     public static final int CMD_NEW_SERVER = 5;
     public static final int CMD_NEW_TEXT_WINDOW = 30;

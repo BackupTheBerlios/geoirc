@@ -28,6 +28,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.io.FileNotFoundException;
 import java.util.Hashtable;
@@ -58,7 +60,8 @@ public class DisplayManager
         InternalFrameListener,
         geoirc.GeoIRCConstants,
         ComponentListener,
-        KeyListener
+        KeyListener,
+        WindowListener
 {
     protected SettingsManager settings_manager;
     protected VariableManager variable_manager;
@@ -1309,6 +1312,28 @@ public class DisplayManager
             );
         }
     }
+    
+    public void windowActivated(WindowEvent e) {
+    }
+    
+    public void windowClosed(WindowEvent e) {
+    }
+    
+    public void windowClosing(WindowEvent e) {
+    }
+    
+    public void windowDeactivated(WindowEvent e) {
+    }
+    
+    public void windowDeiconified(WindowEvent e) {
+    }
+    
+    public void windowIconified(WindowEvent e) {
+    }
+    
+    public void windowOpened(WindowEvent e) {
+    }
+    
     
     /* ************************************************************ */
     

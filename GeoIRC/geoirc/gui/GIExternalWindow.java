@@ -1,48 +1,42 @@
 /*
- * GIWindow.java
+ * GIExternalWindow.java
  *
- * Created on July 12, 2003, 1:16 AM
+ * Created on October 28, 2003, 4:17 PM
  */
 
 package geoirc.gui;
 
 import geoirc.SettingsManager;
 
-import java.awt.Color;
 import java.awt.Container;
-import javax.swing.*;
-import javax.swing.text.*;
-import org.jscroll.*;
-import org.jscroll.widgets.*;
+import javax.swing.JFrame;
 
 /**
  *
  * @author  Pistos
  */
-public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConstants
+public class GIExternalWindow extends JFrame
 {
+    
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected Container pane;
     protected GIPaneWrapper pane_wrapper;
     
     // No default constructor
-    private GIWindow() { }
+    private GIExternalWindow() { }
 
-    public GIWindow(
+    public GIExternalWindow(
         DisplayManager display_manager,
         SettingsManager settings_manager,
         String title
     )
     {
         super();
-        setIconifiable( true );
-        setClosable( true );
-        setMaximizable( true );
         setResizable( true );
         setTitle( title );
         
-        addInternalFrameListener( display_manager );
+        addWindowListener( display_manager );
         addComponentListener( display_manager );
         
         this.display_manager = display_manager;
@@ -50,17 +44,6 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
 
         pane = null;
         pane_wrapper = null;
-        
-        //selectFrameAndAssociatedButtons();
-        try
-        {
-            setSelected( true );
-            setIcon( false ); // select and de-iconify the frame
-        } catch (java.beans.PropertyVetoException pve)
-        {
-            display_manager.printlnDebug( pve.getMessage() );
-        }
-        setVisible( true );
     }
     
     public void addPane( Container pane )
@@ -91,4 +74,5 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     {
         this.pane_wrapper = pane_wrapper;
     }
+    
 }

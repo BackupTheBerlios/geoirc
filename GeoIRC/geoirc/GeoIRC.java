@@ -2389,6 +2389,9 @@ public class GeoIRC
                     display_manager.minimizeWindow( -1 );
                 }
                 break;
+            case CMD_NEW_EXTERNAL_WINDOW:
+                
+                break;
             case CMD_NEW_INFO_WINDOW:
                 {
                     String path = arg_string;
