@@ -129,7 +129,10 @@ public interface GeoIRCConstants
         "findagain",
         "findcasesensitive",
         "closepane",
-        "ctcp"
+        "ctcp",
+        "printconsole",
+        "printconsoleat",
+        "newconsolewindow"
     };
     
     public static final String[] IRC_CMDS =
@@ -207,6 +210,7 @@ public interface GeoIRCConstants
     public static final int CMD_MAXIMIZE_WINDOW = 80;
     public static final int CMD_MINIMIZE_WINDOW = 81;
     public static final int CMD_MSG = 20;
+    public static final int CMD_NEW_CONSOLE_WINDOW = 101;
     public static final int CMD_NEW_EXTERNAL_WINDOW = 92;
     public static final int CMD_NEW_INFO_WINDOW = 29;
     public static final int CMD_NEW_SERVER = 5;
@@ -229,6 +233,8 @@ public interface GeoIRCConstants
     public static final int CMD_PREVIOUS_WINDOW = 93;
     public static final int CMD_PRINT = 47;
     public static final int CMD_PRINT_ACTIVE = 75;
+    public static final int CMD_PRINT_CONSOLE = 99;
+    public static final int CMD_PRINT_CONSOLE_AT = 100;
     public static final int CMD_PRINT_DEBUG = 25;
     public static final int CMD_PRIVMSG = 19;
     public static final int CMD_QUIT = 78;
@@ -421,6 +427,7 @@ public interface GeoIRCConstants
     static final int INFO_PANE = 4;
     static final int SPLIT_PANE = 5;
     static final int EXTERNAL_CONTENT_PANE = 6;
+    static final int CONSOLE_PANE = 7;
     
     static final boolean INCLUDE_SPLIT_PANES = true;
     static final boolean EXCLUDE_SPLIT_PANES = false;

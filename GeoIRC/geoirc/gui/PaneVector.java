@@ -31,6 +31,7 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
         {
             case TEXT_PANE:
             case INFO_PANE:
+            case CONSOLE_PANE:
             {
                 GIPaneBarButton gipbb = new GIPaneBarButton( gipw );
                 pane_bar.add( gipbb );
@@ -48,6 +49,7 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
                 display_manager.resetLastTextPaneSearched();
                 // Drop through...
             case INFO_PANE:
+            case CONSOLE_PANE:
             {
                 GIPaneBarButton gipbb = gipw.getAssociatedButton();
                 pane_bar.remove( gipbb );

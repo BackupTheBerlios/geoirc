@@ -53,25 +53,6 @@ public class GIConsolePane
         String title
     )
     {
-        this(
-            mouse_listener,
-            display_manager,
-            settings_manager,
-            i18n_manager,
-            title,
-            (String) null
-        );
-    }
-
-    public GIConsolePane(
-        MouseListener mouse_listener,
-        DisplayManager display_manager,
-        SettingsManager settings_manager,
-        I18nManager i18n_manager,
-        String title,
-        String filter
-    )
-    {
         super( display_manager, settings_manager, title, null );
         
         this.i18n_manager = i18n_manager;
@@ -86,13 +67,13 @@ public class GIConsolePane
         text_pane.addKeyListener( display_manager );
         text_pane.addMouseListener( mouse_listener );
         text_pane.addMouseListener( this );
-        setViewportView( text_pane );
          */
         console_pane = new Java2DTextWindow(
             DEFAULT_NUM_CONSOLE_COLUMNS,
             DEFAULT_NUM_CONSOLE_ROWS,
             DEFAULT_CONSOLE_BUFFER_SIZE
         );
+        setViewportView( console_pane );
         
         setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS

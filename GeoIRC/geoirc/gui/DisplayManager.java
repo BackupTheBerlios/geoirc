@@ -222,6 +222,40 @@ public class DisplayManager
             recordDesktopState();
         }
     }
+    
+    protected GIPaneWrapper addConsolePane( String title )
+    {
+        GIConsolePane gicp = new GIConsolePane(
+            geo_irc, this, settings_manager, i18n_manager, title
+        );
+        GIPaneWrapper gipw = new GIPaneWrapper( settings_manager, this, gicp, title, CONSOLE_PANE );
+        gicp.setPaneWrapper( gipw );
+        panes.add( gipw );
+        last_activated_pane = gipw;
+        paneActivated( gipw );
+        return gipw;
+    }
+
+    public GIFrameWrapper addConsoleWindow( String title )
+    {
+        String actual_title = title;
+        if( actual_title == null )
+        {
+            actual_title = "";
+        }
+        GIPaneWrapper gipw = addConsolePane( actual_title );
+        GIFrameWrapper gifw = null;
+        GIWindow text_window = new GIWindow(
+            this, settings_manager, actual_title, panes, frames
+        );
+        text_window.addPane( gipw.getPane() );
+        gipw.setParent( text_window.getPaneWrapper() );
+        addNewWindow( text_window );
+        gifw = new GIFrameWrapper( text_window );
+        text_window.setFrameWrapper( gifw );
+        
+        return gifw;
+    }
 
     protected GIFrameWrapper addTextWindow( String title )
     {
@@ -1295,6 +1329,30 @@ public class DisplayManager
         return windows_printed_to;
     }
     
+    public void consolePrint( int user_index, String text )
+    {
+        int index = userIndexToTrueIndex( user_index );
+        GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( index );
+        
+        if( gipw.getType() == CONSOLE_PANE )
+        {
+            GIConsolePane gicp = (GIConsolePane) gipw.getPane();
+            gicp.print( text );
+        }
+    }
+    
+    public void consolePrintAt( int user_index, String text, int x, int y )
+    {
+        int index = userIndexToTrueIndex( user_index );
+        GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( index );
+        
+        if( gipw.getType() == CONSOLE_PANE )
+        {
+            GIConsolePane gicp = (GIConsolePane) gipw.getPane();
+            gicp.printAt( text, x, y );
+        }
+    }
+    
     /**********************************************************************
      *
      * getSelected Functions
@@ -1850,6 +1908,12 @@ public class DisplayManager
                         gipw.setSplitRank( split_rank );
                     }
                     break;
+                case CONSOLE_PANE:
+                {
+                    GIPaneWrapper gipw = addConsolePane( title );
+                    gipw.setSplitRank( split_rank );
+                    break;
+                }
                 case DESKTOP_PANE:
                 {
                     desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
@@ -1938,6 +2002,7 @@ public class DisplayManager
         {
             case TEXT_PANE:
             case INFO_PANE:
+            case CONSOLE_PANE:
                 retval = true;
                 break;
             case SPLIT_PANE:

@@ -2560,6 +2560,18 @@ public class GeoIRC
                     display_manager.minimizeWindow( -1 );
                 }
                 break;
+            case CMD_NEW_CONSOLE_WINDOW:
+                if( args != null )
+                {
+                    display_manager.addConsoleWindow( arg_string );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_NEW_WINDOW ] + " <title>"
+                    );
+                }
+                break;
             case CMD_NEW_EXTERNAL_WINDOW:
                 if( args != null )
                 {
@@ -2885,6 +2897,56 @@ public class GeoIRC
                     display_manager.printlnToActiveTextPane( arg_string );
                 }
                 break;
+            case CMD_PRINT_CONSOLE:
+            {
+                boolean problem = true;
+                
+                if( ( args != null ) && ( args.length > 1 ) )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.consolePrint( index, Util.stringArrayToString( args, 1 ) );
+                        problem = false;
+                    }
+                    catch( NumberFormatException e ) { }
+                }
+                
+                if( problem )
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_PRINT_CONSOLE ]
+                        + " <console pane index> <text to print>"
+                    );
+                }
+                break;
+            }
+            case CMD_PRINT_CONSOLE_AT:
+            {
+                boolean problem = true;
+                
+                if( ( args != null ) && ( args.length > 3 ) )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        int x = Integer.parseInt( args[ 1 ] );
+                        int y = Integer.parseInt( args[ 2 ] );
+                        display_manager.consolePrintAt( index, Util.stringArrayToString( args, 3 ), x, y );
+                        problem = false;
+                    }
+                    catch( NumberFormatException e ) { }
+                }
+                
+                if( problem )
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_PRINT_CONSOLE ]
+                        + " <console pane index> <x coordinate> <y coordinate> <text to print>"
+                    );
+                }
+                break;
+            }
             case CMD_PRINT_DEBUG:
                 if( arg_string != null )
                 {
