@@ -5,7 +5,6 @@
  */
 package geoirc.conf;
 
-import geoirc.util.JBoolRegExTextField;
 import geoirc.util.JRegExTextField;
 import geoirc.util.JValidatingTextField;
 import geoirc.util.JValidatingTextPane;
@@ -19,25 +18,26 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
 /**
  * @author netseeker aka Michael Manske
@@ -46,12 +46,8 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
 {
     private static final String title = "Regular Expression Tester";
     private JRegExTextField regexp_field = new JRegExTextField(null);
-    private JBoolRegExTextField boolexp_field = new JBoolRegExTextField(null);
     private JValidatingTextPane input_field = new JValidatingTextPane(null);
-    private JTextArea output_field = new JTextArea();
-    private JCheckBox filter_box;
-
-    private boolean bool_only = false;
+    private JEditorPane output_field = new JEditorPane();
 
     private GridBagLayout layout = new GridBagLayout();
 
@@ -92,56 +88,45 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
         this.setResizable(false);
         Container content_pane = getContentPane();
 
-        regexp_field.setPreferredSize(new Dimension(200, JValidatingTextField.PREFERED_HEIGHT));
+        regexp_field.setPreferredSize(new Dimension(300, JValidatingTextField.PREFERED_HEIGHT));
         regexp_field.getDocument().addDocumentListener(this);
 
-        boolexp_field.setPreferredSize(new Dimension(200, JValidatingTextField.PREFERED_HEIGHT));
-        boolexp_field.getDocument().addDocumentListener(this);
+        content_pane.add(new JLabel("Regular Expression"), new  GridBagConstraints(0, 0, 2, 1, 1, 0,  GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5,0,0,0), 0, 0));
+        content_pane.add(regexp_field, LayoutUtil.getGBC(0, 1, 2, 1));
 
-        filter_box = new JCheckBox("Use Boolean Expression Tester", this.bool_only);
+        content_pane.add(new JLabel("Value to validate"), new  GridBagConstraints(0, 2, 2, 1, 1, 0,  GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));        
+        input_field.setPreferredSize(new Dimension(300, 75));
+        input_field.setFont(regexp_field.getFont());
+        input_field.getDocument().addDocumentListener(new InputHandler(regexp_field, output_field));
+        JScrollPane input_scroller = new JScrollPane(input_field);
+        content_pane.add(
+            input_scroller,
+            LayoutUtil.getGBC(0, 3, 2, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
 
-        filter_box.addActionListener(new ActionListener()
+        output_field.setEditable(false);
+        output_field.setPreferredSize(input_field.getPreferredSize());
+        output_field.setFont(input_field.getFont());
+        output_field.setForeground(Color.GRAY);
+        output_field.setBackground( new Color ( 246, 248, 250 ));
+        JScrollPane output_scroller = new JScrollPane(output_field);
+        content_pane.add(
+            output_scroller,
+            LayoutUtil.getGBC(0, 4, 2, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+        
+        JButton close_button = new JButton("Close");
+        close_button.addActionListener( new ActionListener()
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                setBoolFilter(filter_box.isSelected());
+                regexp_field.setText("");
+                input_field.setText("");
+                output_field.setText("");
+                setVisible( false );                
             }
         });
-
-        content_pane.add(filter_box, LayoutUtil.getGBC(0, 0, 2, 1));
-        content_pane.add(new JLabel("Regular Expression"), LayoutUtil.getGBC(0, 1, 1, 1));
-        content_pane.add(regexp_field, LayoutUtil.getGBC(1, 1, 2, 1));
-        content_pane.add(boolexp_field, LayoutUtil.getGBC(1, 1, 2, 1));
-
-        content_pane.add(new JLabel("Value to validate"), LayoutUtil.getGBC(0, 2, 3, 1, GridBagConstraints.CENTER));
-
-        input_field.setPreferredSize(new Dimension(300, 50));
-        input_field.setFont(regexp_field.getFont());
-        input_field.setUseErrorBorder(true);
-        input_field.getDocument().addDocumentListener( new InputHandler( regexp_field, output_field ) );
-        
-        content_pane.add(
-            new JScrollPane(input_field),
-            LayoutUtil.getGBC(0, 3, 3, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
-
-        showInputFields();
-
-        output_field.setEditable(false);
-        output_field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        //output_field.setBackground( Color.LIGHT_GRAY );
-        output_field.setPreferredSize(input_field.getPreferredSize());
-        output_field.setLineWrap( true );
-        content_pane.add(
-            new JScrollPane(output_field),
-            LayoutUtil.getGBC(0, 4, 3, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
+        content_pane.add(close_button, new  GridBagConstraints(1, 5, 1, 1, 1, 0,  GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));
 
         this.pack();
-    }
-
-    private void showInputFields()
-    {
-        regexp_field.setVisible(!bool_only);
-        boolexp_field.setVisible(bool_only);
     }
 
     /* (non-Javadoc)
@@ -165,46 +150,11 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
     }
 
     /**
-     * @param boolonly
-     */
-    public void setBoolFilter(boolean boolonly)
-    {
-        if (this.bool_only != boolonly)
-        {
-            if (boolonly)
-            {
-                this.boolexp_field.setText(this.regexp_field.getText());
-            }
-            else
-            {
-                this.regexp_field.setText(this.boolexp_field.getText());
-            }
-
-            this.bool_only = boolonly;
-        }
-    }
-
-    /**
-     * @return
-     */
-    public boolean isBoolFilterSet()
-    {
-        return this.bool_only;
-    }
-
-    /**
      * @param regexp
      */
     public void setRegExp(String regexp)
     {
-        if (this.bool_only)
-        {
-            this.boolexp_field.setText(regexp);
-        }
-        else
-        {
-            this.regexp_field.setText(regexp);
-        }
+        this.regexp_field.setText(regexp);
     }
 
     /**
@@ -217,20 +167,9 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
 
     private void showValidationState()
     {
-        JTextField source = null;
-
-        if (this.bool_only)
+        if (this.regexp_field.isValid())
         {
-            source = this.boolexp_field;
-        }
-        else
-        {
-            source = this.regexp_field;
-        }
-
-        if (source.isValid())
-        {
-            input_field.setPattern(source.getText());
+            input_field.setPattern(this.regexp_field.getText());
         }
     }
 
@@ -261,9 +200,9 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
     class InputHandler implements DocumentListener
     {
         JValidatingTextField input;
-        JTextArea output;
+        JTextComponent output;
 
-        public InputHandler(JValidatingTextField input, JTextArea output)
+        public InputHandler(JValidatingTextField input, JTextComponent output)
         {
             this.input = input;
             this.output = output;
@@ -271,27 +210,44 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
 
         private void showMatchSequenzes(String text)
         {
-            if( input.isValid() )
+            StringBuffer sb = new StringBuffer();
+
+            if (input.isValid())
             {
                 output.setText("");
-                
+
                 Pattern pattern = Pattern.compile(input.getText());
-                String[] matches = pattern.split(text);                
-    
-                for (int i = 0; i < matches.length; i++)
+                Matcher matcher = pattern.matcher(text);
+                int start = 0;
+                int end = 0;
+
+                while (matcher.find(end) == true)
                 {
-                    String str = matches[i];
-    
-                    if (str.length() > 0)
+                    start = matcher.start();
+                    end = matcher.end();
+
+                    if (start == 0 && end + 1 == text.length())
                     {
-                        output.append(str + "\t=> no match\n\r");
+                        sb.append("the complete string does match");
+                        break;
                     }
+                    else
+                    {
+                        sb.append("match found from position " + start + " to position " + end + "\n");
+                    }
+                }
+
+                if (text.length() > 0 && end == 0)
+                {
+                    sb.append("no match found");
                 }
             }
             else
             {
-                output.setText( "The entered regular expression is not valid." );
+                sb.append("The entered regular expression is not valid.");
             }
+
+            output.setText(sb.toString());
         }
 
         /* (non-Javadoc)
@@ -304,7 +260,7 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
             {
                 try
                 {
-                    showMatchSequenzes(doc.getText(0, doc.getLength() - 1));
+                    showMatchSequenzes(doc.getText(0, doc.getLength()));
                 }
                 catch (BadLocationException e)
                 {
@@ -323,7 +279,7 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
             {
                 try
                 {
-                    showMatchSequenzes(doc.getText(0, doc.getLength() - 1));
+                    showMatchSequenzes(doc.getText(0, doc.getLength()));
                 }
                 catch (BadLocationException e)
                 {
@@ -342,7 +298,7 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
             {
                 try
                 {
-                    showMatchSequenzes(doc.getText(0, doc.getLength() - 1));
+                    showMatchSequenzes(doc.getText(0, doc.getLength()));
                 }
                 catch (BadLocationException e)
                 {
