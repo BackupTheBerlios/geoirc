@@ -13,3 +13,6 @@ Pistos 2003-11-06
 
 activatepane now cycles through all matching panes.
 Pistos 2003-11-07
+
+Added closepane command.
+Pistos 2003-11-07

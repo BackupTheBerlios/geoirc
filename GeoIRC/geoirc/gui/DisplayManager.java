@@ -797,42 +797,71 @@ public class DisplayManager
         return retval;
     }
     
-    /**
-     * Closes all windows whose filter matches the given filter.
-     */
-    public void closeWindows( String filter )
+    public void closePaneByUserIndex( int user_index )
     {
-        /*
-        if( windows != null )
+        try
         {
-            Vector wins = (Vector) windows.clone();
-            GIWindow giw;
-            for( int i = 0, n = wins.size(); i < n; i++ )
+            closePane( userIndexToTrueIndex( user_index ) );
+        } catch( PropertyVetoException e ) { }
+    }
+    
+    protected void closePane( int index ) throws PropertyVetoException
+    {
+        GIPaneWrapper gipw = getPaneByIndex( index );
+        
+        if( gipw == null )
+        {
+            gipw = last_activated_pane;
+        }
+        
+        if( gipw != null )
+        {
+            if( gipw.getParent().getType() == SPLIT_PANE )
             {
-                giw = (GIWindow) wins.elementAt( i );
-                if( giw.getPaneType() == TEXT_PANE )
+                // The pane we're docking is already docked somewhere;
+                // undock it before docking it into the new parent pane.
+                undock( index );
+            }
+
+            gipw.getFrame().close();
+        }
+    }
+    
+    /**
+     * Closes all text panes whose filter matches the given filter.
+     */
+    public void closePanes( String filter )
+    {
+        if( panes != null )
+        {
+            Vector panes_ = (Vector) panes.clone();
+            GIPaneWrapper gipw;
+            for( int i = 0, n = panes_.size(); i < n; i++ )
+            {
+                gipw = (GIPaneWrapper) panes_.elementAt( i );
+                if( gipw.getType() == TEXT_PANE )
                 {
-                    GITextPane gip = (GITextPane) giw.getPane();
-                    if( gip.getFilter().equals( filter ) )
+                    GITextPane gitp = (GITextPane) gipw.getPane();
+                    if( gitp.getFilter().equals( filter ) )
                     {
                         try
                         {
-                            giw.setClosed( true );
+                            closePane( i );
                         }
-                        catch( java.beans.PropertyVetoException e )
+                        catch( PropertyVetoException e )
                         {
                             Util.printException(
                                 this, e,
-                                i18n_manager.getString( "window closure failure 1", new Object [] { giw.getTitle() } )
+                                i18n_manager.getString(
+                                    "window closure failure 1",
+                                    new Object [] { gipw.getTitle() }
+                                )
                             );
                         }
                     }
                 }
             }
         }
-         */
-        
-        // TODO: closePanes( String filter )
     }
     
     public void closeWindow( int index )

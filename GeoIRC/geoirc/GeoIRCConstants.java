@@ -127,7 +127,8 @@ public interface GeoIRCConstants
         "previouswindow",
         "find",
         "findagain",
-        "findcasesensitive"
+        "findcasesensitive",
+        "closepane"
     };
     
     public static final String[] IRC_CMDS =
@@ -162,6 +163,7 @@ public interface GeoIRCConstants
     public static final int CMD_CLEAR_INPUT_FIELD = 76;
     public static final int CMD_CLEAR_INPUT_HISTORY = 86;
     public static final int CMD_CLEAR_PANE = 77;
+    public static final int CMD_CLOSE_PANE = 97;
     public static final int CMD_CLOSE_WINDOW = 79;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;

@@ -1543,6 +1543,28 @@ public class GeoIRC
                     display_manager.clearTextPane( -1 );
                 }
                 break;
+            case CMD_CLOSE_PANE:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.closePaneByUserIndex( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_PANES ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_CLOSE_PANE ]
+                            + " [pane id number]" );
+                    }
+                }
+                else
+                {
+                    display_manager.closePaneByUserIndex( -1 );
+                }
+                break;
             case CMD_CLOSE_WINDOW:
                 if( arg_string != null )
                 {
@@ -1946,7 +1968,7 @@ public class GeoIRC
                         removeRemoteMachine( rm );
                         if( rm instanceof Server )
                         {
-                            display_manager.closeWindows( rm.toString() + " and %raw and not %printed" );
+                            display_manager.closePanes( rm.toString() + " and %raw and not %printed" );
                         }
                     }
                 }
