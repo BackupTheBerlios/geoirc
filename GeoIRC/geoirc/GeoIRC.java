@@ -494,6 +494,14 @@ public class GeoIRC
         return retval;
     }
     
+    public RemoteMachine getRemoteMachineByName( String name )
+    {
+        for( int i = 0, n = remote_machines.size(); i < n; i++ )
+        {
+            
+        }
+    }
+    
     public static String getATimeStamp( String pattern )
     {
         // http://java.sun.com/docs/books/tutorial/i18n/format/datepattern.html
@@ -1007,11 +1015,22 @@ public class GeoIRC
             case CMD_LIST_SERVERS:
                 {
                     int n = remote_machines.size();
+                    RemoteMachine rm;
+                    String current_marker;
                     for( int i = 0; i < n; i++ )
                     {
+                        rm = (RemoteMachine) remote_machines.elementAt( i );
+                        if( rm == current_remote_machine )
+                        {
+                            current_marker = " (current remote machine)";
+                        }
+                        else
+                        {
+                            current_marker = "";
+                        }
                         display_manager.printlnDebug(
                             Integer.toString( i ) + ": "
-                            + ((RemoteMachine) remote_machines.elementAt( i )).toString()
+                            + rm.toString() + current_marker
                         );
                     }
                 }

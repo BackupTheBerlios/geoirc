@@ -11,3 +11,6 @@ Pistos 2003-07-22
 
 Increased the maximum window button width.
 Pistos 2003-07-22
+
+Added welcome message (001) to handler.
+Pistos 2003-07-22

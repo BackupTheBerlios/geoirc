@@ -124,7 +124,8 @@ public interface GeoIRCConstants
         "312",
         "317",
         "318",
-        "319"
+        "319",
+        "001"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -142,6 +143,7 @@ public interface GeoIRCConstants
     static final int IRCMSG_RPL_WHOISIDLE = 13;
     static final int IRCMSG_RPL_ENDOFWHOIS = 14;
     static final int IRCMSG_RPL_WHOISCHANNELS = 15;
+    static final int IRCMSG_WELCOME = 16;
     
     static final String [] CTCP_CMDS =
     {

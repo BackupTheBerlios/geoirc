@@ -466,7 +466,11 @@ public class Server
                 {
                     String old_nick = getNick( tokens[ 0 ] );
                     String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
-                    getUserByNick( old_nick ).setNick( new_nick );
+                    User user = getUserByNick( old_nick );
+                    if( user != null )
+                    {
+                        user.setNick( new_nick );
+                    }
 
                     Channel c;
                     if( old_nick.equals( current_nick ) )
@@ -581,9 +585,12 @@ public class Server
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
-                    String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
-                    
-                    extractLastURL( message );
+                    String message = Util.stringArrayToString( tokens, 3 );
+                    if( message != null )
+                    {
+                        message = message.substring( 1 );  // remove leading colon
+                        extractLastURL( message );
+                    }
                     
                     String text = nick + " left " + channel + " (" + message + ").";
                     qualities += " " + channel
@@ -843,7 +850,16 @@ public class Server
                     );
                     sound_manager.check( text, qualities );
                 }
-
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_WELCOME ] ) )
+                {
+                    /* Perhaps our suggested nick is longer than the maximum
+                     * nick length allowed by the server, and was truncated.
+                     * We shall use the welcome message to help us identify
+                     * the nick that the server knows us by.
+                     */
+                    current_nick = tokens[ 2 ];
+                    String message = Util.stringArrayToString( tokens, 3 );
+                }
             }
 
             display_manager.println( line, Server.this.toString() );

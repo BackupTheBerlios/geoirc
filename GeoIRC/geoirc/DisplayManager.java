@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.regex.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.TreeModel;
@@ -306,6 +307,38 @@ public class DisplayManager
                         {
                             retval = filter.substring( pound_index );
                         }
+                    }
+                }
+            }
+        }
+        
+        return retval;
+    }
+
+    public RemoteMachine getSelectedRemoteMachine()
+    {
+        GIPane pane;
+        RemoteMachine retval = null;
+        GIWindow giw = (GIWindow) last_activated_frame;
+        if( giw == null )
+        {
+            giw = getSelectedFrame();
+        }
+
+        if( giw != null )
+        {
+            pane = giw.getPane();
+            if( pane instanceof GITextPane )
+            {
+                String filter = ((GITextPane) pane).getFilter();
+                if( filter != null )
+                {
+                    // Search for a server name in this filter.
+                    Matcher m = Pattern.compile( "irc\\.\\S+" ).matcher( filter );
+                    if( m.find() )
+                    {
+                        String server_name = m.group();
+                        
                     }
                 }
             }
