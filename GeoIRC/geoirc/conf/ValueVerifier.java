@@ -38,7 +38,7 @@ public class ValueVerifier
 	 */
 	public static boolean checkType(Object value, String type)
 	{
-		return value.getClass().getName().equalsIgnoreCase(type) ? true : false;
+		return value.getClass().getName().equalsIgnoreCase(type);
 	}
 	
 	/**
