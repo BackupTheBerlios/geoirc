@@ -25,7 +25,9 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GITextPane extends GIPane implements geoirc.GeoIRCConstants
+public class GITextPane
+    extends GIPane
+    implements geoirc.GeoIRCConstants
 {
     protected JTextPane text_pane;
     protected String filter;
@@ -35,6 +37,8 @@ public class GITextPane extends GIPane implements geoirc.GeoIRCConstants
     protected Color background_colour;
     protected boolean paint_mirc_codes;
     protected I18nManager i18n_manager;
+    protected int last_found_index;
+    protected String last_search_text;
     
     public GITextPane(
         MouseListener mouse_listener,
@@ -450,5 +454,45 @@ public class GITextPane extends GIPane implements geoirc.GeoIRCConstants
     {
         text_pane.setDocument( text_pane.getEditorKit().createDefaultDocument() );
         display_manager.getStyleManager().initializeTextPane( text_pane );
+    }
+    
+    public boolean findText( String text_, boolean case_insensitive )
+    {
+        String text = case_insensitive ? text_.toLowerCase( i18n_manager.getLocale() ) : text_;
+        boolean found = false;
+        last_search_text = text;
+        try
+        {
+            Document document = text_pane.getDocument();
+            String document_text = document.getText( 0, document.getLength() );
+            if( case_insensitive )
+            {
+                document_text = document_text.toLowerCase( i18n_manager.getLocale() );
+            }
+            int index;
+            if( last_search_text.equals( text ) )
+            {
+                index = document_text.indexOf( text, last_found_index + 1 );
+            }
+            else
+            {
+                index = document_text.indexOf( text );
+            }
+            last_found_index = index;
+            java.awt.Rectangle r = text_pane.modelToView( index );
+            if( r != null )
+            {
+                java.awt.Point p = new java.awt.Point( 0, (int) r.getY() );
+                getViewport().setViewPosition( p );
+                /*
+                 // This doesn't seem to work.  :(
+                text_pane.setCaretPosition( index );
+                text_pane.moveCaretPosition( index + text.length() );
+                 */
+                found = true;
+            }
+        } catch( BadLocationException e ) { }
+        
+        return found;
     }
 }

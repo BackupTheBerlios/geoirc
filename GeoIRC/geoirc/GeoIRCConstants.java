@@ -124,7 +124,10 @@ public interface GeoIRCConstants
         "activatetextpane",
         "activatepanebyindex",
         "newexternalwindow",
-        "previouswindow"
+        "previouswindow",
+        "find",
+        "findagain",
+        "findcasesensitive"
     };
     
     public static final String[] IRC_CMDS =
@@ -175,6 +178,9 @@ public interface GeoIRCConstants
     public static final int CMD_EXEC_WITH_WINDOW = 56;
     public static final int CMD_EXIT = 31;
     public static final int CMD_EXTENDED_PASTE = 68;
+    public static final int CMD_FIND = 94;
+    public static final int CMD_FIND_AGAIN = 95;
+    public static final int CMD_FIND_CASE_SENSITIVE = 96;
     public static final int CMD_FLOAT_PANE = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
@@ -503,4 +509,10 @@ public interface GeoIRCConstants
     static final boolean DONT_CREATE_NODES = false;
     
     static final long MININUM_TIME_BETWEEN_SETTINGS_SAVES = 10;  // milliseconds
+    
+    static final int DEFAULT_MAX_TEXT_BUFFER_SIZE = 65536;  // characters
+    static final int MIN_TEXT_BUFFER_MAX = 80;  // characters
+    
+    static final boolean CASE_SENSITIVE = false;
+    static final boolean CASE_INSENSITIVE = true;
 }

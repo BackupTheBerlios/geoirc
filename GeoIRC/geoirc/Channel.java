@@ -45,7 +45,7 @@ public class Channel implements GeoIRCConstants
     )
     {
         this.server = server;
-        this.name = name.toLowerCase();
+        this.name = name.toLowerCase( i18n_manager.getLocale() );
         this.info_manager = info_manager;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
@@ -239,7 +239,7 @@ public class Channel implements GeoIRCConstants
         {
             u = (User) members.elementAt( i );
             nick = u.getNick();
-            if( nick.toLowerCase().startsWith( incomplete_nick.toLowerCase() ) )
+            if( nick.toLowerCase( i18n_manager.getLocale() ).startsWith( incomplete_nick.toLowerCase( i18n_manager.getLocale() ) ) )
             {
                 if( decorated )
                 {

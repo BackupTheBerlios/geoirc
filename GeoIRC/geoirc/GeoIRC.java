@@ -151,6 +151,10 @@ public class GeoIRC
     
     protected ResizableToolBar pane_bar;
     
+    protected String last_sought_text;
+    protected GITextPane last_text_pane_searched;
+    protected boolean last_search_case_sensitivity;
+    
     /* **************************************************************** */
     
     public GeoIRC()
@@ -263,6 +267,9 @@ public class GeoIRC
         dcc_offers = new Vector();
         audio_clips = new Hashtable();
         mouse_button_depressed = false;
+        last_text_pane_searched = null;
+        last_sought_text = null;
+        last_search_case_sensitivity = CASE_INSENSITIVE;
         
         // Open the curtains!
 
@@ -966,6 +973,35 @@ public class GeoIRC
         return proxy;
     }
     
+    public void resetLastTextPaneSearched()
+    {
+        last_text_pane_searched = null;
+    }
+    
+    public void doFind( String arg_string, boolean case_sensitivity )
+    {
+        last_sought_text = arg_string;
+        last_search_case_sensitivity = case_sensitivity;
+        GIPaneWrapper gipw = display_manager.getSelectedTextPane();
+        if( gipw != null )
+        {
+            GITextPane gitp = (GITextPane) gipw.getPane();
+            last_text_pane_searched = gitp;
+            if( ! gitp.findText( arg_string, case_sensitivity ) )
+            {
+                display_manager.printlnDebug(
+                    i18n_manager.getString( "text not found" )
+                );
+            }
+        }
+        else
+        {
+            display_manager.printlnDebug(
+                i18n_manager.getString( "go to text pane" )
+            );
+        }
+    }
+    
     /**
      * Passes a message through the scripting engines, and returns it as
      * modified by the scripting engines.
@@ -1627,7 +1663,7 @@ public class GeoIRC
                                         words = (String []) conversation_words.toArray( words );
                                         for( int i = 0; i < words.length; i++ )
                                         {
-                                            if( words[ i ].toLowerCase().startsWith( word.toLowerCase() ) )
+                                            if( words[ i ].toLowerCase( i18n_manager.getLocale() ).startsWith( word.toLowerCase( i18n_manager.getLocale() ) ) )
                                             {
                                                 replacement_text = words[ i ];
                                                 break;
@@ -2079,6 +2115,46 @@ public class GeoIRC
                 }
                 catch( UnsupportedFlavorException e ) { }
                 catch( IOException e ) { }
+                break;
+            case CMD_FIND:
+                if( arg_string != null )
+                {
+                    doFind( arg_string, CASE_INSENSITIVE );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_FIND ]
+                        + " <text to find>"
+                    );
+                }
+                break;
+            case CMD_FIND_AGAIN:
+                if( ( last_text_pane_searched != null ) && ( last_sought_text != null ) )
+                {
+                    if( ! last_text_pane_searched.findText(
+                            last_sought_text, last_search_case_sensitivity
+                        )
+                    )
+                    {
+                        display_manager.printlnDebug(
+                            i18n_manager.getString( "text not found" )
+                        );
+                    }
+                }
+                break;
+            case CMD_FIND_CASE_SENSITIVE:
+                if( arg_string != null )
+                {
+                    doFind( arg_string, CASE_SENSITIVE );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_FIND_CASE_SENSITIVE ]
+                        + " <text to find>"
+                    );
+                }
                 break;
             case CMD_FOCUS_ON_INPUT_FIELD:
                 input_field.grabFocus();
@@ -3055,9 +3131,11 @@ public class GeoIRC
                 }
                 break;
             case CMD_TEST:
-                // For testing/debugging purposes.
-                display_manager.listPanes( false );
+            {
+                // For testing/debugging purposes; put any testing code here,
+                // and use "/test" to execute it.
                 break;
+            }
             case CMD_TOPIC:
                 {
                     String channel = display_manager.getSelectedChannel();

@@ -19,7 +19,7 @@
     </format>
     <info_windows sort_order="1" show_root_node="true" />
     <input_field font_face="Lucida Console" font_size="14" foreground_colour="000000" background_colour="ffffff" />
-    <text_windows font_face="Lucida Console" font_size="14" default_foreground_colour="cccccc" default_background_colour="000000" alternate_background_colour="000000">
+    <text_windows font_face="Lucida Console" font_size="14" default_foreground_colour="cccccc" default_background_colour="000000" alternate_background_colour="000000" max_buffer_size="300">
       <highlighting>
         <_0 filter="not from=%self" regexp=".*GeoIRC_User.*" format="bg0000ff" />
         <_1 filter="from=%self" regexp=".*" format="fgff9933" />
@@ -55,7 +55,7 @@
     <keymap keystroke="PAGE_UP" command="pageup" />
     <keymap keystroke="PAGE_DOWN" command="pagedown" />
     <keymap keystroke="F2" command="nick Pistos|afk" />
-    <keymap keystroke="F3" command="nick GeoIRC_User" />
+    <keymap keystroke="F3" command="findagain" />
     <keymap keystroke="F9" command="nick Pistos" />
     <keymap keystroke="F12" command="openlasturl" />
     <keymap keystroke="ctrl F4" command="closewindow" />

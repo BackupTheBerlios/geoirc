@@ -37,7 +37,6 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
                 break;
             }
         }
-        //display_manager.printlnDebug( "+1 pane" );
         return super.add( gipw );
     }
     
@@ -46,6 +45,8 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
         switch( gipw.getType() )
         {
             case TEXT_PANE:
+                display_manager.resetLastTextPaneSearched();
+                // Drop through...
             case INFO_PANE:
             {
                 GIPaneBarButton gipbb = gipw.getAssociatedButton();
@@ -53,7 +54,6 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
                 break;
             }
         }
-        //display_manager.printlnDebug( "-1 pane" );
         return super.remove( gipw );
     }
 }

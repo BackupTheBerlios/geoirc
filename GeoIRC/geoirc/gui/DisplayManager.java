@@ -1302,6 +1302,11 @@ public class DisplayManager
         }
     }
     
+    public void resetLastTextPaneSearched()
+    {
+        geo_irc.resetLastTextPaneSearched();
+    }
+    
     /* ************************************************************
      * Listener Implementations
      */
