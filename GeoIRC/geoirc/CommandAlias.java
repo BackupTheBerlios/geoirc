@@ -7,9 +7,6 @@
 package geoirc;
 
 import geoirc.util.Util;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.regex.*;
 
 /**
  * Argument indices are 1-based, not 0-based.
@@ -83,5 +80,67 @@ public class CommandAlias implements GeoIRCConstants
     public String getExpansion()
     {
         return expansion;
+    }
+    
+    /**
+     * Tries to identify the used command within expansion
+	 * @return the used command
+	 */
+	public String getCommand()
+    {
+    	for ( int i = 0; i < CMDS.length; i++ )
+    	{
+    		if( expansion.startsWith(CMDS[i]) == true)
+    		{
+    			return CMDS[i];
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+	/**
+	 * Tries to identify the used parameter list within expansion
+	 * @return the used parameter list as string
+	 */
+    public String getParamString()
+    {
+		for ( int i = 0; i < CMDS.length; i++ )
+		{
+			if( expansion.startsWith(CMDS[i] + " ") == true)
+			{
+				return expansion.substring(CMDS[i].length());
+			}
+		}
+		
+		return expansion.substring(expansion.indexOf(" "));    
+    }
+    
+    /**
+     * Tries to identify the used IRC Command within expansion
+	 * @return the used irc command as string or null if no irc command is used
+	 */
+	public String getIRCCommand()    
+    {
+    	
+    	for ( int i = 0; i < IRCMSGS.length; i++ )
+    	{
+    		if( expansion.indexOf(" " +  IRCMSGS[i] + " ") != -1)
+    		{
+    			return IRCMSGS[i];
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    
+    /**
+     * Checks whether this command alias uses a irc command or not
+	 * @return true if a irc command is used otherwise false
+	 */
+	public boolean usesIRCCommand()
+    {
+    	return (getIRCCommand() != null);    		
     }
 }
