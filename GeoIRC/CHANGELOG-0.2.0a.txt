@@ -37,3 +37,6 @@ Pistos 2003-08-06
 
 Added the %privmsg quality.
 Pistos 2003-08-06
+
+Added support for the KICK message.
+Pistos 2003-08-06

@@ -540,6 +540,55 @@ public class Server
                         }
                     }
                 }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_KICK ] ) )
+                {
+                    // :kez!kez@modem-302.bear.dialup.pol.co.uk KICK #GeoShell GeoBot :kez
+                    String kicker = getNick( tokens[ 0 ] );
+                    String channel = tokens[ 2 ];
+                    String nick = tokens[ 3 ];
+                    String message = Util.stringArrayToString( tokens, 4 );
+                    if( message != null )
+                    {
+                        message = message.substring( 1 );  // remove leading colon
+                    }
+                    User user = getUserByNick( nick );
+                    if( user != null )
+                    {
+                        user.noteActivity();
+                    }
+                    
+                    String text = kicker + " has kicked " + nick + " from " + channel + " (" + message + ").";
+                    qualities += " " + channel
+                        + " from=" + kicker
+                        + " victim=" + nick
+                        + " " + FILTER_SPECIAL_CHAR + "kick";
+                    
+                    if( message != null )
+                    {
+                        extractVariables( message, qualities );
+                    }
+                    
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    trigger_manager.check( text, qualities );
+                    
+                    if( nick.equals( current_nick ) )
+                    {
+                        removeChannel( channel );
+                    }
+                    else
+                    {
+                        Channel chan_obj = getChannelByName( channel );
+                        if( chan_obj != null )
+                        {
+                            chan_obj.removeMember( nick );
+                        }
+                    }
+                }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NICK ] ) )
                 {
                     String old_nick = getNick( tokens[ 0 ] );
