@@ -55,7 +55,9 @@ public class SettingsManager
         displayMgr = newDisplayMgr;
         this.filepath = filepath;
         any_load_failure = false;
-        xml_out = new XMLOutputter( "  " );
+        xml_out = new XMLOutputter( "  ", true );
+        xml_out.setTextTrim( true );
+        xml_out.setTrimAllWhite( true );
         xml_in = new SAXBuilder();
     }
     
