@@ -9,6 +9,7 @@ import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.JValidatingTable;
+import geoirc.conf.SettingsPeer;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
 import geoirc.conf.beans.Log;
@@ -66,7 +67,7 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
         table = new JValidatingTable(ltm, validation_listener);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
-        ltm.setData(getLogs());
+        ltm.setData( SettingsPeer.loadLogs(settings_manager, rules) );
 
         JBoolRegExTextField valueField = new JBoolRegExTextField(null);
         table.setValidatingCellEditor(valueField, 0);
@@ -122,30 +123,6 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
                 delButton.setEnabled(!lsm.isSelectionEmpty());
             }
         });                        
-    }
-
-    private List getLogs()
-    {
-        String path = "/logs/";
-        int i = 0;
-        String node = path + String.valueOf(i) + "/";
-        List data = new ArrayList();
-
-        while (settings_manager.nodeExists(node) == true)
-        {
-            String filter = settings_manager.getString(node + "filter", "");
-            String regexp = settings_manager.getString(node + "regexp", "");
-            String file = settings_manager.getString(node + "file", "");
-            if (filter.length() > 0 || file.length() > 0)
-            {
-                data.add(new Log(filter, regexp, file));
-            }
-
-            i++;
-            node = path + String.valueOf(i) + "/";
-        }
-
-        return data;
     }
 
     /* (non-Javadoc)

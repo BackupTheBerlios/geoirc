@@ -10,6 +10,7 @@ import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.JValidatingTable;
+import geoirc.conf.SettingsPeer;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
 import geoirc.conf.beans.Trigger;
@@ -60,7 +61,7 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
-        ltm.setData(getTriggers());
+        ltm.setData( SettingsPeer.loadTriggers( settings_manager, rules ) );
 
         final JBoolRegExTextField valueField = new JBoolRegExTextField( null );
         valueField.setToolTipText("boolean regular expression");
@@ -123,30 +124,6 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
             }
         });
 
-    }
-
-    private List getTriggers()
-    {
-        String path = "/triggers/";
-        int i = 0;
-        String node = path + String.valueOf(i) + "/";
-        List data = new ArrayList();
-
-        while (settings_manager.nodeExists(node) == true)
-        {
-            String filter = settings_manager.getString(node + "filter", "");
-            String regexp = settings_manager.getString(node + "regexp", "");
-            String command = settings_manager.getString(node + "command", "");
-            if (filter.length() > 0 || regexp.length() > 0)
-            {
-                data.add(new Trigger(filter, regexp, command));
-            }                
-
-            i++;
-            node = path + String.valueOf(i) + "/";
-        }
-
-        return data;
     }
 
     /* (non-Javadoc)

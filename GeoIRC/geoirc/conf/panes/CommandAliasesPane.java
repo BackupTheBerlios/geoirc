@@ -54,7 +54,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
 
     public void initialize()
     {
-        ltm.setData( SettingsPeer.loadCommandAliases( settings_manager ) );
+        ltm.setData( SettingsPeer.loadCommandAliases( settings_manager, rules ) );
         table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);        
