@@ -1,0 +1,15 @@
+Added SOURCE and USERINFO CTCP commands.
+Pistos 2003-07-11
+
+Added handling for NOTICE messages.
+Pistos 2003-07-11
+
+Added handling for RPL_TOPIC and RPL_TOPIC_SETTER messages.
+Pistos 2003-07-11
+
+Began adding code for the server-channel-user tree.  Created a superclass for
+GITextWindow and GIInfoWindow.
+Pistos 2003-07-12, -13
+
+Channels are not added internally until an actual JOIN message is received.
+Pistos 2003-07-13
