@@ -44,9 +44,8 @@ public class JValidatingTextField
 	public JValidatingTextField()
 	{
 		super();
-        setPattern(null);
 		this.setPreferredSize(new Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
-        init();
+        init();        
 	}
 	
 	/**
@@ -70,16 +69,24 @@ public class JValidatingTextField
 
     protected void init()
     {
+        setIgnoreRepaint(true);
+        setOpaque(true);
+
+        if(pattern == null || pattern.pattern() == null)
+        {
+            pattern = Pattern.compile(".+");
+        }
+                    
+        setVerifyInputWhenFocusTarget(true);
         this.addFocusListener(new FocusListener(){
             public void focusGained(FocusEvent arg0) {                
                 validateText();
             }
 
             public void focusLost(FocusEvent arg0) {
+                validateText();
             }});
-        setIgnoreRepaint(true);
-        setOpaque(true);
-        setVerifyInputWhenFocusTarget(true);
+                    
         validateText();                
     }
 
@@ -109,14 +116,14 @@ public class JValidatingTextField
 			regex = new String(".+");
 		pattern = Pattern.compile(regex);
 		validateText();
-	}
+	}       
 
 	protected void validateText()
 	{		
         String t = getText();
         int pos = (pattern.pattern().indexOf(".+") != -1) ? 1 : 0;
             
-		boolean valid = t.length() >= pos || pattern.matcher(t).matches();
+		boolean valid = t.length() >= pos && pattern.matcher(t).matches();
 		setTextValid(valid);
 	}
 
@@ -148,6 +155,7 @@ public class JValidatingTextField
 			textValid = valid;
 			firePropertyChange("textValid", !valid, valid);
 			setBorder(valid ? normalBorder : errorBorder);
+            invalidate();
 		}
 	}
 	/* (non-Javadoc)
@@ -172,5 +180,11 @@ public class JValidatingTextField
 	public void changedUpdate(DocumentEvent arg0)
 	{
 		validateText();		
-	}	
+	}
+    
+    public boolean isOpaque()
+    {
+        return true;
+    }
+
 }

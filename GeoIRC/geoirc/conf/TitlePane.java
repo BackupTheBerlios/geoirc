@@ -28,7 +28,7 @@ public class TitlePane extends JPanel
 	public TitlePane(String title)
 	{
 		super();
-		setPreferredSize(new Dimension(300, 20));
+        setPreferredSize(new Dimension(400, 20));
 		setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
 		//setBackground(Color.WHITE);
 		//setBorder(BorderFactory.createEtchedBorder());

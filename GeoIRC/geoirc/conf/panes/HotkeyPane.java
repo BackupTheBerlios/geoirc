@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 
@@ -81,7 +82,7 @@ public class HotkeyPane
      * 
      */
     private void initComponents() {
-        addComponent(new TitlePane("Hotkey Settings"), 0, 0, 5, 1, 0, 0);
+        addComponent(new TitlePane("Hotkey Settings"), 0, 0, 10, 1, 0, 0);
 
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -101,7 +102,7 @@ public class HotkeyPane
         table.getColumnModel().getColumn(0).setPreferredWidth(120);
         table.getColumnModel().getColumn(1).setPreferredWidth(380);
         JScrollPane scroller = new JScrollPane(table);
-        addComponent(scroller, 0, 1, 5, 1, 0, 0);
+        addComponent(scroller, 0, 1, 10, 1, 0, 0);
 
         addComponent(new JLabel("Hotkey: "), 0, 2, 1, 1, 0, 0);
         addComponent(hotkey_field, 1, 2, 1, 1, 0, 0);
@@ -186,8 +187,14 @@ public class HotkeyPane
             node.exportSubtree(os);
             StringReader in = new StringReader(os.toString());
             Document doc = new SAXBuilder().build(in);
-            XPath xpath = XPath.newInstance("//preferences/root/node");
-            Element root = (Element)xpath.selectSingleNode(doc);
+            
+            StringTokenizer tokenizer = new StringTokenizer("root,node", ",");
+            Element root = doc.getRootElement();
+            while( tokenizer.hasMoreTokens() )
+            {
+                root = root.getChild( tokenizer.nextToken() );
+            }
+                       
             for (Iterator it = root.getChildren("node").iterator();
                 it.hasNext();
                 ) {
@@ -234,7 +241,7 @@ public class HotkeyPane
         if (state != 0)
             addButton.setText("add");
         else
-            addButton.setText("set");
+            addButton.setText("set");            
 
         switch (state) {
             case -1 :
