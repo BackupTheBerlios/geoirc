@@ -50,7 +50,10 @@ public interface GeoIRCConstants
         "print",
         "focus_on_input_field",
         "listwindows",
-        "dockwindow"
+        "dockwindow",
+        "newinfowindow",
+        "newtextwindow",
+        "exit"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -58,6 +61,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_DOCK_WINDOW = 28;
+    public static final int CMD_EXIT = 31;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
@@ -66,8 +70,10 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_SERVERS = 13;
     public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_MSG = 20;
+    public static final int CMD_NEW_INFO_WINDOW = 29;
     public static final int CMD_NEW_SERVER = 5;
-    public static final int CMD_NEW_TEXT_WINDOW = 1;
+    public static final int CMD_NEW_TEXT_WINDOW = 30;
+    public static final int CMD_NEW_WINDOW = 1;
     public static final int CMD_NEXT_HISTORY_ENTRY = 9;
     public static final int CMD_NEXT_WINDOW = 7;
     public static final int CMD_NICK = 6;
@@ -191,6 +197,8 @@ public interface GeoIRCConstants
     static final int DOCK_BOTTOM = 2;
     static final int DOCK_LEFT = 3;
     static final String [] DOCK_STR = { "t", "r", "b", "l" };
+    static final double DEFAULT_DOCK_WEIGHT = 0.25;
+    static final int DEFAULT_DIVIDER_LOCATION = 100;  // pixels
     
     static final int NO_PANE = -1;
     static final int INFO_PANE = 0;

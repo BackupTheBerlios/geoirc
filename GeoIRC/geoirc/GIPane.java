@@ -33,6 +33,8 @@ public class GIPane extends JScrollPane
         
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
+        
+        addComponentListener( display_manager );
     }
     
 }

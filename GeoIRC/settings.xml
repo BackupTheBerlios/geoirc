@@ -94,10 +94,15 @@
               <map>
                 <entry key="pane" value="2" />
                 <entry key="location" value="0" />
+                <entry key="divider location" value="113" />
               </map>
             </node>
             <node name="1">
-              <map />
+              <map>
+                <entry key="pane" value="3" />
+                <entry key="location" value="1" />
+                <entry key="divider location" value="929" />
+              </map>
             </node>
           </node>
           <node name="panes">
@@ -121,7 +126,10 @@
               </map>
             </node>
             <node name="3">
-              <map />
+              <map>
+                <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="path" value="/" />
+              </map>
             </node>
           </node>
           <node name="windows">
@@ -130,11 +138,11 @@
               <map>
                 <entry key="title" value="#geoirc" />
                 <entry key="x" value="0" />
-                <entry key="y" value="0" />
-                <entry key="height" value="304" />
-                <entry key="width" value="1132" />
+                <entry key="y" value="315" />
+                <entry key="height" value="315" />
+                <entry key="width" value="910" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -142,16 +150,13 @@
               <map>
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
-                <entry key="y" value="304" />
-                <entry key="height" value="304" />
-                <entry key="width" value="1132" />
+                <entry key="y" value="0" />
+                <entry key="height" value="315" />
+                <entry key="width" value="910" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="1" />
               </map>
-            </node>
-            <node name="2">
-              <map />
             </node>
           </node>
         </node>

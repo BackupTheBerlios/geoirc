@@ -22,3 +22,6 @@ Pistos 2003-07-16
 
 Added some extra error checking and debug output in various places.
 Pistos 2003-07-17
+
+Added newtextwindow, newinfowindow and exit commands.
+Pistos 2003-07-18

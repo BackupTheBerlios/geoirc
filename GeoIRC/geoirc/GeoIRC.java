@@ -824,9 +824,13 @@ public class GeoIRC
                 else
                 {
                     display_manager.printlnDebug(
-                        "/dockwindow [t|r|b|l] [window id number]"
+                        "/dockwindow [window id number] [t|r|b|l]"
                     );
                 }
+                break;
+            case CMD_EXIT:
+                // Do we need a more graceful termination?  :)
+                System.exit( 0 );
                 break;
             case CMD_FOCUS_ON_INPUT_FIELD:
                 input_field.grabFocus();
@@ -908,6 +912,22 @@ public class GeoIRC
             case CMD_LIST_WINDOWS:
                 display_manager.listWindows();
                 break;
+            case CMD_NEW_INFO_WINDOW:
+                {
+                    String path = arg_string;
+                    if( path == null )
+                    {
+                        path = "/";
+                    }
+                    GIWindow window = display_manager.addInfoWindow( "Info", path );
+                    if( window != null )
+                    {
+                        info_manager.activateInfoPanes( path );
+                        
+                        result = CommandExecutor.EXEC_SUCCESS;
+                    }
+                }
+                break;
             case CMD_NEW_SERVER:
             case CMD_SERVER:
                 if( args != null )
@@ -941,6 +961,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_NEW_TEXT_WINDOW:
+            case CMD_NEW_WINDOW:
                 if( args != null )
                 {
                     GIWindow window = display_manager.addTextWindow( arg_string, arg_string );

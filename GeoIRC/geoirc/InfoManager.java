@@ -21,6 +21,7 @@ public class InfoManager
     protected DefaultTreeModel tree;
     protected DefaultMutableTreeNode root;
     protected Hashtable tree_inverse;
+    protected Hashtable tree_for_path;
     
     // No default constructor.
     private InfoManager() { }
@@ -32,14 +33,31 @@ public class InfoManager
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        root = new DefaultMutableTreeNode( "Servers" );
+        root = new DefaultMutableTreeNode( "Connections" );
         tree = new DefaultTreeModel( root );
         tree_inverse = new Hashtable();
+        tree_for_path = new Hashtable();
         
-        // Temporary line:
-        //display_manager.addNewInfoWindow( "Info", "/" );
+        tree_for_path.put( "/", tree );
+        activateInfoPanes( "/" );
+    }
+    
+    /**
+     * If a TreeModel exists for the given path, then all GIInfoPanes
+     * with that path are activated.  (This method is used when adding
+     * new InfoPanes.
+     */
+    public boolean activateInfoPanes( String path )
+    {
+        boolean success = false;
+        TreeModel tm = (TreeModel) tree_for_path.get( path );
+        if( tm != null )
+        {
+            display_manager.activateInfoPanes( path, tm );
+            success = true;
+        }
         
-        display_manager.activateInfoPanes( "/", tree );
+        return success;
     }
     
     public void addRemoteMachine( RemoteMachine rm )
@@ -48,10 +66,10 @@ public class InfoManager
         root.add( node );
         tree.reload( root );
         tree_inverse.put( rm, node );
-        display_manager.activateInfoPanes(
-            "/" + rm.toString(),
-            new DefaultTreeModel( node )
-        );
+        DefaultTreeModel model = new DefaultTreeModel( node );
+        String path = "/" + rm.toString();
+        tree_for_path.put( path, model );
+        display_manager.activateInfoPanes( path, model );
     }
     
     public void removeRemoteMachine( DefaultMutableTreeNode node )
@@ -66,9 +84,9 @@ public class InfoManager
         root.remove( (DefaultMutableTreeNode) tree_inverse.get( rm ) );
         tree.reload( root );
         tree_inverse.remove( rm );
-        display_manager.deactivateInfoPanes(
-            "/" + rm.toString()
-        );
+        String path = "/" + rm.toString();
+        tree_for_path.remove( path );
+        display_manager.deactivateInfoPanes( path );
     }
     
     public void addChannel( Channel c )
@@ -80,10 +98,10 @@ public class InfoManager
         node.add( channel_node );
         tree.reload( node );
         tree_inverse.put( c, channel_node );
-        display_manager.activateInfoPanes(
-            "/" + c.getServer().toString() + "/" + c.getName(),
-            new DefaultTreeModel( channel_node )
-        );
+        String path = "/" + c.getServer().toString() + "/" + c.getName();
+        DefaultTreeModel model = new DefaultTreeModel( channel_node );
+        tree_for_path.put( path, model );
+        display_manager.activateInfoPanes( path, model );
     }
     
     public void removeChannel( Channel c )
@@ -92,9 +110,9 @@ public class InfoManager
         ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
         tree.reload( node );
         tree_inverse.remove( c );
-        display_manager.deactivateInfoPanes(
-            "/" + c.getServer().toString() + "/" + c.getName()
-        );
+        String path = "/" + c.getServer().toString() + "/" + c.getName();
+        tree_for_path.remove( path );
+        display_manager.deactivateInfoPanes( path );
     }
     
     public void addMember( User u )
@@ -106,12 +124,12 @@ public class InfoManager
         node.add( user_node );
         tree.reload( node );
         tree_inverse.put( u, user_node );
-        display_manager.activateInfoPanes(
-            "/" + channel.getServer().toString()
-                + "/" + channel.getName()
-                + "/" + u.getNick(),
-            new DefaultTreeModel( user_node )
-        );
+        String path = "/" + channel.getServer().toString()
+            + "/" + channel.getName()
+            + "/" + u.getNick();
+        DefaultTreeModel model = new DefaultTreeModel( user_node );
+        tree_for_path.put( path, model );
+        display_manager.activateInfoPanes( path, model );
     }
     
     public void removeMember( User u )
@@ -121,11 +139,11 @@ public class InfoManager
         tree.reload( node );
         tree_inverse.remove( u );
         Channel c = u.getChannel();
-        display_manager.deactivateInfoPanes(
-            "/" + c.toString()
-                + "/" + c.getName()
-                + "/" + u.getNick()
-        );
+        String path = "/" + c.toString()
+            + "/" + c.getName()
+            + "/" + u.getNick();
+        tree_for_path.remove( path );
+        display_manager.deactivateInfoPanes( path );
     }
     
     public void acknowledgeNickChange( Channel c )

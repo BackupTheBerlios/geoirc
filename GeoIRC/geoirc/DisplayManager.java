@@ -360,6 +360,7 @@ public class DisplayManager
                             pane,
                             desktop_pane
                         );
+                        split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
                     }
                     break;
                 case DOCK_RIGHT:
@@ -369,6 +370,7 @@ public class DisplayManager
                             desktop_pane, 
                             pane
                         );
+                        split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
                     }
                     break;
                 case DOCK_BOTTOM:
@@ -378,6 +380,7 @@ public class DisplayManager
                             desktop_pane, 
                             pane
                         );
+                        split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
                     }
                     break;
                 case DOCK_LEFT:
@@ -387,6 +390,7 @@ public class DisplayManager
                             pane,
                             desktop_pane
                         );
+                        split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
                     }
                     break;
                 default:
@@ -412,6 +416,7 @@ public class DisplayManager
 
             docked_panes.add( pane );
             undocked_panes.remove( pane );
+            
             success = true;
         }
         
@@ -454,7 +459,7 @@ public class DisplayManager
     public void internalFrameOpened(InternalFrameEvent e)
     {
         JInternalFrame jif = (JInternalFrame) e.getSource();
-        jif.addComponentListener( this );
+        //jif.addComponentListener( this );
         windows.add( jif );
         if( listening )
         {
@@ -708,6 +713,10 @@ public class DisplayManager
                 setting_path + "/location",
                 location
             );
+            settings_manager.putInt(
+                setting_path + "/divider location",
+                split_pane.getDividerLocation()
+            );
         }
     }
 
@@ -718,16 +727,8 @@ public class DisplayManager
         
         String type;
         String title;
-        int x;
-        int y;
-        int width;
-        int height;
-        int state;
-        boolean is_selected;
         String setting_path;
-        int pane_index;
         int pane_type;
-        int location;
         
         Hashtable filters = new Hashtable();
         Hashtable paths = new Hashtable();
@@ -779,6 +780,14 @@ public class DisplayManager
 
         // Windows
         
+        int pane_index;
+        int x;
+        int y;
+        int width;
+        int height;
+        int state;
+        boolean is_selected;
+
         i = 0;
         while( GOD_IS_GOOD )
         {
@@ -883,6 +892,9 @@ public class DisplayManager
         }
         
         // Docked panes
+
+        int location;
+        int divider_location;
         
         i = 0;
         while( GOD_IS_GOOD )
@@ -905,6 +917,10 @@ public class DisplayManager
             location = settings_manager.getInt(
                 setting_path + "/location",
                 DOCK_NOWHERE
+            );
+            divider_location = settings_manager.getInt(
+                setting_path + "/divider location",
+                DEFAULT_DIVIDER_LOCATION
             );
 
             pane_type = (
@@ -939,8 +955,8 @@ public class DisplayManager
             
             if( gip != null )
             {
-                docked_panes.add( gip );
                 dock( location, gip );
+                ( (JSplitPane) gip.getParent() ).setDividerLocation( divider_location );
             }
             
             i++;

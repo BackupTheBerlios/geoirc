@@ -26,7 +26,14 @@ public class GIInfoPane extends GIPane
     )
     {
         super( display_manager, settings_manager, title, null );
-        this.path = path;
+        if( ( path == null ) || ( path.equals( "" ) ) )
+        {
+            this.path = "/";
+        }
+        else
+        {
+            this.path = path;
+        }
         tree = null;
     }
     
