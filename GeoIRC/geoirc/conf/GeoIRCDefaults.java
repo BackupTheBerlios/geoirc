@@ -6,7 +6,6 @@
 package geoirc.conf;
 
 import geoirc.DisplayManager;
-import geoirc.SettingsManager;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -91,17 +90,6 @@ public class GeoIRCDefaults
 					defaults.put(defName, def);				
 			}
 			
-	}
-
-
-	/** 
-	 * We override saveSettingsToXML to prevent overwriting of<br>
-	 * default rules which should always be read only.
-	 * @see geoirc.SettingsManager#saveSettingsToXML()
-	 */
-	public boolean saveSettingsToXML()
-	{
-		return false;
 	}
 
 	/**
