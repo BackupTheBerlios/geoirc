@@ -13,7 +13,7 @@ import javax.swing.text.*;
  *
  * @author  Pistos
  */
-public class GIInfoPane extends GIPane
+public class GIInfoPane extends GIPane implements GeoIRCConstants
 {
     protected JTree tree;
     String path;  // server-channel-user path
@@ -46,6 +46,7 @@ public class GIInfoPane extends GIPane
     {
         tree = new JTree( model );
         tree.setCellRenderer( display_manager.getCellRenderer() );
+        tree.setRowHeight( INFO_WINDOW_TREE_ROW_HEIGHT );
         setViewportView( tree );
         tree.addKeyListener( display_manager );
     }

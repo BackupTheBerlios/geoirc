@@ -427,4 +427,5 @@ public interface GeoIRCConstants
     static final int COMPLETE_ONE_FOUND = 1;
     static final int COMPLETE_MORE_THAN_ONE_FOUND = 2;
     
+    static final int INFO_WINDOW_TREE_ROW_HEIGHT = 16;
 }

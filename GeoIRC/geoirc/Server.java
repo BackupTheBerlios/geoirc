@@ -1293,8 +1293,8 @@ public class Server
                         String namlist = Util.stringArrayToString( tokens, 5 );
                         namlist = namlist.substring( 1 );  // remove leading colon
                         Vector v = handleNamesList( channel, namlist );
-                        channel.setChannelMembership( v );
-                        //channel.addToChannelMembership( v );
+                        //channel.setChannelMembership( v );
+                        channel.addToChannelMembership( v );
                     }
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) )
