@@ -361,6 +361,34 @@ public class DisplayManager
         return true;
     }
     
+    public boolean switchToWindow( String regexp )
+    {
+        boolean success = false;
+        
+        if( regexp != null )
+        {
+            JScrollInternalFrame jif;
+            int n = windows.size();
+            JInternalFrame start = getSelectedFrame();
+            
+            for( int i = 0; i < n; i++ )
+            {
+                jif = (JScrollInternalFrame) windows.elementAt( i );
+                if( jif != start )
+                {
+                    if( java.util.regex.Pattern.matches( regexp, jif.getTitle() ) )
+                    {
+                        jif.selectFrameAndAssociatedButtons();
+                        success = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return success;
+    }
+    
     protected void recordDesktopState()
     {
         settings_manager.removeNode( "/gui/desktop/" );

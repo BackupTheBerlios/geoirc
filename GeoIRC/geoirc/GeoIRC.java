@@ -911,6 +911,17 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_SWITCH_WINDOW:
+            case CMD_CHANGE_WINDOW:
+                if( ( args != null ) && ( ! args.equals( "" ) ) )
+                {
+                    display_manager.switchToWindow( arg_string );
+                }
+                else
+                {
+                    display_manager.printlnDebug( "/switchwindow <title regexp>" );
+                }
+                break;
             
             case UNKNOWN_COMMAND:
             default:

@@ -7,12 +7,6 @@
     <map />
     <node name="geoirc">
       <map />
-      <node name="config">
-        <map>
-          <entry key="confirm receive" value="true" />
-          <entry key="default download directory" value="downloads/" />
-        </map>
-      </node>
       <node name="command aliases">
         <map />
         <node name="0">
@@ -42,6 +36,12 @@
         <node name="4">
           <map />
         </node>
+      </node>
+      <node name="config">
+        <map>
+          <entry key="confirm receive" value="true" />
+          <entry key="default download directory" value="downloads/" />
+        </map>
       </node>
       <node name="connections">
         <map />
@@ -114,12 +114,12 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geoirc" />
-              <entry key="x" value="0" />
-              <entry key="y" value="504" />
+              <entry key="x" value="1" />
+              <entry key="y" value="501" />
               <entry key="height" value="252" />
               <entry key="width" value="1134" />
               <entry key="state" value="0" />
-              <entry key="selected" value="false" />
+              <entry key="selected" value="true" />
               <entry key="filter" value="#geoirc" />
             </map>
           </node>
@@ -146,8 +146,8 @@
             <map />
             <node name="0">
               <map>
-                <entry key="filter" value="" />
-                <entry key="regexp" value=".*ooga.*" />
+                <entry key="filter" value="NOT from=Pistos|GeoIRC" />
+                <entry key="regexp" value=".*Pistos.*" />
                 <entry key="format" value="bg0000ff" />
               </map>
             </node>
@@ -173,6 +173,9 @@
           <entry key="|F2" value="nick Pistos|GeoIRC" />
           <entry key="|F3" value="nick GeoIRC_User" />
           <entry key="|F9" value="nick Pistos" />
+          <entry key="Ctrl|1" value="switchwindow .*geoshell.*" />
+          <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
+          <entry key="Ctrl|0" value="switchwindow irc.freenode.net" />
         </map>
       </node>
       <node name="personal">
@@ -189,7 +192,7 @@
           <node name="0">
             <map>
               <entry key="filter" value="" />
-              <entry key="regexp" value=".*ooga.*" />
+              <entry key="regexp" value=".*Pistos.*" />
               <entry key="filename" value="./bloop.wav" />
             </map>
           </node>
