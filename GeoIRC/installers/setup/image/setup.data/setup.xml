@@ -1,0 +1,62 @@
+<?xml version="1.0" standalone="yes"?>
+<install product="RT2" desc="Railroad Tycoon II" version="1.54" uninstall="uninstall.sh"
+         promptbinaries="yes" update_url="http://www.lokigames.com/updates/">
+  <readme>
+    README
+  </readme>
+  <eula>
+   license.txt
+  </eula>
+  <option install="true" required="true">
+    Base Install
+    <lang lang="fr">Installation de base</lang>
+    <help>Required for play</help>
+    <help lang="fr">Requis pour jouer</help>
+    <binary arch="any" libc="any" symlink="rt2" icon="icon.xpm" play="yes">
+      rt2
+    </binary>
+    <files>
+      test.tar
+      main.tar.gz
+      icon.xpm
+      icon.bmp
+      splash.bmp
+      Manual
+      maps.tar.gz
+    </files>
+    <exclusive>
+	  <option>
+    	x86 binaries
+	  </option>
+	  <option>
+	   PPC binaries
+	  </option>
+    </exclusive>
+  </option>
+  <option>
+    Classic Campaign (can run from CD)
+    <files cdrom="yes">
+      maps/#[01]*
+    </files>
+    <option>
+      Classic Campaign Movies (can run from CD)
+      <files>
+        anim/cv[01]*
+        anim/cvwin.mjpg
+      </files>
+    </option>
+  </option>
+  <option>
+    Second Century Campaign (can run from CD)
+    <files>
+      maps/#e[01]*
+    </files>
+    <option>
+      Second Century Campaign Movies (can run from CD)
+      <files>
+        anim/cve[01]*
+        anim/cvewin.mjpg
+      </files>
+    </option>
+  </option>
+</install>
