@@ -63,3 +63,6 @@ netseeker 2003-10-06
 Added a regular expression wizard to settings gui (appears as toolbar button, within
 highlighting dialog and log files dialog)
 netseeker 2003-10-06
+
+Added CTCP PING response.
+Pistos 2003-10-06

@@ -1556,6 +1556,16 @@ public class Server
                                                 // Bad long integer...
                                             }
                                             break;
+                                        case CTCP_CMD_PING:
+                                            send(
+                                                IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                                + nick + " :"
+                                                + CTCP_MARKER 
+                                                + CTCP_CMDS[ CTCP_CMD_PING ]
+                                                + ( ( args != null ) ? " " + args[ 0 ] : "" )
+                                                + CTCP_MARKER
+                                            );
+                                            break;
                                         default:
                                             text = "Unknown CTCP command from " + nick + ": "
                                                 + ctcp_message;

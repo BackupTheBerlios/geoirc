@@ -276,7 +276,8 @@ public interface GeoIRCConstants
         "SOURCE",
         "USERINFO",
         "PAGE",
-        "DCC"
+        "DCC",
+        "PING"
     };
     static final int UNKNOWN_CTCP_CMD = -1;
     static final int CTCP_CMD_VERSION = 0;
@@ -284,6 +285,7 @@ public interface GeoIRCConstants
     static final int CTCP_CMD_USERINFO = 2;
     static final int CTCP_CMD_PAGE = 3;
     static final int CTCP_CMD_DCC = 4;
+    static final int CTCP_CMD_PING = 5;
     
     static final boolean NEXT_WINDOW = false;
     static final boolean PREVIOUS_WINDOW = true;
