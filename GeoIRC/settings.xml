@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE preferences SYSTEM 'http://java.sun.com/dtd/preferences.dtd'>
+
+<preferences EXTERNAL_XML_VERSION="1.0">
+  <root type="user">
+    <map />
+    <node name="geoirc">
+      <map />
+      <node name="personal">
+      	<map>
+     	  <entry key="PrimaryNick" value="livesN[GeoIRC]" />
+     	  <entry key="SecondaryNick" value="livesNgeoIRC" />
+     	  <entry key="TertiaryNick" value="livesN[GeoIRC]_" />
+     	</map>
+      </node>
+      <node name="GUI">
+        <map>
+          <entry key="Skin" value="c:\geoirc\skins\default2\" />
+          <entry key="Font" value="Impact,12" />
+          <entry key="StartMaximized" value="False" />
+        </map>
+      </node>
+      <node name="config">
+        <map>
+          <entry key="DefaultDownloadDirectory" value="c:\geoirc\downloads\" />
+          <entry key="AutoReceive" value="False" />
+        </map>
+      </node>
+    </node>
+  </root>
+</preferences>
+
