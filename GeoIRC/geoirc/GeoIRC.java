@@ -377,7 +377,7 @@ public class GeoIRC
                 }
             );
         }
-        else
+        else if( thief != null )
         {
             display_manager.printlnDebug( "Focus stolen by: " 
             + thief.getClass().toString() );
