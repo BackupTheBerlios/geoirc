@@ -106,4 +106,9 @@ public class GIProcess implements GeoIRCConstants
         stdin.println( line );
         stdin.flush();
     }
+    
+    public void destroy()
+    {
+        process.destroy();
+    }
 }

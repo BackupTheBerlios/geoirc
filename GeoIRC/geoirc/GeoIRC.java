@@ -1154,11 +1154,25 @@ public class GeoIRC
                 if( args != null )
                 {
                     boolean problem = true;
+                    Integer pid = null;
                     try
                     {
+                        pid = new Integer( Integer.parseInt( args[ 0 ] ) );
+                        GIProcess gip = (GIProcess) processes.get( pid );
+                        gip.destroy();
+                        problem = false;
                     }
-                    catch( NumberFormatException e )
+                    catch( NumberFormatException e ) { }
+                    
+                    if( problem )
                     {
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_LIST_PROCESSES ]
+                        );
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_KILL_PROCESS ]
+                            + " <process id>"
+                        );
                     }
                 }
                 break;
