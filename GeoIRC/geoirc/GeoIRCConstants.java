@@ -8,6 +8,7 @@ package geoirc;
 
 import java.awt.event.InputEvent;
 import java.awt.Dimension;
+import java.util.Locale;
 
 /**
  *
@@ -447,6 +448,6 @@ public interface GeoIRCConstants
     static final int STAGE_SCRIPTING = 0;
     static final int STAGE_PROCESSING = 1;
     
-    static final String DEFAULT_LANGUAGE = "en";
-    static final String DEFAULT_COUNTRY = "CA";
+    static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
+    static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
 }
