@@ -75,7 +75,9 @@ public class StyleManager
             
             int len = format.length();
             boolean valid_format = true;
-            for( int c = 0; c < len; c++ )
+            // Duplicate the base style, and adjust the new copy to create the new style.
+            Style style = styles.addStyle( format, base_style );
+            for( int c = 0; c < len; )
             {
                 if( c > len - 2 )
                 {
@@ -84,9 +86,6 @@ public class StyleManager
                 }
                 else
                 {
-                    // Duplicate the base style, and adjust the new copy to create the new style.
-                    
-                    Style style = styles.addStyle( format, base_style );
                     
                     String arg;
                     String code = format.substring( c, c + 2 );
@@ -157,12 +156,14 @@ public class StyleManager
                     {
                         StyleConstants.setUnderline( style, true );
                     }
-                    
-                    v.add( format );
                 }
             }
             
-            if( ! valid_format )
+            if( valid_format )
+            {
+                v.add( format );
+            }
+            else
             {
                 System.err.println( "Invalid style format string: " + format );
             }
