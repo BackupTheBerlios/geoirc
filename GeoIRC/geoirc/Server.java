@@ -230,16 +230,19 @@ public class Server
 
     protected Channel getChannelByName( String name )
     {
-        int n = channels.size();
         Channel retval = null;
-        Channel c;
-        for( int i = 0; i < n; i++ )
+        if( ( name != null ) && ( ! name.equals( "" ) ) )
         {
-            c = (Channel) channels.elementAt( i );
-            if( c.getName().equals( name.toLowerCase() ) )
+            int n = channels.size();
+            Channel c;
+            for( int i = 0; i < n; i++ )
             {
-                retval = c;
-                break;
+                c = (Channel) channels.elementAt( i );
+                if( c.getName().equals( name.toLowerCase() ) )
+                {
+                    retval = c;
+                    break;
+                }
             }
         }
 
