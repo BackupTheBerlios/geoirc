@@ -37,7 +37,15 @@ public class I18nManager implements GeoIRCConstants
             DEFAULT_COUNTRY
         );
         locale = new Locale( language, country );
-        geoirc_messages = ResourceBundle.getBundle( "lang/geoirc_messages", locale );
+        try
+        {
+            geoirc_messages = ResourceBundle.getBundle( "lang.geoirc_messages", locale );
+        }
+        catch( java.util.MissingResourceException e )
+        {
+            System.out.println( "Failed to load internationalization file: " + e.getMessage() );
+            geoirc_messages = ResourceBundle.getBundle( "lang.geoirc_messages.default" );
+        }
 
         formatter = new MessageFormat( "" );
         formatter.setLocale( locale );

@@ -300,14 +300,7 @@ public class GeoIRC
      */
     public void applySettings()
     {
-        try
-        {
-            i18n_manager = new I18nManager( settings_manager );
-        }
-        catch( java.util.MissingResourceException e )
-        {
-            System.out.println( "Failed to load internationalization file: " + e.getMessage() );
-        }
+        i18n_manager = new I18nManager( settings_manager );
         
         // Apply skin, if any specified.
         
