@@ -1787,12 +1787,12 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_DOCK_WINDOW:
+            case CMD_DOCK_PANE:
                 if( ( args != null ) && ( args.length > 1 ) )
                 {
                     int location = DOCK_NOWHERE;
-                    int window_index = -1;
-                    int host_index = DESKTOP_PANE;
+                    int pane_index = -1;
+                    int partner_index = DESKTOP_PANE;
                     
                     for( int i = 0; i < DOCK_STR.length; i++ )
                     {
@@ -1805,17 +1805,17 @@ public class GeoIRC
                     
                     try
                     {
-                        window_index = Integer.parseInt( args[ 0 ] );
+                        pane_index = Integer.parseInt( args[ 0 ] );
                         if( args.length > 2 )
                         {
-                            host_index = Integer.parseInt( args[ 2 ] );
+                            partner_index = Integer.parseInt( args[ 2 ] );
                         }
                     }
                     catch( NumberFormatException e ) { }
                     
-                    if( ( location != DOCK_NOWHERE ) && ( window_index > -1 ) )
+                    if( ( location != DOCK_NOWHERE ) && ( pane_index > -1 ) )
                     {
-                        if( display_manager.dock( location, window_index, host_index ) )
+                        if( display_manager.dock( location, pane_index, partner_index ) )
                         {
                             display_manager.printlnDebug( i18n_manager.getString( "docked" ) );
                         }
@@ -1828,11 +1828,11 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                    display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_PANES ] );
                     display_manager.printlnDebug(
                         "/"
-                        + CMDS[ CMD_DOCK_WINDOW ]
-                        + " <window id number> <t|r|b|l>" );
+                        + CMDS[ CMD_DOCK_PANE ]
+                        + " <pane id number> <t|r|b|l> [partner pane]" );
                 }
                 break;
             case CMD_ENABLE_COLOUR_CODES:
@@ -2148,6 +2148,9 @@ public class GeoIRC
                         i18n_manager.getString( "go to server window" )
                     );
                 }
+                break;
+            case CMD_LIST_PANES:
+                display_manager.listPanes();
                 break;
             case CMD_LIST_PROCESSES:
                 {

@@ -20,7 +20,7 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     protected Container pane;
     protected String title;
     protected int type;
-    protected Container window;
+    protected GIFrameWrapper frame;
     protected GIPaneWrapper parent;
     
     // docking position in split pane parent (if any)
@@ -33,7 +33,7 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         this.pane = pane;
         this.title = title;
         this.type = type;
-        window = null;
+        frame = null;
         split_rank = SPLIT_NOT_SPLIT_MEMBER;
         parent = null;
     }
@@ -53,9 +53,9 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         return type;
     }
     
-    public Container getWindow()
+    public GIFrameWrapper getFrame()
     {
-        return window;
+        return frame;
     }
     
     public int getSplitRank()
@@ -97,32 +97,18 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         this.split_rank = split_rank;
     }
     
-    public boolean setWindow( Container window )
+    public void setFrame( GIFrameWrapper frame )
     {
-        boolean success = false;
-        
-        if( window instanceof GeoIRC )
-        {
-            this.title = ((GeoIRC) window).getTitle();
-            this.window = window;
-            success = true;
-        }
-        else if( window instanceof GIWindow )
-        {
-            this.title = ((GIWindow) window).getTitle();
-            this.window = window;
-            success = true;
-        }
-        
-        return success;
+        this.title = frame.getTitle();
+        this.frame = frame;
     }
     
     public void setTitle( String new_title )
     {
         title = new_title;
-        if( ( type == CHILD_CONTENT_PANE ) && ( window != null ) )
+        if( ( type == CHILD_CONTENT_PANE ) && ( frame != null ) )
         {
-            ((GIWindow) window).setTitle( new_title );
+            frame.setTitle( new_title );
         }
     }
     

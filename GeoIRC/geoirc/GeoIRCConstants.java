@@ -59,7 +59,7 @@ public interface GeoIRCConstants
         "printdebug",
         "focus_on_input_field",
         "listwindows",
-        "dockwindow",
+        "dockpane",
         "newinfowindow",
         "newtextwindow",
         "exit",
@@ -118,7 +118,8 @@ public interface GeoIRCConstants
         "positionwindow",
         "opensettings",
         "clearinputhistory",
-        "dccsend"
+        "dccsend",
+        "listpanes"
     };
     
     public static final String[] IRC_CMDS =
@@ -157,7 +158,7 @@ public interface GeoIRCConstants
     public static final int CMD_DCC_SEND = 87;
     public static final int CMD_DISABLE_COLOUR_CODES = 72;
     public static final int CMD_DISCONNECT = 12;
-    public static final int CMD_DOCK_WINDOW = 28;
+    public static final int CMD_DOCK_PANE = 28;
     public static final int CMD_ENABLE_COLOUR_CODES = 71;
     public static final int CMD_EXEC = 40;
     public static final int CMD_EXEC2 = 43;
@@ -180,6 +181,7 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_LOGS = 50;
     public static final int CMD_LIST_MEMBERS = 41;
+    public static final int CMD_LIST_PANES = 88;
     public static final int CMD_LIST_PROCESSES = 54;
     public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_LOAD_PY = 52;
@@ -390,6 +392,10 @@ public interface GeoIRCConstants
     static final int TEXT_PANE = 2;
     static final int INFO_PANE = 3;
     static final int SPLIT_PANE = 4;
+    
+    static final int UNKNOWN_FRAME_TYPE = -1;
+    static final int GEOIRC_FRAME = 0;
+    static final int GIWINDOW_FRAME = 1;
     
     static final int NO_PARENT = -1;
 

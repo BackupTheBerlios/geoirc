@@ -76,11 +76,8 @@ public class DisplayManager
     protected int last_added_frame_y;
     protected GITextPane last_activated_text_pane;
     
-    //protected Vector windows;
     protected Vector inactive_info_panes;
     protected Vector active_info_panes;
-    //protected Vector docked_panes;
-    //protected Vector undocked_panes;
     protected Vector panes;
     protected Vector frames;
     
@@ -110,11 +107,8 @@ public class DisplayManager
         this.i18n_manager = i18n_manager;
         log_manager = null;
 
-        //windows = new Vector();
         inactive_info_panes = new Vector();
         active_info_panes = new Vector();
-        //docked_panes = new Vector();
-        //undocked_panes = new Vector();
         panes = new Vector();
         frames = new Vector();
         GIPaneWrapper gipw = new GIPaneWrapper(
@@ -122,7 +116,7 @@ public class DisplayManager
             "GeoIRC Main Pane",
             MAIN_CONTENT_PANE
         );
-        gipw.setWindow( geo_irc );
+        gipw.setFrame( new GIFrameWrapper( geo_irc ) );
         panes.add( gipw );
         
         desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
@@ -397,43 +391,6 @@ public class DisplayManager
         // TODO: closePanes( String filter )
     }
     
-    /*
-    public boolean dock( int location, int window )
-    {
-        return dock( location, window, DESKTOP_PANE );
-    }
-    
-    public boolean dock( int location, int window, int host_window )
-    {
-        boolean success = false;
-        
-        if(
-            ( windows != null )
-            && ( windows.size() > 0 )
-            && ( window >= 0 )
-            && ( window < windows.size() )
-            && ( host_window < windows.size() )
-        )
-        {
-            GIWindow giw = (GIWindow) windows.elementAt( window );
-            JComponent pane = giw.getPane();
-            JComponent partner_pane_window = desktop_pane;
-            if( host_window >= 0 )
-            {
-                partner_pane_window = ((GIWindow) windows.elementAt( host_window )).getPane();
-            }
-            
-            if( dock( location, pane, partner_pane_window ) )
-            {
-                success = true;
-                giw.dispose();
-            }
-        }
-
-        return success;
-    }
-     */
-    
     /**
      * Replace partner with a JSplitPane, and place pane and partner in the split pane.
      *
@@ -458,18 +415,29 @@ public class DisplayManager
             JSplitPane split_pane = null;
             
             // partner_container: The Container holding the partner
-            Container partner_container = partner.getParent();
-            
-            // If the partner was itself a member of a split pane,
-            // was_primary: In which of the two panes in the SplitPane is the partner?
+            GIPaneWrapper partner_container_gipw = partner_gipw.getParent();
+            GIFrameWrapper frame = null;
+            Container partner_container = null;
             boolean was_primary = true;
-            if( partner_container instanceof JSplitPane )
+            if( partner_container_gipw != null )
             {
-                JSplitPane sp = (JSplitPane) partner_container;
-                was_primary = ( sp.getTopComponent() == partner );
+                partner_container = partner_container_gipw.getPane();
+                // If the partner was itself a member of a split pane,
+                // was_primary: In which of the two panes in the SplitPane is the partner?
+                if( partner_container instanceof JSplitPane )
+                {
+                    JSplitPane sp = (JSplitPane) partner_container;
+                    was_primary = ( sp.getTopComponent() == partner );
+                }
+                partner_container = partner_container_gipw.getPane();
+                partner_container.remove( partner );
+            }
+            else
+            {
+                frame = partner_gipw.getFrame();
             }
             
-            partner_container.remove( partner );
+            // Create a new split pane.
             
             switch( location )
             {
@@ -527,23 +495,35 @@ public class DisplayManager
 
             if( split_pane != null )
             {
-                panes.add( new GIPaneWrapper( split_pane, "Split Pane", SPLIT_PANE ) );
-                if( partner_container instanceof JSplitPane )
+                GIPaneWrapper split_gipw = new GIPaneWrapper( split_pane, "Split Pane", SPLIT_PANE );
+                if( partner_container_gipw != null )
                 {
-                    JSplitPane sp = (JSplitPane) partner_container;
-                    if( was_primary )
+                    split_gipw.setParent( partner_container_gipw );
+                    if( partner_container instanceof JSplitPane )
                     {
-                        sp.setTopComponent( split_pane );
+                        JSplitPane sp = (JSplitPane) partner_container;
+                        if( was_primary )
+                        {
+                            sp.setTopComponent( split_pane );
+                        }
+                        else
+                        {
+                            sp.setBottomComponent( split_pane );
+                        }
                     }
                     else
                     {
-                        sp.setBottomComponent( split_pane );
+                        partner_container.add( split_pane );
                     }
                 }
                 else
                 {
-                    partner_container.add( split_pane );
+                    frame.getContentPane().add( split_pane );
+                    split_gipw.setParent( partner_gipw );
                 }
+                panes.add( split_gipw );
+                gipw.setParent( split_gipw );
+                partner_gipw.setParent( split_gipw );
             }
 
             success = true;
@@ -1181,7 +1161,7 @@ public class DisplayManager
         }
         
         GIPaneWrapper pw;
-        for( int i = 0, n = panes.size(); i < n; i++ )
+        for( int i = 0; i < panes.size(); i++ )
         {
             pw = (GIPaneWrapper) panes.elementAt( i );
             Container pw_pane = pw.getPane();
@@ -1214,7 +1194,7 @@ public class DisplayManager
             "Content Pane",
             CHILD_CONTENT_PANE
         );
-        gipw.setWindow( giw );
+        gipw.setFrame( new GIFrameWrapper( giw ) );
         giw.setPaneWrapper( gipw );
         panes.add( gipw );
     }
@@ -1324,7 +1304,7 @@ public class DisplayManager
                      * content pane.
                      */
                     
-                    GIWindow giw = (GIWindow) pane.getWindow();
+                    GIWindow giw = (GIWindow) pane.getFrame().getFrame();
                     settings_manager.putInt(
                         setting_path + "/x",
                         giw.getX()
@@ -1574,12 +1554,12 @@ public class DisplayManager
                     }
                     case MAIN_CONTENT_PANE:
                         geo_irc.getContentPane().add( gipw.getPane() );
-                        gipw.setWindow( geo_irc );
+                        gipw.setFrame( new GIFrameWrapper( geo_irc ) );
                         gipw.setParent( parent_gipw );
                         break;
                     case CHILD_CONTENT_PANE:
                     {
-                        GIWindow giw = (GIWindow) parent_gipw.getWindow();
+                        GIWindow giw = (GIWindow) parent_gipw.getFrame().getFrame();
                         giw.getContentPane().add( gipw.getPane() );
                         gipw.setParent( parent_gipw );
                         break;
@@ -1609,6 +1589,16 @@ public class DisplayManager
          */
         
         // TODO: listPanes()
+    }
+    
+    public void listPanes()
+    {
+        GIPaneWrapper gipw;
+        for( int i = 0, n = panes.size(); i < n; i++ )
+        {
+            gipw = (GIPaneWrapper) panes.elementAt( i );
+            printlnDebug( Integer.toString( i ) + ": " + gipw.toString() );
+        }
     }
     
     public void listDockedPanes()
