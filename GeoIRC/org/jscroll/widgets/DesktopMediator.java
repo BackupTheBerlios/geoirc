@@ -54,9 +54,11 @@ public class DesktopMediator
     public DesktopMediator( SettingsManager settings_manager, JScrollDesktopPane mainPane )
     {
         desktopScrollpane = new DesktopScrollPane(this);
-        desktopResizableToolbar = new DesktopResizableToolBar(this);
         dListener = new DesktopListener(this);
+        
+        desktopResizableToolbar = new DesktopResizableToolBar(this);
 
+        /*
         String toolbar_position = BorderLayout.NORTH;
         String windowbar_position = settings_manager.getString(
             "/gui/windowbar position",
@@ -84,6 +86,7 @@ public class DesktopMediator
             desktopResizableToolbar,
             toolbar_position
         );
+         */
         mainPane.add( desktopScrollpane, BorderLayout.CENTER );
         mainPane.addComponentListener( dListener );
     }

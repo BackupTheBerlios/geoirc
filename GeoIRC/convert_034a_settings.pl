@@ -15,7 +15,7 @@ sub padding
     return $padding;
 }
 
-open my $in, "< oldsettings.xml" or die "Failed to open settings.xml.";
+open my $in, "< settings.xml" or die "Failed to open settings.xml.";
 open( OUT, "> temp.xml" ) or die "Failed to open temp.xml";
 
 my $line;

@@ -118,6 +118,7 @@ public class DisplayManager
         frames = new Vector();
 
         GIPaneWrapper gipw = new GIPaneWrapper(
+            settings_manager,
             this,
             geo_irc.getContentPane(),
             "GeoIRC Content Pane",
@@ -187,35 +188,6 @@ public class DisplayManager
         return cell_renderer;
     }
     
-    public void highlightButton( GIPane pane )
-    {
-        /*
-        GIWindow window;
-        for( int i = 0, n = windows.size(); i < n; i++ )
-        {
-            window = (GIWindow) windows.elementAt( i );
-            if( window.getPane() == pane )
-            {
-                JToggleButton button = window.getAssociatedButton();
-                if( button != null )
-                {
-                    int [] rgb = Util.getRGB(
-                        settings_manager.getString(
-                            "/gui/new content button colour",
-                            "ff0000"
-                        )
-                    );
-                    Color colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
-                    button.setForeground( colour );
-                }
-                break;
-            }
-        }
-         */
-        
-        // TODO: Change for pane bar.
-    }
-    
     /*********************************************************************
      *
      * Window and Pane Functions
@@ -258,7 +230,7 @@ public class DisplayManager
         GITextPane gitp = new GITextPane(
             geo_irc, this, settings_manager, i18n_manager, title, filter
         );
-        GIPaneWrapper gipw = new GIPaneWrapper( this, gitp, title, TEXT_PANE );
+        GIPaneWrapper gipw = new GIPaneWrapper( settings_manager, this, gitp, title, TEXT_PANE );
         gitp.setPaneWrapper( gipw );
         panes.add( gipw );
         last_activated_pane = gipw;
@@ -290,7 +262,7 @@ public class DisplayManager
         GIInfoPane giip = new GIInfoPane(
             this, settings_manager, title, path
         );
-        GIPaneWrapper gipw = new GIPaneWrapper( this, giip, title, INFO_PANE );
+        GIPaneWrapper gipw = new GIPaneWrapper( settings_manager, this, giip, title, INFO_PANE );
         giip.setPaneWrapper( gipw );
         panes.add( gipw );
         last_activated_pane = gipw;
@@ -361,44 +333,6 @@ public class DisplayManager
         }
     }
     
-    /**
-     * Closes all windows whose filter matches the given filter.
-     */
-    public void closeWindows( String filter )
-    {
-        /*
-        if( windows != null )
-        {
-            Vector wins = (Vector) windows.clone();
-            GIWindow giw;
-            for( int i = 0, n = wins.size(); i < n; i++ )
-            {
-                giw = (GIWindow) wins.elementAt( i );
-                if( giw.getPaneType() == TEXT_PANE )
-                {
-                    GITextPane gip = (GITextPane) giw.getPane();
-                    if( gip.getFilter().equals( filter ) )
-                    {
-                        try
-                        {
-                            giw.setClosed( true );
-                        }
-                        catch( java.beans.PropertyVetoException e )
-                        {
-                            Util.printException(
-                                this, e,
-                                i18n_manager.getString( "window closure failure 1", new Object [] { giw.getTitle() } )
-                            );
-                        }
-                    }
-                }
-            }
-        }
-         */
-        
-        // TODO: closePanes( String filter )
-    }
-    
     public boolean dockByUserIndex( int location, int pane_user_index, int partner_user_index )
     {
         return dock(
@@ -430,9 +364,9 @@ public class DisplayManager
         {
             if(
                 pane_index != partner_index
-                && isUserPane( pane_index, INCLUDE_SPLIT_PANES )
+                && isUserPane( pane_index, EXCLUDE_SPLIT_PANES )
                 && (
-                    isUserPane( partner_index, INCLUDE_SPLIT_PANES )
+                    isUserPane( partner_index, EXCLUDE_SPLIT_PANES )
                     || partner_index == DESKTOP_PANE_INDEX
                 )
             )
@@ -536,7 +470,7 @@ public class DisplayManager
                         break;
                 }
 
-                GIPaneWrapper split_gipw = new GIPaneWrapper( this, split_pane, "Split Pane", SPLIT_PANE );
+                GIPaneWrapper split_gipw = new GIPaneWrapper( settings_manager, this, split_pane, "Split Pane", SPLIT_PANE );
                 if( partner_container_gipw != null )
                 {
                     split_gipw.setParent( partner_container_gipw );
@@ -592,7 +526,7 @@ public class DisplayManager
         if(
             ( pane_index < 0 )
             || ( pane_index >= panes.size() )
-            || ( ! isUserPane( pane_index, INCLUDE_SPLIT_PANES ) )
+            || ( ! isUserPane( pane_index, EXCLUDE_SPLIT_PANES ) )
         )
         {
             return;
@@ -724,6 +658,44 @@ public class DisplayManager
         }
         
         return retval;
+    }
+    
+    /**
+     * Closes all windows whose filter matches the given filter.
+     */
+    public void closeWindows( String filter )
+    {
+        /*
+        if( windows != null )
+        {
+            Vector wins = (Vector) windows.clone();
+            GIWindow giw;
+            for( int i = 0, n = wins.size(); i < n; i++ )
+            {
+                giw = (GIWindow) wins.elementAt( i );
+                if( giw.getPaneType() == TEXT_PANE )
+                {
+                    GITextPane gip = (GITextPane) giw.getPane();
+                    if( gip.getFilter().equals( filter ) )
+                    {
+                        try
+                        {
+                            giw.setClosed( true );
+                        }
+                        catch( java.beans.PropertyVetoException e )
+                        {
+                            Util.printException(
+                                this, e,
+                                i18n_manager.getString( "window closure failure 1", new Object [] { giw.getTitle() } )
+                            );
+                        }
+                    }
+                }
+            }
+        }
+         */
+        
+        // TODO: closePanes( String filter )
     }
     
     public void closeFrame( int index )
@@ -1144,13 +1116,6 @@ public class DisplayManager
         return retval;
     }
     
-    /*
-    public GIWindow getSelectedFrame()
-    {
-        return (GIWindow) desktop_pane.getSelectedFrame();
-    }
-     */
-
     public String getSelectedChannel()
     {
         return getSelectedByPrefix( "#" );
@@ -1224,6 +1189,8 @@ public class DisplayManager
                     }
                 }
             }
+            
+            
         }
     }
 
@@ -1281,6 +1248,7 @@ public class DisplayManager
         GIWindow giw = (GIWindow) e.getSource();
         frames.add( giw );
         GIPaneWrapper gipw = new GIPaneWrapper(
+            settings_manager,
             this,
             giw.getContentPane(),
             "Content Pane",
@@ -1307,7 +1275,6 @@ public class DisplayManager
     }
     public void componentResized(java.awt.event.ComponentEvent e)
     {
-        /*
         if( ! restoring )
         {
             if( e.getComponent() instanceof GIPane )
@@ -1315,7 +1282,6 @@ public class DisplayManager
                 recordDesktopState();
             }
         }
-         */
     }
 
     public void keyPressed( KeyEvent e )
@@ -1580,7 +1546,7 @@ public class DisplayManager
                     {
                         JSplitPane split_pane = new JSplitPane( orientation );
                         split_pane.setDividerLocation( divider_location );
-                        GIPaneWrapper split_gipw = new GIPaneWrapper( this, split_pane, title, type );
+                        GIPaneWrapper split_gipw = new GIPaneWrapper( settings_manager, this, split_pane, title, type );
                         panes.add( split_gipw );
                     }
                     else
@@ -1616,7 +1582,7 @@ public class DisplayManager
                 case DESKTOP_PANE:
                 {
                     desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
-                    GIPaneWrapper dgipw = new GIPaneWrapper( this, desktop_pane, "GeoIRC Desktop Pane", DESKTOP_PANE );
+                    GIPaneWrapper dgipw = new GIPaneWrapper( settings_manager, this, desktop_pane, "GeoIRC Desktop Pane", DESKTOP_PANE );
                     dgipw.setSplitRank( split_rank );
                     panes.add( dgipw );
                     break;
@@ -1719,12 +1685,12 @@ public class DisplayManager
         
         if( ( true_index >= 0 ) && ( true_index < panes.size() ) )
         {
-            if( isUserPane( true_index, INCLUDE_SPLIT_PANES ) )
+            if( isUserPane( true_index, EXCLUDE_SPLIT_PANES ) )
             {
                 int user_panes_counted = 0;
                 for( int i = 0; i < true_index; i++ )
                 {
-                    if( isUserPane( i, INCLUDE_SPLIT_PANES ) )
+                    if( isUserPane( i, EXCLUDE_SPLIT_PANES ) )
                     {
                         user_panes_counted++;
                     }
@@ -1746,7 +1712,7 @@ public class DisplayManager
         int user_panes_counted = 0;
         for( int i = 0, n = panes.size(); i < n; i++ )
         {
-            if( isUserPane( i, INCLUDE_SPLIT_PANES ) )
+            if( isUserPane( i, EXCLUDE_SPLIT_PANES ) )
             {
                 user_panes_counted++;
                 if( user_panes_counted == user_index )
@@ -1772,7 +1738,7 @@ public class DisplayManager
         {
             if( users_point_of_view )
             {
-                if( isUserPane( i, INCLUDE_SPLIT_PANES ) )
+                if( isUserPane( i, EXCLUDE_SPLIT_PANES ) )
                 {
                     gipw = (GIPaneWrapper) panes.elementAt( i );
                     user_index = trueIndexToUserIndex( i );
@@ -1787,41 +1753,26 @@ public class DisplayManager
         }
     }
     
-    public void listDockedPanes()
-    {
-        /*
-        JComponent pane;
-        for( int i = 0, n = docked_panes.size(); i < n; i++ )
-        {
-            pane = (JComponent) docked_panes.elementAt( i );
-            printlnDebug(
-                Integer.toString( i ) + ": "
-                + ( (pane instanceof GIPane) ? ((GIPane) pane).getTitle() : "" )
-            );
-        }
-         */
-    }
-    
     public void openSettingsDialog()
     {
         SettingsDialog dlg = new SettingsDialog(settings_manager, this);
         dlg.setVisible( true );
     }
 
-	class OpenSettingsDialogListener implements java.awt.event.ActionListener
-	{
-		XmlProcessable settings_manager;
-		DisplayManager display_manager;
-		
-		OpenSettingsDialogListener(XmlProcessable settings_manager, DisplayManager display_manager)
-		{
-			this.settings_manager = settings_manager;
-			this.display_manager = display_manager;
-		}
-		public void actionPerformed(ActionEvent e)
-		{
+    class OpenSettingsDialogListener implements java.awt.event.ActionListener
+    {
+        XmlProcessable settings_manager;
+        DisplayManager display_manager;
+
+        OpenSettingsDialogListener(XmlProcessable settings_manager, DisplayManager display_manager)
+        {
+            this.settings_manager = settings_manager;
+            this.display_manager = display_manager;
+        }
+        public void actionPerformed(ActionEvent e)
+        {
             display_manager.openSettingsDialog();
-		}
-	}   
+        }
+    }   
 }
 

@@ -2184,7 +2184,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_LIST_DOCKED_WINDOWS:
-                display_manager.listDockedPanes();
+                //display_manager.listDockedPanes();
                 break;
             case CMD_LIST_FONTS:
                 GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();

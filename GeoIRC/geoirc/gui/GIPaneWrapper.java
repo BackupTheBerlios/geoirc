@@ -7,6 +7,9 @@
 package geoirc.gui;
 
 import geoirc.GeoIRC;
+import geoirc.SettingsManager;
+
+import java.awt.Color;
 import java.awt.Container;
 
 /**
@@ -24,17 +27,25 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     protected GIPaneWrapper parent;
     protected GIPaneBarButton button;
     protected DisplayManager display_manager;
+    protected SettingsManager settings_manager;
     
     // docking position in split pane parent (if any)
     protected int split_rank;
     
     private GIPaneWrapper() { }
     
-    public GIPaneWrapper( DisplayManager display_manager, Container pane, String title, int type )
+    public GIPaneWrapper(
+        SettingsManager settings_manager,
+        DisplayManager display_manager,
+        Container pane,
+        String title,
+        int type
+    )
     {
         this.pane = pane;
         this.title = title;
         this.type = type;
+        this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         frame = null;
         split_rank = SPLIT_NOT_SPLIT_MEMBER;
@@ -174,6 +185,14 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         if( button != null )
         {
             button.setSelected( true );
+            int [] rgb = geoirc.util.Util.getRGB(
+                settings_manager.getString(
+                    "/gui/normal_button_colour",
+                    "000000"
+                )
+            );
+            Color colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
+            button.setForeground( colour );
         }
         GIFrameWrapper gifw = getFrame();
         if( gifw != null )
@@ -181,5 +200,20 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
             gifw.activate();
         }
         display_manager.paneActivated( this );
+    }
+    
+    public void highlightButton()
+    {
+        if( button != null )
+        {
+            int [] rgb = geoirc.util.Util.getRGB(
+                settings_manager.getString(
+                    "/gui/new_content_button_colour",
+                    "ff0000"
+                )
+            );
+            Color colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
+            button.setForeground( colour );
+        }
     }
 }

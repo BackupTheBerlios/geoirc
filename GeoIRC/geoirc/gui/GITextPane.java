@@ -307,24 +307,17 @@ public class GITextPane extends GIPane implements geoirc.GeoIRCConstants
             display_manager.printlnDebug( e.getMessage() );
         }
         
-        /*
-        GIPaneWrapper gipw = display_manager.getSelectedPane();
+        GIPaneWrapper selected_gipw = display_manager.getSelectedPane();
         boolean highlight_button = true;
-        if( giw != null )
+        if( selected_gipw == gipw )
         {
-            if( giw.getPane() == this )
-            {
-                highlight_button = false;
-            }
+            highlight_button = false;
         }
         
         if( highlight_button )
         {
-            display_manager.highlightButton( this );
+            gipw.highlightButton();
         }
-         */
-        
-        // TODO: highlight button on pane bar
         
         // Autoscroll if the user is not holding the scrollbar.
 
