@@ -345,7 +345,7 @@ public class Util implements GeoIRCConstants
         return
             "from=" + remote_nick + " and "
             + FILTER_SPECIAL_CHAR + "self "
-            + " or "
+            + "or "
             + remote_nick + " and "
             + "from=" + FILTER_SPECIAL_CHAR + "self";
     }

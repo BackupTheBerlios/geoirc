@@ -1107,12 +1107,7 @@ public class Server
                         {
                             // Message to GeoIRC user.
                             
-                            String query_window_title = 
-                                FILTER_SPECIAL_CHAR + "self and "
-                                + "from=" + nick
-                                + " or "
-                                + nick + " and "
-                                + "from=" + FILTER_SPECIAL_CHAR + "self";
+                            String query_window_title = Util.getQueryWindowFilter( nick );
                             
                             if(
                                 display_manager.getTextPaneByTitle(
