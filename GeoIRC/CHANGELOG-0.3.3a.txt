@@ -40,6 +40,7 @@ Added "/misc/global pre-filter" setting.
 Pistos 2003-10-01
 
 Fixed bug so that reconnection is actually made when a connection is broken.
+Channels are also rejoined.
 Pistos 2003-10-02
 
 Alternate nicks are actually used now.

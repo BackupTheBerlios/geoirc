@@ -61,6 +61,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.Vector;
@@ -106,7 +108,7 @@ public class GeoIRC
         DCCAgent,
         InputFieldOwner
 {
-    protected Vector remote_machines;
+    protected LinkedHashSet remote_machines;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected TriggerManager trigger_manager;
@@ -257,7 +259,7 @@ public class GeoIRC
         
         conversation_words = java.util.Collections.synchronizedSet( new java.util.HashSet() );
         current_rm = null;
-        remote_machines = new Vector();
+        remote_machines = new LinkedHashSet();
         restoreConnections();
         
         // Final miscellaneous initialization
@@ -593,14 +595,15 @@ public class GeoIRC
         if( listening_to_connections )
         {
             settings_manager.removeNode( "/connections/" );
-            int n = remote_machines.size();
+            Iterator it = remote_machines.iterator();
             RemoteMachine rm;
             String i_str;
+            int i = 0;
 
-            for( int i = 0; i < n; i++ )
+            while( it.hasNext() )
             {
                 i_str = Integer.toString( i );
-                rm = (RemoteMachine) remote_machines.elementAt( i );
+                rm = (RemoteMachine) it.next();
 
                 if( rm instanceof DCCClient )
                 {
@@ -625,6 +628,8 @@ public class GeoIRC
                     Server s = (Server) rm;
                     s.recordChannels();
                 }
+                
+                i++;
             }
         }
     }
@@ -723,11 +728,23 @@ public class GeoIRC
     
     public String getRemoteMachineID( RemoteMachine rm )
     {
-        int id = remote_machines.indexOf( rm );
-        String retval = null;
-        if( id > -1 )
+        Iterator it = remote_machines.iterator();
+        RemoteMachine rm_;
+        int index = 0;
+        while( it.hasNext() )
         {
-            retval = Integer.toString( id );
+            rm_ = (RemoteMachine) it.next();
+            if( rm_ == rm )
+            {
+                break;
+            }
+            index++;
+        }
+        
+        String retval = null;
+        if( index < remote_machines.size() )
+        {
+            retval = Integer.toString( index );
         }
         
         return retval;
@@ -737,10 +754,11 @@ public class GeoIRC
     {
         RemoteMachine rm;
         boolean was_set = false;
+        Iterator it = remote_machines.iterator();
         
-        for( int i = 0, n = remote_machines.size(); i < n; i++ )
+        while( it.hasNext() )
         {
-            rm = (RemoteMachine) remote_machines.elementAt( i );
+            rm = (RemoteMachine) it.next();
             if( rm.getHostname().equals( rm_name ) )
             {
                 current_rm = rm;
@@ -767,7 +785,17 @@ public class GeoIRC
             server_id = Integer.parseInt( id );
             if( ( server_id >= 0 ) && ( server_id < remote_machines.size() ) )
             {
-                retval = (RemoteMachine) remote_machines.elementAt( server_id );
+                Iterator it = remote_machines.iterator();
+                int i = 0;
+                while( it.hasNext() )
+                {
+                    retval = (RemoteMachine) it.next();
+                    if( i == server_id )
+                    {
+                        break;
+                    }
+                    i++;
+                }
             }
         } catch( NumberFormatException e ) { }
         
@@ -1811,12 +1839,12 @@ public class GeoIRC
                             "http://geoirc.berlios.de"
                         );
                     }
-                    int n = remote_machines.size();
-                    for( int i = 0; i < n; i++ )
+                    Iterator it = remote_machines.iterator();
+                    RemoteMachine rm;
+                    while( it.hasNext() )
                     {
-                        ((RemoteMachine) remote_machines.elementAt( i )).send(
-                            "QUIT :" + quit_message
-                        );
+                        rm = (RemoteMachine) it.next();
+                        rm.send( "QUIT :" + quit_message );
                     }
                     // Do we need a more graceful termination?  :)
                     System.exit( 0 );
@@ -1934,12 +1962,13 @@ public class GeoIRC
                 break;
             case CMD_LIST_CONNECTIONS:
                 {
-                    int n = remote_machines.size();
+                    Iterator it = remote_machines.iterator();
                     RemoteMachine rm;
                     String current_marker;
-                    for( int i = 0; i < n; i++ )
+                    int i = 0;
+                    while( it.hasNext() )
                     {
-                        rm = (RemoteMachine) remote_machines.elementAt( i );
+                        rm = (RemoteMachine) it.next();
                         if( rm == current_rm )
                         {
                             current_marker = " (current remote machine)";
@@ -1952,6 +1981,7 @@ public class GeoIRC
                             Integer.toString( i ) + ": "
                             + rm.toString() + current_marker
                         );
+                        i++;
                     }
                 }
                 break;

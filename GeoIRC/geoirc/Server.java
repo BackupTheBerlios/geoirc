@@ -43,7 +43,6 @@ public class Server
     protected boolean listening_to_channels;
     protected String current_nick;
     
-    
     public Server(
         GeoIRC parent,
         DisplayManager display_manager,
@@ -385,6 +384,7 @@ public class Server
             }
 
             String line = "";
+            boolean disconnected = false;
             while( ( line != null ) && isConnected() && ( ! reset ) )
             {
                 try
@@ -402,7 +402,23 @@ public class Server
                 
                 try
                 {
-                    line = in.readLine();
+                    while( ! in.ready() )
+                    {
+                        if( ! isConnected() )
+                        {
+                            disconnected = true;
+                            break;
+                        }
+                        try
+                        {
+                            Thread.sleep( SERVER_READER_POLLING_INTERVAL );
+                        } catch( InterruptedException e ) { }
+                    }
+                    
+                    if( ! disconnected )
+                    {
+                        line = in.readLine();
+                    }
                 }
                 catch( IOException e )
                 {
@@ -427,12 +443,12 @@ public class Server
             
             if( ( ! isConnected() ) || reset )
             {
-                geoirc.recordConnections();
+                //geoirc.recordConnections();
                 
-                if( ! isConnected() )
-                {
-                    display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
-                }
+                display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
+                listening_to_channels = false;
+                channels = new Vector();
+                info_manager.removeRemoteMachine( Server.this );
                 
                 if( ! closed )
                 {
