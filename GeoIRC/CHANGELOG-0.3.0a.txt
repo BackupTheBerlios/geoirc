@@ -77,3 +77,6 @@ Pistos 2003-09-01
 
 Fixed multiple info-panes bug.
 Pistos 2003-09-05
+
+Added mIRC colour support.  (Receive only, not generate).
+Pistos 2003-09-08
