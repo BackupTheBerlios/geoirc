@@ -17,3 +17,10 @@ netseeker 2003-09-17
 
 Added user input modification ability to scripting engines.
 Pistos 2003-09-17
+
+Changed "print" command to "printdebug".  Changed "println" command to "print".
+Added "printactive" command.
+Pistos 2003-09-17
+
+Added a "clearinputfield" command.
+Pistos 2003-09-17

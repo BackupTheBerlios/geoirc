@@ -54,7 +54,7 @@ public interface GeoIRCConstants
         "switchwindow",
         "help",
         "completenick",
-        "print",
+        "printdebug",
         "focus_on_input_field",
         "listwindows",
         "dockwindow",
@@ -76,7 +76,7 @@ public interface GeoIRCConstants
         "play",
         "quote",
         "raw",
-        "println",
+        "print",
         "log",
         "removelog",
         "listlogs",
@@ -103,7 +103,9 @@ public interface GeoIRCConstants
         "enablecolourcodes",
         "disablecolourcodes",
         "loadtcl",
-        "exectclproc"
+        "exectclproc",
+        "printactive",
+        "clearinputfield"
     };
     
     public static final String[] IRC_CMDS =
@@ -132,6 +134,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHAR_UNDERLINE = 65;
     public static final int CMD_CHAR_COLOUR = 66;
     public static final int CMD_CHAR_NORMAL = 67;
+    public static final int CMD_CLEAR_INPUT_FIELD = 76;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_DCC_CHAT = 69;
@@ -181,8 +184,9 @@ public interface GeoIRCConstants
     public static final int CMD_PLAY = 44;
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
-    public static final int CMD_PRINT = 25;
-    public static final int CMD_PRINTLN = 47;
+    public static final int CMD_PRINT = 47;
+    public static final int CMD_PRINT_ACTIVE = 75;
+    public static final int CMD_PRINT_DEBUG = 25;
     public static final int CMD_PRIVMSG = 19;
     public static final int CMD_QUOTE = 45;
     public static final int CMD_RAW = 46;

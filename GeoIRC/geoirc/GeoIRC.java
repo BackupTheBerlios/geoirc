@@ -1184,6 +1184,9 @@ public class GeoIRC
             case CMD_CHAR_UNDERLINE:
                 insertCharAtCaret( MIRC_UNDERLINE_CONTROL_CHAR );
                 break;
+            case CMD_CLEAR_INPUT_FIELD:
+                input_field.setText( null );
+                break;
             case CMD_COMPLETE_NICK:
                 {
                     String input_line = input_field.getText();
@@ -2131,12 +2134,6 @@ public class GeoIRC
             case CMD_PRINT:
                 if( arg_string != null )
                 {
-                    display_manager.printlnDebug( arg_string );
-                }
-                break;
-            case CMD_PRINTLN:
-                if( arg_string != null )
-                {
                     int index = arg_string.indexOf( COMMAND_ARGUMENT_SEPARATOR_CHAR );
                     String text = arg_string;
                     String qualities = FILTER_SPECIAL_CHAR + "debug";
@@ -2146,6 +2143,18 @@ public class GeoIRC
                         qualities = arg_string.substring( 0, index );
                     }
                     display_manager.println( text, qualities );
+                }
+                break;
+            case CMD_PRINT_ACTIVE:
+                if( arg_string != null )
+                {
+                    display_manager.printlnToActiveTextPane( arg_string );
+                }
+                break;
+            case CMD_PRINT_DEBUG:
+                if( arg_string != null )
+                {
+                    display_manager.printlnDebug( arg_string );
                 }
                 break;
             case CMD_PRIVMSG:

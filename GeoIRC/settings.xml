@@ -288,6 +288,7 @@
           <entry key="Ctrl|U" value="charunderline" />
           <entry key="Ctrl|O" value="charnormal" />
           <entry key="Ctrl|K" value="charcolour" />
+          <entry key="Ctrl|U" value="clearinputfield" />
           <entry key="Ctrl|V" value="extendedpaste" />
           <entry key="|Tab" value="completenick" />
           <entry key="Shift|Tab" value="focus_on_input_field" />

@@ -49,32 +49,6 @@ public class BoolExpEvaluator
         
         Matcher m;
         
-        /*
-        m = Pattern.compile( "(\\S)\\(" ).matcher( expr );
-        if( m.matches() )
-        {
-            m.replaceAll( m.group( 1 ) + " (" );
-        }
-
-        m = Pattern.compile( "\\((\\S)" ).matcher( expr );
-        if( m.matches() )
-        {
-            m.replaceAll( " (" + m.group( 1 ) );
-        }
-
-        m = Pattern.compile( "(\\S)\\)" ).matcher( expr );
-        if( m.matches() )
-        {
-            m.replaceAll( m.group( 1 ) + " )" );
-        }
-
-        m = Pattern.compile( "\\)(\\S)" ).matcher( expr );
-        if( m.matches() )
-        {
-            m.replaceAll( " )" + m.group( 1 ) );
-        }
-         */
-        
         expr = expr.replaceAll( "\\(", " ( " );
         expr = expr.replaceAll( "\\)", " ) " );
 
@@ -266,12 +240,15 @@ public class BoolExpEvaluator
             )
             {
                 boolean present = false;
-                for( int j = 0; j < flags.length; j++ )
+                if( flags != null )
                 {
-                    if( flags[ j ].equals( expr[ i ] ) )
+                    for( int j = 0; j < flags.length; j++ )
                     {
-                        present = true;
-                        break;
+                        if( expr[ i ].equals( flags[ j ] ) )
+                        {
+                            present = true;
+                            break;
+                        }
                     }
                 }
                 expr[ i ] = ( present ? TRUE : FALSE );

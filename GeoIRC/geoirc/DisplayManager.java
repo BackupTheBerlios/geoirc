@@ -61,6 +61,7 @@ public class DisplayManager
     protected JInternalFrame last_activated_frame;
     protected int last_added_frame_x;
     protected int last_added_frame_y;
+    protected GITextPane last_activated_text_pane;
     
     protected Vector inactive_info_panes;
     protected Vector active_info_panes;
@@ -110,6 +111,7 @@ public class DisplayManager
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
+        last_activated_text_pane = null;
         
         show_qualities = false;
     }
@@ -323,9 +325,35 @@ public class DisplayManager
         return cell_renderer;
     }
     
+    protected void appendAndHighlightLine(
+        GITextPane text_pane,
+        String line,
+        String qualities
+    )
+    {
+        int offset = text_pane.getDocumentLength();
+        int len = text_pane.appendLine( line ).length();
+        geoirc.getHighlightManager().highlight(
+            text_pane, 
+            offset, 
+            len,
+            qualities
+        );
+    }
+    
     public int printlnDebug( String line )
     {
         return println( line, FILTER_SPECIAL_CHAR + "debug" );
+    }
+    
+    public void printlnToActiveTextPane( String line )
+    {
+        if( ( line != null ) && ( last_activated_text_pane != null ) )
+        {
+            appendAndHighlightLine(
+                last_activated_text_pane, line, ""
+            );
+        }
     }
     
     /**
@@ -357,14 +385,7 @@ public class DisplayManager
                 text_pane = (GITextPane) pane;
                 if( text_pane.accepts( qualities ) )
                 {
-                    int offset = text_pane.getDocumentLength();
-                    int len = text_pane.appendLine( line ).length();
-                    geoirc.getHighlightManager().highlight(
-                        text_pane, 
-                        offset, 
-                        len,
-                        qualities
-                    );
+                    appendAndHighlightLine( text_pane, line, qualities );
                     windows_printed_to++;
                 }
             }
@@ -665,6 +686,8 @@ public class DisplayManager
         GIPane pane = giw.getPane();
         if( pane instanceof GITextPane )
         {
+            last_activated_text_pane = (GITextPane) pane;
+            
             String filter = ((GITextPane) pane).getFilter();
             if( filter != null )
             {
@@ -688,10 +711,19 @@ public class DisplayManager
         }
     }
     
-    public void internalFrameClosed(InternalFrameEvent e)
+    public void internalFrameClosed( InternalFrameEvent e )
     {
         GIWindow window = (GIWindow) e.getSource();
         GIPane pane = window.getPane();
+        
+        if( last_activated_frame == window )
+        {
+            last_activated_frame = null;
+        }
+        if( last_activated_text_pane == pane )
+        {
+            last_activated_text_pane = null;
+        }
         
         if( ! docked_panes.contains( pane ) )
         {
