@@ -286,4 +286,16 @@ public class SettingsManager
 	{
 		return root;
 	}
+	
+	public boolean nodeExists(String nodePath)
+	{
+		try
+		{
+			return root.nodeExists(getNodePath(nodePath));
+		}
+		catch (BackingStoreException e)
+		{
+			return false;
+		}
+	}
 }

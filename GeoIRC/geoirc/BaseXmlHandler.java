@@ -458,4 +458,23 @@ public class BaseXmlHandler implements XmlProcessable
 	{
 		return root; 
 	}
+
+	public boolean nodeExists(String nodePath)
+	{
+		XPath xPath;
+		Object obj;
+		try
+		{
+			xPath = XPath.newInstance(nodePath);
+			obj = xPath.selectSingleNode(root);
+		}
+		catch (JDOMException e)
+		{
+			return false;
+		}
+		 
+		return (obj == null) ? false : true;
+	}
+
+
 }
