@@ -38,8 +38,12 @@ public class SettingsManager {
     public boolean loadSettingsFromXML()
     {
         InputStream is = null;
+<<<<<<< SettingsManager.java
+
+=======
         boolean success = true;
         
+>>>>>>> 1.4
         try {
             is = new BufferedInputStream(new FileInputStream( filepath ));
         } catch (FileNotFoundException e) {
