@@ -1844,11 +1844,11 @@ public class GeoIRC
                                 && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                             )
                             {
-                                text = "* " + s.getCurrentNick() + text.substring( 7, text.length() - 1 );
+                                text = s.getPadded( "* " + s.getCurrentNick() ) + text.substring( 7, text.length() - 1 );
                             }
                             else
                             {
-                                text = "<" + s.getCurrentNick() + "> " + text;
+                                text = s.getPadded( "<" + s.getCurrentNick() + ">" ) + " " + text;
                             }
                             display_manager.println(
                                 getATimeStamp(

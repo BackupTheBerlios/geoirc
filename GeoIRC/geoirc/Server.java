@@ -336,6 +336,25 @@ public class Server
         
         return user;
     }
+    
+    public String getPadded( String text )
+    {
+        current_nick_width = (
+            ( current_nick_width < text.length() )
+            ? text.length()
+            : current_nick_width
+        );
+
+        int max_nick_width = settings_manager.getInt(
+            "/gui/format/maximum nick width",
+            DEFAULT_MAXIMUM_NICK_WIDTH
+        );
+        if( current_nick_width > max_nick_width )
+        {
+            current_nick_width = max_nick_width;
+        }
+        return Util.getPadding( " ", current_nick_width - text.length() ) + text;
+    }
 
     /* ******************************************************************** */
     
@@ -512,7 +531,7 @@ public class Server
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
-                    String text = nick + " has joined " + channel + ".";
+                    String text = getPadded( nick ) + " has joined " + channel + ".";
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "join";
@@ -562,7 +581,7 @@ public class Server
                         user.noteActivity();
                     }
                     
-                    String text = kicker + " has kicked " + nick + " from " + channel + " (" + message + ").";
+                    String text = getPadded( kicker ) + " has kicked " + nick + " from " + channel + " (" + message + ").";
                     qualities += " " + channel
                         + " from=" + kicker
                         + " victim=" + nick
@@ -630,13 +649,13 @@ public class Server
                                     if( polarity.equals( "+" ) )
                                     {
                                         recipient_user.addModeFlag( MODE_OP );
-                                        text = nick + " has given channel operator privileges for "
+                                        text = getPadded( nick ) + " has given channel operator privileges for "
                                             + channel + " to " + arg + ".";
                                     }
                                     else if( polarity.equals( "-" ) )
                                     {
                                         recipient_user.removeModeFlag( MODE_OP );
-                                        text = nick + " has taken channel operator privileges for "
+                                        text = getPadded( nick ) + " has taken channel operator privileges for "
                                             + channel + " from " + arg + ".";
                                     }
 
@@ -647,12 +666,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has made " + channel
+                                    text = getPadded( nick ) + " has made " + channel
                                         + " a private channel.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has removed the private status of "
+                                    text = getPadded( nick ) + " has removed the private status of "
                                         + channel + ".";
                                 }
                             }
@@ -660,12 +679,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has made " + channel
+                                    text = getPadded( nick ) + " has made " + channel
                                         + " a secret channel.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has removed the secret status of "
+                                    text = getPadded( nick ) + " has removed the secret status of "
                                         + channel + ".";
                                 }
                             }
@@ -673,12 +692,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has made " + channel
+                                    text = getPadded( nick ) + " has made " + channel
                                         + " invite-only.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has removed the invite-only status of "
+                                    text = getPadded( nick ) + " has removed the invite-only status of "
                                         + channel + ".";
                                 }
                             }
@@ -686,12 +705,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has made the topic of " + channel
+                                    text = getPadded( nick ) + " has made the topic of " + channel
                                         + " settable only by channel operators.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has made the topic of " + channel
+                                    text = getPadded( nick ) + " has made the topic of " + channel
                                         + " settable by anyone.";
                                 }
                             }
@@ -699,12 +718,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has blocked messages to  " + channel
+                                    text = getPadded( nick ) + " has blocked messages to  " + channel
                                         + " from people who are not in the channel.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has allowed messages to  " + channel
+                                    text = getPadded( nick ) + " has allowed messages to  " + channel
                                         + " from people who are not in the channel.";
                                 }
                             }
@@ -712,12 +731,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has made " + channel
+                                    text = getPadded( nick ) + " has made " + channel
                                         + " a moderated channel.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has made " + channel
+                                    text = getPadded( nick ) + " has made " + channel
                                         + " an unmoderated channel.";
                                 }
                             }
@@ -725,12 +744,12 @@ public class Server
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    text = nick + " has added the ban " + arg + " for "
+                                    text = getPadded( nick ) + " has added the ban " + arg + " for "
                                         + channel + ".";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    text = nick + " has lifted the ban " + arg + " for "
+                                    text = getPadded( nick ) + " has lifted the ban " + arg + " for "
                                         + channel + ".";
                                 }
                             }
@@ -742,13 +761,13 @@ public class Server
                                     if( polarity.equals( "+" ) )
                                     {
                                         recipient_user.addModeFlag( MODE_VOICE );
-                                        text = nick + " has given voice in "
+                                        text = getPadded( nick ) + " has given voice in "
                                             + channel + " to " + arg + ".";
                                     }
                                     else if( polarity.equals( "-" ) )
                                     {
                                         recipient_user.removeModeFlag( MODE_VOICE );
-                                        text = nick + " has taken voice in "
+                                        text = getPadded( nick ) + " has taken voice in "
                                             + channel + " from " + arg + ".";
                                     }
 
@@ -814,7 +833,7 @@ public class Server
                         }
                     }
                     
-                    String text = old_nick + " is now known as " + new_nick + ".";
+                    String text = getPadded( old_nick ) + " is now known as " + new_nick + ".";
                     qualities += " from=" + new_nick
                         + " " + FILTER_SPECIAL_CHAR + "nick";
                     windows_printed_to += display_manager.println(
@@ -925,7 +944,7 @@ public class Server
                         user.noteActivity();
                     }
                     
-                    String text = nick + " has left " + channel + " (" + message + ").";
+                    String text = getPadded( nick ) + " has left " + channel + " (" + message + ").";
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "part";
@@ -996,8 +1015,7 @@ public class Server
                         )
                         {
                             text =
-                                Util.getPadding( " ", current_nick_width )
-                                + "* " + nick
+                                getPadded( "* " + nick )
                                 + text.substring( 7, text.length() - 1 );
                             qualities += " " + FILTER_SPECIAL_CHAR + "action";
                         }
@@ -1113,27 +1131,12 @@ public class Server
                         }
                         else
                         {
-                            current_nick_width = (
-                                ( current_nick_width < nick.length() + 3 )
-                                ? nick.length() + 3
-                                : current_nick_width
-                            );
-                            
-                            int max_nick_width = settings_manager.getInt(
-                                "/gui/format/maximum nick width",
-                                DEFAULT_MAXIMUM_NICK_WIDTH
-                            );
-                            if( current_nick_width > max_nick_width )
-                            {
-                                current_nick_width = max_nick_width;
-                            }
-                            text = Util.getPadding( " ", current_nick_width - ( nick.length() + 3 ) )
-                                + "<" + nick + "> " + text;
+                            text = getPadded( "<" + nick + ">" ) + " " + text;
                         }
                     }
                     else
                     {
-                        text = "<" + nick + ">";
+                        text = getPadded( "<" + nick + ">" );
                     }
 
                     String timestamp = GeoIRC.getATimeStamp(
@@ -1155,7 +1158,7 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
 
-                    String text = nick + " has quit (" + message + ").";
+                    String text = getPadded( nick ) + " has quit (" + message + ").";
                     qualities += " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "quit";
                     
@@ -1286,7 +1289,7 @@ public class Server
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
                         + " " + channel
                         + " from=" + nick;
-                    String text = nick + " has changed the topic for " + channel + " to: " + topic;
+                    String text = getPadded( nick ) + " has changed the topic for " + channel + " to: " + topic;
                     
                     extractVariables( topic, qualities );
                     windows_printed_to += display_manager.println(
