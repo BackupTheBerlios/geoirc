@@ -12,3 +12,9 @@ Pistos 2003-08-01
 Fixed a bug where GeoIRC couldn't handle IRC servers who send notices from no
 nick in particular.
 Pistos 2003-08-05
+
+Possibly fixed the ungraceful disconnect loop bug.
+Pistos 2003-08-05
+
+stdout and stderr from the /exec command are now printed in the debug window.
+Pistos 2003-08-06

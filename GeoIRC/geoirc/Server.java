@@ -394,6 +394,7 @@ public class Server
                     if( e.getMessage().equals( "Connection reset" ) )
                     {
                         display_manager.printlnDebug( "Connection to " + Server.this.toString() + " reset." );
+                        reset = true;
                     }
                 }
             }

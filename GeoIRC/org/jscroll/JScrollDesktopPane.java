@@ -338,3 +338,4 @@ public class JScrollDesktopPane extends JPanel implements DesktopConstants {
         desktopMediator.flagContentsChanged(f);
     }
 }
+

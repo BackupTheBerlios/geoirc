@@ -94,8 +94,8 @@
           <entry key="new content button colour" value="ff0000" />
           <entry key="main frame x" value="-4" />
           <entry key="main frame y" value="-4" />
-          <entry key="main frame width" value="1288" />
-          <entry key="main frame height" value="1032" />
+          <entry key="main frame width" value="1160" />
+          <entry key="main frame height" value="872" />
           <entry key="main frame state" value="6" />
         </map>
         <node name="desktop">
@@ -166,11 +166,11 @@
               <map>
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
-                <entry key="y" value="386" />
-                <entry key="height" value="386" />
+                <entry key="y" value="0" />
+                <entry key="height" value="594" />
                 <entry key="width" value="946" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="state" value="1" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="1" />
               </map>
             </node>

@@ -27,6 +27,7 @@
 package geoirc;
 
 import com.l2fprod.gui.plaf.skin.*;
+import geoirc.util.InputStreamReaderThread;
 import geoirc.util.Util;
 import java.awt.*;
 import java.awt.event.*;
@@ -986,7 +987,16 @@ public class GeoIRC
                     Runtime rt = Runtime.getRuntime();
                     try
                     {
-                        rt.exec( arg_string );
+                        Process p = rt.exec( arg_string );
+                        InputStream stdout = p.getInputStream();
+                        InputStream stderr = p.getErrorStream();
+                        OutputStream stdin = p.getOutputStream();
+                        
+                        final BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
+                        final BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
+                        
+                        new InputStreamReaderThread( display_manager, out ).start();
+                        new InputStreamReaderThread( display_manager, err ).start();
                     }
                     catch( IOException e )
                     {
