@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import java.awt.Color;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.jscroll.*;
@@ -96,5 +97,32 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
     public JScrollPane getScrollPane()
     {
         return scroll_pane;
+    }
+    
+    public void setTitle( String new_title )
+    {
+        super.setTitle( new_title );
+        if( pane != null )
+        {
+            pane.setTitle( new_title );
+        }
+        JToggleButton button = getAssociatedButton();
+        if( button != null )
+        {
+            button.setText( new_title );
+        }
+    }
+    
+    public void setButtonColor( Color colour )
+    {
+        setButtonColour( colour );
+    }
+    public void setButtonColour( Color colour )
+    {
+        JToggleButton button = getAssociatedButton();
+        if( button != null )
+        {
+            button.setForeground( colour );
+        }
     }
 }

@@ -121,7 +121,17 @@ public class Channel
      */
     public boolean nickIsPresent( String nick )
     {
-        return( server.getUserByNick( nick ) != null );
+        boolean is_present = false;
+        User u;
+        for( int i = 0, n = members.size(); i < n; i++ )
+        {
+            if( ((User) members.elementAt( i )).getNick().equals( nick ) )
+            {
+                is_present = true;
+                break;
+            }
+        }
+        return is_present;
     }
     
     public String completeNick( String incomplete_nick, boolean decorated )

@@ -107,54 +107,28 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     {
         int offset = document.getLength();
         
-        // Tokenize this string into styled fragments.
-        
         try
         {
-            /*
-            String [] fragments = text.split( STYLE_ESCAPE_SEQUENCE );
-            String [] fragment_parts;
-            boolean first_is_styled = ( text.indexOf( STYLE_ESCAPE_SEQUENCE ) == 0 );
-            int index;
-            for( int i = 0; i < fragments.length; i++ )
-            {
-                if( ( ! first_is_styled ) && ( i == 0 ) )
-                {
-                    document.insertString(
-                        document.getLength(),
-                        fragments[ i ],
-                        text_pane.getStyle( "normal" )
-                    );
-                }
-                else
-                {
-                    index = fragments[ i ].indexOf( STYLE_TERMINATION_SEQUENCE );
-                    if( ( index > -1 ) && ( index < fragments[ i ].length() ) )
-                    {
-                        fragment_parts = fragments[ i ].split( STYLE_TERMINATION_SEQUENCE, 2 );
-                        document.insertString(
-                            document.getLength(),
-                            fragment_parts[ 1 ],
-                            text_pane.getStyle( fragment_parts[ 0 ] )
-                        );
-                    }
-                    else
-                    {
-                        document.insertString(
-                            document.getLength(),
-                            fragments[ i ],
-                            text_pane.getStyle( "normal" )
-                        );
-                    }
-                }
-            }
-             */
-            
             document.insertString( offset, text, text_pane.getStyle( "normal" ) );
         }
         catch( BadLocationException e )
         {
             display_manager.printlnDebug( e.getMessage() );
+        }
+        
+        GIWindow giw = display_manager.getSelectedFrame();
+        boolean highlight_button = true;
+        if( giw != null )
+        {
+            if( giw.getPane() == this )
+            {
+                highlight_button = false;
+            }
+        }
+        
+        if( highlight_button )
+        {
+            display_manager.highlightButton( this );
         }
         
         // Autoscroll if the user is not holding the scrollbar.
@@ -166,11 +140,6 @@ public class GITextPane extends GIPane implements GeoIRCConstants
                 {
                     public void run()
                     {   
-                        /*
-                        try {
-                            Thread.sleep( 200 );
-                        } catch( InterruptedException e ) { }
-                         */
                         scrollbar.setValue( scrollbar.getMaximum() );                   
                     }
                 }

@@ -1291,20 +1291,22 @@ public class GeoIRC
             case CMD_SET_FILTER:
                 {
                     JInternalFrame jif = display_manager.getSelectedFrame();
-                    if( jif instanceof GITextWindow )
+                    if( jif != null )
                     {
-                        GITextWindow gitw = (GITextWindow) jif;
-                        gitw.setFilter( arg_string );
+                        GIPane gip = ((GIWindow) jif).getPane();
+                        if( gip instanceof GITextPane )
+                        {
+                            ((GITextPane) gip).setFilter( arg_string );
+                        }
                     }
                 }
                 break;
             case CMD_SET_TITLE:
                 {
                     JInternalFrame jif = display_manager.getSelectedFrame();
-                    if( jif instanceof GITextWindow )
+                    if( jif != null )
                     {
-                        GITextWindow gitw = (GITextWindow) jif;
-                        gitw.setTitle( arg_string );
+                        jif.setTitle( arg_string );
                     }
                 }
                 break;

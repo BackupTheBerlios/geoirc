@@ -468,6 +468,7 @@ public class Server
                     String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
                     getUserByNick( old_nick ).setNick( new_nick );
 
+                    Channel c;
                     if( old_nick.equals( current_nick ) )
                     {
                         // Server acknowledged and allowed our nick change.
@@ -476,7 +477,9 @@ public class Server
                         int n = channels.size();
                         for( int i = 0; i < n; i++ )
                         {
-                            info_manager.acknowledgeNickChange( (Channel) channels.elementAt( i ) );
+                            c = (Channel) channels.elementAt( i );
+                            qualities += " " + c.getName();
+                            info_manager.acknowledgeNickChange( c );
                         }
                         
                         qualities += " " + FILTER_SPECIAL_CHAR + "self";
@@ -486,7 +489,6 @@ public class Server
                         // Someone else's nick changed.
                         
                         int n = channels.size();
-                        Channel c;
                         for( int i = 0; i < n; i++ )
                         {
                             c = (Channel) channels.elementAt( i );

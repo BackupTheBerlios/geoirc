@@ -7,6 +7,7 @@
 package geoirc;
 
 import javax.swing.tree.*;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -122,7 +123,7 @@ public class InfoManager
         DefaultMutableTreeNode user_node = new DefaultMutableTreeNode( u );
         channel_node.add( user_node );
         tree.reload( channel_node );
-        tree_inverse.put( u, user_node );
+
         String path = "/" + c.getServer().toString()
             + "/" + c.getName()
             + "/" + u.getNick();
@@ -133,10 +134,23 @@ public class InfoManager
     
     public void removeMember( User u, Channel c )
     {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_inverse.get( u );
-        ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
-        tree.reload( node );
-        tree_inverse.remove( u );
+        DefaultMutableTreeNode channel_node = (DefaultMutableTreeNode) tree_inverse.get( c );
+        if( channel_node != null )
+        {
+            Enumeration users = channel_node.children();
+            DefaultMutableTreeNode user_node;
+            while( users.hasMoreElements() )
+            {
+                user_node = (DefaultMutableTreeNode) users.nextElement();
+                if( ((User) user_node.getUserObject()).equals( u ) )
+                {
+                    channel_node.remove( user_node );
+                    break;
+                }
+            }
+            tree.reload( channel_node );
+        }
+        
         String path = "/" + c.toString()
             + "/" + c.getName()
             + "/" + u.getNick();

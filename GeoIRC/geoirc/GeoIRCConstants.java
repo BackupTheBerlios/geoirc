@@ -231,4 +231,6 @@ public interface GeoIRCConstants
         "lasturl"
     };
     static final int VAR_LAST_URL = 0;
+    
+    static final java.awt.Color DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR = new java.awt.Color( 0, 0, 0 );
 }

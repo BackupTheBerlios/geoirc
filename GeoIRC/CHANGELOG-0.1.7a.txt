@@ -1,0 +1,10 @@
+
+Fixed "channel messages appearing in all windows" bug.
+Pistos 2003-07-21
+
+User nick changes now appear in channel windows as well.
+Pistos 2003-07-21
+
+Window buttons now get their text coloured when new content appears while the
+window is out of focus.
+Pistos 2003-07-22

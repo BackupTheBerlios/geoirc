@@ -42,4 +42,9 @@ public class GIPane extends JScrollPane
     {
         return title;
     }
+    
+    public void setTitle( String new_title )
+    {
+        title = new_title;
+    }
 }

@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.util.Util;
 import java.awt.*;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -490,6 +491,31 @@ public class DisplayManager
         addNewWindow( window );
     }
     
+    public void highlightButton( GIPane pane )
+    {
+        GIWindow window;
+        for( int i = 0, n = windows.size(); i < n; i++ )
+        {
+            window = (GIWindow) windows.elementAt( i );
+            if( window.getPane() == pane )
+            {
+                JToggleButton button = window.getAssociatedButton();
+                if( button != null )
+                {
+                    int [] rgb = Util.getRGB(
+                        settings_manager.getString(
+                            "/gui/new content button colour",
+                            "ff0000"
+                        )
+                    );
+                    Color colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
+                    button.setForeground( colour );
+                }
+                break;
+            }
+        }
+    }
+    
     /* ************************************************************
      * Listener Implementations
      */
@@ -497,6 +523,12 @@ public class DisplayManager
     public void internalFrameActivated( InternalFrameEvent e )
     {
         last_activated_frame = e.getInternalFrame();
+        GIWindow window = (GIWindow) e.getSource();
+        JToggleButton button = window.getAssociatedButton();
+        if( button != null )
+        {
+            button.setForeground( DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR );
+        }
     }
     
     public void internalFrameClosed(InternalFrameEvent e)

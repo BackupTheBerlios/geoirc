@@ -51,6 +51,9 @@
             <entry key="expansion" value="exec C:\Program Files\Opera7\opera.exe %lasturl" />
           </map>
         </node>
+        <node name="7">
+          <map />
+        </node>
       </node>
       <node name="config">
         <map>
@@ -95,6 +98,7 @@
           <entry key="start maximized" value="True" />
           <entry key="windowbar position" value="top" />
           <entry key="nudge amount" value="28" />
+          <entry key="new content button colour" value="ff0000" />
         </map>
         <node name="desktop">
           <map />
@@ -156,7 +160,7 @@
                 <entry key="height" value="399" />
                 <entry key="width" value="1091" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
