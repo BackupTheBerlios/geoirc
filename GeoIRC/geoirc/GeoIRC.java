@@ -10,6 +10,7 @@ import com.l2fprod.gui.plaf.skin.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.prefs.*;
 import java.util.StringTokenizer;
@@ -63,7 +64,7 @@ public class GeoIRC
     
     protected Vector servers; // of Server objects
     protected DisplayManager display_manager;
-    protected Preferences myPrefs;
+    protected SettingsManager settings_manager;
 
     protected LinkedList input_history;
     protected int input_history_pointer;
@@ -74,9 +75,15 @@ public class GeoIRC
     
     // SETMGR
     protected String current_nick;
+
+    /* **************************************************************** */
     
-    /** Creates new form GeoIRC */
     public GeoIRC()
+    {
+        this( DEFAULT_SETTINGS_FILEPATH );
+    }
+    
+    public GeoIRC( String settings_filepath )
     {
         initComponents();
 
@@ -94,16 +101,16 @@ public class GeoIRC
         display_manager = new DisplayManager( getContentPane(), menu_bar );
         setFocusable( false );
         
-        SettingsManager myMgr = new SettingsManager(display_manager);
-        myMgr.reloadXML();
-        myPrefs = Preferences.userNodeForPackage(GeoIRC.class);
-        myPrefs = myPrefs.node("personal");
-        current_nick = myPrefs.get("PrimaryNick", "GeoIRC_Guest");
-        //current_nick = "Pistos|GeoIRC";
-        
-
         // Load settings.
         
+        settings_manager = new SettingsManager(
+            display_manager,
+            ( settings_filepath == null ) ? DEFAULT_SETTINGS_FILEPATH : settings_filepath
+        );
+        settings_manager.loadSettingsFromXML();
+        
+        current_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
+
         // Map input (keystrokes, mouseclicks, etc.)
         
         input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_UP, 0 ), "UP" );
@@ -125,7 +132,7 @@ public class GeoIRC
         
         return s;
     }
-        
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -447,22 +454,73 @@ public class GeoIRC
     {
         Skin skin = null;
         
-        if( args.length > 0 )
+        int skin_index = -1;
+        String [] skins = new String[ 2 ];
+        String settings_filepath = null;
+        
+        try
+        {
+            for( int i = 0; i < args.length; i++ )
+            {
+                if(
+                    ( args[ i ].equals( "-c" ) )
+                    || ( args[ i ].equals( "--config" ) )
+                )
+                {
+                    i++;
+                    if( i == args.length )
+                    {
+                        throw new BadArgumentsException( "settings filepath expected" );
+                    }
+
+                    settings_filepath = args[ i ];
+                }
+                else if(
+                    ( args[ i ].equals( "-s" ) )
+                    || ( args[ i ].equals( "--skin" ) )
+                )
+                {
+                    i++;
+                    if( i == args.length )
+                    {
+                        throw new BadArgumentsException( "skin rc filepath expected" );
+                    }
+
+                    skin_index++;
+                    if( skin_index > 1 )
+                    {
+                        throw new BadArgumentsException( "only as many as two skin rc's can be specified" );
+                    }
+                    
+                    skins[ skin_index ] = args[ i ];
+                }
+            }
+        }
+        catch( BadArgumentsException e )
+        {
+            System.err.println( e.getMessage() );
+            System.out.println( "Usage:" );
+            System.out.println( "java -classpath skinlf.jar;. geoirc.GeoIRC [options]" );
+            System.out.println( "\t-c, --config\t<settings filepath>" );
+            System.out.println( "\t-s, --skin\t<skin rc file>  (up to two can be specified)" );
+        }
+        
+        if( skin_index > -1 )
         {
             try
             {
-                if( args.length > 1 )
+                if( skin_index == 1 )
                 {
-                    
                     skin = new CompoundSkin(
-                        SkinLookAndFeel.loadSkin( args[ 0 ] ),
-                        SkinLookAndFeel.loadSkin( args[ 1 ] )
+                        SkinLookAndFeel.loadSkin( skins[ 0 ] ),
+                        SkinLookAndFeel.loadSkin( skins[ 1 ] )
                     );
                 }
-                else
+                else // if( skin_index == 0 )
                 {
                     skin = SkinLookAndFeel.loadSkin( args[ 0 ] );
                 }
+
                 SkinLookAndFeel.setSkin( skin );
                 UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
                 UIManager.setLookAndFeel( new SkinLookAndFeel() );
@@ -473,10 +531,10 @@ public class GeoIRC
             }
         }
         
-        GeoIRC geoirc = new GeoIRC();
+        GeoIRC geoirc = new GeoIRC( settings_filepath );
         geoirc.setExtendedState( MAXIMIZED_BOTH );
 
-        geoirc.execute( "newserver irc.freenode.net 6667" );
+        //geoirc.execute( "newserver irc.freenode.net 6667" );
         geoirc.show();
     }
         

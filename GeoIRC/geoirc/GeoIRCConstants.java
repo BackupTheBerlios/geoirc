@@ -46,4 +46,5 @@ public interface GeoIRCConstants
      *
      */
     
+    static final String DEFAULT_SETTINGS_FILEPATH = "./settings.xml";
 }

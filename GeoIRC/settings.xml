@@ -9,22 +9,24 @@
       <map />
       <node name="personal">
       	<map>
-     	  <entry key="PrimaryNick" value="livesN[GeoIRC]" />
-     	  <entry key="SecondaryNick" value="livesNgeoIRC" />
-     	  <entry key="TertiaryNick" value="livesN[GeoIRC]_" />
+     	  <entry key="nick1" value="Pistos|GeoIRC" />
+     	  <entry key="nick2" value="Pistos[GeoIRC]" />
+     	  <entry key="nick3" value="Pistos_GeoIRC" />
      	</map>
       </node>
       <node name="GUI">
         <map>
-          <entry key="Skin" value="c:\geoirc\skins\default2\" />
-          <entry key="Font" value="Impact,12" />
-          <entry key="StartMaximized" value="False" />
+          <entry key="skin1" value="themes\aqua\gtk\gtkrc" />
+          <entry key="skin2" value="themes\aqua\kde\kde.themerc" />
+          <entry key="font face" value="Lucida Console" />
+          <entry key="font size" value="14" />
+          <entry key="start maximized" value="True" />
         </map>
       </node>
       <node name="config">
         <map>
-          <entry key="DefaultDownloadDirectory" value="c:\geoirc\downloads\" />
-          <entry key="AutoReceive" value="False" />
+          <entry key="default download directory" value="downloads\" />
+          <entry key="confirm receive" value="true" />
         </map>
       </node>
     </node>
