@@ -83,13 +83,14 @@ public class Channel implements GeoIRCConstants
      */
     public void setChannelMembership( Vector new_member_list )
     {
-        info_manager.removeAllMembers( this );
+        //info_manager.removeAllMembers( this );
         addToChannelMembership( new_member_list );
     }
 
     public void addToChannelMembership( Vector new_member_list )
     {
-        members = new_member_list;
+        //members = new_member_list;
+        members.addAll( new_member_list );
         for( int i = 0, n = members.size(); i < n; i++ )
         {
             ( (User) members.elementAt( i ) ).lock( this );
@@ -242,22 +243,27 @@ public class Channel implements GeoIRCConstants
         if( user != null )
         {
             int old_index = members.indexOf( user );
-            sortMembers();
-            int new_index = members.indexOf( user );
-            info_manager.acknowledgeUserChange( this, user, new_index );
-            
-            if(
-                ( sort_order == SORT_TIME_SINCE_LAST_ASCENDING )
-                && ( old_index == new_index )
-                && ( old_index != 0 )
-            )
+            if( old_index >= 0 )
             {
-                display_manager.printlnDebug(
-                    "Warning: Member position unchanged after sort ("
-                    + Integer.toString( old_index ) + ")"
-                );
-            }
-            
+                sortMembers();
+                int new_index = members.indexOf( user );
+                info_manager.acknowledgeUserChange( this, user, new_index );
+
+                if(
+                    ( sort_order == SORT_TIME_SINCE_LAST_ASCENDING )
+                    && ( old_index == new_index )
+                    && ( old_index != 0 )
+                )
+                {
+                    display_manager.printlnDebug(
+                        "Warning: " + user.getNick()
+                        + " position unchanged in "
+                        + name
+                        + " after sort ("
+                        + Integer.toString( old_index ) + ")"
+                    );
+                }
+            } // else, could be ChanServ or something doing something in the channel
         }
     }
     
