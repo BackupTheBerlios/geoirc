@@ -1,5 +1,5 @@
 /*
- * SettingsManager2.java
+ * BaseXmlHandler.java
  * 
  * Created on 09.08.2003
  */
@@ -175,7 +175,7 @@ public class BaseXmlHandler implements XmlProcessable
 		if (autoSave == true)
 			saveSettingsToXML();
 	}
-
+    
 	/**
 	 * @param key
 	 * @param value
@@ -185,6 +185,11 @@ public class BaseXmlHandler implements XmlProcessable
 		set(key, String.valueOf(value));
 	}
 
+    public void putInt(String key, int value)
+    {
+        setInt(key, value);
+    }
+    
 	/**
 	 * @param key
 	 * @param value
@@ -193,6 +198,11 @@ public class BaseXmlHandler implements XmlProcessable
 	{
 		set(key, String.valueOf(value));
 	}
+    
+    public void putBoolean(String key, boolean value)
+    {
+        setBoolean(key, value);
+    }
 
 	/**
 	 * @param key
@@ -202,6 +212,11 @@ public class BaseXmlHandler implements XmlProcessable
 	{
 		set(key, value);
 	}
+    
+    public void putString(String key, String value)
+    {
+        setString(key, value);
+    }
 
 	/**
 	 * @param key
