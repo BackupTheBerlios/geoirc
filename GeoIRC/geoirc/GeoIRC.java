@@ -30,7 +30,8 @@ public class GeoIRC
         ActionListener,
         CommandExecutor,
         PreferenceChangeListener,
-        NodeChangeListener
+        NodeChangeListener,
+        FocusListener
 {
     public static final String [] CMDS =
     {
@@ -139,13 +140,14 @@ public class GeoIRC
 
         initComponents();
 
-        input_field.addActionListener( this );
         input_field.grabFocus();
+        input_field.addActionListener( this );
         input_field.setFont( new Font(
             settings_manager.getString( "/gui/input field/font face", "Lucida Console" ),
             Font.PLAIN,
             settings_manager.getInt( "/gui/input field/font size", 14 )
         ) );
+        input_field.addFocusListener( this );
         input_map = input_field.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
         action_map = input_field.getActionMap();
         
@@ -161,7 +163,9 @@ public class GeoIRC
         
         this.setTitle( "GeoIRC" );
         
-        display_manager = new DisplayManager( getContentPane(), menu_bar, settings_manager );
+        display_manager = new DisplayManager(
+            getContentPane(), menu_bar, settings_manager
+        );
         display_manager.printlnDebug( skin_errors );
         
         // Read settings.
@@ -356,6 +360,21 @@ public class GeoIRC
     
     public void preferenceChange( PreferenceChangeEvent evt )
     {
+    }
+    
+    public void focusGained( FocusEvent e ) { }
+    public void focusLost( FocusEvent e )
+    {
+        Component thief = e.getOppositeComponent();
+        while( ( thief != null ) && ( thief != menu_bar ) )
+        {
+            thief = thief.getParent();
+        }
+        
+        if( e.getOppositeComponent() != menu_bar )
+        {
+            input_field.grabFocus();
+        }
     }
     
     /* *********************************************************************
@@ -608,7 +627,7 @@ public class GeoIRC
         
         GeoIRC geoirc = new GeoIRC( settings_filepath );
     }
-        
+            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu file_menu;
     private javax.swing.JTextField input_field;
