@@ -74,19 +74,15 @@ import java.util.regex.Pattern;
 
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import org.python.core.PyMethod;
 import org.python.core.PyString;
-
-import com.l2fprod.gui.plaf.skin.CompoundSkin;
-import com.l2fprod.gui.plaf.skin.Skin;
-import com.l2fprod.gui.plaf.skin.SkinLookAndFeel;
 
 /**
  *
@@ -143,6 +139,7 @@ public class GeoIRC
     protected Set conversation_words;
     
     protected boolean mouse_button_depressed;
+    protected boolean use_skinning;
     
     /* **************************************************************** */
     
@@ -154,6 +151,7 @@ public class GeoIRC
     public GeoIRC( String settings_filepath )
     {
         listening_to_connections = false;
+        use_skinning = false;
         
         // Settings.
         
@@ -270,57 +268,23 @@ public class GeoIRC
     {
         i18n_manager = new I18nManager( settings_manager );
         
-        // Apply skin, if any specified.
-        
-        if( settings_manager.getBoolean( "/modules/skinning", false ) == true )
+        // Apply skin, if any specified.        
+        String skin1 = settings_manager.getString( "/gui/skin1", null );
+        String skin2 = settings_manager.getString( "/gui/skin2", null );
+
+        try
         {
-            String skin1 = settings_manager.getString( "/gui/skin1", null );
-            String skin2 = settings_manager.getString( "/gui/skin2", null );
-            String skin_errors = "";
-
-            try
-            {
-                Skin skin = null;
-
-                if( ( skin1 != null ) && ( skin2 != null ) )
-                {
-                    skin = new CompoundSkin(
-                        SkinLookAndFeel.loadSkin( skin1 ),
-                        SkinLookAndFeel.loadSkin( skin2 )
-                    );
-                }
-                else if( skin1 != null )
-                {
-                    skin = SkinLookAndFeel.loadSkin( skin1 );
-                    skin_errors += i18n_manager.getString( "no second skin" );
-                }
-                else
-                {
-                    skin_errors += i18n_manager.getString( "no skins" );
-                }
-
-                if( skin != null )
-                {
-                    SkinLookAndFeel.setSkin( skin );
-                    UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-                    UIManager.setLookAndFeel( new SkinLookAndFeel() );
-                    skin_errors += i18n_manager.getString( "skin applied" );
-                }
-                else
-                {
-                    skin_errors += i18n_manager.getString( "no skin applied" );
-                }
-            }
-            catch( Exception e )
-            {
-                skin_errors += i18n_manager.getString( "skin failure" );
-                if( skin1 != null ) { skin_errors += "(" + skin1 + ")\n"; }
-                if( skin2 != null ) { skin_errors += "(" + skin2 + ")\n"; }
-                skin_errors += e.getMessage() + "\n";
-            }
-
-            display_manager.printlnDebug( skin_errors );
+            Class.forName("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+            SkinManager skin_manager = new SkinManager();
+            skin_manager.applySkin(skin1, skin2, i18n_manager);
+            display_manager.printlnDebug( skin_manager.getSkinMessages() );
+            use_skinning = true;
         }
+        catch (ClassNotFoundException e)
+        {
+            display_manager.printlnDebug( "SkinLF library not found. If you want to use skins install SkinLF from http://www.l2fprod.com." );
+            use_skinning = false;
+        }            
 
         // GUI
         
@@ -418,8 +382,7 @@ public class GeoIRC
         python_script_interface = null;
         
         if( settings_manager.getBoolean( "/modules/python", false ) == true )
-        {
-            
+        {            
             try
             {
                 Class python_script_interface_class = Class.forName( "geoircscripting.PythonScriptInterfaceClass" );
@@ -1167,8 +1130,8 @@ public class GeoIRC
             Component thief = e.getOppositeComponent();
         
             if(
-                ( settings_manager.getBoolean( "/modules/skinning", false ) == true )
-                && ( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
+                ( use_skinning == true )
+                && ( thief instanceof JButton )
             )
             {
                 SwingUtilities.invokeLater( new Runnable()
