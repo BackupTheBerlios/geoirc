@@ -80,6 +80,7 @@ public class Server
             socket = new Socket( hostname, port );
             if( socket != null )
             {
+                /*
                 if( reader != null )
                 {
                     while( reader.isAlive() )
@@ -89,6 +90,9 @@ public class Server
                         } catch( InterruptedException e ) { }
                     }
                 }
+                 */
+                
+                current_nick = nick_to_use;
                 
                 reader = new ServerReader( 
                     new BufferedReader(
@@ -105,14 +109,9 @@ public class Server
                 out.println( "NICK " + nick_to_use );
                 out.println(
                     "USER "
-                    + settings_manager.getString( "/personal/ident/username", "pistos" )
+                    + settings_manager.getString( "/personal/ident/username", "geoircuser" )
                     + " x x :Pi Gi" );
                 
-                // TODO: We'll setup some way to find out when the server
-                // acknowledges that our nick is okay to use,
-                // and when it sends us the "in use" error right away once
-                // we sign on.
-                current_nick = nick_to_use;
             }
         }
         catch( UnknownHostException e )
@@ -552,7 +551,62 @@ public class Server
             {
                 String qualities = transformed_message[ 1 ];
                 
-                if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
+                if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_ERR_NICKNAMEINUSE ] ) )
+                {
+                    display_manager.printlnDebug( "Current nick: '" + current_nick + "'" );
+                    
+                    int nick_index = 1;
+                    String another_nick;
+                    while( GOD_IS_GOOD )
+                    {
+                        another_nick = settings_manager.getString(
+                            "/personal/nick" + Integer.toString( nick_index ),
+                            ""
+                        );
+                        
+                        display_manager.printlnDebug( "Another nick: '" + another_nick + "'" );
+                        
+                        if( another_nick.equals( current_nick ) )
+                        {
+                            nick_index++;
+                            another_nick = settings_manager.getString(
+                                "/personal/nick" + Integer.toString( nick_index ),
+                                ""
+                            );
+                            if( another_nick.equals( "" ) )
+                            {
+                                another_nick = current_nick;
+                                display_manager.printlnDebug( "No more alternate nicks." );
+                            }
+                            break;
+                        }
+                        else if( another_nick.equals( "" ) )
+                        {
+                            // Current nick is not any of the nicks in the settings.
+                            current_nick = settings_manager.getString(
+                                "/personal/nick1",
+                                ""
+                            );
+                            break;
+                        }
+                        else
+                        {
+                            display_manager.printlnDebug(
+                                "'" + current_nick + "' is not equal to '"
+                                + current_nick + "'"
+                            );
+                        }
+                        
+                        nick_index++;
+                    }
+                    
+                    if( ! another_nick.equals( "" ) )
+                    {
+                        send( "NICK " + another_nick );
+                    }
+                    
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ].toLowerCase();
