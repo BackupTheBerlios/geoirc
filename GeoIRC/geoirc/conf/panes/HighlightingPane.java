@@ -77,6 +77,8 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
         table = new JValidatingTable(ltm, validation_listener);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setColumnSelectionAllowed( false );
+        table.setRowSelectionAllowed( true );        
         table.setRowHeight(18);
         colorRule = rules.getValueRule("COLOR");
         ltm.setData(getHighlightings());
@@ -125,6 +127,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
                 Object target = ltm.getRow(pos - 1);
                 ltm.setRow(pos - 1,ltm.getRow(pos));
                 ltm.setRow(pos, target);
+                table.setRowSelectionInterval(pos - 1, pos - 1);                
             }
         });
 
@@ -136,6 +139,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
                 Object target = ltm.getRow(pos + 1);
                 ltm.setRow(pos + 1,ltm.getRow(pos));
                 ltm.setRow(pos, target);
+                table.setRowSelectionInterval(pos + 1, pos + 1);                
             }
         });
 
@@ -147,6 +151,10 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             {
                 int pos = table.getSelectedRow();
                 ltm.delRow(pos);
+                if( table.getRowCount() > 0 )
+                {
+                    table.setRowSelectionInterval(pos - 1, pos - 1);
+                }                                
             }
         });
 
@@ -155,7 +163,9 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         {
             public void actionPerformed(ActionEvent arg0)
             {
+                int count = table.getRowCount() - 1;
                 ltm.addRow(new Highlighting("", ".*", colorRule.getValue().toString()));
+                table.setRowSelectionInterval(count, count);                
             }
         });
 
