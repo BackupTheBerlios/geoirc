@@ -14,6 +14,7 @@ package geoirc;
  */
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -126,7 +127,35 @@ public class SettingsManager
         {
             try {
                 root.flush();
-                root.exportSubtree(new FileOutputStream( filepath ));
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream( filepath )); 
+                root.exportSubtree( out );
+                out.close();
+                success = true;
+            } catch (IOException e) {
+                printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
+            } catch (BackingStoreException e) {
+                printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
+            }
+        }
+        else
+        {
+            printlnDebug( "Settings not saved due to previous settings load failure." );
+        }
+        
+        return success;
+    }
+
+    public boolean saveSettingsToXML(String filepath)
+    {
+        boolean success = false;
+        
+        if( ! any_load_failure )
+        {
+            try {
+                root.flush();
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream( filepath )); 
+                root.exportSubtree( out );
+                out.close();
                 success = true;
             } catch (IOException e) {
                 printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");

@@ -7,7 +7,8 @@ package geoirc.conf;
 
 import geoirc.DisplayManager;
 import geoirc.GeoIRC;
-import geoirc.XmlProcessable;
+import geoirc.SettingsManager;
+import geoirc.util.ExtensionFileFilter;
 import geoirc.util.LayoutUtil;
 
 import java.awt.BorderLayout;
@@ -20,6 +21,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +33,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
@@ -46,7 +51,7 @@ import javax.swing.tree.TreeSelectionModel;
 public class SettingsDialog extends JDialog implements TreeSelectionListener, WindowListener
 {
     static public String SETTINGS_PATH = "/gui/settings gui/";
-    private XmlProcessable settings_manager;
+    private SettingsManager settings_manager;
     private JPanel mainPanel = new JPanel();
     private JPanel ButtonPanel = new JPanel();
     private JToolBar toolbar = new JToolBar();
@@ -72,9 +77,9 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
      * @param settings_manager the settings manager used to load and save settings
      * @param display_manager display manager, used for debug logging
      */
-    public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
+    public SettingsDialog(String title, SettingsManager settings_manager, DisplayManager display_manager)
     {
-        super(display_manager.getGeoIRCInstance(), title );
+        super(display_manager.getGeoIRCInstance(), title);
 
         this.parent = display_manager.getGeoIRCInstance();
         this.settings_manager = settings_manager;
@@ -115,27 +120,11 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             addWindowListener(this);
             initComponents();
-            //pack();
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
-
-        /*        
-        this.addWindowFocusListener(new WindowFocusListener()
-        {
-            public void windowGainedFocus(WindowEvent arg0)
-            {
-            }
-
-            public void windowLostFocus(WindowEvent arg0)
-            {
-                requestFocus( true );
-            }
-            
-        });
-        */
     }
 
     /**
@@ -143,12 +132,11 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
      * @param settings_manager the settings manager used to load and save settings
      * @param display_manager display manager, used for debug logging
      */
-    public SettingsDialog(XmlProcessable settings_manager, DisplayManager display_manager)
+    public SettingsDialog(SettingsManager settings_manager, DisplayManager display_manager)
     {
         this("GeoIRC Settings", settings_manager, display_manager);
     }
 
-    
     /* (non-Javadoc)
      * @see javax.swing.JDialog#createRootPane()
      */
@@ -199,10 +187,10 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         ButtonPanel.setLayout(flowLayout1);
 
         getContentPane().setLayout(borderLayout1);
-                
-        toolbar.setFloatable( false );
-        addToolBarButtons( toolbar );
-        getContentPane().add(toolbar, BorderLayout.NORTH);        
+
+        toolbar.setFloatable(false);
+        addToolBarButtons(toolbar);
+        getContentPane().add(toolbar, BorderLayout.NORTH);
 
         //left category tree
         categoryTree = buildCategoryTree();
@@ -216,10 +204,10 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         jSplitPane1.setMinimumSize(new Dimension());
         jSplitPane1.setContinuousLayout(true);
         jSplitPane1.setOneTouchExpandable(true);
-        jSplitPane1.setDividerSize( 6 );
-        jSplitPane1.setResizeWeight( 0.0 );
-        flowLayout1.setAlignment(FlowLayout.RIGHT);       
-        getContentPane().add(mainPanel, BorderLayout.CENTER);        
+        jSplitPane1.setDividerSize(6);
+        jSplitPane1.setResizeWeight(0.0);
+        flowLayout1.setAlignment(FlowLayout.RIGHT);
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
         mainPanel.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(scrollTree, JSplitPane.LEFT);
         jSplitPane1.add(new JScrollPane(rootPane), JSplitPane.RIGHT);
@@ -233,20 +221,84 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         open();
     }
 
-    private void addToolBarButtons( JToolBar bar )
+    private void addToolBarButtons(JToolBar bar)
     {
-        JButton rexpdlg_button = LayoutUtil.getSafeImageButton(SettingsDialog.class.getResource("images/regexp_wizard.png"), null, "Regular Expression Wizard", 24, 24);
-        JButton ex_settings_button = LayoutUtil.getSafeImageButton(SettingsDialog.class.getResource("images/settings_export.png"), null, "Backup Settings", 24, 24);
-        JButton imp_settings_button = LayoutUtil.getSafeImageButton(SettingsDialog.class.getResource("images/settings_import.png"), null, "Restore Settings", 24, 24);
-               
-        rexpdlg_button.addActionListener( new RegexTesterActionAdapter( this ));        
-              
-        bar.add( ex_settings_button );
-        bar.add( imp_settings_button );
-        bar.addSeparator();        
-        bar.add( rexpdlg_button );        
+        JButton rexpdlg_button =
+            LayoutUtil.getSafeImageButton(
+                SettingsDialog.class.getResource("images/regexp_wizard.png"),
+                null,
+                "Regular Expression Wizard",
+                24,
+                24);
+        JButton ex_settings_button =
+            LayoutUtil.getSafeImageButton(
+                SettingsDialog.class.getResource("images/settings_export.png"),
+                null,
+                "Backup Settings",
+                24,
+                24);
+        JButton imp_settings_button =
+            LayoutUtil.getSafeImageButton(
+                SettingsDialog.class.getResource("images/settings_import.png"),
+                null,
+                "Restore Settings",
+                24,
+                24);
+
+        rexpdlg_button.addActionListener(new RegexTesterActionAdapter(this));
+
+        ex_settings_button.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                Date date = new Date();
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+
+                StringBuffer file_name = new StringBuffer("settings_");
+                file_name.append(format.format(date));
+                file_name.append(".xml");
+
+                final JFileChooser chooser = new JFileChooser(".");
+                chooser.setSelectedFile(new File(file_name.toString()));
+                chooser.setDialogTitle("Export settings");
+                chooser.setFileFilter(new ExtensionFileFilter("xml"));
+                chooser.setAcceptAllFileFilterUsed(false);
+                int ret = chooser.showSaveDialog(SettingsDialog.this);
+
+                if (ret == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null)
+                {
+                    File file = chooser.getSelectedFile();
+
+                    if (file.exists())
+                    {
+                        int result =
+                            JOptionPane.showConfirmDialog(
+                                SettingsDialog.this,
+                                "The selected file does already exist. Overwrite?",
+                                "File already exists",
+                                JOptionPane.YES_NO_OPTION);
+                        if (result != JOptionPane.YES_OPTION)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (!settings_manager.saveSettingsToXML(file.getPath()))
+                    {
+                        JOptionPane.showMessageDialog(
+                            SettingsDialog.this,
+                            "An error occured during export. Settings could not be exported.");
+                    }
+                }
+            }
+        });
+
+        bar.add(ex_settings_button);
+        bar.add(imp_settings_button);
+        bar.addSeparator();
+        bar.add(rexpdlg_button);
     }
-        
+
     /**
      * @param panels
      * @return
@@ -569,10 +621,10 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         }
     }
 
-    public void setVisible( boolean visible )
+    public void setVisible(boolean visible)
     {
-        super.setVisible( visible );
-        requestFocus( true );
+        super.setVisible(visible);
+        requestFocus(true);
     }
 }
 
@@ -630,7 +682,7 @@ class RegexTesterActionAdapter implements java.awt.event.ActionListener
     }
     public void actionPerformed(ActionEvent e)
     {
-        final RegularExpressionTester tester = new RegularExpressionTester( adaptee, JOptionPane.YES_NO_OPTION );
-        tester.setVisible( true );
+        final RegularExpressionTester tester = new RegularExpressionTester(adaptee, JOptionPane.YES_NO_OPTION);
+        tester.setVisible(true);
     }
 }

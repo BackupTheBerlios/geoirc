@@ -53,3 +53,6 @@ Pistos 2003-10-03
 Fixed bug where receiving a RPL_NAMREPLY which had a user that we already had
 in our channel membership would cause a deadlock.
 Pistos 2003-10-03
+
+Added an option to settings gui for exporting backups of the current settings
+netseeker 2003-10-06
