@@ -7,6 +7,7 @@
 package geoirc;
 
 //import com.antelmann.sound.*;
+import geoirc.util.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.io.*;

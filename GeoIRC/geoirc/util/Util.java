@@ -4,7 +4,7 @@
  * Created on June 27, 2003, 9:36 AM
  */
 
-package geoirc;
+package geoirc.util;
 
 import java.util.*;
 

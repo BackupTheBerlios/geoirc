@@ -7,6 +7,7 @@
 package geoirc;
 
 import com.l2fprod.gui.plaf.skin.*;
+import geoirc.util.Util;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;

@@ -129,7 +129,9 @@ public class DisplayManager
         {
             actual_title = "";
         }
-        GITextWindow text_window = new GITextWindow( this, settings_manager, title, filter/*, rm */);
+        GITextWindow text_window = new GITextWindow(
+            this, settings_manager, style_manager, title, filter/*, rm */
+        );
 
         if( last_added_frame_x < MAX_NEW_WINDOW_X )
         {
@@ -178,7 +180,7 @@ public class DisplayManager
     
     public void printlnDebug( String line )
     {
-        println( line, "debug", "normal" );
+        println( line, "debug" );
     }
     
     public void println( String line, String qualities )

@@ -89,7 +89,6 @@ public class StyleManager
                         }
                         arg = format.substring( c, 6 );
                         c += 6;
-                        int red = 
                     }
                     else if( code.equals( STYLE_BACKGROUND ) )
                     {
@@ -120,7 +119,7 @@ public class StyleManager
 
     public void initializeTextPane( JTextPane text_pane )
     {
-        for( int i = 0; i < styles_names.length; i++ )
+        for( int i = 0; i < style_names.length; i++ )
         {
             text_pane.addStyle( style_names[ i ], styles.getStyle( style_names[ i ] ) );
         }

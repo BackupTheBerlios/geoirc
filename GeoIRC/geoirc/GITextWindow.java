@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.util.*;
 import java.awt.*;
 import java.beans.PropertyVetoException;
 import java.util.StringTokenizer;
@@ -37,12 +38,14 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
     public GITextWindow(
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        StyleManager style_manager,
         String title
     )
     {
         this(
             display_manager,
             settings_manager,
+            style_manager,
             title,
             (String) null
         /*, (RemoteMachine) null */ );
@@ -110,40 +113,14 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
     
     synchronized public void append( String text )
     {
-        // Split this string into fragments along the style markings.
-        
-        StringTokenizer st = new StringTokenizer( text, Character.toString( STYLE_ESCAPE_CHAR ) );
-        boolean has_escape_char = ( text.charAt( 0 ) == STYLE_ESCAPE_CHAR );
-        String fragment;
-        
-        while( st.hasMoreTokens() )
+        try
         {
-            fragment = st.nextToken();
-            
-            if( has_escape_char )
-            {
-                String control_string = fragment.substring( 0, fragment.indexOf( STYLE_TERMINATOR_CHAR ) );
-            }
-            else
-            {
-                has_escape_char = true;
-            }
-        
-            Style style = text_pane.getStyle( style_string );
-            if( style == null )
-            {
-                style = default_style;
-            }
-
-            try
-            {
-                document.insertString( document.getLength(), text, style );
-            }
-            catch( BadLocationException e )
-            {
-                e.printStackTrace();
-            }
-        }        
+            document.insertString( document.getLength(), text, style );
+        }
+        catch( BadLocationException e )
+        {
+            display_manager.printlnDebug( e.getMessage() );
+        }
 
         SwingUtilities.invokeLater(
             new Runnable()

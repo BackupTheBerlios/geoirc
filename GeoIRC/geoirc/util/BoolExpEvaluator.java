@@ -4,7 +4,7 @@
  * Created on June 25, 2003, 6:30 AM
  */
 
-package geoirc;
+package geoirc.util;
 
 import java.util.Vector;
 import java.util.StringTokenizer;

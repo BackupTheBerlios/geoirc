@@ -4,7 +4,7 @@
  * Created on June 25, 2003, 7:11 AM
  */
 
-package geoirc;
+package geoirc.util;
 
 /**
  *
