@@ -19,6 +19,7 @@ public class LogManager implements GeoIRCConstants
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
     protected String log_path;
+    protected boolean initializing;
     
     // No default constructor
     private LogManager() { }
@@ -31,6 +32,7 @@ public class LogManager implements GeoIRCConstants
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         loggers = new Vector();
+        initializing = true;
         
         log_path = settings_manager.getString(
             "/logs/default log path", DEFAULT_LOG_PATH
@@ -74,6 +76,8 @@ public class LogManager implements GeoIRCConstants
             
             i++;
         }
+        
+        initializing = false;
     }
     
     public void log( String message, String qualities )
@@ -111,7 +115,10 @@ public class LogManager implements GeoIRCConstants
             );
             loggers.add( logger );
             
-            recordLoggers();
+            if( ! initializing )
+            {
+                recordLoggers();
+            }
             
             display_manager.printlnDebug( "Logging begun for:" );
             display_manager.printlnDebug( "   File: " + file );
