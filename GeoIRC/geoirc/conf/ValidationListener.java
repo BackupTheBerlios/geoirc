@@ -22,7 +22,7 @@ public abstract class ValidationListener implements PropertyChangeListener
     {
         boolean isvalid;
 
-        if (evt.getPropertyName().equals(VALIDATION_RESULT))
+        if ( evt.getPropertyName().equals(VALIDATION_RESULT) && (evt.getOldValue().equals(evt.getNewValue()) == false) )
         {
             isvalid = Boolean.valueOf(evt.getNewValue().toString()).booleanValue();
             validationPerformed(evt.getSource(), isvalid);
