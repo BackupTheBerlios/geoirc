@@ -42,3 +42,5 @@ Pistos 2003-07-06
 Fixed/Changed the getSelectedChannel code, as it didn't return the correct
 channel when you had more than one channel window open.
 Pistos 2003-07-06
+
+Added support for parsing JOIN and PART messages.

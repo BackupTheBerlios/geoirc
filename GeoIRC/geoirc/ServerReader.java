@@ -74,10 +74,9 @@ public class ServerReader
         {
             if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
             {
+                String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
                 String text = Util.stringArrayToString( tokens, 3 );
                 text = text.substring( 1 );  // Remove leading colon.
-                
-                String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
                 
                 if(
                     ( text.charAt( 0 ) == (char) 1 )
@@ -102,6 +101,38 @@ public class ServerReader
                     + " from=" + nick
                 );
             }
+            else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
+            {
+                String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
+                String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
+                String text = nick + " joined " + channel + ".";
+                display_manager.println(
+                    GeoIRC.getATimeStamp(
+                        settings_manager.getString( "/gui/format/timestamp", "" )
+                    ) + text,
+                    server.toString()
+                    + " " + channel
+                    + " from=" + nick
+                    + " join"
+                );
+            }
+            else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
+            {
+                String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
+                String channel = tokens[ 2 ];
+                String message = tokens[ 3 ].substring( 1 );  // remove leading colon
+                String text = nick + " left " + channel + " (" + message + ").";
+                display_manager.println(
+                    GeoIRC.getATimeStamp(
+                        settings_manager.getString( "/gui/format/timestamp", "" )
+                    ) + text,
+                    server.toString()
+                    + " " + channel
+                    + " from=" + nick
+                    + " part"
+                );
+            }
+
         }
         
         display_manager.println( line, server.toString() );
