@@ -32,17 +32,13 @@ public class VisualPane extends BaseSettingsPanel implements Storable
     private SettingsSaveHandler save_handler;
     private JValidatingTextField kderc;
     private JValidatingTextField gtkrc;
-    private JValidatingTextField fgColor1;
-    private JValidatingTextField bgColor1;
-    private JValidatingTextField fgColor2;
-    private JValidatingTextField bgColor2;
+    private JValidatingTextField fgColor;
+    private JValidatingTextField bgColor;
     private JValidatingTextField alternate_bgcolor;
     private JValidatingTextField nick_width;
     private JValidatingTextField timestamp;
-    private JComboBox fontFace1;
-    private JComboBox fontSize1;
-    private JComboBox fontFace2;
-    private JComboBox fontSize2;
+    private JComboBox fontFace;
+    private JComboBox fontSize;
     private ValueRule kdercRule;
     private ValueRule gtkrcRule;
     private ValueRule fontFaceRule;
@@ -98,94 +94,61 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         chooseGtkrc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(gtkrc, this, value));
         addComponent(chooseGtkrc, 4, 2, 1, 1, 1, 0, new Insets(5, 0, 5, 5));
 
-        //INPUT BOX
-        addComponent(new TitlePane("Input Box"), 0, 3, 5, 1, 0, 0);
-        path = "/gui/input field/";
+        //TEXT WINDOWS
+        addComponent(new TitlePane("Text Windows"), 0, 3, 5, 1, 0, 0);
+        path = "/gui/text windows/";
         addComponent(new JLabel("Font"), 0, 4, 1, 1, 0, 0);
         //font face
         value = settings_manager.getString(path + "font face", fontFaceRule.getValue().toString());
-        fontFace1 = ComponentFactory.getFontFaceComponent();
-        fontFace1.setSelectedItem(value);
-        save_handler.register(addComponent(fontFace1, 1, 4, 2, 1, 0, 0), path + "font face");
+        fontFace = ComponentFactory.getFontFaceComponent();
+        fontFace.setSelectedItem(value);
+        save_handler.register(addComponent(fontFace, 1, 4, 2, 1, 0, 0), path + "font face");
         //font size
         value = settings_manager.getString(path + "font size", fontSizeRule.getValue().toString());
-        fontSize1 = ComponentFactory.getFontSizeComponent();
-        fontSize1.setSelectedItem(value);
-        save_handler.register(addComponent(fontSize1, 3, 4, 1, 1, 0, 0), path + "font size");
+        fontSize = ComponentFactory.getFontSizeComponent();
+        fontSize.setSelectedItem(value);
+        save_handler.register(addComponent(fontSize, 3, 4, 1, 1, 0, 0), path + "font size");
         //foreground colour
         addComponent(new JLabel("Foreground color"), 0, 5, 1, 1, 0, 0);
-        value = settings_manager.getString(path + "foreground colour", fgColorRule.getValue().toString());
-        fgColor1 = new JValidatingTextField(fgColorRule.getPattern(), value, validation_listener);
+        value = settings_manager.getString(path + "default foreground colour", fgColorRule.getValue().toString());
+        fgColor = new JValidatingTextField(fgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
-            addComponent(fgColor1, 1, 5, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
-            path + "foreground colour");
-        JButton chooseColor1 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(fgColor1, this));
-        addComponent(chooseColor1, 2, 5, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
+            addComponent(fgColor, 1, 5, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
+            path + "default foreground colour");
+        JButton chooseColor3 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(fgColor, this));
+        addComponent(chooseColor3, 2, 5, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
         //background color
         addComponent(new JLabel("Backgound color"), 0, 6, 1, 1, 0, 0);
-        value = settings_manager.getString(path + "background colour", bgColorRule.getValue().toString());
-        bgColor1 = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
-        save_handler.register(
-            addComponent(bgColor1, 1, 6, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
-            path + "background colour");
-        JButton chooseColor2 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(bgColor1, this));
-        addComponent(chooseColor2, 2, 6, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
-
-        //TEXT WINDOWS
-        addComponent(new TitlePane("Text Windows"), 0, 7, 5, 1, 0, 0);
-        path = "/gui/text windows/";
-        addComponent(new JLabel("Font"), 0, 8, 1, 1, 0, 0);
-        //font face
-        value = settings_manager.getString(path + "font face", fontFaceRule.getValue().toString());
-        fontFace2 = ComponentFactory.getFontFaceComponent();
-        fontFace2.setSelectedItem(value);
-        save_handler.register(addComponent(fontFace2, 1, 8, 2, 1, 0, 0), path + "font face");
-        //font size
-        value = settings_manager.getString(path + "font size", fontSizeRule.getValue().toString());
-        fontSize2 = ComponentFactory.getFontSizeComponent();
-        fontSize2.setSelectedItem(value);
-        save_handler.register(addComponent(fontSize2, 3, 8, 1, 1, 0, 0), path + "font size");
-        //foreground colour
-        addComponent(new JLabel("Foreground color"), 0, 9, 1, 1, 0, 0);
-        value = settings_manager.getString(path + "default foreground colour", fgColorRule.getValue().toString());
-        fgColor2 = new JValidatingTextField(fgColorRule.getPattern(), value, validation_listener);
-        save_handler.register(
-            addComponent(fgColor2, 1, 9, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
-            path + "default foreground colour");
-        JButton chooseColor3 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(fgColor2, this));
-        addComponent(chooseColor3, 2, 9, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
-        //background color
-        addComponent(new JLabel("Backgound color"), 0, 10, 1, 1, 0, 0);
         value = settings_manager.getString(path + "default background colour", bgColorRule.getValue().toString());
-        bgColor2 = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
+        bgColor = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
-            addComponent(bgColor2, 1, 10, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
+            addComponent(bgColor, 1, 6, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "default background colour");
-        JButton chooseColor4 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(bgColor2, this));
-        addComponent(chooseColor4, 2, 10, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
+        JButton chooseColor4 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(bgColor, this));
+        addComponent(chooseColor4, 2, 6, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
         //alternate background color
-        addComponent(new JLabel("Alternate backgound color"), 0, 11, 1, 1, 0, 0);
+        addComponent(new JLabel("Alternate backgound color"), 0, 7, 1, 1, 0, 0);
         value = settings_manager.getString(path + "alternate background colour", bgColorRule.getValue().toString());
         alternate_bgcolor = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
-            addComponent(alternate_bgcolor, 1, 11, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
+            addComponent(alternate_bgcolor, 1, 7, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "alternate background colour");
         JButton chooseColor5 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(alternate_bgcolor, this));
-        addComponent(chooseColor5, 2, 11, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
+        addComponent(chooseColor5, 2, 7, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
         //FORMAT
         path = "/gui/format/";
         //timestamp
         value = settings_manager.getString(path + "timestamp", timestampRule.getValue().toString());
-        addComponent(new JLabel("Timestamp"), 0, 12, 1, 1, 0, 0);
+        addComponent(new JLabel("Timestamp"), 0, 8, 1, 1, 0, 0);
         timestamp = new JValidatingTextField(timestampRule.getPattern(), value, validation_listener);
-        save_handler.register(addComponent(timestamp, 1, 12, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
+        save_handler.register(addComponent(timestamp, 1, 8, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
         //nick width        
         value = settings_manager.getString(path + "maximum nick width", nickWidthRule.getValue().toString());
-        addComponent(new JLabel("max. nick width"), 0, 13, 1, 1, 0, 0);
+        addComponent(new JLabel("max. nick width"), 0, 9, 1, 1, 0, 0);
         nick_width = new JValidatingTextField(nickWidthRule.getPattern(), value, validation_listener, 40);
-        save_handler.register(addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "maximum nick width");
+        save_handler.register(addComponent(nick_width, 1, 9, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "maximum nick width");
         //INFO WINDOWS
-        addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 14, 5, 1, 0, 0);
+        addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 10, 5, 1, 0, 0);
         path = "/gui/info windows/";
         int sort_order = settings_manager.getInt(path + "sort order", DEFAULT_SORT_ORDER);
         switch( sort_order )
@@ -202,12 +165,12 @@ public class VisualPane extends BaseSettingsPanel implements Storable
                         break;
         }
         
-        addComponent(new JLabel("Nicknames sort order"), 0, 15, 1, 1, 0, 0);
+        addComponent(new JLabel("Nicknames sort order"), 0, 11, 1, 1, 0, 0);
         String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending", "mode and alphabetic ascending", "mode and activity descending" };        
         sortBox = new JComboBox(sort_options);
-        addComponent(sortBox, 1, 15, 3, 1, 0, 0);
+        addComponent(sortBox, 1, 11, 3, 1, 0, 0);
         sortBox.setSelectedItem(value);
-        addLayoutStopper(0, 19);
+        addLayoutStopper(0, 15);
     }
 
     /* (non-Javadoc)

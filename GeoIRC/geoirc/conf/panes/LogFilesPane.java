@@ -134,8 +134,8 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
         {
             String filter = settings_manager.getString(node + "filter", "");
             String regexp = settings_manager.getString(node + "regexp", "");
-            String file = settings_manager.getString(node + "file", "#" + String.valueOf(i) + ".log");
-            if (filter.length() > 0 || regexp.length() > 0 || file.length() > 0)
+            String file = settings_manager.getString(node + "file", "");
+            if (filter.length() > 0 || file.length() > 0)
             {
                 data.add(new Log(filter, regexp, file));
             }

@@ -20,6 +20,7 @@ import geoirc.util.JValidatingTextPane;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
@@ -55,7 +56,7 @@ public class LogPane extends BaseSettingsPanel implements Storable
         String value = settings_manager.getString(path + "default log path", path_rule.getValue().toString());
         JValidatingTextField log_path_field = new JValidatingTextField(path_rule.getPattern(), value, validation_listener, 270);
         save_handler.register( addComponent(log_path_field, 1, 1, 2, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "default log path" );       
-        JButton choose_log_path = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(log_path_field, this, value));
+        JButton choose_log_path = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(log_path_field, this, value, JFileChooser.DIRECTORIES_ONLY));
         addComponent(choose_log_path, 3, 1, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
         
         addComponent(new JLabel("Log start message"), 0, 2, 1, 1, 0, 0);

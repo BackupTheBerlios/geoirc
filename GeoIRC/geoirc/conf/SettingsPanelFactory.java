@@ -14,6 +14,7 @@ import geoirc.conf.panes.HighlightingPane;
 import geoirc.conf.panes.HotkeyPane;
 import geoirc.conf.panes.LogFilesPane;
 import geoirc.conf.panes.LogPane;
+import geoirc.conf.panes.MessageFieldPane;
 import geoirc.conf.panes.RootPane;
 import geoirc.conf.panes.TriggerPane;
 import geoirc.conf.panes.VisualPane;
@@ -64,9 +65,11 @@ public class SettingsPanelFactory
         //Visual Settings
         BaseSettingsPanel visPane = new VisualPane(settings_manager, valueRules, "Visual Settings");
         visPane.addValidationListener(validation_listener);
-
+        BaseSettingsPanel msg_field_pane = new MessageFieldPane(settings_manager, valueRules, "Message Field");
+        msg_field_pane.addValidationListener(validation_listener);
         BaseSettingsPanel hlPane = new HighlightingPane(settings_manager, valueRules, "Highlighting");
         hlPane.addValidationListener(validation_listener);
+        visPane.addChild(msg_field_pane);
         visPane.addChild(hlPane);
         panels.add(visPane);
         
