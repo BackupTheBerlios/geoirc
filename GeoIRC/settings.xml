@@ -63,6 +63,15 @@
             <entry key="hostname" value="tolkien.freenode.net" />
             <entry key="port" value="6667" />
           </map>
+          <node name="channels">
+            <map />
+            <node name="0">
+              <map />
+            </node>
+          </node>
+        </node>
+        <node name="1">
+          <map />
         </node>
       </node>
       <node name="dcc">
@@ -75,6 +84,7 @@
             <entry key="confirm receive" value="true" />
             <entry key="download directory" value="./downloads/" />
             <entry key="maximum received file size" value="20480000" />
+            <entry key="packet size" value="8192" />
           </map>
         </node>
       </node>
@@ -94,23 +104,6 @@
         </map>
         <node name="desktop">
           <map />
-          <node name="docked panes">
-            <map />
-            <node name="0">
-              <map>
-                <entry key="pane" value="5" />
-                <entry key="location" value="2" />
-                <entry key="divider location" value="825" />
-              </map>
-            </node>
-            <node name="1">
-              <map>
-                <entry key="pane" value="6" />
-                <entry key="location" value="1" />
-                <entry key="divider location" value="990" />
-              </map>
-            </node>
-          </node>
           <node name="panes">
             <map />
             <node name="0">

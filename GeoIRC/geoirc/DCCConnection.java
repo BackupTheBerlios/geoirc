@@ -7,7 +7,10 @@
 package geoirc;
 
 import geoirc.util.Util;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,14 +31,17 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     protected DisplayManager display_manager;
     protected TriggerManager trigger_manager;
     protected I18nManager i18n_manager;
-    protected PrintWriter out;
-    protected BufferedReader in;
+    protected PrintWriter text_out;
+    protected BufferedReader text_in;
+    protected BufferedOutputStream out;
+    protected BufferedInputStream in;
     protected boolean closed;
     protected String offeree_nick;
     protected String user_nick;
     protected String remote_ip;
     protected String qualities;
     protected int type;
+    protected FileInputStream file;
     
     private DCCConnection() { }
     
@@ -46,7 +52,8 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         I18nManager i18n_manager,
         int type,
         String offeree_nick,
-        String user_nick
+        String user_nick,
+        FileInputStream file
     ) throws IOException
     {
         this.settings_manager = settings_manager;
@@ -56,6 +63,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         this.type = type;
         this.offeree_nick = offeree_nick;
         this.user_nick = user_nick;
+        this.file = file;
         
         int min_port = settings_manager.getInt(
             "/dcc/lowest port",
@@ -69,6 +77,8 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         listening_port = (new Random()).nextInt( extent ) + min_port;
         
         socket = null;
+        text_out = null;
+        text_in = null;
         out = null;
         in = null;
         closed = false;
@@ -91,9 +101,9 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     
     public void println( String line )
     {
-        if( out != null )
+        if( text_out != null )
         {
-            out.println( line );
+            text_out.println( line );
         }
     }
     
@@ -108,8 +118,18 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         {
             socket = listening_socket.accept();
             listening_socket.close();
-            out = new PrintWriter( socket.getOutputStream(), true );
-            in = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
+            
+            switch( type )
+            {
+                case DCC_CHAT:
+                    text_out = new PrintWriter( socket.getOutputStream(), true );
+                    text_in = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
+                    break;
+                case DCC_SEND:
+                    out = new BufferedOutputStream( socket.getOutputStream() );
+                    in = new BufferedInputStream( socket.getInputStream() );
+                    break;
+            }
         }
         catch( IOException e )
         {
@@ -123,44 +143,108 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         if( socket != null )
         {
             remote_ip = socket.getInetAddress().getHostAddress();
-            qualities =
-                "dcc=" + remote_ip + " "
-                + FILTER_SPECIAL_CHAR + "dccchat";
-            String filter = 
-                "dcc=" + remote_ip + " and "
-                + FILTER_SPECIAL_CHAR + "dccchat";
-            display_manager.addTextWindow( filter, filter );
-            String line;
-            try
+            
+            switch( type )
             {
-                while(
-                    ( ( line = in.readLine() ) != null )
-                    && ( ! closed )
-                )
+                case DCC_CHAT:
                 {
-                    display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + "<" + offeree_nick + "> " + line,
-                        qualities
-                    );
-                    trigger_manager.check( line, qualities );
+                    qualities =
+                        "dcc=" + remote_ip + " "
+                        + FILTER_SPECIAL_CHAR + "dccchat";
+                    String filter = 
+                        "dcc=" + remote_ip + " and "
+                        + FILTER_SPECIAL_CHAR + "dccchat";
+                    display_manager.addTextWindow( filter, filter );
+
+                    String line;
+                    try
+                    {
+                        while(
+                            ( ( line = text_in.readLine() ) != null )
+                            && ( ! closed )
+                        )
+                        {
+                            display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + "<" + offeree_nick + "> " + line,
+                                qualities
+                            );
+                            trigger_manager.check( line, qualities );
+                        }
+                    }
+                    catch( IOException e )
+                    {
+                        Util.printException(
+                            display_manager,
+                            e,
+                            i18n_manager.getString( "io exception 3", new Object [] { offeree_nick } )
+                        );
+                    }
+                    break;
                 }
-            }
-            catch( IOException e )
-            {
-                Util.printException(
-                    display_manager,
-                    e,
-                    i18n_manager.getString( "io exception 3", new Object [] { offeree_nick } )
-                );
+                case DCC_SEND:
+                {
+                    try
+                    {
+                        int character = 0;
+                        int bytes_sent = 0;
+                        int packet_size = settings_manager.getInt(
+                            "/dcc/file transfers/packet size",
+                            DEFAULT_PACKET_SIZE
+                        );
+                        
+                        while(
+                            ( ( character = file.read() ) != -1 )
+                            && ( ! closed )
+                        )
+                        {
+                            out.write( character );
+                            bytes_sent++;
+                            if( bytes_sent % packet_size == 0 )
+                            {
+                                out.flush();
+                                
+                                // Wait for remote acknowledgement of bytes sent so far.
+                                byte [] b_bytes_received = new byte[ 4 ];
+                                int four_bytes = in.read( b_bytes_received, 0, 4 );
+                                if( four_bytes < 4 )
+                                {
+                                    throw new IOException(
+                                        i18n_manager.getString( "bad ack" )
+                                    );
+                                }
+                                int i_bytes_received = Util.networkByteOrderToInt( b_bytes_received );
+                                if( i_bytes_received != bytes_sent )
+                                {
+                                    throw new IOException(
+                                        i18n_manager.getString( "bytes lost" )
+                                    );
+                                }
+                            }
+                        }
+                        
+                        out.flush();
+                    }
+                    catch( IOException e )
+                    {
+                        Util.printException(
+                            display_manager,
+                            e,
+                            i18n_manager.getString( "io exception 11", new Object [] { offeree_nick } )
+                        );
+                    }
+                    break;
+                }
             }
         }
         
         try
         {
-            in.close();
-            out.close();
+            if( text_in != null ) { text_in.close(); }
+            if( text_out != null ) { text_out.close(); }
+            if( in != null ) { in.close(); }
+            if( out != null ) { out.close(); }
             socket.close();
         }
         catch( IOException e )

@@ -53,6 +53,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -1558,6 +1559,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_DCC_CHAT:
+            case CMD_DCC_SEND:
                 if( args != null )
                 {
                     if( current_rm instanceof Server )
@@ -1572,27 +1574,63 @@ public class GeoIRC
                             {
                                 try
                                 {
-                                    DCCConnection dcc = new DCCConnection(
-                                        settings_manager,
-                                        display_manager,
-                                        trigger_manager,
-                                        i18n_manager,
-                                        DCC_CHAT,
-                                        args[ 0 ],
-                                        s.getCurrentNick()
-                                    );
-                                    dcc_offers.add( dcc );
-                                    int port = dcc.listen();
+                                    DCCConnection dcc = null;
+                                    switch( command_id )
+                                    {
+                                        case CMD_DCC_CHAT:
+                                            dcc = new DCCConnection(
+                                                settings_manager,
+                                                display_manager,
+                                                trigger_manager,
+                                                i18n_manager,
+                                                DCC_CHAT,
+                                                args[ 0 ],
+                                                s.getCurrentNick(),
+                                                null
+                                            );
+                                            break;
+                                        case CMD_DCC_SEND:
+                                        {
+                                            if( args.length < 2 )
+                                            {
+                                                break;
+                                            }
+                                            File f = new File( Util.stringArrayToString( args, 1 ) );
+                                            if( ! f.exists() )
+                                            {
+                                                break;
+                                            }
+                                            
+                                            FileInputStream fis = new FileInputStream( f );
+                                            dcc = new DCCConnection(
+                                                settings_manager,
+                                                display_manager,
+                                                trigger_manager,
+                                                i18n_manager,
+                                                DCC_SEND,
+                                                args[ 0 ],
+                                                s.getCurrentNick(),
+                                                fis
+                                            );
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if( dcc != null )
+                                    {
+                                        dcc_offers.add( dcc );
+                                        int port = dcc.listen();
 
-                                    execute(
-                                        CMDS[ CMD_SEND_RAW ]
-                                        + " PRIVMSG "
-                                        + args[ 0 ]
-                                        + " :\001DCC CHAT chat "
-                                        + Util.get32BitAddressString( addr_str ) + " "
-                                        + Integer.toString( port )
-                                        + "\001"
-                                    );
+                                        execute(
+                                            CMDS[ CMD_SEND_RAW ]
+                                            + " PRIVMSG "
+                                            + args[ 0 ]
+                                            + " :\001DCC CHAT chat "
+                                            + Util.get32BitAddressString( addr_str ) + " "
+                                            + Integer.toString( port )
+                                            + "\001"
+                                        );
+                                    }
                                 }
                                 catch( IOException e )
                                 {

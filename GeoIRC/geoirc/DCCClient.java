@@ -94,7 +94,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                     {
                         String directory = 
                             settings_manager.getString(
-                                "/dcc/download directory",
+                                "/dcc/file transfers/download directory",
                                 "./downloads"
                             );
                         if( ! directory.endsWith( File.separator ) )

@@ -5,7 +5,8 @@ Renamed DCC CHAT related commands to more generic "DCC request" and "DCC offer"
 commands.  Added DCC SEND capabilities.
 Pistos 2003-10-05
 
-Renamed "/dcc/default download directory" to "/dcc/download directory".
+Renamed "/dcc/file transfers/default download directory" to
+"/dcc/file transfers/download directory".
 Pistos 2003-10-05
 
 Added a rudimentaly variables configuration dialog to settings gui
@@ -21,3 +22,6 @@ Pistos 2003-10-07
 Changed dcc dialog in settings gui to read/save according to the changed
 download directory node path
 netseeker 2003-10-07
+
+Added "/dcc/file transfers/packet size" setting.  Added /dccsend command.
+Pistos 2003-10-09

@@ -359,4 +359,15 @@ public class Util implements GeoIRCConstants
         buffer[ 3 ] = (byte) (  i        & 0xff );
         return buffer;
     }
+    
+    public static int networkByteOrderToInt( byte [] bytes )
+    {
+        int retval = 0;
+        retval += ((int) bytes[ 0 ]) * 0x1000000;
+        retval += ((int) bytes[ 1 ]) * 0x10000;
+        retval += ((int) bytes[ 2 ]) * 0x100;
+        retval += ((int) bytes[ 3 ]);
+        
+        return retval;
+    }
 }

@@ -116,7 +116,8 @@ public interface GeoIRCConstants
         "sizewindow",
         "positionwindow",
         "opensettings",
-        "clearinputhistory"
+        "clearinputhistory",
+        "dccsend"
     };
     
     public static final String[] IRC_CMDS =
@@ -152,6 +153,7 @@ public interface GeoIRCConstants
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_DCC_CHAT = 69;
+    public static final int CMD_DCC_SEND = 87;
     public static final int CMD_DISABLE_COLOUR_CODES = 72;
     public static final int CMD_DISCONNECT = 12;
     public static final int CMD_DOCK_WINDOW = 28;
@@ -441,6 +443,7 @@ public interface GeoIRCConstants
     static final int STAGE_PROCESSING = 1;
 
     static final int DEFAULT_MAX_DCC_SEND_FILESIZE = 20480000;  // bytes
+    static final int DEFAULT_PACKET_SIZE = 8192;  // bytes
     
     static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
     static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
