@@ -68,6 +68,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -193,6 +194,7 @@ public class GeoIRC
         input_field.grabFocus();
         input_field.addActionListener( this );
         input_field.addFocusListener( this );
+        input_field.addMouseListener( this );
         
         // Disable Ctrl-V, so that we can use our own Ctrl-V handler so
         // we can paste multiple lines in the input_field.
@@ -1120,6 +1122,11 @@ public class GeoIRC
         {
             JTextPane text_pane = (JTextPane) component;
             text_pane.copy();
+        }
+        
+        if( e.getButton() == MouseEvent.BUTTON3 )
+        {
+            input_field.paste();
         }
         
         input_field.grabFocus();

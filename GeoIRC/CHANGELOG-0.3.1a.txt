@@ -59,3 +59,6 @@ Pistos 2003-09-18
 Added the ability to put a different quit message (than the one in the settings)
 as an argument for /exit.
 Pistos 2003-09-18
+
+Middle mouse button now pastes to input field.
+Pistos 2003-09-18
