@@ -6,6 +6,7 @@
 package geoirc.conf;
 
 import geoirc.DisplayManager;
+import geoirc.GeoIRC;
 import geoirc.XmlProcessable;
 
 import java.awt.BorderLayout;
@@ -50,6 +51,7 @@ public class SettingsDialog
 	private GeoIRCDefaults valueRules = null;
 	private DisplayManager display_manager;
 	private List panels;
+    private Frame parent;
 
 	public SettingsDialog(
 		Frame frame,
@@ -58,6 +60,7 @@ public class SettingsDialog
 		DisplayManager display_manager)
 	{
 		super(frame, title, true);
+        this.parent = frame;
 		this.settings_manager = settings_manager;
 		this.display_manager = display_manager;
 		this.valueRules = new GeoIRCDefaults(display_manager);
@@ -188,6 +191,8 @@ public class SettingsDialog
 	void Apply_actionPerformed(ActionEvent e)
 	{
 		saveAllPanelData();
+        if(parent instanceof GeoIRC)
+            ((GeoIRC)parent).applySettings();        
 	}
 
 	void Cancel_actionPerformed(ActionEvent e)
@@ -200,6 +205,8 @@ public class SettingsDialog
 	{
 		saveAllPanelData();
 		close();
+        if(parent instanceof GeoIRC)
+            ((GeoIRC)parent).applySettings();
 		this.dispose();
 	}
 	
