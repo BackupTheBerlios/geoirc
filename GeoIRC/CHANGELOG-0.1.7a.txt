@@ -8,3 +8,6 @@ Pistos 2003-07-21
 Window buttons now get their text coloured when new content appears while the
 window is out of focus.
 Pistos 2003-07-22
+
+Increased the maximum window button width.
+Pistos 2003-07-22
