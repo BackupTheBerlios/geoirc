@@ -18,14 +18,12 @@ public class User implements GeoIRCConstants
     protected String username;
     protected String host;
     protected String mode_flags;
-    protected Channel channel;
     
     // No default constructor
     private User() { }
-
-    public User( Channel channel, String nick_possibly_with_flags )
+    
+    public User( String nick_possibly_with_flags )
     {
-        this.channel = channel;
         this.nick = nick_possibly_with_flags;
         username = null;
         host = null;
@@ -61,11 +59,6 @@ public class User implements GeoIRCConstants
         );
     }
     
-    public Channel getChannel()
-    {
-        return channel;
-    }
-    
     public String getNick()
     {
         return nick;
@@ -79,5 +72,24 @@ public class User implements GeoIRCConstants
     public String toString()
     {
         return nick;
+    }
+    
+    public boolean equals( Object o )
+    {
+        boolean equal = false;
+        
+        if( o instanceof User )
+        {
+            User other = (User) o;
+            
+            return( other.getNick().equals( nick ) );
+        }
+        
+        return equal;
+    }
+    
+    public int hashCode()
+    {
+        return nick.hashCode();
     }
 }

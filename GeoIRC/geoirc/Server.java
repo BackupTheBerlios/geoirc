@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Vector;
 import javax.swing.*;
 
@@ -29,6 +30,7 @@ public class Server
     protected boolean listening_to_channels;
     protected String current_nick;
     protected InfoManager info_manager;
+    protected HashSet users;
     
     public Server(
         GeoIRC parent,
@@ -219,7 +221,6 @@ public class Server
         return retval;
     }
 
-    
     /* ******************************************************************** */
     
     protected class ServerReader
@@ -293,6 +294,23 @@ public class Server
             return retval;
         }
 
+        public Vector handleNamesList( String namlist )
+        {
+            Vector list_members = new Vector();
+            
+            User user;
+            String [] nicks = Util.tokensToArray( namlist );
+            for( int i = 0; i < nicks.length; i++ )
+            {
+                user = new User( nicks[ i ] );
+                list_members.add( user );
+            }
+
+            users.addAll( list_members );
+            
+            return list_members;
+        }
+        
         protected void interpretLine( String line )
         {
             String [] tokens = Util.tokensToArray( line );
