@@ -113,7 +113,11 @@ public class CommandAlias implements GeoIRCConstants
 			}
 		}
 		
-		return expansion.substring(expansion.indexOf(" "));    
+		int pos = expansion.indexOf(" ");
+		
+		if( pos != -1 )
+			return expansion.substring(expansion.indexOf(" "));
+		else return null;    
     }
     
     /**
@@ -121,8 +125,7 @@ public class CommandAlias implements GeoIRCConstants
 	 * @return the used irc command as string or null if no irc command is used
 	 */
 	public String getIRCCommand()    
-    {
-    	
+    {    	
     	for ( int i = 0; i < IRCMSGS.length; i++ )
     	{
     		if( expansion.indexOf(" " +  IRCMSGS[i] + " ") != -1)
@@ -133,7 +136,7 @@ public class CommandAlias implements GeoIRCConstants
     	
     	return null;
     }
-    
+        
     
     /**
      * Checks whether this command alias uses a irc command or not
