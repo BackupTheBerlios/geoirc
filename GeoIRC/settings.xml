@@ -219,7 +219,7 @@
             <node name="3">
               <map>
                 <entry key="filter" value="" />
-                <entry key="regexp" value="-(.+?)- .*" />
+                <entry key="regexp" value="^-(.+?)- .*" />
                 <entry key="format" value="fgffffff" />
               </map>
             </node>
