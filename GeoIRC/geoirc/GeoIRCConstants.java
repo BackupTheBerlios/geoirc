@@ -90,7 +90,8 @@ public interface GeoIRCConstants
         "list_dcc_chat_requests",
         "accept_dcc_chat",
         "reject_dcc_chat",
-        "unloadallpy"
+        "unloadallpy",
+        "hidequalities"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACCEPT_DCC_CHAT = 59;
@@ -109,6 +110,7 @@ public interface GeoIRCConstants
     public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
+    public static final int CMD_HIDE_QUALITIES = 62;
     public static final int CMD_JOIN = 2;
     public static final int CMD_KILL_PROCESS = 55;
     public static final int CMD_LIST_CHANNELS = 15;

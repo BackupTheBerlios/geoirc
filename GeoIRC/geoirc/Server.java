@@ -510,7 +510,7 @@ public class Server
                     {
                         while( matcher.find() )
                         {
-                            variable_manager.setString( variable, matcher.group() );
+                            variable_manager.setString( variable, matcher.group( 1 ) );
                         }
                     }
                 }

@@ -1243,13 +1243,20 @@ public class GeoIRC
                     PyMethod method = (PyMethod) python_methods.get( args[ 0 ] );
                     if( method != null )
                     {
-                        if( args.length > 1 )
+                        try
                         {
-                            method.__call__( new PyString( Util.stringArrayToString( args, 1 ) ) );
+                            if( args.length > 1 )
+                            {
+                                method.__call__( new PyString( Util.stringArrayToString( args, 1 ) ) );
+                            }
+                            else
+                            {
+                                method.__call__();
+                            }
                         }
-                        else
+                        catch( Exception e )
                         {
-                            method.__call__();
+                            Util.printException( display_manager, e, "Failed to execute python method." );
                         }
                     }
                 }
@@ -1293,6 +1300,9 @@ public class GeoIRC
                         display_manager.printlnDebug( sa[ i ] );
                     }
                 }
+                break;
+            case CMD_HIDE_QUALITIES:
+                display_manager.setShowQualities( false );
                 break;
             case CMD_JOIN:
                 if( args != null )

@@ -59,3 +59,10 @@ geoirc.registerRawListener() have the ability to return a Python object with
 "text" and "qualities" attributes, to alter the raw message that the
 ServerReader handles.
 Pistos 2003-08-29
+
+Added a hidequalities command.
+Pistos 2003-08-29
+
+Fixed variable capturing so that parentheses are honoured, instead of capturing
+the full regexp match.
+Pistos 2003-08-29
