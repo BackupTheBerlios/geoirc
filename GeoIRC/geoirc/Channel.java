@@ -35,6 +35,8 @@ public class Channel
         topic = null;
         topic_setter = null;
         topic_set_date = null;
+        
+        members = new Vector();
     }
     
     public String getName()
@@ -56,7 +58,7 @@ public class Channel
      * Clears any current membership list, and reinitializes it
      * using the provided content of a RPL_NAMREPLY message.
      */
-    public void setChannelMembership( Channel channel, String namlist )
+    public void setChannelMembership( String namlist )
     {
         // Prefixes:
         // +   voiced

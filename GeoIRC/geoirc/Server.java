@@ -335,6 +335,7 @@ public class Server
                         // Someone else's nick changed.
                         
                         getUserByNick( old_nick ).setNick( new_nick );
+                        // TODO: mark nick change in channel memberships.
                         
                         String text = old_nick + " is now known as " + new_nick + ".";
                         qualities += " from=" + new_nick
@@ -586,9 +587,10 @@ public class Server
                     /* Example:
                     :calvino.freenode.net 353 GeoIRC_User = #geoirc :GeoIRC_User GeoBot Fluff @ChanServ 
                      */
+                    Channel channel = getChannelByName( tokens[ 4 ] );
                     String namlist = Util.stringArrayToString( tokens, 5 );
                     namlist = namlist.substring( 1 );  // remove leading colon
-                    
+                    channel.setChannelMembership( namlist );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
                 {

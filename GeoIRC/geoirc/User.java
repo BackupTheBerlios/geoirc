@@ -50,9 +50,14 @@ public class User
     {
         return nick;
     }
-    
+
     public void setNick( String new_nick )
     {
         nick = new_nick;
+    }
+    
+    public String toString()
+    {
+        return nick;
     }
 }

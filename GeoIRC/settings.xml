@@ -55,11 +55,6 @@
             <map />
             <node name="0">
               <map>
-                <entry key="name" value="#geocards" />
-              </map>
-            </node>
-            <node name="1">
-              <map>
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
@@ -91,7 +86,7 @@
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="debug" />
               <entry key="x" value="0" />
-              <entry key="y" value="0" />
+              <entry key="y" value="252" />
               <entry key="height" value="252" />
               <entry key="width" value="1134" />
               <entry key="state" value="0" />
@@ -104,7 +99,7 @@
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="irc.freenode.net" />
               <entry key="x" value="0" />
-              <entry key="y" value="252" />
+              <entry key="y" value="504" />
               <entry key="height" value="252" />
               <entry key="width" value="1134" />
               <entry key="state" value="0" />
@@ -116,8 +111,8 @@
             <map>
               <entry key="type" value="class geoirc.GIInfoWindow" />
               <entry key="title" value="Info" />
-              <entry key="x" value="700" />
-              <entry key="y" value="17" />
+              <entry key="x" value="743" />
+              <entry key="y" value="57" />
               <entry key="height" value="336" />
               <entry key="width" value="310" />
               <entry key="state" value="0" />
@@ -128,31 +123,15 @@
           <node name="3">
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="#geocards on irc.freenode.net" />
-              <entry key="x" value="51" />
-              <entry key="y" value="40" />
-              <entry key="height" value="500" />
-              <entry key="width" value="700" />
-              <entry key="state" value="2" />
-              <entry key="selected" value="false" />
-              <entry key="filter" value="irc.freenode.net AND #geocards" />
-            </map>
-          </node>
-          <node name="4">
-            <map>
-              <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geoirc on irc.freenode.net" />
               <entry key="x" value="0" />
-              <entry key="y" value="504" />
+              <entry key="y" value="0" />
               <entry key="height" value="252" />
               <entry key="width" value="1134" />
               <entry key="state" value="0" />
               <entry key="selected" value="false" />
               <entry key="filter" value="irc.freenode.net AND #geoirc" />
             </map>
-          </node>
-          <node name="5">
-            <map />
           </node>
         </node>
         <node name="format">

@@ -127,4 +127,9 @@ public class InfoManager
                 + "/" + u.getNick()
         );
     }
+    
+    public void acknowledgeNickChange( Channel c, String old_nick, String new_nick )
+    {
+        c.acknowledgeNickChange( old_nick, new_nick );
+    }
 }
