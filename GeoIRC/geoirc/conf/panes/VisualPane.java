@@ -5,6 +5,7 @@
  */
 package geoirc.conf.panes;
 
+import geoirc.SettingsManager;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.ColorChooserHandler;
@@ -56,6 +57,8 @@ public class VisualPane extends BaseSettingsPanel implements Storable
 
     private JButton chooseKderc;
     private JButton chooseGtkrc;
+    
+    private JComboBox sortBox;
 
     /**
      * @param settings
@@ -187,7 +190,26 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         timestamp = new JValidatingTextField(timestampRule.getPattern(), value);
         save_handler.register(addComponent(timestamp, 1, 14, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
 
-        addLayoutStopper(0, 15);
+        //INFO WINDOWS
+        addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 15, 5, 1, 0, 0);
+        path = "/gui/info windows/";
+        int sort_order = settings_manager.getInt(path + "sort order", DEFAULT_SORT_ORDER);
+        switch( sort_order )
+        {
+            case -1:    value = "unsorted";
+                        break;
+            case 0:     value = "alphabetic ascending";
+                        break;
+            case 1:     value = "activity descending";                    
+                        break;
+        }
+        
+        addComponent(new JLabel("Nicknames sort order"), 0, 16, 1, 1, 0, 0);
+        String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending" };        
+        sortBox = new JComboBox(sort_options);
+        addComponent(sortBox, 1, 16, 1, 1, 0, 0);
+        sortBox.setSelectedItem(value);
+        addLayoutStopper(0, 17);
     }
 
     /* (non-Javadoc)
@@ -196,6 +218,13 @@ public class VisualPane extends BaseSettingsPanel implements Storable
     public boolean saveData()
     {
         save_handler.save();
+        
+        int sort_order = sortBox.getSelectedIndex(); 
+        if( sort_order != -1 )
+        {            
+            ((SettingsManager)settings_manager).putInt("/gui/info windows/sort order", sort_order - 1);
+        }
+        
         return true;
     }
 
