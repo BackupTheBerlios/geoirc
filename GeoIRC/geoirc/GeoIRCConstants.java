@@ -114,7 +114,8 @@ public interface GeoIRCConstants
         "restorewindow",
         "sizewindow",
         "positionwindow",
-        "opensettings"
+        "opensettings",
+        "clearinputhistory"
     };
     
     public static final String[] IRC_CMDS =
@@ -144,6 +145,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHAR_COLOUR = 66;
     public static final int CMD_CHAR_NORMAL = 67;
     public static final int CMD_CLEAR_INPUT_FIELD = 76;
+    public static final int CMD_CLEAR_INPUT_HISTORY = 86;
     public static final int CMD_CLEAR_WINDOW = 77;
     public static final int CMD_CLOSE_WINDOW = 79;
     public static final int CMD_COMPLETE_NICK = 24;
@@ -444,4 +446,8 @@ public interface GeoIRCConstants
     
     static final int STAGE_SCRIPTING = 0;
     static final int STAGE_PROCESSING = 1;
+    
+    static final String DEFAULT_LANGUAGE = "en";
+    static final String DEFAULT_COUNTRY = "CA";
+    static final String PROPERTIES_FILENAME = "geoirc_messages";
 }
