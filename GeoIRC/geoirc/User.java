@@ -139,4 +139,9 @@ public class User
     {
         mode_flags.remove( mode_flag );
     }
+    
+    public boolean hasModeFlag( String mode_flag )
+    {
+        mode_flags.contains( mode_flag );
+    }
 }
