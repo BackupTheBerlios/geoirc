@@ -22,9 +22,11 @@ import java.util.prefs.Preferences;
  * 
  * @author netseeker aka Michael Manske
  */
-public class GeoIRCDefaults extends SettingsManager
+public class GeoIRCDefaults
 {
 	private HashMap defaults = new HashMap();
+	protected Preferences root = null;
+	protected DisplayManager displayMgr = null;
 	
 	/**
 	 * Creates a new instance of GeoIRCDefaults
@@ -32,7 +34,7 @@ public class GeoIRCDefaults extends SettingsManager
 	 */
 	public GeoIRCDefaults(DisplayManager newDisplayMgr)
 	{
-		super(newDisplayMgr, null);
+		displayMgr = newDisplayMgr;
 		root = Preferences.userNodeForPackage(GeoIRCDefaults.class);
 		loadSettingsFromXML();
 	}
@@ -118,5 +120,17 @@ public class GeoIRCDefaults extends SettingsManager
 	{
 		return defaults;
 	}	
+
+	protected void printlnDebug( String s )
+	{
+		if( displayMgr != null )
+		{
+			displayMgr.printlnDebug( s );
+		}
+		else
+		{
+			System.err.println( s );
+		}
+	}
 
 }

@@ -30,19 +30,16 @@ import java.util.prefs.Preferences;
 public class SettingsManager
     implements PreferenceChangeListener, NodeChangeListener
 {
-	protected Preferences root = null;
+    
+    private static Preferences root = Preferences.userNodeForPackage( GeoIRC.class );
     protected String filepath;
     protected DisplayManager displayMgr = null;
 
     // No default constructor.
-    private SettingsManager()
-    { 
-		root = Preferences.userNodeForPackage( GeoIRC.class );    
-    }
+    private SettingsManager() { }
     
     public SettingsManager( DisplayManager newDisplayMgr, String filepath )
     {
-        this();
         displayMgr = newDisplayMgr;
         this.filepath = filepath;
     }
@@ -96,7 +93,6 @@ public class SettingsManager
             */
             root.removeNode();
             root = Preferences.userNodeForPackage( GeoIRC.class );
-
             root.importPreferences( is );
             success = true;
         }
