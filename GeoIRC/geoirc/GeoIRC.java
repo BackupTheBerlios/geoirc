@@ -419,6 +419,12 @@ public class GeoIRC
                 "/connections/" + i_str + "/port",
                 rm.getPort()
             );
+            
+            if( rm instanceof Server )
+            {
+                Server s = (Server) rm;
+                s.recordChannels();
+            }
         }
     }
     
@@ -587,7 +593,7 @@ public class GeoIRC
      *
      * ********************************************************************* */
     
-    // When the user presses enter in the text field, this method is called.
+    // When the user presses enter in the input field, this method is called.
     public void actionPerformed( ActionEvent event )
     {
         String text = input_field.getText();

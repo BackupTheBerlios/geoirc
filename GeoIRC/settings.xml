@@ -78,9 +78,6 @@
             </node>
           </node>
         </node>
-        <node name="1">
-          <map />
-        </node>
       </node>
       <node name="dcc">
         <map />
@@ -124,8 +121,8 @@
             <node name="0">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc" />
-                <entry key="filter" value="#geoirc" />
+                <entry key="title" value="#geoirc and irc.freenode.net" />
+                <entry key="filter" value="#geoirc and irc.freenode.net" />
               </map>
             </node>
             <node name="1">
@@ -160,7 +157,7 @@
                 <entry key="height" value="399" />
                 <entry key="width" value="958" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>

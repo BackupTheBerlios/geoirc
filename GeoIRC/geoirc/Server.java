@@ -171,7 +171,7 @@ public class Server
         return (Channel []) channels.toArray( retval );
     }
 
-    protected void recordChannels()
+    public void recordChannels()
     {
         String server_id = geoirc.getRemoteMachineID( this );
         String nodepath = "/connections/" + server_id + "/channels/";
