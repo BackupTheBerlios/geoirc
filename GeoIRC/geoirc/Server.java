@@ -6,7 +6,7 @@
 
 package geoirc;
 
-//import java.awt.Container;
+import geoirc.util.Util;
 import java.awt.Component;
 import java.io.*;
 import java.net.Socket;
@@ -25,6 +25,7 @@ public class Server
     protected ServerReader server_reader;
     protected Vector channels;
     protected boolean listening_to_channels;
+    protected String current_nick;
     
     public Server(
         GeoIRC parent,
@@ -40,10 +41,11 @@ public class Server
         listening_to_channels = false;
         server_reader = null;
         channels = new Vector();
+        current_nick = "";
     }
     
     // Returns whether a connection has been established.
-    public boolean connect( String nick )
+    public boolean connect( String nick_to_use )
     {
         try
         {
@@ -51,10 +53,6 @@ public class Server
             if( socket != null )
             {
                 server_reader = new ServerReader( 
-                    this,
-                    display_manager,
-                    settings_manager,
-                    sound_manager,
                     new BufferedReader(
                         new InputStreamReader(
                             socket.getInputStream()
@@ -66,7 +64,7 @@ public class Server
                 server_reader.start();
 
                 out.println( "PASS ooga7" );
-                out.println( "NICK " + nick );
+                out.println( "NICK " + nick_to_use );
                 out.println(
                     "USER "
                     + settings_manager.getString( "/personal/ident/username", "Pistos" )
@@ -173,4 +171,177 @@ public class Server
         }
     }
     
+    public String getCurrentNick()
+    {
+        return current_nick;
+    }
+
+    /* ******************************************************************** */
+    
+    protected class ServerReader
+        extends java.lang.Thread
+        implements GeoIRCConstants
+    {
+        protected BufferedReader in;
+
+        // No default constructor.
+        private ServerReader() { }
+
+        public ServerReader(
+            BufferedReader in
+        )
+        {
+            this.in = in;
+        }
+
+        public void run()
+        {
+            if( ( in == null ) || ( display_manager == null ) )
+            {
+                return;
+            }
+
+            String line = "";
+            while( line != null )
+            {
+                interpretLine( line );
+                try
+                {
+                    line = in.readLine();
+                }
+                catch( IOException e )
+                {
+                    display_manager.printlnDebug( e.getMessage() );
+                }
+            }
+        }
+
+        protected String getNick( String nick_and_username_and_host )
+        {
+            return nick_and_username_and_host.substring( 1, nick_and_username_and_host.indexOf( "!" ) );
+        }
+
+        protected void interpretLine( String line )
+        {
+            String [] tokens = Util.tokensToArray( line );
+            if( tokens != null )
+            {
+                if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
+                {
+                    String nick = getNick( tokens[ 0 ] );
+                    String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
+                    String text = nick + " joined " + channel + ".";
+                    String qualities = Server.this.toString()
+                        + " " + channel
+                        + " from=" + nick
+                        + " join";
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NICK ] ) )
+                {
+                    String old_nick = getNick( tokens[ 0 ] );
+                    String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
+                    if( old_nick.equals( current_nick ) )
+                    {
+                        // Server acknowledged and allowed our nick change.
+                        current_nick = new_nick;
+                    }
+                    else
+                    {
+                        // Someone else's nick changed.
+                        
+                        String text = old_nick + " is now known as " + new_nick + ".";
+                        String qualities = Server.this.toString()
+                            + " from=" + new_nick
+                            + " nick";
+                        display_manager.println(
+                            GeoIRC.getATimeStamp(
+                                settings_manager.getString( "/gui/format/timestamp", "" )
+                            ) + text,
+                            qualities
+                        );
+                        sound_manager.check( text, qualities );
+                    }
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
+                {
+                    String nick  = getNick( tokens[ 0 ] );
+                    String channel = tokens[ 2 ];
+                    String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
+                    String text = nick + " left " + channel + " (" + message + ").";
+                    String qualities = Server.this.toString()
+                        + " " + channel
+                        + " from=" + nick
+                        + " part";
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
+                else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
+                {
+                    send( "PONG GeoIRC" );
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
+                {
+                    String nick = getNick( tokens[ 0 ] );
+                    String text = Util.stringArrayToString( tokens, 3 );
+                    text = text.substring( 1 );  // Remove leading colon.
+
+                    if(
+                        ( text.charAt( 0 ) == (char) 1 )
+                        && ( text.substring( 1, 7 ).equals( "ACTION" ) )
+                    )
+                    {
+                        text = "* " + nick + text.substring( 7, text.length() - 1 );
+                    }
+                    else
+                    {
+                        text = "<" + nick + "> " + text;
+                    }
+
+                    String timestamp = GeoIRC.getATimeStamp(
+                        settings_manager.getString( "/gui/format/timestamp", "" )
+                    );
+                    String qualities = Server.this.toString()
+                        + " " + tokens[ 2 ]
+                        + " from=" + nick;
+
+                    display_manager.println(
+                        timestamp + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
+                {
+                    String nick  = getNick( tokens[ 0 ] );
+                    String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
+                    String text = nick + " has quit (" + message + ").";
+                    String qualities = Server.this.toString()
+                        + " from=" + nick
+                        + " quit";
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
+
+            }
+
+            display_manager.println( line, Server.this.toString() );
+        }
+    }
 }

@@ -13,8 +13,18 @@ Pistos 2003-07-09 and 2003-07-10
 Added changewindow and switchwindow commands.
 Pistos 2003-07-10
 
-Added an Ident response thread.  USER command also uses the defined ident username.
+Added an Ident response thread.  USER command also uses the defined ident
+username.
 Sunfire, Pistos 2003-07-10
 
 Added PONG response.
 Pistos 2003-07-10
+
+Moved ServerReader into Server, to become an inner class.
+Pistos 2003-07-11
+
+Added nick-change reaction code, such that the user's own nick changes are
+reflected in the internal variables only when the server actually allows the
+nick change.  Other users' nick changes are also now printed.  Nicks are now on
+a per-server basis.
+Pistos 2003-07-11

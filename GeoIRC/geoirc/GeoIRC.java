@@ -1,7 +1,27 @@
 /*
+ * GeoIRC
+ * An Internet Relay Chat client.
+ * Copyright (C) 2003 Alex Reyes ("Pistos")
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA;
+ * or visit http://www.gnu.org/licenses/gpl.html .
+ *
+ * ******************************************
+ *
  * GeoIRC.java
  *
  * Created on June 21, 2003, 11:12 AM
+ *
  */
 
 package geoirc;
@@ -54,7 +74,7 @@ public class GeoIRC
     protected InputMap input_map;
     protected ActionMap action_map;
     
-    protected String current_nick;
+    protected String preferred_nick;
     protected RemoteMachine current_remote_machine;
 
     /* **************************************************************** */
@@ -66,6 +86,17 @@ public class GeoIRC
     
     public GeoIRC( String settings_filepath )
     {
+        System.out.println(
+            "GeoIRC\nCopyright (C) 2003 Alex Reyes (\"Pistos\")"
+        );
+        System.out.println(
+            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+        );
+        System.out.println(
+            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+        );
+        
+        
         listening_to_servers = false;
         
         // Settings.
@@ -157,7 +188,7 @@ public class GeoIRC
         
         // Read settings.
         
-        current_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
+        preferred_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
         
         // Map input (keystrokes, mouseclicks, etc.)
         
@@ -249,6 +280,16 @@ public class GeoIRC
         settings_manager.listenToPreferences();
         display_manager.beginListening();
         listening_to_servers = true;
+        
+        display_manager.printlnDebug(
+            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
+        );
+        display_manager.printlnDebug(
+            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+        );
+        display_manager.printlnDebug(
+            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+        );
         
         // Open the curtains!
 
@@ -397,7 +438,7 @@ public class GeoIRC
             if( type.equals( "Server") )
             {
                 Server s = addServer( hostname, Integer.toString( port ) );
-                s.connect( current_nick );
+                s.connect( preferred_nick );
             }
             else
             {
@@ -738,7 +779,7 @@ public class GeoIRC
                     Server s = addServer( host, port );
                     //display_manager.addServerWindow( s );
                     display_manager.addTextWindow( s.toString(), s.toString() );
-                    s.connect( current_nick );
+                    s.connect( preferred_nick );
                 }
                 else
                 {
@@ -771,8 +812,6 @@ public class GeoIRC
             case CMD_NICK:
                 if( args != null )
                 {
-                    current_nick = args[ 0 ];
-                    
                     execute(
                         CMDS[ CMD_SEND_RAW ]
                         + " NICK "
@@ -781,7 +820,6 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "Current nick: " + current_nick );
                     display_manager.printlnDebug( "/nick <new nickname>" );
                 }
                 break;
@@ -864,11 +902,11 @@ public class GeoIRC
                                 && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                             )
                             {
-                                text = "* " + current_nick + text.substring( 7, text.length() - 1 );
+                                text = "* " + s.getCurrentNick() + text.substring( 7, text.length() - 1 );
                             }
                             else
                             {
-                                text = "<" + current_nick + "> " + text;
+                                text = "<" + s.getCurrentNick() + "> " + text;
                             }
                             display_manager.println(
                                 getATimeStamp(
