@@ -11,14 +11,25 @@ Pistos' TODO
 
 netseeker's TODO
 ----------------
-(1)    variables config in settings gui    => netseeker
+(1)    + variables config in settings gui    => netseeker
 (2)    add "choose command to insert" to command alias pane    => netseeker
-(3)    include the regexp test dialog in settings gui    => netseeker
-(4)    windows installer    => netseeker
+(3)    + include the regexp test dialog in settings gui    => netseeker
+(4)    ! windows installer    => netseeker
 (5)    switch away from Preferences!    => netseeker
 (6)    add a switch which clears out the server list + windows on close    => netseeker
 (7)    user definition of menus    => netseeker
+(8)	   add setup for highlightings containing both bg color and fg color
+(9)	   add a default theme to windows installer
+(10)   allow command aliases which calls more than one commands
 
 Other TODO
 ----------
 (1)  linux installer   => Striker"
+
+
+
+******************************************************
++ = done
+- = canceled
+! = regular task
+o = reset to low priority
