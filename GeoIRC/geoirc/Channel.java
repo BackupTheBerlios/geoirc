@@ -68,11 +68,13 @@ public class Channel
     public void setChannelMembership( Vector new_member_list )
     {
         info_manager.removeChannel( this );
+        /*
         if( new_member_list == null )
         {
             members = new Vector();
         }
         else
+         */
         {
             members = new_member_list;
         }

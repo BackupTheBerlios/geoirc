@@ -12,9 +12,9 @@ package geoirc;
  * @author  Pistos
  */
 
-    import geoirc.*;
-    import java.io.*;
-    import java.util.prefs.*;
+import geoirc.*;
+import java.io.*;
+import java.util.prefs.*;
     
 public class SettingsManager
     implements PreferenceChangeListener, NodeChangeListener

@@ -64,6 +64,8 @@ public class DisplayManager
     protected static final int DEFAULT_WINDOW_WIDTH = 700;
     protected static final int DEFAULT_WINDOW_HEIGHT = 500;
     
+    protected int lines_unread;
+    
     // No default constructor
     private DisplayManager() { }
     
@@ -266,6 +268,18 @@ public class DisplayManager
                         line.length(),
                         qualities
                     );
+                    
+                    if( ! geoirc.isActive() )
+                    {
+                        lines_unread++;
+                        geoirc.setTitle(
+                            settings_manager.getString(
+                                "/misc/new content title prefix",
+                                DEFAULT_NEW_CONTENT_TITLE_PREFIX
+                            )
+                            + BASE_GEOIRC_TITLE
+                        );
+                    }
                 }
             }
         }

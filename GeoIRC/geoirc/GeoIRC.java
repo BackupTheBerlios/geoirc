@@ -49,7 +49,9 @@ public class GeoIRC
         GeoIRCConstants,
         ActionListener,
         CommandExecutor,
-        FocusListener
+        FocusListener,
+        ComponentListener,
+        WindowListener
 {
     protected static final int MAX_HISTORY_SIZE = 30;
     protected static final int MOST_RECENT_ENTRY = 0;
@@ -159,6 +161,13 @@ public class GeoIRC
         // Setup GUI.
 
         initComponents();
+        restoreMainFrameState();
+        setFocusable( false );
+        
+        this.setTitle( "GeoIRC" );
+        
+        addComponentListener( this );
+        addWindowListener( this );
 
         input_field.grabFocus();
         input_field.addActionListener( this );
@@ -178,14 +187,6 @@ public class GeoIRC
         input_history = new LinkedList();
         input_history_pointer = MOST_RECENT_ENTRY;
         input_saved = false;
-        
-        setFocusable( false );
-        if( settings_manager.getBoolean( "/gui/start maximized", true ) == true )
-        {
-            setExtendedState( MAXIMIZED_BOTH );
-        }
-        
-        this.setTitle( "GeoIRC" );
         
         display_manager = new DisplayManager(
             this, menu_bar, settings_manager, input_field
@@ -476,6 +477,50 @@ public class GeoIRC
         }
     }
     
+    protected void recordMainFrameState()
+    {
+        settings_manager.putInt(
+            "/gui/main frame x",
+            getX()
+        );
+        settings_manager.putInt(
+            "/gui/main frame y",
+            getY()
+        );
+        settings_manager.putInt(
+            "/gui/main frame width",
+            getWidth()
+        );
+        settings_manager.putInt(
+            "/gui/main frame height",
+            getHeight()
+        );
+        
+        int state = getExtendedState();
+        settings_manager.putInt(
+            "/gui/main frame state",
+            state
+        );
+    }
+    
+    protected void restoreMainFrameState()
+    {
+        int state = settings_manager.getInt(
+            "/gui/main frame state",
+            Frame.MAXIMIZED_BOTH
+        );
+        setExtendedState( state );
+        
+        if( state != Frame.MAXIMIZED_BOTH )
+        {
+            int x = settings_manager.getInt( "/gui/main frame x", 50 );
+            int y = settings_manager.getInt( "/gui/main frame y", 50 );
+            int width = settings_manager.getInt( "/gui/main frame width", 600 );
+            int height = settings_manager.getInt( "/gui/main frame height", 400 );
+            setBounds( x, y, width, height );
+        }
+    }
+    
     public String getRemoteMachineID( RemoteMachine rm )
     {
         int id = remote_machines.indexOf( rm );
@@ -681,6 +726,29 @@ public class GeoIRC
         }
     }
 
+    public void componentHidden(ComponentEvent e) { }
+    public void componentShown(ComponentEvent e) { }
+    public void componentMoved(ComponentEvent e)
+    {
+        recordMainFrameState();
+    }
+    
+    public void componentResized(ComponentEvent e)
+    {
+        recordMainFrameState();
+    }
+
+    public void windowActivated(WindowEvent e)
+    {
+        setTitle( BASE_GEOIRC_TITLE );
+    }
+    public void windowClosed(WindowEvent e) { }
+    public void windowClosing(WindowEvent e) { }
+    public void windowDeactivated(WindowEvent e) { }
+    public void windowDeiconified(WindowEvent e) { }
+    public void windowIconified(WindowEvent e) { }
+    public void windowOpened(WindowEvent e) { }
+    
     /* *********************************************************************
      *
      * @param command   the command to execute

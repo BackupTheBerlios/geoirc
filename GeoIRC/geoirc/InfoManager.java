@@ -147,7 +147,7 @@ public class InfoManager
             tree.reload( channel_node );
         }
         
-        String path = "/" + c.toString()
+        String path = "/" + c.getServer().toString()
             + "/" + c.getName()
             + "/" + u.getNick();
         tree_for_path.remove( path );

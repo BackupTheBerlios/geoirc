@@ -46,6 +46,7 @@ public class GIInfoPane extends GIPane
     {
         tree = new JTree( model );
         setViewportView( tree );
+        tree.addKeyListener( display_manager );
     }
     
     public void deactivate()

@@ -872,7 +872,7 @@ public class Server
                 }
             }
 
-            display_manager.println( line, Server.this.toString() );
+            display_manager.println( line, Server.this.toString() + " " + FILTER_SPECIAL_CHAR + "raw" );
         }
     }
 }

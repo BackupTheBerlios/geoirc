@@ -14,7 +14,10 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.1.7a";
+    static final String GEOIRC_VERSION = "0.1.8a";
+    
+    static final String BASE_GEOIRC_TITLE = "GeoIRC";
+    static final String DEFAULT_NEW_CONTENT_TITLE_PREFIX = "*";
     
     static final boolean GOD_IS_GOOD = true;
     
@@ -230,9 +233,11 @@ public interface GeoIRCConstants
     
     static final String [] VARS =
     {
-        "lasturl"
+        "lasturl",
+        "linesunread"
     };
     static final int VAR_LAST_URL = 0;
+    static final int VAR_LINES_UNREAD = 1;
     
     static final java.awt.Color DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR = new java.awt.Color( 0, 0, 0 );
 }
