@@ -5,6 +5,7 @@
  */
 package geoirc.conf.panes;
 
+import geoirc.SettingsManager;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
@@ -42,7 +43,6 @@ import javax.swing.table.AbstractTableModel;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.jdom.xpath.XPath;
 
 /**
  * @author netseeker aka Michael Manske
@@ -54,7 +54,7 @@ public class HotkeyPane
     private JTable table;
     private ActionMap action_map;
     LittleTableModel ltm = new LittleTableModel();
-    JValidatingTextField command_field = new JValidatingTextField(".+?", "");
+    JValidatingTextField command_field = new JValidatingTextField();
     JKeyRecordField hotkey_field = new JKeyRecordField();
     JButton newButton = new JButton("new");
     JButton addButton = new JButton("add");
@@ -87,6 +87,9 @@ public class HotkeyPane
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        hotkey_field.setEnabled(false);
+        command_field.setEnabled(false);
+
         Element root = getKeyboardNode();
 
         for (Iterator it = root.getChildren().iterator(); it.hasNext();) {
@@ -106,11 +109,6 @@ public class HotkeyPane
 
         addComponent(new JLabel("Hotkey: "), 0, 2, 1, 1, 0, 0);
         addComponent(hotkey_field, 1, 2, 1, 1, 0, 0);
-        /*
-        addComponent(new JLabel("Command Alias: "), 3, 2, 1, 1, 0, 0);
-        JComboBox box = new JComboBox(getCommandAliases());
-        addComponent(box, 4, 2, 1, 1, 0, 0);
-        */
         addComponent(
             new JLabel("Command: "),
             0,
@@ -136,6 +134,8 @@ public class HotkeyPane
                
                 ListSelectionModel rowSM = table.getSelectionModel();
                 rowSM.clearSelection();
+                hotkey_field.setEnabled(true);
+                command_field.setEnabled(true);                
                 hotkey_field.requestFocus();
             }
         });
@@ -159,12 +159,15 @@ public class HotkeyPane
                 if (!lsm.isSelectionEmpty()) {
                     int pos = table.getSelectedRow();
                     Object[] row = ltm.getRow(pos);
-
+                    hotkey_field.setEnabled(true);
+                    command_field.setEnabled(true);
                     hotkey_field.setText((String)row[0]);
                     command_field.setText((String)row[1]);
                     setButtonsState(0);
                 }
                 else {
+                    hotkey_field.setEnabled(false);
+                    command_field.setEnabled(false);
                     hotkey_field.setText("");
                     command_field.setText("");
                     setButtonsState(-1);
@@ -188,6 +191,7 @@ public class HotkeyPane
             StringReader in = new StringReader(os.toString());
             Document doc = new SAXBuilder().build(in);
             
+            //using jdom's build in XPath support would cause dependencies to jaxen and saxpath          
             StringTokenizer tokenizer = new StringTokenizer("root,node", ",");
             Element root = doc.getRootElement();
             while( tokenizer.hasMoreTokens() )
@@ -271,7 +275,7 @@ public class HotkeyPane
             if (table.getSelectedRow() == -1)
                 setButtonsState(1);
             else
-                setButtonsState(-1);
+                setButtonsState(0);
         }
 
     }
@@ -280,8 +284,16 @@ public class HotkeyPane
      * @see geoirc.conf.Storable#saveData()
      */
     public boolean saveData() {
-        // TODO Auto-generated method stub
-        return false;
+        
+        SettingsManager mgr = (SettingsManager)settings_manager;
+        mgr.removeNode("/keyboard/");
+        for( Iterator it = ltm.getData().iterator(); it.hasNext(); )
+        {
+            Object[] data = (Object[])it.next();
+            mgr.put( "/keyboard/" + (String)data[0], (String)data[1] );
+        }                        
+        
+        return true;
     }
 
     /* (non-Javadoc)

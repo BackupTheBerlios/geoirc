@@ -4,3 +4,5 @@ Changelog for GeoIRC 0.3.1a
 Added custom icons for regular, voiced, and op channel members (in Info panes).
 Pistos 2003-09-15 and 2003-09-16
 
+Added Hotkey configuration pane.
+netseeker 2003-09-16

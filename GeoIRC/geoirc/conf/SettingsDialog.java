@@ -53,14 +53,13 @@ public class SettingsDialog
 	private List panels;
     private Frame parent;
 
-	public SettingsDialog(
-		Frame frame,
+	public SettingsDialog(		
 		String title,
 		XmlProcessable settings_manager,
 		DisplayManager display_manager)
 	{
-		super(frame, title, true);
-        this.parent = frame;
+		super(display_manager.getGeoIRCInstance(), title, true);
+        this.parent = display_manager.getGeoIRCInstance();
 		this.settings_manager = settings_manager;
 		this.display_manager = display_manager;
 		this.valueRules = new GeoIRCDefaults(display_manager);
@@ -84,10 +83,10 @@ public class SettingsDialog
 	}
 
 	public SettingsDialog(
-		XmlProcessable settings_manager,
+        XmlProcessable settings_manager,
 		DisplayManager display_manager)
 	{
-		this(null, "GeoIRC Settings", settings_manager, display_manager);
+		this("GeoIRC Settings", settings_manager, display_manager);
 	}
 
 	private void initComponents() throws Exception
