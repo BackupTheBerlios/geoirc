@@ -6,21 +6,34 @@
 
 package geoirc;
 
+//import geoirc.conf.SettingsDialog;
+import geoirc.util.JMenuHelper;
 import geoirc.util.Util;
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowStateListener;
-import java.awt.event.WindowEvent;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.regex.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.tree.TreeModel;
-import org.jscroll.*;
+
+import org.jscroll.JScrollDesktopPane;
 import org.jscroll.widgets.JScrollInternalFrame;
 
 /**
@@ -87,6 +100,10 @@ public class DisplayManager
         panes = new Vector();
         
         desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
+		JMenu settings_menu = JMenuHelper.addMenuBarItem(menu_bar, "_Settings");
+		ActionListener actionProcCmd = new OpenSettingsDialogListener(settings_manager);
+		JMenuHelper.addMenuItem(settings_menu, "_Options", actionProcCmd);
+        
         geoirc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
         
@@ -1174,4 +1191,19 @@ public class DisplayManager
             );
         }
     }
+
+	class OpenSettingsDialogListener implements java.awt.event.ActionListener
+	{
+		XmlProcessable settings_manager;
+
+		OpenSettingsDialogListener(XmlProcessable settings_manager)
+		{
+			this.settings_manager = settings_manager;
+		}
+		public void actionPerformed(ActionEvent e)
+		{
+			//SettingsDialog dlg = new SettingsDialog(settings_manager);
+			//dlg.show();			
+		}
+	}
 }
