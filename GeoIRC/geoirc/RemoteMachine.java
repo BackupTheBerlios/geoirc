@@ -15,7 +15,7 @@ import java.net.Socket;
  */
 public class RemoteMachine
 {
-    protected static final int DEFAULT_PORT = 6667;
+    public static final int DEFAULT_PORT = 6667;
 
     protected DisplayManager display_manager;
     protected String hostname;

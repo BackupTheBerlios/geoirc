@@ -14,3 +14,13 @@ Pistos 2003-07-05
 Began adding code to keep the desktop state (window sizes, positions, etc.) in
 the settings node "/gui/desktop/".
 Pistos 2003-07-05
+
+Changed code so that any changes in settings are flushed to the XML file right
+away.
+Pistos 2003-07-05
+
+Finished code which saves and restores desktop state.
+Pistos 2003-07-06
+
+Added code which saves and restores connections.
+Pistos 2003-07-06

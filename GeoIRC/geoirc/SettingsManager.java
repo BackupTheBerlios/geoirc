@@ -101,6 +101,7 @@ public class SettingsManager
         boolean success = true;
         
         try {
+            root.flush();
             root.exportSubtree(new FileOutputStream( filepath ));
         } catch (IOException e) {
             printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");

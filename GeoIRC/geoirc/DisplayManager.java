@@ -374,7 +374,6 @@ public class DisplayManager
     protected void restoreDesktopState()
     {
         int i = 0;
-        JInternalFrame frame;
         String i_str;
         
         String type;
@@ -437,6 +436,7 @@ public class DisplayManager
             else
             {
                 // Huh?  Unknown window type.
+                printlnDebug( "Unknown window type in settings." );
             }
             
             i++;

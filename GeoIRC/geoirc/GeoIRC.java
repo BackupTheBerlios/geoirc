@@ -179,9 +179,10 @@ public class GeoIRC
         setupKeyMapping( ALT, KeyEvent.VK_RIGHT );
         setupKeyMapping( ALT, KeyEvent.VK_LEFT );
         
-        // Remaining initialization.
+        // Restore connections, if any.
         
         remote_machines = new Vector();
+        restoreConnections();
 
         show();
     }
@@ -266,15 +267,60 @@ public class GeoIRC
             );
             settings_manager.putString(
                 "/connections/" + i_str + "/hostname",
-                
+                rm.getHostname()
+            );
+            settings_manager.putInt(
+                "/connections/" + i_str + "/port",
+                rm.getPort()
             );
         }
+    }
+    
+    protected void restoreConnections()
+    {
+        int i = 0;
+        String i_str;
         
-        String index = Integer.toString( servers.size() - 1 );
-        settings_manager.putString(
-            "/connections/" + index + "/type",
-            s.getClass().toString()
-        );
+        String type;
+        String hostname;
+        int port;
+        
+        while( GOD_IS_GOOD )
+        {
+            i_str = Integer.toString( i );
+            
+            type = settings_manager.getString(
+                "/connections/" + i_str + "/type",
+                ""
+            );
+            if( type.equals( "" ) )
+            {
+                // No more connections stored in the settings.
+                break;
+            }
+            type = type.substring( type.lastIndexOf( "." ) + 1 );
+
+            hostname = settings_manager.getString(
+                "/connections/" + i_str + "/hostname",
+                ""
+            );
+            port = settings_manager.getInt(
+                "/connections/" + i_str + "/port",
+                RemoteMachine.DEFAULT_PORT
+            );
+            
+            if( type.equals( "Server") )
+            {
+                Server s = addServer( hostname, Integer.toString( port ) );
+            }
+            else
+            {
+                // Huh?  Unrecognized RemoteMachine type.
+                display_manager.printlnDebug( "Unknown remote machine type in settings." );
+            }
+            
+            i++;
+        }
     }
     
     /** This method is called from within the constructor to

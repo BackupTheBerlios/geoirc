@@ -15,11 +15,6 @@
       </node>
       <node name="connections">
         <map />
-        <node name="0">
-          <map>
-            <entry key="type" value="class geoirc.Server" />
-          </map>
-        </node>
       </node>
       <node name="dcc">
         <map />
@@ -47,17 +42,6 @@
               <entry key="height" value="137" />
               <entry key="width" value="1005" />
               <entry key="filter" value="debug" />
-            </map>
-          </node>
-          <node name="1">
-            <map>
-              <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="irc.freenode.net" />
-              <entry key="x" value="20" />
-              <entry key="y" value="20" />
-              <entry key="height" value="500" />
-              <entry key="width" value="700" />
-              <entry key="filter" value="irc.freenode.net" />
             </map>
           </node>
         </node>
