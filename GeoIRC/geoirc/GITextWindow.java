@@ -24,7 +24,6 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
 {
     protected JScrollPane scroll_pane;
     protected JTextPane text_pane;
-    protected Style default_style;
     protected Document document;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
@@ -35,12 +34,27 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
     // No default constructor.
     private GITextWindow() { }
 
-    public GITextWindow( DisplayManager display_manager, SettingsManager settings_manager, String title )
+    public GITextWindow(
+        DisplayManager display_manager,
+        SettingsManager settings_manager,
+        String title
+    )
     {
-        this( display_manager, settings_manager, title, (String) null /*, (RemoteMachine) null */ );
+        this(
+            display_manager,
+            settings_manager,
+            title,
+            (String) null
+        /*, (RemoteMachine) null */ );
     }
 
-    public GITextWindow( DisplayManager display_manager, SettingsManager settings_manager, String title, String filter )
+    public GITextWindow(
+        DisplayManager display_manager,
+        SettingsManager settings_manager,
+        StyleManager style_manager,
+        String title,
+        String filter
+    )
     {
         /*
         this( display_manager, settings_manager, title, filter, (RemoteMachine) null );
@@ -83,20 +97,7 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         
         document = text_pane.getDocument();
 
-        // Setup some default text styles.
-        
-        Style style_def = StyleContext.getDefaultStyleContext().getStyle( StyleContext.DEFAULT_STYLE );
-        StyleConstants.setFontFamily(
-            style_def,
-            settings_manager.getString( "/gui/text windows/font face", "Lucida Console" )
-        );
-        
-        Style style_normal = text_pane.addStyle( "normal", style_def );
-        StyleConstants.setFontSize(
-            style_normal,
-            settings_manager.getInt( "/gui/text windows/font size", 14 )
-        );
-        default_style = style_normal;
+        style_manager.initializeTextPane( text_pane );
         
         Style s = text_pane.addStyle( "italic", style_normal );
         StyleConstants.setItalic( s, true );

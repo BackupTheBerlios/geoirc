@@ -27,6 +27,7 @@ public class DisplayManager
         ComponentListener
 {
     protected SettingsManager settings_manager;
+    protected StyleManager style_manager;
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
     protected JInternalFrame last_activated_frame;
@@ -55,6 +56,8 @@ public class DisplayManager
         listening = false;
         
         this.settings_manager = settings_manager;
+        style_manager = new StyleManager( settings_manager, this );
+
         windows = new Vector();
         
         desktop_pane = new JScrollDesktopPane( menu_bar );

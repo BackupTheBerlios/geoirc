@@ -137,7 +137,7 @@
           <node name="0">
             <map>
               <entry key="filter" value="" />
-              <entry key="regexp" value="[G|g]eo[I|i][R|r][C|c]" />
+              <entry key="regexp" value="[Gg]eo[Ii][Rr][Cc]" />
               <entry key="filename" value="./bloop.wav" />
             </map>
           </node>
