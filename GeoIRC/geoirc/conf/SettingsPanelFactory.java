@@ -50,7 +50,7 @@ public class SettingsPanelFactory
 			panels.add(genPane);
 			//Connection Settings
 			BaseSettingsPanel conPane = new ConnectionPane(settings_manager, valueRules, "Connection Settings");
-			conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
+			//conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
 			panels.add(conPane);
 			//Visual Settings
 			BaseSettingsPanel visPane = new VisualPane(settings_manager, valueRules, "Visual Settings");
