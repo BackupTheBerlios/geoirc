@@ -33,7 +33,10 @@ public interface GeoIRCConstants
         "changeserver",
         "listservers",
         "part",
-        "listchannels"
+        "listchannels",
+        "set",
+        "setfilter",
+        "settitle"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -52,6 +55,9 @@ public interface GeoIRCConstants
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
+    public static final int CMD_SET = 16;
+    public static final int CMD_SET_FILTER = 17;
+    public static final int CMD_SET_TITLE = 18;
     
     static final String [] IRCMSGS =
     {

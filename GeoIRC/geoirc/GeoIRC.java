@@ -756,6 +756,39 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_SET:
+                // TODO: Do some validity checking.
+                {
+                    String path;
+                    String value;
+                    int eq_index = arg_string.indexOf( "=" );
+                    if( ( eq_index > 0 ) && ( eq_index < arg_string.length() ) )
+                    {
+                        path = arg_string.substring( 0, eq_index ).trim();
+                        value = arg_string.substring( eq_index + 1 );
+                    }
+                }
+                break;
+            case CMD_SET_FILTER:
+                {
+                    JInternalFrame jif = display_manager.getSelectedFrame();
+                    if( jif instanceof GITextWindow )
+                    {
+                        GITextWindow gitw = (GITextWindow) jif;
+                        gitw.setFilter( arg_string );
+                    }
+                }
+                break;
+            case CMD_SET_TITLE:
+                {
+                    JInternalFrame jif = display_manager.getSelectedFrame();
+                    if( jif instanceof GITextWindow )
+                    {
+                        GITextWindow gitw = (GITextWindow) jif;
+                        gitw.setTitle( arg_string );
+                    }
+                }
+                break;
             
             case UNKNOWN_COMMAND:
             default:

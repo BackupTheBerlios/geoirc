@@ -29,6 +29,11 @@
               </map>
             </node>
             <node name="1">
+              <map>
+                <entry key="name" value="#geoshell" />
+              </map>
+            </node>
+            <node name="2">
               <map />
             </node>
           </node>
@@ -52,21 +57,16 @@
           <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
           <entry key="start maximized" value="True" />
         </map>
-        <node name="format">
-          <map>
-            <entry key="timestamp" value="HH:mm:ss" />
-          </map>
-        </node>
         <node name="desktop">
           <map />
           <node name="0">
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="debug" />
-              <entry key="x" value="0" />
-              <entry key="y" value="252" />
-              <entry key="height" value="252" />
-              <entry key="width" value="1134" />
+              <entry key="x" value="567" />
+              <entry key="y" value="378" />
+              <entry key="height" value="378" />
+              <entry key="width" value="567" />
               <entry key="filter" value="debug" />
             </map>
           </node>
@@ -75,9 +75,9 @@
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="irc.freenode.net" />
               <entry key="x" value="0" />
-              <entry key="y" value="504" />
-              <entry key="height" value="252" />
-              <entry key="width" value="1134" />
+              <entry key="y" value="373" />
+              <entry key="height" value="378" />
+              <entry key="width" value="567" />
               <entry key="filter" value="irc.freenode.net" />
             </map>
           </node>
@@ -85,24 +85,29 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geoirc on irc.freenode.net" />
-              <entry key="x" value="0" />
+              <entry key="x" value="567" />
               <entry key="y" value="0" />
-              <entry key="height" value="252" />
-              <entry key="width" value="1134" />
+              <entry key="height" value="378" />
+              <entry key="width" value="567" />
               <entry key="filter" value="irc.freenode.net AND #geoirc" />
             </map>
           </node>
           <node name="3">
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="from=Jaykul" />
-              <entry key="x" value="412" />
-              <entry key="y" value="151" />
-              <entry key="height" value="237" />
-              <entry key="width" value="700" />
-              <entry key="filter" value="from=Jaykul" />
+              <entry key="title" value="#geoshell on irc.freenode.net" />
+              <entry key="x" value="4" />
+              <entry key="y" value="2" />
+              <entry key="height" value="378" />
+              <entry key="width" value="567" />
+              <entry key="filter" value="irc.freenode.net AND #geoshell" />
             </map>
           </node>
+        </node>
+        <node name="format">
+          <map>
+            <entry key="timestamp" value="HH:mm:ss" />
+          </map>
         </node>
         <node name="input field">
           <map>

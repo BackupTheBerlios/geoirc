@@ -223,22 +223,19 @@ public class DisplayManager
     
     public String getSelectedChannel()
     {
-        int n = windows.size();
         GITextWindow tw;
-        Object window;
         String retval = null;
-
-        for( int i = 0; i < n; i++ )
+        JInternalFrame jif = last_activated_frame;
+        if( jif == null )
         {
-            window = windows.elementAt( i );
-            if( window instanceof GITextWindow )
+            jif = getSelectedFrame();
+        }
+
+        if( jif instanceof GITextWindow )
+        {
+            String filter = ((GITextWindow) jif).getFilter();
+            if( filter != null )
             {
-                String filter = ((GITextWindow) window).getFilter();
-                if( filter == null )
-                {
-                    continue;
-                }
-                
                 // Search for a channel in this filter.
                 int pound_index = filter.indexOf( "#" );
                 if( pound_index > -1 )
@@ -252,7 +249,6 @@ public class DisplayManager
                     {
                         retval = filter.substring( pound_index );
                     }
-                    break;
                 }
             }
         }

@@ -34,3 +34,11 @@ Pistos 2003-07-06
 
 Added timestamps.  See http://java.sun.com/docs/books/tutorial/i18n/format/datepattern.html
 Pistos 2003-07-06
+
+Added these commands: "changeserver", "listservers", "part", "listchannels", "set",
+"setfilter", "settitle".
+Pistos 2003-07-06
+
+Fixed/Changed the getSelectedChannel code, as it didn't return the correct
+channel when you had more than one channel window open.
+Pistos 2003-07-06

@@ -151,30 +151,6 @@ public class GITextWindow extends JScrollInternalFrame
         
     }
     
-    public void restore()
-    {
-        try
-        {
-            setMaximum( false );
-        }
-        catch( PropertyVetoException e )
-        {
-            display_manager.printlnDebug( e.getMessage() );
-        }
-    }
-
-    public void maximize()
-    {
-        try
-        {
-            setMaximum( true );
-        }
-        catch( PropertyVetoException e )
-        {
-            display_manager.printlnDebug( e.getMessage() );
-        }
-    }
-    
     public boolean accepts( String text )
     {
         boolean result = false;
@@ -201,4 +177,11 @@ public class GITextWindow extends JScrollInternalFrame
     {
         return filter;
     }
+    
+    public void setFilter( String filter )
+    {
+        this.filter = filter;
+        setTitle( filter );
+    }
+    
 }
