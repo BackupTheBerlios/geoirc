@@ -68,3 +68,7 @@ Pistos 2003-09-24
 Added "closewindow", "maximizewindow", "minimizewindow", "restorewindow",
 "sizewindow" and "positionwindow" commands.
 Pistos 2003-09-24
+
+Added buttons to change order of highlightings in the
+highlighting settings
+netseeker 2003-09-24

@@ -21,9 +21,7 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.prefs.Preferences;
@@ -214,29 +212,7 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         return new Element("keyboard");
     }
 
-    /**
-     * @return
-     */
-    private Object[] getCommandAliases()
-    {
-        List aliases = new ArrayList();
-        String path = "/command aliases/";
-        int i = 0;
-        String nodePath = path + String.valueOf(i) + "/";
-
-        while (settings_manager.nodeExists(nodePath))
-        {
-            String alias = settings_manager.getString(nodePath + "alias", "");
-            if (alias.length() > 0)
-                aliases.add(alias);
-
-            i++;
-            nodePath = path + String.valueOf(i) + "/";
-        }
-
-        return aliases.toArray();
-    }
-
+  
     /**
      * @param state
      */
