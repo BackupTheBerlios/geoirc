@@ -40,10 +40,9 @@ public class ConnectionPane extends BaseSettingsPanel implements Storable
 	{
 		super(settings, valueRules, name);
 		save_handler = new SettingsSaveHandler(settings);
-		initComponents();
 	}
 
-	private void initComponents()
+    public void initialize()
 	{
 		String path = "/dcc/file transfers/";
 		addComponent(new TitlePane("DCC File Transfers"), 0, 0, 10, 1, 0, 0);

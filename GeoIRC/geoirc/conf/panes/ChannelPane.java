@@ -74,11 +74,10 @@ public class ChannelPane extends BaseSettingsPanel implements Storable {
         hostRule = rules.getValueRule("HOSTNAME");
         portRule = rules.getValueRule("PORT");
         channelRule = rules.getValueRule("CHANNEL");
-        fillServerMap();
-        initComponents();
+        fillServerMap();        
     }
 
-    private void initComponents() {
+    public void initialize() {
         addChannelHandler = new AddChannelActionHandler(this);
         setChannelHandler = new SetChannelActionHandler(this);
         

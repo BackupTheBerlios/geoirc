@@ -59,10 +59,9 @@ public class CommandAliasesPane
         GeoIRCDefaults valueRules,
         String name) {
         super(settings, valueRules, name);
-        initComponents();
     }
 
-    private void initComponents() {
+    public void initialize() {
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 

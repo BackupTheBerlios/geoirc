@@ -23,13 +23,14 @@ import javax.swing.JPanel;
 /**
  * @author netseeker aka Michael Manske
  */
-public class BaseSettingsPanel extends JPanel
+public abstract class BaseSettingsPanel extends JPanel
 {
 	protected XmlProcessable settings_manager = null;
 	protected GeoIRCDefaults rules = null;
 	protected GridBagLayout layout = new GridBagLayout();
 	protected String name = null;
 	protected List childs = new ArrayList();
+    protected boolean isInitialized = false;
 
 	/**
 	 * @param settings
@@ -218,4 +219,22 @@ public class BaseSettingsPanel extends JPanel
 		//label.setVisible(false);
 		addComponent(label, x, y, 1, 1, 1, 0, GridBagConstraints.NORTHWEST);		
 	}
+    
+    public abstract void initialize();
+    
+    public void setVisible(boolean visible)
+    {
+        if(visible == true && isInitialized == false)
+        {
+            initialize();
+            isInitialized = true;
+        }
+        
+        super.setVisible(visible);
+    }
+    
+    public boolean isInitialized()
+    {
+        return isInitialized;
+    }
 }

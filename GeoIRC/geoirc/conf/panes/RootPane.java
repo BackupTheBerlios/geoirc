@@ -28,10 +28,9 @@ public class RootPane extends BaseSettingsPanel implements GeoIRCConstants
 	public RootPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
 	{
 		super(settings, valueRules, name);
-		initComponents();
 	}
 
-	private void initComponents()
+    public void initialize()
 	{
 		addComponent(new TitlePane("About" + BASE_GEOIRC_TITLE), 0, 0, 10, 1, 0, 0);
 		addComponent(new JLabel(BASE_GEOIRC_TITLE + " " + GEOIRC_VERSION), 0, 1, 1, 1, 1, 0);

@@ -75,13 +75,12 @@ public class HotkeyPane
         ActionMap action_map) {
         super(settings, valueRules, name);
         this.action_map = action_map;
-        initComponents();
     }
 
     /**
      * 
      */
-    private void initComponents() {
+    public void initialize() {
         addComponent(new TitlePane("Hotkey Settings"), 0, 0, 10, 1, 0, 0);
 
         table = new JTable(ltm);

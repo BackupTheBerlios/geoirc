@@ -64,6 +64,10 @@ public class VisualPane extends BaseSettingsPanel implements Storable {
     public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name) {
         super(settings, valueRules, name);
         save_handler = new SettingsSaveHandler(settings);
+    }
+
+    public void initialize() {        
+        //PRELOAD VALUE RULES
         kdercRule = rules.getValueRule("KDERC");
         gtkrcRule = rules.getValueRule("GTKRC");
         fontFaceRule = rules.getValueRule("FONT");
@@ -72,11 +76,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable {
         bgColorRule = rules.getValueRule("BGCOLOR");
         nickWidthRule = rules.getValueRule("NICK_WIDTH");
         timestampRule = rules.getValueRule("TIMESTAMP");
-        initComponents();
-    }
 
-    private void initComponents() {
-        
         //SKIN
         String path = "/gui/";
         addComponent(new TitlePane("Skin"), 0, 0, 5, 1, 0, 0);

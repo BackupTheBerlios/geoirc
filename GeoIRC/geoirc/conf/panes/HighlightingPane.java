@@ -67,16 +67,16 @@ public class HighlightingPane
         GeoIRCDefaults valueRules,
         String name) {
         super(settings, valueRules, name);
-        colorRule = rules.getValueRule("COLOR");
-        ltm.setData(getHighlightings());
-        initComponents();
     }
 
-    private void initComponents() {
+    public void initialize() {
+
         addComponent(new TitlePane("Highlighting"), 0, 0, 3, 1, 0, 0);
 
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        colorRule = rules.getValueRule("COLOR");
+        ltm.setData(getHighlightings());
 
         TableColumn sportColumn = table.getColumnModel().getColumn(3);
         JComboBox comboBox = new JComboBox();
