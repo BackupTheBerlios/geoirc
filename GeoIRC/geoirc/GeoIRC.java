@@ -987,16 +987,7 @@ public class GeoIRC
                     Runtime rt = Runtime.getRuntime();
                     try
                     {
-                        Process p = rt.exec( arg_string );
-                        InputStream stdout = p.getInputStream();
-                        InputStream stderr = p.getErrorStream();
-                        OutputStream stdin = p.getOutputStream();
-                        
-                        final BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
-                        final BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
-                        
-                        new InputStreamReaderThread( display_manager, out ).start();
-                        new InputStreamReaderThread( display_manager, err ).start();
+                        rt.exec( arg_string );
                     }
                     catch( IOException e )
                     {
@@ -1011,6 +1002,40 @@ public class GeoIRC
                     display_manager.printlnDebug(
                         "/"
                         + CMDS[ CMD_EXEC ]
+                        + " <program to execute, with any arguments>"
+                    );
+                }
+                break;
+            case CMD_EXEC2:
+                if( arg_string != null )
+                {
+                    Runtime rt = Runtime.getRuntime();
+                    try
+                    {
+                        Process p = rt.exec( arg_string );
+                        InputStream stdout = p.getInputStream();
+                        InputStream stderr = p.getErrorStream();
+                        OutputStream stdin = p.getOutputStream();
+                        
+                        final BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
+                        final BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
+                        
+                        new InputStreamReaderThread( this, display_manager, out ).start();
+                        new InputStreamReaderThread( this, display_manager, err ).start();
+                    }
+                    catch( IOException e )
+                    {
+                        Util.printException(
+                            display_manager, e, 
+                            "I/O exception during external execution."
+                        );
+                    }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_EXEC2 ]
                         + " <program to execute, with any arguments>"
                     );
                 }

@@ -67,7 +67,8 @@ public interface GeoIRCConstants
         "connect",
         "exec",
         "listmembers",
-        "showqualities"
+        "showqualities",
+        "exec2"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -77,6 +78,7 @@ public interface GeoIRCConstants
     public static final int CMD_DISCONNECT = 12;
     public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_EXEC = 40;
+    public static final int CMD_EXEC2 = 43;
     public static final int CMD_EXIT = 31;
     public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
