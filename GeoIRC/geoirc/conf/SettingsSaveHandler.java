@@ -13,14 +13,16 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.text.JTextComponent;
 
 /**
  * A basic handler for saving user input of different types of JComponent
- * to the application preferences (settings.xml)
- * NOTE: At the moment only values of instances of JTextField, JList and JComboBox will get saved!
+ * to the application preferences (settings.xml)<br>
+ * NOTE: At the moment only values of instances of JTextField, JList, JComboBox and<br>
+ * JCheckBox will get saved!
  * 
  * @author netseeker aka Michael Manske
  */
@@ -148,6 +150,11 @@ public class SettingsSaveHandler
 			
 			if (value != null)
 				settings_manager.set(path, value.toString());			
+		}
+		else if(component instanceof JCheckBox)
+		{
+			JCheckBox box = (JCheckBox)component;
+			settings_manager.setBoolean(path, box.isSelected());
 		}
 	}
 }
