@@ -23,3 +23,6 @@ Added boolean switch "/gui/info windows/show root node" for configurable
 enabling/disabling wheter the root node "Connections" should be drawn or not.
 Added graphical configuration of this switch to "Visual Settings" in settings gui.
 netseeker 2003-09-27
+
+Added ncode and acode qualities for raw server messages.
+Pistos 2003-09-29

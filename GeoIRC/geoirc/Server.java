@@ -555,7 +555,7 @@ public class Server
                 
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_JOIN ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_JOIN ];
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
                     if( channel.charAt( 0 ) == ':' )
@@ -606,7 +606,7 @@ public class Server
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_KICK ] ) )
                 {
                     // :kez!kez@modem-302.bear.dialup.pol.co.uk KICK #GeoShell GeoBot :kez
-                    ircmsg = IRCMSGS[ IRCMSG_KICK ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_KICK ];
                     String kicker = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
                     String nick = tokens[ 3 ];
@@ -657,7 +657,7 @@ public class Server
                 {
                     // For now, this only handles single argument MODE commands.
                     
-                    ircmsg = IRCMSGS[ IRCMSG_MODE ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_MODE ];
                     
                     String channel_or_nick = tokens[ 2 ];
                     
@@ -875,7 +875,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NICK ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_NICK ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_NICK ];
                     
                     String old_nick = getNick( tokens[ 0 ] );
                     String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
@@ -932,7 +932,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NOTICE ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_NOTICE ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_NOTICE ];
                     
                     String nick = getNick( tokens[ 0 ] );
                     String text = Util.stringArrayToString( tokens, 3 );
@@ -1019,7 +1019,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_PART ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_PART ];
                     
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
@@ -1068,7 +1068,7 @@ public class Server
                 }
                 else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_PING ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_PING ];
                     
                     String pong_arg = "GeoIRC";
                     if( tokens.length > 1 )
@@ -1084,7 +1084,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_PRIVMSG ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_PRIVMSG ];
                     
                     String nick = getNick( tokens[ 0 ] );
                     String text = Util.stringArrayToString( tokens, 3 );
@@ -1278,7 +1278,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_QUIT ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_QUIT ];
                     
                     String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
@@ -1325,7 +1325,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ];
+                    ircmsg = "ncode=" + IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ];
                     
                     /* Example:
                     :calvino.freenode.net 366 GeoIRC_User #geoirc :End of /NAMES list.
@@ -1333,7 +1333,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NAMREPLY ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_RPL_NAMREPLY ];
+                    ircmsg = "ncode=" + IRCMSGS[ IRCMSG_RPL_NAMREPLY ];
                     
                     /* Example:
                     :calvino.freenode.net 353 GeoIRC_User = #geoirc :GeoIRC_User GeoBot Fluff @ChanServ 
@@ -1350,7 +1350,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_RPL_NOTOPIC ];
+                    ircmsg = "ncode=" + IRCMSGS[ IRCMSG_RPL_NOTOPIC ];
                     
                     String channel = tokens[ 3 ];
                     
@@ -1368,7 +1368,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_RPL_TOPIC ];
+                    ircmsg = "ncode=" + IRCMSGS[ IRCMSG_RPL_TOPIC ];
                     
                     String channel = tokens[ 3 ];
                     String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
@@ -1388,7 +1388,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ];
+                    ircmsg = "ncode=" + IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ];
                     
                     String channel = tokens[ 3 ];
                     String setter = tokens[ 4 ];
@@ -1418,7 +1418,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_TOPIC ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_TOPIC ];
+                    ircmsg = "acode=" + IRCMSGS[ IRCMSG_TOPIC ];
                     
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
@@ -1440,7 +1440,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_WELCOME ] ) )
                 {
-                    ircmsg = IRCMSGS[ IRCMSG_WELCOME ];
+                    ircmsg = "ncode=" + IRCMSGS[ IRCMSG_WELCOME ];
                     
                     if( ! listening_to_channels )
                     {
@@ -1465,7 +1465,7 @@ public class Server
                     + FILTER_SPECIAL_CHAR + "raw"
                     + (
                         ( ircmsg != "" )
-                        ? ( " ircmsg=" + ircmsg )
+                        ? ( " " + ircmsg )
                         : ""
                     )
                     + (
