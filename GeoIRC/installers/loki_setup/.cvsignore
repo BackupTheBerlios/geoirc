@@ -1,0 +1,11 @@
+config.*
+configure
+.depend
+.DS_Store
+setup
+setup.gtk
+Makefile
+uninstall
+loki_uninstall
+xsu
+check
