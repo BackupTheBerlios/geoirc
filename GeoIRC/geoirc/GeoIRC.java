@@ -604,29 +604,24 @@ public class GeoIRC
                     continue;
                 }
 
-                /*
-                if( rm.isConnected() )
-                {
-                 */
-                    settings_manager.putString(
-                        "/connections/" + i_str + "/type",
-                        rm.getClass().toString()
-                    );
-                    settings_manager.putString(
-                        "/connections/" + i_str + "/hostname",
-                        rm.getHostname()
-                    );
-                    settings_manager.putInt(
-                        "/connections/" + i_str + "/port",
-                        rm.getPort()
-                    );
+                settings_manager.putString(
+                    "/connections/" + i_str + "/type",
+                    rm.getClass().toString()
+                );
+                settings_manager.putString(
+                    "/connections/" + i_str + "/hostname",
+                    rm.getHostname()
+                );
+                settings_manager.putInt(
+                    "/connections/" + i_str + "/port",
+                    rm.getPort()
+                );
 
-                    if( rm instanceof Server )
-                    {
-                        Server s = (Server) rm;
-                        s.recordChannels();
-                    }
-                //}
+                if( rm instanceof Server )
+                {
+                    Server s = (Server) rm;
+                    s.recordChannels();
+                }
             }
         }
     }

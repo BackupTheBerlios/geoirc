@@ -72,9 +72,6 @@
             </node>
           </node>
         </node>
-        <node name="1">
-          <map />
-        </node>
       </node>
       <node name="dcc">
         <map>
@@ -150,13 +147,6 @@
                 <entry key="path" value="/" />
               </map>
             </node>
-            <node name="4">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="x" />
-                <entry key="filter" value="x" />
-              </map>
-            </node>
           </node>
           <node name="windows">
             <map />
@@ -168,7 +158,7 @@
                 <entry key="height" value="779" />
                 <entry key="width" value="1048" />
                 <entry key="state" value="1" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -180,20 +170,8 @@
                 <entry key="height" value="779" />
                 <entry key="width" value="1048" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
-                <entry key="pane" value="1" />
-              </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="title" value="x" />
-                <entry key="x" value="0" />
-                <entry key="y" value="0" />
-                <entry key="height" value="779" />
-                <entry key="width" value="1048" />
-                <entry key="state" value="1" />
                 <entry key="selected" value="false" />
-                <entry key="pane" value="4" />
+                <entry key="pane" value="1" />
               </map>
             </node>
           </node>
