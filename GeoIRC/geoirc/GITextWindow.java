@@ -28,6 +28,7 @@ public class GITextWindow extends JScrollInternalFrame
     protected DisplayManager display_manager;
     protected String filter;
     protected RemoteMachine associated_machine;
+    protected JScrollBar scrollbar;
     
     // No default constructor.
     private GITextWindow() { }
@@ -72,6 +73,7 @@ public class GITextWindow extends JScrollInternalFrame
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
         );
         getContentPane().add( scroll_pane );
+        scrollbar = scroll_pane.getVerticalScrollBar();
         
         document = text_pane.getDocument();
 
@@ -126,8 +128,8 @@ public class GITextWindow extends JScrollInternalFrame
             e.printStackTrace();
         }
         
-        JScrollBar sb = scroll_pane.getVerticalScrollBar();
-        sb.setValue( sb.getMaximum() );
+        scrollbar.setValue( scrollbar.getMaximum() );
+        
     }
     
     public void restore()
