@@ -171,7 +171,10 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     
     public void activate()
     {
-        button.setSelected( true );
+        if( button != null )
+        {
+            button.setSelected( true );
+        }
         GIFrameWrapper gifw = getFrame();
         if( gifw != null )
         {

@@ -52,8 +52,8 @@ public interface GeoIRCConstants
         "settitle",
         "privmsg",
         "msg",
-        "changewindow",
-        "switchwindow",
+        "changepane",
+        "switchpane",
         "help",
         "completenick",
         "printdebug",
@@ -119,7 +119,10 @@ public interface GeoIRCConstants
         "opensettings",
         "clearinputhistory",
         "dccsend",
-        "listpanes"
+        "listpanes",
+        "activatepane",
+        "activatetextpane",
+        "activatepanebyindex"
     };
     
     public static final String[] IRC_CMDS =
@@ -142,7 +145,10 @@ public interface GeoIRCConstants
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACCEPT_DCC_REQUEST = 59;
     public static final int CMD_ACTION = 3;
-    public static final int CMD_CHANGE_WINDOW = 22;
+    public static final int CMD_ACTIVATE_PANE = 89;
+    public static final int CMD_ACTIVATE_PANE_BY_INDEX = 91;
+    public static final int CMD_ACTIVATE_TEXT_PANE = 90;
+    public static final int CMD_CHANGE_PANE = 22;
     public static final int CMD_CHAR_BOLD = 63;
     public static final int CMD_CHAR_ITALIC = 64;
     public static final int CMD_CHAR_UNDERLINE = 65;
@@ -225,7 +231,7 @@ public interface GeoIRCConstants
     public static final int CMD_SET_TITLE = 18;
     public static final int CMD_SHOW_QUALITIES = 42;
     public static final int CMD_SIZE_WINDOW = 83;
-    public static final int CMD_SWITCH_WINDOW = 21;
+    public static final int CMD_SWITCH_PANE = 21;
     public static final int CMD_TEST = 51;
     public static final int CMD_TOPIC = 57;
     public static final int CMD_UNDOCK_PANE = 34;
@@ -398,6 +404,9 @@ public interface GeoIRCConstants
     static final int TEXT_PANE = 3;
     static final int INFO_PANE = 4;
     static final int SPLIT_PANE = 5;
+    
+    static final boolean INCLUDE_SPLIT_PANES = true;
+    static final boolean EXCLUDE_SPLIT_PANES = false;
     
     static final int UNKNOWN_FRAME_TYPE = -1;
     static final int GEOIRC_FRAME = 0;

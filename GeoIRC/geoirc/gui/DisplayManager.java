@@ -65,7 +65,7 @@ public class DisplayManager
     protected LogManager log_manager;
     protected I18nManager i18n_manager;
     protected GeoIRC geo_irc;
-    protected boolean listening;
+    protected boolean restoring;
 
     protected JTextField input_field;
     
@@ -104,7 +104,7 @@ public class DisplayManager
     )
     {
         geo_irc = parent;
-        listening = false;
+        restoring = true;
         
         this.settings_manager = settings_manager;
         this.variable_manager = variable_manager;
@@ -150,11 +150,6 @@ public class DisplayManager
         last_activated_pane = null;
         
         show_qualities = false;
-    }
-    
-    public void beginListening()
-    {
-        listening = true;
     }
     
     public void applySettings()
@@ -247,7 +242,7 @@ public class DisplayManager
             DEFAULT_WINDOW_HEIGHT
         );
         
-        if( listening )
+        if( ! restoring )
         {
             recordDesktopState();
         }
@@ -266,6 +261,9 @@ public class DisplayManager
         GIPaneWrapper gipw = new GIPaneWrapper( this, gitp, title, TEXT_PANE );
         gitp.setPaneWrapper( gipw );
         panes.add( gipw );
+        last_activated_pane = gipw;
+        paneActivated( gipw );
+        last_activated_text_pane = (GITextPane) gipw.getPane();
         return gipw;
     }
 
@@ -295,6 +293,8 @@ public class DisplayManager
         GIPaneWrapper gipw = new GIPaneWrapper( this, giip, title, INFO_PANE );
         giip.setPaneWrapper( gipw );
         panes.add( gipw );
+        last_activated_pane = gipw;
+        paneActivated( gipw );
         return gipw;
     }
     
@@ -399,6 +399,15 @@ public class DisplayManager
         // TODO: closePanes( String filter )
     }
     
+    public boolean dockByUserIndex( int location, int pane_user_index, int partner_user_index )
+    {
+        return dock(
+            location,
+            userIndexToTrueIndex( pane_user_index ),
+            userIndexToTrueIndex( partner_user_index )
+        );
+    }
+    
     /**
      * Replace partner with a JSplitPane, and place pane and partner in the split pane.
      *
@@ -415,143 +424,158 @@ public class DisplayManager
             || ( location == DOCK_RIGHT )
         )
         {
-            GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( pane_index );
-            GIPaneWrapper partner_gipw = (GIPaneWrapper) panes.elementAt( partner_index );
-            Container pane = gipw.getPane();
-            Container partner = partner_gipw.getPane();
-            
-            JSplitPane split_pane = null;
-            
-            // partner_container: The Container holding the partner
-            GIPaneWrapper partner_container_gipw = partner_gipw.getParent();
-            GIFrameWrapper frame = null;
-            Container partner_container = null;
-            boolean was_primary = true;
-            if( partner_container_gipw != null )
+            if( isUserPane( pane_index, INCLUDE_SPLIT_PANES ) && isUserPane( partner_index, INCLUDE_SPLIT_PANES ) )
             {
-                partner_container = partner_container_gipw.getPane();
-                // If the partner was itself a member of a split pane,
-                // was_primary: In which of the two panes in the SplitPane is the partner?
-                if( partner_container instanceof JSplitPane )
-                {
-                    JSplitPane sp = (JSplitPane) partner_container;
-                    was_primary = ( sp.getTopComponent() == partner );
-                }
-                partner_container = partner_container_gipw.getPane();
-                partner_container.remove( partner );
-            }
-            else
-            {
-                frame = partner_gipw.getFrame();
-            }
             
-            GIPaneWrapper pane_container_gipw = gipw.getParent();
-            if( pane_container_gipw != null )
-            {
-                pane_container_gipw.getPane().remove( pane );
-                if( pane_container_gipw.getType() == CHILD_CONTENT_PANE )
-                {
-                    // We just removed the only content of a GIWindow.
-                    // So, we should delete the window, too!
-                    pane_container_gipw.getFrame().close();
-                }
-            }
-            
-            // Create a new split pane.
-            
-            switch( location )
-            {
-                case DOCK_TOP:
-                    {
-                        split_pane = new JSplitPane(
-                            JSplitPane.VERTICAL_SPLIT,
-                            pane,
-                            partner
-                        );
-                        split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
-                        gipw.setSplitRank( SPLIT_PRIMARY );
-                        partner_gipw.setSplitRank( SPLIT_SECONDARY );
-                    }
-                    break;
-                case DOCK_RIGHT:
-                    {
-                        split_pane = new JSplitPane(
-                            JSplitPane.HORIZONTAL_SPLIT,
-                            partner, 
-                            pane
-                        );
-                        split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
-                        gipw.setSplitRank( SPLIT_SECONDARY );
-                        partner_gipw.setSplitRank( SPLIT_PRIMARY );
-                    }
-                    break;
-                case DOCK_BOTTOM:
-                    {
-                        split_pane = new JSplitPane(
-                            JSplitPane.VERTICAL_SPLIT,
-                            partner, 
-                            pane
-                        );
-                        split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
-                        gipw.setSplitRank( SPLIT_SECONDARY );
-                        partner_gipw.setSplitRank( SPLIT_PRIMARY );
-                    }
-                    break;
-                case DOCK_LEFT:
-                    {
-                        split_pane = new JSplitPane(
-                            JSplitPane.HORIZONTAL_SPLIT,
-                            pane,
-                            partner
-                        );
-                        split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
-                        gipw.setSplitRank( SPLIT_PRIMARY );
-                        partner_gipw.setSplitRank( SPLIT_SECONDARY );
-                    }
-                    break;
-                default:
-                    break;
-            }
+                GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( pane_index );
+                GIPaneWrapper partner_gipw = (GIPaneWrapper) panes.elementAt( partner_index );
+                Container pane = gipw.getPane();
+                Container partner = partner_gipw.getPane();
 
-            GIPaneWrapper split_gipw = new GIPaneWrapper( this, split_pane, "Split Pane", SPLIT_PANE );
-            if( partner_container_gipw != null )
-            {
-                split_gipw.setParent( partner_container_gipw );
-                if( partner_container instanceof JSplitPane )
+                JSplitPane split_pane = null;
+
+                // partner_container: The Container holding the partner
+                GIPaneWrapper partner_container_gipw = partner_gipw.getParent();
+                GIFrameWrapper frame = null;
+                Container partner_container = null;
+                boolean was_primary = true;
+                if( partner_container_gipw != null )
                 {
-                    JSplitPane sp = (JSplitPane) partner_container;
-                    if( was_primary )
+                    partner_container = partner_container_gipw.getPane();
+                    // If the partner was itself a member of a split pane,
+                    // was_primary: In which of the two panes in the SplitPane is the partner?
+                    if( partner_container instanceof JSplitPane )
                     {
-                        sp.setTopComponent( split_pane );
+                        JSplitPane sp = (JSplitPane) partner_container;
+                        was_primary = ( sp.getTopComponent() == partner );
+                    }
+                    partner_container = partner_container_gipw.getPane();
+                    partner_container.remove( partner );
+                }
+                else
+                {
+                    frame = partner_gipw.getFrame();
+                }
+
+                GIPaneWrapper pane_container_gipw = gipw.getParent();
+                if( pane_container_gipw != null )
+                {
+                    pane_container_gipw.getPane().remove( pane );
+                    if( pane_container_gipw.getType() == CHILD_CONTENT_PANE )
+                    {
+                        // We just removed the only content of a GIWindow.
+                        // So, we should delete the window, too!
+                        pane_container_gipw.getFrame().close();
+                    }
+                }
+
+                // Create a new split pane.
+
+                switch( location )
+                {
+                    case DOCK_TOP:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.VERTICAL_SPLIT,
+                                pane,
+                                partner
+                            );
+                            split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
+                            gipw.setSplitRank( SPLIT_PRIMARY );
+                            partner_gipw.setSplitRank( SPLIT_SECONDARY );
+                        }
+                        break;
+                    case DOCK_RIGHT:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.HORIZONTAL_SPLIT,
+                                partner, 
+                                pane
+                            );
+                            split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
+                            gipw.setSplitRank( SPLIT_SECONDARY );
+                            partner_gipw.setSplitRank( SPLIT_PRIMARY );
+                        }
+                        break;
+                    case DOCK_BOTTOM:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.VERTICAL_SPLIT,
+                                partner, 
+                                pane
+                            );
+                            split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
+                            gipw.setSplitRank( SPLIT_SECONDARY );
+                            partner_gipw.setSplitRank( SPLIT_PRIMARY );
+                        }
+                        break;
+                    case DOCK_LEFT:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.HORIZONTAL_SPLIT,
+                                pane,
+                                partner
+                            );
+                            split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
+                            gipw.setSplitRank( SPLIT_PRIMARY );
+                            partner_gipw.setSplitRank( SPLIT_SECONDARY );
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                GIPaneWrapper split_gipw = new GIPaneWrapper( this, split_pane, "Split Pane", SPLIT_PANE );
+                if( partner_container_gipw != null )
+                {
+                    split_gipw.setParent( partner_container_gipw );
+                    if( partner_container instanceof JSplitPane )
+                    {
+                        JSplitPane sp = (JSplitPane) partner_container;
+                        if( was_primary )
+                        {
+                            sp.setTopComponent( split_pane );
+                        }
+                        else
+                        {
+                            sp.setBottomComponent( split_pane );
+                        }
                     }
                     else
                     {
-                        sp.setBottomComponent( split_pane );
+                        partner_container.add( split_pane );
                     }
                 }
                 else
                 {
-                    partner_container.add( split_pane );
+                    frame.add( split_pane );
+                    split_gipw.setParent( partner_gipw );
                 }
-            }
-            else
-            {
-                frame.add( split_pane );
-                split_gipw.setParent( partner_gipw );
-            }
-            panes.add( split_gipw );
-            gipw.setParent( split_gipw );
-            partner_gipw.setParent( split_gipw );
+                panes.add( split_gipw );
+                gipw.setParent( split_gipw );
+                partner_gipw.setParent( split_gipw );
+                
+                recordDesktopState();
 
-            success = true;
+                success = true;
+            }
         }
         
         return success;
     }
     
+    public void undockByUserIndex( int pane_user_index )
+    {
+        undock( userIndexToTrueIndex( pane_user_index ) );
+    }
+    
     public void undock( int pane_index )
     {
-        if( ( pane_index < 0 ) || ( pane_index >= panes.size() ) )
+        if(
+            ( pane_index < 0 )
+            || ( pane_index >= panes.size() )
+            || ( ! isUserPane( pane_index, INCLUDE_SPLIT_PANES ) )
+        )
         {
             return;
         }
@@ -616,6 +640,8 @@ public class DisplayManager
         window.addPane( pane );
         gipw.setParent( window.getPaneWrapper() );
         addNewWindow( window );
+        
+        recordDesktopState();
     }
     
     public GIWindow getFrameByIndex( int index )
@@ -868,59 +894,69 @@ public class DisplayManager
         }
         
         GIPaneWrapper gipw;
-        GIPaneWrapper next_pane = (GIPaneWrapper) panes.elementAt( 2 );
+        GIPaneWrapper next_pane = null;
         for( int i = 2, n = panes.size(); i < n; i++ )
         {
             gipw = (GIPaneWrapper) panes.elementAt( i );
             if( gipw == last_activated_pane )
             {
-                int next_index = i + ( previous ? -1 : 1 );
-                if( next_index == n )
+                int motion = ( previous ? -1 : 1 );
+                int next_index = i + motion;
+                while( next_index != i )
                 {
-                    next_index = 0;
-                }
-                else if( next_index == -1 )
-                {
-                    next_index = n - 1;
+                    if( next_index == n )
+                    {
+                        next_index = 2;
+                    }
+                    else if( next_index < 2 )
+                    {
+                        next_index = n - 1;
+                    }
+                    if( isUserPane( next_index, EXCLUDE_SPLIT_PANES ) )
+                    {
+                        break;
+                    }
+                    next_index += motion;
                 }
                 
                 next_pane = (GIPaneWrapper) panes.elementAt( next_index );
+                break;
             }
         }
         
-        next_pane.getFrame().activate();
+        if( next_pane != null )
+        {
+            next_pane.activate();
+        }
         
         return true;
     }
     
-    public boolean switchToWindow( String regexp )
+    public boolean activatePane( String regexp )
     {
         boolean success = false;
         
-        /*
         if( regexp != null )
         {
-            JScrollInternalFrame jif;
-            int n = windows.size();
-            JInternalFrame start = getSelectedFrame();
-            
-            for( int i = 0; i < n; i++ )
+            GIPaneWrapper gipw;
+            for( int i = 2, n = panes.size(); i < n; i++ )
             {
-                jif = (JScrollInternalFrame) windows.elementAt( i );
-                if( jif != start )
+                gipw = (GIPaneWrapper) panes.elementAt( i );
+                switch( gipw.getType() )
                 {
-                    if( java.util.regex.Pattern.matches( regexp, jif.getTitle() ) )
-                    {
-                        jif.selectFrameAndAssociatedButtons();
-                        success = true;
+                    case TEXT_PANE:
+                    case INFO_PANE:
+                        if( java.util.regex.Pattern.matches( regexp, gipw.getTitle() ) )
+                        {
+                            gipw.activate();
+                            success = true;
+                        }
                         break;
-                    }
                 }
+                if( success ) { break; }
+                
             }
         }
-         */
-        
-        // TODO: switchToPane( String regexp )
         
         return success;
     }
@@ -931,11 +967,19 @@ public class DisplayManager
         
         try
         {
-            last_activated_pane = (GIPaneWrapper) panes.elementAt( index );
+            GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( index );
+            last_activated_pane = gipw;
+            gipw.activate();
+            success = true;
         }
         catch( ArrayIndexOutOfBoundsException e ) { }
         
         return success;
+    }
+    
+    public boolean setActivePaneByUserIndex( int user_index )
+    {
+        return setActivePane( userIndexToTrueIndex( user_index ) );
     }
     
     /************************************************************************
@@ -1205,7 +1249,7 @@ public class DisplayManager
         
         frames.remove( window );
         
-        if( listening )
+        if( ! restoring )
         {
             recordDesktopState();
         }
@@ -1233,14 +1277,14 @@ public class DisplayManager
     public void componentShown(java.awt.event.ComponentEvent e) { }
     public void componentMoved(java.awt.event.ComponentEvent e)
     {
-        if( listening )
+        if( ! restoring )
         {
             recordDesktopState();
         }
     }
     public void componentResized(java.awt.event.ComponentEvent e)
     {
-        if( listening )
+        if( ! restoring )
         {
             recordDesktopState();
         }
@@ -1616,6 +1660,8 @@ public class DisplayManager
                 }
             }
         }
+        
+        restoring = false;
     }    
     
     public void listWindows()
@@ -1632,13 +1678,98 @@ public class DisplayManager
         // TODO: listPanes()
     }
     
-    public void listPanes()
+    public boolean isUserPane( int index, boolean include_split_panes )
     {
-        GIPaneWrapper gipw;
+        boolean retval = false;
+        
+        switch( ((GIPaneWrapper) panes.elementAt( index )).getType() )
+        {
+            case TEXT_PANE:
+            case INFO_PANE:
+                retval = true;
+                break;
+            case SPLIT_PANE:
+                retval = include_split_panes;
+                break;
+        }
+        
+        return retval;
+    }
+    
+    /**
+     * @return -1 if true_index does not point to a user pane
+     */
+    public int trueIndexToUserIndex( int true_index )
+    {
+        int user_index = -1;
+        
+        if( ( true_index >= 0 ) && ( true_index < panes.size() ) )
+        {
+            if( isUserPane( true_index, INCLUDE_SPLIT_PANES ) )
+            {
+                int user_panes_counted = 0;
+                for( int i = 0; i < true_index; i++ )
+                {
+                    if( isUserPane( i, INCLUDE_SPLIT_PANES ) )
+                    {
+                        user_panes_counted++;
+                    }
+                }
+                user_index = user_panes_counted + 1;
+            }
+        }
+        
+        return user_index;
+    }
+    
+    /**
+     * @return -1 if user_index is out of bounds
+     */
+    public int userIndexToTrueIndex( int user_index )
+    {
+        int true_index = -1;
+        
+        int user_panes_counted = 0;
         for( int i = 0, n = panes.size(); i < n; i++ )
         {
-            gipw = (GIPaneWrapper) panes.elementAt( i );
-            printlnDebug( Integer.toString( i ) + ": " + gipw.toString() );
+            if( isUserPane( i, INCLUDE_SPLIT_PANES ) )
+            {
+                user_panes_counted++;
+                if( user_panes_counted == user_index )
+                {
+                    true_index = i;
+                    break;
+                }
+            }
+        }
+        
+        return true_index;
+    }
+    
+    public void listPanes()
+    {
+        listPanes( true );
+    }
+    public void listPanes( boolean users_point_of_view )
+    {
+        GIPaneWrapper gipw;
+        int user_index;
+        for( int i = 0, n = panes.size(); i < n; i++ )
+        {
+            if( users_point_of_view )
+            {
+                if( isUserPane( i, INCLUDE_SPLIT_PANES ) )
+                {
+                    gipw = (GIPaneWrapper) panes.elementAt( i );
+                    user_index = trueIndexToUserIndex( i );
+                    printlnDebug( Integer.toString( user_index ) + ": " + gipw.toString() );
+                }
+            }
+            else
+            {
+                gipw = (GIPaneWrapper) panes.elementAt( i );
+                printlnDebug( Integer.toString( i ) + ": " + gipw.toString() );
+            }
         }
     }
     

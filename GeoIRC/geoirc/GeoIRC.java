@@ -250,7 +250,6 @@ public class GeoIRC
         // Final miscellaneous initialization
         
         settings_manager.listenToPreferences();
-        display_manager.beginListening();
         listening_to_connections = true;
         processes = new Hashtable();
         dcc_requests = new Vector();
@@ -1340,6 +1339,46 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_ACTIVATE_PANE:
+            case CMD_CHANGE_PANE:
+            case CMD_SWITCH_PANE:
+                if( ( args != null ) && ( ! args.equals( "" ) ) )
+                {
+                    display_manager.activatePane( arg_string );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_ACTIVATE_PANE ]
+                        + " <title regexp>" );
+                }
+                break;
+            case CMD_ACTIVATE_PANE_BY_INDEX:
+            {
+                boolean problem = true;
+                if( ( args != null ) && ( ! args.equals( "" ) ) )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        problem = ! display_manager.setActivePaneByUserIndex( index );
+                    } catch( NumberFormatException e ) { }
+                }
+                
+                if( problem )
+                {
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_LIST_PANES ]
+                    );
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_ACTIVATE_PANE_BY_INDEX ]
+                        + " <pane index number>" );
+                }
+                break;
+            }
             case CMD_CHAR_BOLD:
                 insertCharAtCaret( MIRC_BOLD_CONTROL_CHAR );
                 break;
@@ -1822,7 +1861,7 @@ public class GeoIRC
                     
                     if( ( location != DOCK_NOWHERE ) && ( pane_index > -1 ) )
                     {
-                        if( display_manager.dock( location, pane_index, partner_index ) )
+                        if( display_manager.dockByUserIndex( location, pane_index, partner_index ) )
                         {
                             display_manager.printlnDebug( i18n_manager.getString( "docked" ) );
                         }
@@ -2935,20 +2974,6 @@ public class GeoIRC
                     display_manager.setShowQualities( setting );
                 }
                 break;
-            case CMD_SWITCH_WINDOW:
-            case CMD_CHANGE_WINDOW:
-                if( ( args != null ) && ( ! args.equals( "" ) ) )
-                {
-                    display_manager.switchToWindow( arg_string );
-                }
-                else
-                {
-                    display_manager.printlnDebug(
-                        "/"
-                        + CMDS[ CMD_SWITCH_WINDOW ]
-                        + " <title regexp>" );
-                }
-                break;
             case CMD_TEST:
                 // For testing/debugging purposes.
                 pack();
@@ -2988,7 +3013,7 @@ public class GeoIRC
                         try
                         {
                             index = Integer.parseInt( args[ 0 ] );
-                            display_manager.undock( index );
+                            display_manager.undockByUserIndex( index );
                             problem = false;
                         } catch( NumberFormatException e ) { }
                     }
