@@ -52,7 +52,7 @@ public class JRegExTextField extends JValidatingTextField
 
         try
         {
-            Pattern.compile( t );
+            Pattern.compile( t, Pattern.DOTALL );
         }
         catch (PatternSyntaxException e)
         {

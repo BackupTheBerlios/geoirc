@@ -150,6 +150,7 @@ public class JValidatingTextField extends JTextField implements DocumentListener
      */
     public boolean isValid()
     {
+        validateText();
         return textValid;
     }
 
