@@ -73,6 +73,13 @@ public interface GeoIRCConstants
     public static final int CMD_SWITCH_WINDOW = 21;
     public static final int CMD_HELP = 23;
     
+    /*
+:einstein.freenode.net 311 Pistos Pistos ~Pistos CPE0050ba18d2d5-CM000039ed745e.cpe.net.cable.rogers.com * :Pi Gi
+:einstein.freenode.net 319 Pistos Pistos :#geoshell #geoirc 
+:einstein.freenode.net 312 Pistos Pistos einstein.freenode.net :New York, NY, US
+:einstein.freenode.net 317 Pistos Pistos 58 1058180283 :seconds idle, signon time
+:einstein.freenode.net 318 Pistos Pistos :End of /WHOIS list.
+     */
     static final String [] IRCMSGS =
     {
         "PRIVMSG",
@@ -85,7 +92,12 @@ public interface GeoIRCConstants
         "332",
         "333",
         "353",     
-        "366"
+        "366",
+        "311",
+        "312",
+        "317",
+        "318",
+        "319"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -98,6 +110,11 @@ public interface GeoIRCConstants
     static final int IRCMSG_RPL_TOPIC_SETTER = 8;
     static final int IRCMSG_RPL_NAMREPLY = 9;
     static final int IRCMSG_RPL_ENDOFNAMES = 10;
+    static final int IRCMSG_RPL_WHOISUSER = 11;
+    static final int IRCMSG_RPL_WHOISSERVER = 12;
+    static final int IRCMSG_RPL_WHOISIDLE = 13;
+    static final int IRCMSG_RPL_ENDOFWHOIS = 14;
+    static final int IRCMSG_RPL_WHOISCHANNELS = 15;
     
     static final String [] CTCP_CMDS =
     {
