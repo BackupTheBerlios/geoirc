@@ -30,3 +30,17 @@ Pistos 2003-09-17
 
 Added a "clearwindow" command.
 Pistos 2003-09-17
+
+Changed CommandAlias settings dialog to allow input of a custom command
+netseeker 2003-09-17
+
+Added allowed port range to dcc settings dialog
+netseeker 2003-09-17
+
+Added ctcp settings to main settings dialog
+netseeker 2003-09-17
+
+Added max nick width and nickname tree sort order settings
+to visual settings dialog
+netseeker 2003-09-17
+
