@@ -336,6 +336,13 @@ public class Server
                         
                         getUserByNick( old_nick ).setNick( new_nick );
                         // TODO: mark nick change in channel memberships.
+                        int n = channels.size();
+                        Channel c;
+                        for( int i = 0; i < n; i++ )
+                        {
+                            c = (Channel) channels.elementAt( i );
+                            c.acknowledgeNickChange( old_nick, new_nick );
+                        }
                         
                         String text = old_nick + " is now known as " + new_nick + ".";
                         qualities += " from=" + new_nick
