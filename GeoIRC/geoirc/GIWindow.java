@@ -22,7 +22,7 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected int pane_type;
-    protected GIPane pane;
+    protected JComponent pane;
     
     // No default constructor
     private GIWindow() { }
@@ -51,7 +51,7 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
         selectFrameAndAssociatedButtons();
     }
     
-    public void addPane( GIPane pane )
+    public void addPane( JComponent pane )
     {
         if( pane instanceof GIInfoPane )
         {
@@ -65,7 +65,7 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
         this.pane = pane;
     }
     
-    public void removePane( GIPane pane )
+    public void removePane( JComponent pane )
     {
         getContentPane().remove( pane );
         pane_type = NO_PANE;
@@ -77,7 +77,20 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
         return pane_type;
     }
     
-    public GIPane getPane()
+    /**
+     * @return either the data pane of this window, or the SplitPane.
+     */
+    public JComponent getPane()
+    {
+        JComponent retval = pane;
+        if( ( pane != null ) && ( pane.getParent() instanceof JSplitPane ) )
+        {
+            retval = (JSplitPane) pane.getParent();
+        }
+        return retval;
+    }
+    
+    public JComponent getActualPane()
     {
         return pane;
     }
@@ -104,7 +117,10 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
         super.setTitle( new_title );
         if( pane != null )
         {
-            pane.setTitle( new_title );
+            if( pane instanceof GIPane )
+            {
+                ((GIPane) pane).setTitle( new_title );
+            }
         }
         JToggleButton button = getAssociatedButton();
         if( button != null )

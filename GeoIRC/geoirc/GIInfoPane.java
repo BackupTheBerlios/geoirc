@@ -20,11 +20,12 @@ public class GIInfoPane extends GIPane implements GeoIRCConstants
     public GIInfoPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        GIWindow parent,
         String title,
         String path
     )
     {
-        super( display_manager, settings_manager, title, null );
+        super( display_manager, settings_manager, parent, title, null );
         if( ( path == null ) || ( path.equals( "" ) ) )
         {
             this.path = "/";

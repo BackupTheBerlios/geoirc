@@ -38,6 +38,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         I18nManager i18n_manager,
+        GIWindow parent,
         String title
     )
     {
@@ -46,6 +47,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             display_manager,
             settings_manager,
             i18n_manager,
+            parent,
             title,
             (String) null
         );
@@ -56,11 +58,12 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         I18nManager i18n_manager,
+        GIWindow parent,
         String title,
         String filter
     )
     {
-        super( display_manager, settings_manager, title, null );
+        super( display_manager, settings_manager, parent, title, null );
         
         this.i18n_manager = i18n_manager;
         this.filter = filter;

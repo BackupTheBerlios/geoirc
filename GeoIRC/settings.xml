@@ -110,18 +110,18 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="2" />
-                <entry key="location" value="0" />
-                <entry key="divider location" value="158" />
-                <entry key="partner" value="-1" />
+                <entry key="pane" value="3" />
+                <entry key="location" value="1" />
+                <entry key="divider location" value="530" />
+                <entry key="partner" value="2" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="5" />
                 <entry key="location" value="1" />
-                <entry key="divider location" value="690" />
-                <entry key="partner" value="1" />
+                <entry key="divider location" value="509" />
+                <entry key="partner" value="4" />
               </map>
             </node>
           </node>
@@ -137,18 +137,32 @@
             <node name="1">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc on tolkien.freenode.net" />
-                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
+                <entry key="title" value="%debug" />
+                <entry key="filter" value="%debug" />
               </map>
             </node>
             <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="%debug" />
-                <entry key="filter" value="%debug" />
+                <entry key="title" value="#geoirc on tolkien.freenode.net" />
+                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
               </map>
             </node>
             <node name="3">
+              <map>
+                <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="title" value="Info" />
+                <entry key="path" value="/" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="#geoirc on tolkien.freenode.net" />
+                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
+              </map>
+            </node>
+            <node name="5">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
@@ -166,19 +180,19 @@
                 <entry key="height" value="549" />
                 <entry key="width" value="712" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="title" value="#geoirc on tolkien.freenode.net" />
-                <entry key="x" value="50" />
-                <entry key="y" value="63" />
-                <entry key="height" value="667" />
-                <entry key="width" value="894" />
+                <entry key="title" value="%debug" />
+                <entry key="x" value="40" />
+                <entry key="y" value="40" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
               </map>
             </node>

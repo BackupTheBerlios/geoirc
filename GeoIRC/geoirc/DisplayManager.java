@@ -204,10 +204,10 @@ public class DisplayManager
         return addTextWindow( title, null );
     }
     
-    protected GITextPane addTextPane( String title, String filter )
+    protected GITextPane addTextPane( GIWindow parent, String title, String filter )
     {
         GITextPane gitp = new GITextPane(
-            geoirc, this, settings_manager, i18n_manager, title, filter
+            geoirc, this, settings_manager, i18n_manager, parent, title, filter
         );
         panes.add( gitp );
         return gitp;
@@ -223,7 +223,7 @@ public class DisplayManager
         GIWindow text_window = new GIWindow(
             this, settings_manager, actual_title
         );
-        GITextPane gitp = addTextPane( actual_title, filter );
+        GITextPane gitp = addTextPane( text_window, actual_title, filter );
         undocked_panes.add( gitp );
         text_window.addPane( gitp );
         addNewWindow( text_window );
@@ -231,10 +231,10 @@ public class DisplayManager
         return text_window;
     }
     
-    protected GIInfoPane addInfoPane( String title, String path )
+    protected GIInfoPane addInfoPane( GIWindow parent, String title, String path )
     {
         GIInfoPane giip = new GIInfoPane(
-            this, settings_manager, title, path
+            this, settings_manager, parent, title, path
         );
         panes.add( giip );
         return giip;
@@ -248,7 +248,7 @@ public class DisplayManager
             actual_title = "";
         }
         GIWindow info_window = new GIWindow( this, settings_manager, actual_title );
-        GIInfoPane giip = addInfoPane( actual_title, path );
+        GIInfoPane giip = addInfoPane( info_window, actual_title, path );
         info_window.addPane( giip );
         undocked_panes.add( giip );
 
@@ -677,7 +677,6 @@ public class DisplayManager
     
     public String getSelectedByPrefix( String prefix )
     {
-        GIPane pane;
         String retval = null;
         GIWindow giw = (GIWindow) last_activated_frame;
         if( giw == null )
@@ -687,7 +686,7 @@ public class DisplayManager
 
         if( giw != null )
         {
-            pane = giw.getPane();
+            JComponent pane = giw.getPane();
             if( pane instanceof GITextPane )
             {
                 String filter = ((GITextPane) pane).getFilter();
@@ -737,7 +736,7 @@ public class DisplayManager
         )
         {
             GIWindow giw = (GIWindow) windows.elementAt( window );
-            GIPane pane = giw.getPane();
+            JComponent pane = giw.getPane();
             JComponent partner_pane_window = desktop_pane;
             if( host_window >= 0 )
             {
@@ -754,7 +753,7 @@ public class DisplayManager
         return success;
     }
     
-    protected boolean dock( int location, GIPane pane, JComponent partner )
+    protected boolean dock( int location, JComponent pane, JComponent partner )
     {
         boolean success = false;
         
@@ -859,7 +858,7 @@ public class DisplayManager
             return;
         }
         
-        GIPane pane = (GIPane) docked_panes.elementAt( pane_index );
+        JComponent pane = (JComponent) docked_panes.elementAt( pane_index );
         if( ! ( pane.getParent() instanceof JSplitPane ) )
         {
             return;
@@ -903,7 +902,7 @@ public class DisplayManager
             split_pane_parent.add( other_component );
         }
         
-        GIWindow window = new GIWindow( this, settings_manager, pane.getTitle() );
+        GIWindow window = new GIWindow( this, settings_manager, "" );
         undocked_panes.add( pane );
         docked_panes.remove( pane );
         window.addPane( pane );
@@ -949,7 +948,7 @@ public class DisplayManager
             button.setForeground( DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR );
         }
         
-        GIPane pane = giw.getPane();
+        JComponent pane = giw.getPane();
         if( pane instanceof GITextPane )
         {
             last_activated_text_pane = (GITextPane) pane;
@@ -980,7 +979,7 @@ public class DisplayManager
     public void internalFrameClosed( InternalFrameEvent e )
     {
         GIWindow window = (GIWindow) e.getSource();
-        GIPane pane = window.getPane();
+        JComponent pane = window.getPane();
         
         if( last_activated_frame == window )
         {
@@ -1232,23 +1231,24 @@ public class DisplayManager
         int orientation;
         n = docked_panes.size();
         Component partner = null;
+        JComponent pane1;
         GIPane pane2;
         for( int i = 0; i < n; i++ )
         {
-            pane = (GIPane) docked_panes.elementAt( i );
+            pane1 = (JComponent) docked_panes.elementAt( i );
             setting_path = "/gui/desktop/docked panes/" + Integer.toString( i );
 
             settings_manager.putInt(
                 setting_path + "/pane", 
-                panes.indexOf( pane )
+                panes.indexOf( pane1 )
             );
             
-            split_pane = (JSplitPane) pane.getParent();
+            split_pane = (JSplitPane) pane1.getParent();
             orientation = split_pane.getOrientation();
             location = DOCK_NOWHERE;
             if( orientation == JSplitPane.VERTICAL_SPLIT )
             {
-                if( split_pane.getTopComponent() == pane )
+                if( split_pane.getTopComponent() == pane1 )
                 {
                     location = DOCK_TOP;
                     partner = split_pane.getBottomComponent();
@@ -1261,7 +1261,7 @@ public class DisplayManager
             }
             else if( orientation == JSplitPane.HORIZONTAL_SPLIT )
             {
-                if( split_pane.getTopComponent() == pane )
+                if( split_pane.getTopComponent() == pane1 )
                 {
                     location = DOCK_LEFT;
                     partner = split_pane.getBottomComponent();
@@ -1497,6 +1497,7 @@ public class DisplayManager
             if( pane_type == TEXT_PANE )
             {
                 gip = addTextPane(
+                    null,
                     (String) pane_titles.elementAt( pane_index ),
                     (String) filters.get( Integer.toString( pane_index ) )
                 );
@@ -1504,6 +1505,7 @@ public class DisplayManager
             else if( pane_type == INFO_PANE )
             {
                 gip = addInfoPane(
+                    null,
                     (String) pane_titles.elementAt( pane_index ),
                     (String) paths.get( Integer.toString( pane_index ) )
                 );
@@ -1548,13 +1550,13 @@ public class DisplayManager
     
     public void listDockedPanes()
     {
-        GIPane pane;
+        JComponent pane;
         for( int i = 0, n = docked_panes.size(); i < n; i++ )
         {
-            pane = (GIPane) docked_panes.elementAt( i );
+            pane = (JComponent) docked_panes.elementAt( i );
             printlnDebug(
                 Integer.toString( i ) + ": "
-                + pane.getTitle()
+                + ( (pane instanceof GIPane) ? ((GIPane) pane).getTitle() : "" )
             );
         }
     }

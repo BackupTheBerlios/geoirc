@@ -1022,26 +1022,30 @@ public class GeoIRC
                 boolean handled = false;
                 if( giw.getPaneType() == TEXT_PANE )
                 {
-                    GITextPane gitp = (GITextPane) giw.getPane();
-                    String filter = gitp.getFilter();
-                    
-                    if( filter.matches( ".*from=%self.*" ) )
+                    JComponent pane = (JComponent) giw.getActualPane();
+                    if( pane instanceof GITextPane )
                     {
-                        // Determine the other party in this query conversation
-                        // based on the filter.
+                        GITextPane gitp = (GITextPane) pane;
+                        String filter = gitp.getFilter();
 
-                        Pattern p = Pattern.compile( "from=([^%]\\S*)" );
-                        Matcher m = p.matcher( filter );
-                        if( m.find() )
+                        if( filter.matches( ".*from=%self.*" ) )
                         {
-                            String recipient = m.group( 1 );
-                            execute(
-                                CMDS[ CMD_SEND_RAW ]
-                                + " privmsg "
-                                + recipient + " :"
-                                + text
-                            );
-                            handled = true;
+                            // Determine the other party in this query conversation
+                            // based on the filter.
+
+                            Pattern p = Pattern.compile( "from=([^%]\\S*)" );
+                            Matcher m = p.matcher( filter );
+                            if( m.find() )
+                            {
+                                String recipient = m.group( 1 );
+                                execute(
+                                    CMDS[ CMD_SEND_RAW ]
+                                    + " privmsg "
+                                    + recipient + " :"
+                                    + text
+                                );
+                                handled = true;
+                            }
                         }
                     }
                 }
@@ -1712,7 +1716,7 @@ public class GeoIRC
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                     if( giw != null )
                     {
-                        GIPane pane = giw.getPane();
+                        JComponent pane = giw.getPane();
                         if( pane instanceof GITextPane )
                         {
                             GITextPane gitp = (GITextPane) pane;
@@ -1825,7 +1829,7 @@ public class GeoIRC
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                     if( giw != null )
                     {
-                        GIPane pane = giw.getPane();
+                        JComponent pane = giw.getPane();
                         if( pane instanceof GITextPane )
                         {
                             GITextPane gitp = (GITextPane) pane;
@@ -2244,7 +2248,7 @@ public class GeoIRC
                         GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                         if( giw != null )
                         {
-                            GIPane pane = giw.getPane();
+                            JComponent pane = giw.getPane();
                             if( pane instanceof GITextPane )
                             {
                                 GITextPane gitp = (GITextPane) pane;
@@ -2407,7 +2411,7 @@ public class GeoIRC
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                     if( giw != null )
                     {
-                        GIPane pane = giw.getPane();
+                        JComponent pane = giw.getPane();
                         if( pane instanceof GITextPane )
                         {
                             ((GITextPane) pane).nudgeDown();
@@ -2420,7 +2424,7 @@ public class GeoIRC
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                     if( giw != null )
                     {
-                        GIPane pane = giw.getPane();
+                        JComponent pane = giw.getPane();
                         if( pane instanceof GITextPane )
                         {
                             ((GITextPane) pane).nudgeUp();
@@ -2436,7 +2440,7 @@ public class GeoIRC
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                     if( giw != null )
                     {
-                        GIPane pane = giw.getPane();
+                        JComponent pane = giw.getPane();
                         if( pane instanceof GITextPane )
                         {
                             ((GITextPane) pane).pageDown();
@@ -2449,7 +2453,7 @@ public class GeoIRC
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
                     if( giw != null )
                     {
-                        GIPane pane = giw.getPane();
+                        JComponent pane = giw.getPane();
                         if( pane instanceof GITextPane )
                         {
                             ((GITextPane) pane).pageUp();
@@ -2869,10 +2873,10 @@ public class GeoIRC
                     JInternalFrame jif = display_manager.getSelectedFrame();
                     if( jif != null )
                     {
-                        GIPane gip = ((GIWindow) jif).getPane();
-                        if( gip instanceof GITextPane )
+                        JComponent pane = ((GIWindow) jif).getPane();
+                        if( pane instanceof GITextPane )
                         {
-                            ((GITextPane) gip).setFilter( arg_string );
+                            ((GITextPane) pane).setFilter( arg_string );
                         }
                     }
                 }
