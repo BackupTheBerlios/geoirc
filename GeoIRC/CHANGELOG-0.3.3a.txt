@@ -23,3 +23,8 @@ Added boolean switch "/gui/info windows/show root node" for configurable
 enabling/disabling wheter the root node "Connections" should be drawn or not.
 Added graphical configuration of this switch to "Visual Settings" in settings gui.
 netseeker 2003-09-27
+
+Various IRC messages dealing with channel names (e.g. JOIN, PART, etc.) now
+treat channel names case insensitively.  (There were problems with servers that,
+for example, capitalized the first letter of channel names in these messages.)
+Pistos 2003-09-30

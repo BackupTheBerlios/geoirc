@@ -555,7 +555,7 @@ public class Server
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ];
+                    String channel = tokens[ 2 ].toLowerCase();
                     if( channel.charAt( 0 ) == ':' )
                     {
                         // Remove leading colon.
@@ -605,7 +605,7 @@ public class Server
                 {
                     // :kez!kez@modem-302.bear.dialup.pol.co.uk KICK #GeoShell GeoBot :kez
                     String kicker = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ];
+                    String channel = tokens[ 2 ].toLowerCase();
                     String nick = tokens[ 3 ];
                     String message = Util.stringArrayToString( tokens, 4 );
                     if( message != null )
@@ -1011,7 +1011,7 @@ public class Server
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ];
+                    String channel = tokens[ 2 ].toLowerCase();
                     String message = Util.stringArrayToString( tokens, 3 );
                     if( message != null )
                     {
@@ -1329,7 +1329,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) )
                 {
-                    String channel = tokens[ 3 ];
+                    String channel = tokens[ 3 ].toLowerCase();
                     
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
                         + " " + channel;
@@ -1345,7 +1345,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
                 {
-                    String channel = tokens[ 3 ];
+                    String channel = tokens[ 3 ].toLowerCase();
                     String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
                     
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
@@ -1363,7 +1363,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) )
                 {
-                    String channel = tokens[ 3 ];
+                    String channel = tokens[ 3 ].toLowerCase();
                     String setter = tokens[ 4 ];
                     String time_str = tokens[ 5 ];
                     long time_in_seconds;
@@ -1392,7 +1392,7 @@ public class Server
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_TOPIC ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ];
+                    String channel = tokens[ 2 ].toLowerCase();
                     String topic = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
                     
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
