@@ -27,12 +27,12 @@ import javax.swing.table.TableModel;
  * changges of validation state.<br>
  * Description: Standard JTable uses one and only one intance of a cell editor
  * component, e.g. JTextField, for all contained cells. When using listeners and
- * one cell contains an invalid a event is fired for notification of the invalid state,
+ * one cell contains an invalid value an event is fired for notification of the invalid state,
  * if the user then activates another cell which may contain a valid value an event will be fired
  * for notification of the valid state. The second event will cancel out the first event, so the observer
  * will not longer know that the first cell contains an invalid value.<br>
  * JValidatingTable creates an empty container for each cell and wraps events fired by celleditor from the
- * celleditor to an empty container. Then all listener observer get notified of the cellstate but they don't get
+ * celleditor to an empty container. Then all listener observers get notified of the cellstate but they don't get
  * the celleditor component as source of the event but the empty cell container. This way each cell can be validated
  * by using only one instance of the celleditor. 
  * 
