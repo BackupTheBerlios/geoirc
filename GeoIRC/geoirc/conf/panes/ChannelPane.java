@@ -1,5 +1,5 @@
 /*
- * ConnectionPane.java
+ * DCCPane.java
  * 
  * Created on 19.08.2003
  */

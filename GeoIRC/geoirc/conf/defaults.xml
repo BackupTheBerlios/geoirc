@@ -106,6 +106,16 @@
 			<default></default>
             <pattern>.+</pattern>
             <javaType>java.lang.String</javaType>
+		</rule>
+		<rule name="DCC_LOWEST_PORT">
+			<default>2000</default>
+            <pattern>\d{1,5}+</pattern>
+            <javaType>java.lang.Integer</javaType>
 		</rule>		
+		<rule name="DCC_HIGHEST_PORT">
+			<default>5000</default>
+            <pattern>\d{1,5}+</pattern>
+            <javaType>java.lang.Integer</javaType>
+		</rule>						
 	</defaults>
 </geoirc>

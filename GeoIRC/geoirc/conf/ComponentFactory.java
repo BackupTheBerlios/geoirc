@@ -50,7 +50,7 @@ public class ComponentFactory
 	public static JButton getFurtherInfoButton()
 	{
 		JButton button = new JButton("..");
-		button.setPreferredSize(new Dimension(30, 20));
+		button.setPreferredSize(new Dimension(30, 18));
 		
 		return button;
 	}
