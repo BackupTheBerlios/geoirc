@@ -7,7 +7,6 @@ package geoirc.conf;
 
 import geoirc.util.TypeConverter;
 
-import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 
@@ -21,16 +20,6 @@ public class ValueRule implements Verifiable
 	protected String value = null;
 	protected String pattern = null;
 	protected String javaType = null;
-
-	/**
-	 * Creates a new preconfigured instance of ValueRule<br>
-	 * with values of the given settings node 
-	 * @param valueNode xml configuration node
-	 */
-	public ValueRule(Preferences valueNode)
-	{		
-		this(valueNode.name(), valueNode.get("pattern", ""), valueNode.get("javaType", TypeConverter.STRING), valueNode.get("default", null));
-	}
 
 	/**
 	 * Creates a new preconfigured instance of ValueRule

@@ -6,15 +6,15 @@
 package geoirc.conf;
 
 import geoirc.DisplayManager;
+import geoirc.BaseXmlHandler;
+import geoirc.XmlProcessable;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.Preferences;
+
+import org.jdom.Element;
 
 /**
  * Reading and evaluation of rules for handling of default values  
@@ -24,73 +24,57 @@ import java.util.prefs.Preferences;
 public class GeoIRCDefaults
 {
 	private HashMap defaults = new HashMap();
-	protected Preferences root = null;
-	protected DisplayManager displayMgr = null;
-	
+	private DisplayManager displayManager;
+	private XmlProcessable xmlPrcoessor;
+
 	/**
 	 * Creates a new instance of GeoIRCDefaults
 	 * @param newDisplayMgr DisplayManager to use for debug logging
+	 * @param filePath path to xml file to use 
 	 */
 	public GeoIRCDefaults(DisplayManager newDisplayMgr)
 	{
-		displayMgr = newDisplayMgr;
-		root = Preferences.userNodeForPackage(GeoIRCDefaults.class);
-		loadSettingsFromXML();
+		this(newDisplayMgr, "conf/defaults.xml", true);		
 	}
 
-	/* (non-Javadoc)
-	 * @see geoirc.SettingsManager#loadSettingsFromXML()
+	/**
+	 * Creates a new instance of GeoIRCDefaults
+	 * @param newDisplayMgr DisplayManager to use for debug logging
+	 * @param filePath path to xml file to use 
 	 */
-	public boolean loadSettingsFromXML()
+	public GeoIRCDefaults(DisplayManager newDisplayMgr, String filePath, boolean isResource)
 	{
-		boolean success = false;
-
-		try
-		{
-			InputStream is =
-				new BufferedInputStream(
-					getClass().getResourceAsStream("defaults.xml"));
-			root.importPreferences(is);
-			is.close();
-			extractDefaults();
-			success = true;
-		}
-		catch (InvalidPreferencesFormatException e)
-		{
-			printlnDebug("Invalid format in defaults.xml. Import of settings failed.");
-			e.printStackTrace();
-		}
-		catch (IOException e1)
-		{
-			printlnDebug("I/O problem while trying to load settings from defaults.xml.");
-		}
-		catch (BackingStoreException e)
-		{
-			printlnDebug("Invalid format in defaults.xml. Import of settings failed.");
-		}
-			
-		return success;
+		this.displayManager = newDisplayMgr;
+		this.xmlPrcoessor = new BaseXmlHandler(newDisplayMgr, filePath, isResource);
+		this.xmlPrcoessor.loadSettingsFromXML();
+		extractDefaults();
 	}
 
-	
 	/**
 	 * Extracts all default value definitions from defaults.xml
 	 * @return true if all types could be succcessful extracted, otherwise false
 	 */
-	private void extractDefaults() throws BackingStoreException
+	private void extractDefaults()
 	{
-			//load default value rules
-			Preferences prefs = root.node("defaults");
-			String[] childs = prefs.childrenNames();
-			for ( int i = 0; i < childs.length; i++ )
-			{
-				ValueRule def = new ValueRule(prefs.node(childs[i]));				
-				String defName = def.getName();
-				
-				if(defName != null)
-					defaults.put(defName, def);				
-			}
-			
+		//load default value rules
+		Element root = (Element)this.xmlPrcoessor.getBuffer();
+		List childs = root.getChild("defaults").getChildren();
+		Iterator it = childs.iterator();
+
+		while (it.hasNext())
+		{
+			Element rule = (Element) it.next();
+			String defName = rule.getAttributeValue("name");
+			ValueRule def =
+				new ValueRule(
+					defName,
+					rule.getChildText("pattern"),
+					rule.getChildText("javaType"),
+					rule.getChildText("value"));
+
+			if (defName != null)
+				defaults.put(defName, def);
+		}
 	}
 
 	/**
@@ -99,8 +83,8 @@ public class GeoIRCDefaults
 	 */
 	public ValueRule getValueRule(String name)
 	{
-		return (ValueRule)defaults.get(name);
-	}	
+		return (ValueRule) defaults.get(name);
+	}
 
 	/**
 	 * @return Map of available value rules
@@ -108,18 +92,5 @@ public class GeoIRCDefaults
 	public Map getValueRules()
 	{
 		return defaults;
-	}	
-
-	protected void printlnDebug( String s )
-	{
-		if( displayMgr != null )
-		{
-			displayMgr.printlnDebug( s );
-		}
-		else
-		{
-			System.err.println( s );
-		}
 	}
-
 }
