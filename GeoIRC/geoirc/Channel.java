@@ -133,4 +133,24 @@ public class Channel
         
         return retval;
     }
+    
+    public String completeNick( String incomplete_nick )
+    {
+        String completed_nick = incomplete_nick;
+        
+        User u;
+        String nick;
+        for( int i = 0, n = members.size(); i < n; i++ )
+        {
+            u = (User) members.elementAt( i );
+            nick = u.getNick();
+            if( nick.startsWith( incomplete_nick ) )
+            {
+                completed_nick = nick;
+                break;
+            }
+        }
+        
+        return completed_nick;
+    }
 }

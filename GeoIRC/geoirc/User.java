@@ -12,24 +12,44 @@ import java.util.Vector;
  *
  * @author  Pistos
  */
-public class User
+public class User implements GeoIRCConstants
 {
     protected String nick;
     protected String username;
     protected String host;
-    protected Vector mode_flags;
+    protected String mode_flags;
     protected Channel channel;
     
     // No default constructor
     private User() { }
 
-    public User( Channel channel, String nick )
+    public User( Channel channel, String nick_possibly_with_flags )
     {
         this.channel = channel;
-        this.nick = nick;
+        this.nick = nick_possibly_with_flags;
         username = null;
         host = null;
-        mode_flags = null;
+        mode_flags = "";
+        
+        boolean mode_char_found;
+        do
+        {
+            mode_char_found = false;
+            
+            switch( nick.charAt( 0 ) )
+            {
+                case NAMLIST_OP_CHAR:
+                    mode_flags += MODE_OP;
+                    nick = nick.substring( 1 );
+                    mode_char_found = true;
+                    break;
+                case NAMLIST_VOICE_CHAR:
+                    mode_flags += MODE_VOICE;
+                    nick = nick.substring( 1 );
+                    mode_char_found = true;
+                    break;
+            }
+        } while( mode_char_found );
     }
     
     public boolean isInitialized()

@@ -201,6 +201,25 @@ public class Server
         return current_nick;
     }
 
+    public Channel getChannelByName( String name )
+    {
+        int n = channels.size();
+        Channel retval = null;
+        Channel c;
+        for( int i = 0; i < n; i++ )
+        {
+            c = (Channel) channels.elementAt( i );
+            if( c.getName().equals( name ) )
+            {
+                retval = c;
+                break;
+            }
+        }
+
+        return retval;
+    }
+
+    
     /* ******************************************************************** */
     
     protected class ServerReader
@@ -244,24 +263,6 @@ public class Server
         protected String getNick( String nick_and_username_and_host )
         {
             return nick_and_username_and_host.substring( 1, nick_and_username_and_host.indexOf( "!" ) );
-        }
-        
-        protected Channel getChannelByName( String name )
-        {
-            int n = channels.size();
-            Channel retval = null;
-            Channel c;
-            for( int i = 0; i < n; i++ )
-            {
-                c = (Channel) channels.elementAt( i );
-                if( c.getName().equals( name ) )
-                {
-                    retval = c;
-                    break;
-                }
-            }
-            
-            return retval;
         }
         
         /* Searches the memberships of all channels, returning the first
@@ -582,6 +583,21 @@ public class Server
                         qualities
                     );
                     sound_manager.check( text, qualities );
+
+                    if( nick.equals( current_nick ) )
+                    {
+                        // TODO remove server
+                    }
+                    else
+                    {
+                        Channel channel = null;
+                        int n = channels.size();
+                        for( int i = 0; i < n; i++ )
+                        {
+                            channel = (Channel) channels.elementAt( i );
+                            channel.removeMember( nick );
+                        }
+                    }
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
                 {

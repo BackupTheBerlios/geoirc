@@ -732,6 +732,56 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_COMPLETE_NICK:
+                if( current_remote_machine instanceof Server )
+                {
+                    String input_line = input_field.getText();
+                    int caret_pos = input_field.getCaretPosition();
+                    int left_space_pos;
+                    if( caret_pos > 0 )
+                    {
+                        left_space_pos = input_line.lastIndexOf( " ", caret_pos - 1 );
+                    }
+                    else
+                    {
+                        left_space_pos = -1;
+                    }
+                    int right_space_pos = input_line.indexOf( " ", caret_pos );
+                    String word = null;
+                    if( right_space_pos > -1 )
+                    {
+                        word = input_line.substring( left_space_pos + 1, right_space_pos );
+                    }
+                    else
+                    {
+                        word = input_line.substring( left_space_pos + 1 );
+                    }
+                    
+                    if( word != null )
+                    {
+                        Server s = (Server) current_remote_machine;
+                        Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
+                        if( channel != null )
+                        {
+                            String completed_nick = channel.completeNick( word );
+                            if( right_space_pos > -1 )
+                            {
+                                input_line =
+                                    input_line.substring( 0, left_space_pos + 1 )
+                                    + completed_nick
+                                    + input_line.substring( right_space_pos );
+                            }
+                            else
+                            {
+                                input_line =
+                                    input_line.substring( 0, left_space_pos + 1 )
+                                    + completed_nick;
+                            }
+                            input_field.setText( input_line );
+                        }
+                    }
+                }
+                break;
             case CMD_HELP:
                 {
                     display_manager.printlnDebug( "Built-in commands:" );

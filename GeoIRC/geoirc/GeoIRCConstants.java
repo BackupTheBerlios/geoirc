@@ -45,12 +45,15 @@ public interface GeoIRCConstants
         "msg",
         "changewindow",
         "switchwindow",
-        "help"
+        "help",
+        "completenick"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_SERVER = 12;
     public static final int CMD_CHANGE_WINDOW = 22;
+    public static final int CMD_COMPLETE_NICK = 24;
+    public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_FONTS = 4;
@@ -71,7 +74,6 @@ public interface GeoIRCConstants
     public static final int CMD_SET_FILTER = 17;
     public static final int CMD_SET_TITLE = 18;
     public static final int CMD_SWITCH_WINDOW = 21;
-    public static final int CMD_HELP = 23;
     
     /*
 :einstein.freenode.net 311 Pistos Pistos ~Pistos CPE0050ba18d2d5-CM000039ed745e.cpe.net.cable.rogers.com * :Pi Gi
@@ -174,4 +176,10 @@ public interface GeoIRCConstants
     static final char FILTER_SPECIAL_CHAR = '$';
     
     static final char CTCP_MARKER = (char) 1;
+    
+    static final char NAMLIST_OP_CHAR = '@';
+    static final char NAMLIST_VOICE_CHAR = '+';
+    
+    static final String MODE_OP = "o";
+    static final String MODE_VOICE = "v";
 }
