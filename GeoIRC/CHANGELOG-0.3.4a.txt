@@ -1,2 +1,5 @@
 Changelog for GeoIRC 0.3.4a
 ---------------------------
+
+Added a rudimental variables configuration dialog to settings gui
+netseeker 2003-10-06

@@ -11,6 +11,7 @@ import geoirc.conf.beans.Highlighting;
 import geoirc.conf.beans.Log;
 import geoirc.conf.beans.Trigger;
 import geoirc.conf.beans.ValueRule;
+import geoirc.conf.beans.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class SettingsPeer
             
             if (name.length() > 0)
             {
-                variables.add( new String[]{ filter, regexp, name } );
+                variables.add( new Variable( name, regexp, filter ) );
             }
             i++;
             nodePath = path + String.valueOf(i) + "/";

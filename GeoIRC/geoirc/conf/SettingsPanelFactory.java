@@ -17,6 +17,7 @@ import geoirc.conf.panes.LogPane;
 import geoirc.conf.panes.MessageFieldPane;
 import geoirc.conf.panes.RootPane;
 import geoirc.conf.panes.TriggerPane;
+import geoirc.conf.panes.VariablesPane;
 import geoirc.conf.panes.VisualPane;
 
 import java.util.ArrayList;
@@ -59,6 +60,10 @@ public class SettingsPanelFactory
         BaseSettingsPanel triggerPane = new TriggerPane(settings_manager, valueRules, "Trigger Settings");
         triggerPane.addValidationListener(validation_listener);
         genPane.addChild(triggerPane);
+
+        BaseSettingsPanel variablesPane = new VariablesPane(settings_manager, valueRules, "Variables");
+        variablesPane.addValidationListener(validation_listener);
+        genPane.addChild(variablesPane);
 
         panels.add(genPane);
 
