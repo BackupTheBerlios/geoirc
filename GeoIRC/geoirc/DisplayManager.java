@@ -900,52 +900,55 @@ public class DisplayManager
                 -1
             );
             
-            pane_type = ( (Integer) pane_types.elementAt( pane_index ) ).intValue();
-            
-            GIWindow giw = null;
-            if( pane_type == TEXT_PANE )
+            if( pane_index > -1 )
             {
-                giw = addTextWindow(
-                    title,
-                    (String) filters.get( Integer.toString( pane_index ) )
-                );
-            }
-            else if( pane_type == INFO_PANE )
-            {
-                giw = addInfoWindow(
-                    title,
-                    (String) paths.get( Integer.toString( pane_index ) )
-                );
-            }
-            else
-            {
-                // Huh?  Unknown pane type.
-                printlnDebug( "Unknown pane type in settings." );
-            }
-            
-            if( giw != null )
-            {
-                giw.setBounds( x, y, width, height );
-                try
+                pane_type = ( (Integer) pane_types.elementAt( pane_index ) ).intValue();
+
+                GIWindow giw = null;
+                if( pane_type == TEXT_PANE )
                 {
-                    switch( state )
-                    {
-                        case GI_MAXIMIZED:
-                            giw.setMaximum( true );
-                            break;
-                        case GI_MINIMIZED:
-                            giw.setIcon( true );
-                            break;
-                        case GI_NORMAL:
-                        default:
-                            giw.setMaximum( false );
-                            break;
-                    }
-                    giw.setSelected( is_selected );
+                    giw = addTextWindow(
+                        title,
+                        (String) filters.get( Integer.toString( pane_index ) )
+                    );
                 }
-                catch( java.beans.PropertyVetoException e )
+                else if( pane_type == INFO_PANE )
                 {
-                    // Do nothing about this error.
+                    giw = addInfoWindow(
+                        title,
+                        (String) paths.get( Integer.toString( pane_index ) )
+                    );
+                }
+                else
+                {
+                    // Huh?  Unknown pane type.
+                    printlnDebug( "Unknown pane type in settings." );
+                }
+
+                if( giw != null )
+                {
+                    giw.setBounds( x, y, width, height );
+                    try
+                    {
+                        switch( state )
+                        {
+                            case GI_MAXIMIZED:
+                                giw.setMaximum( true );
+                                break;
+                            case GI_MINIMIZED:
+                                giw.setIcon( true );
+                                break;
+                            case GI_NORMAL:
+                            default:
+                                giw.setMaximum( false );
+                                break;
+                        }
+                        giw.setSelected( is_selected );
+                    }
+                    catch( java.beans.PropertyVetoException e )
+                    {
+                        // Do nothing about this error.
+                    }
                 }
             }
             

@@ -1,0 +1,11 @@
+Changelog for GeoIRC 0.1.6a
+---------------------------
+
+Adjusted /help to show the expansion of aliases.
+Pistos 2003-07-18
+
+Added commands: pageup, pagedown, nudgeup, nudgedown.
+Pistos 2003-07-18
+
+Fixed bug where an unknown CTCP command would kill the ServerReader.
+Pistos 2003-07-18

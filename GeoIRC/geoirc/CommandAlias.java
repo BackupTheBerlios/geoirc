@@ -66,4 +66,9 @@ public class CommandAlias implements GeoIRCConstants
     {
         return alias;
     }
+    
+    public String getExpansion()
+    {
+        return expansion;
+    }
 }

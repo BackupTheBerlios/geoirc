@@ -85,6 +85,7 @@
           <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
           <entry key="start maximized" value="True" />
           <entry key="windowbar position" value="top" />
+          <entry key="nudge amount" value="28" />
         </map>
         <node name="desktop">
           <map />
@@ -92,14 +93,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="2" />
                 <entry key="location" value="0" />
                 <entry key="divider location" value="110" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="2" />
+                <entry key="pane" value="3" />
                 <entry key="location" value="1" />
                 <entry key="divider location" value="1089" />
               </map>
@@ -123,16 +124,16 @@
             </node>
             <node name="2">
               <map>
-                <entry key="type" value="class geoirc.GIInfoPane" />
-                <entry key="title" value="Info" />
-                <entry key="path" value="/" />
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="debug" />
+                <entry key="filter" value="debug" />
               </map>
             </node>
             <node name="3">
               <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="debug" />
-                <entry key="filter" value="debug" />
+                <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="title" value="Info" />
+                <entry key="path" value="/" />
               </map>
             </node>
           </node>
@@ -146,7 +147,7 @@
                 <entry key="height" value="399" />
                 <entry key="width" value="1055" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -217,6 +218,10 @@
           <entry key="Alt|Right" value="nextwindow" />
           <entry key="|Down" value="next_history_entry" />
           <entry key="|Up" value="previous_history_entry" />
+          <entry key="Ctrl|Up" value="nudgeup" />
+          <entry key="Ctrl|Down" value="nudgedown" />
+          <entry key="|Page Up" value="pageup" />
+          <entry key="|Page Down" value="pagedown" />
           <entry key="|F2" value="nick Pistos|GeoIRC" />
           <entry key="|F3" value="nick GeoIRC_User" />
           <entry key="|F9" value="nick Pistos" />

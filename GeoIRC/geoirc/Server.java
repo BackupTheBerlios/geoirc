@@ -521,9 +521,12 @@ public class Server
                                 break;
                             }
                         }
-
-                        text = "Received CTCP " + CTCP_CMDS[ command_id ]
-                            + " from " + nick;
+                        
+                        if( command_id != UNKNOWN_CTCP_CMD )
+                        {
+                            text = "Received CTCP " + CTCP_CMDS[ command_id ]
+                                + " from " + nick;
+                        }
                         
                         switch( command_id )
                         {

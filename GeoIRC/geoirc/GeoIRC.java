@@ -1000,6 +1000,58 @@ public class GeoIRC
                     display_manager.printlnDebug( "/nick <new nickname>" );
                 }
                 break;
+            case CMD_NUDGE_DOWN:
+                {
+                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                    if( giw != null )
+                    {
+                        GIPane pane = giw.getPane();
+                        if( pane instanceof GITextPane )
+                        {
+                            ((GITextPane) pane).nudgeDown();
+                        }
+                    }
+                }
+                break;
+            case CMD_NUDGE_UP:
+                {
+                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                    if( giw != null )
+                    {
+                        GIPane pane = giw.getPane();
+                        if( pane instanceof GITextPane )
+                        {
+                            ((GITextPane) pane).nudgeUp();
+                        }
+                    }
+                }
+                break;
+            case CMD_PAGE_DOWN:
+                {
+                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                    if( giw != null )
+                    {
+                        GIPane pane = giw.getPane();
+                        if( pane instanceof GITextPane )
+                        {
+                            ((GITextPane) pane).pageDown();
+                        }
+                    }
+                }
+                break;
+            case CMD_PAGE_UP:
+                {
+                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                    if( giw != null )
+                    {
+                        GIPane pane = giw.getPane();
+                        if( pane instanceof GITextPane )
+                        {
+                            ((GITextPane) pane).pageUp();
+                        }
+                    }
+                }
+                break;
             case CMD_PART:
                 if( args != null )
                 {

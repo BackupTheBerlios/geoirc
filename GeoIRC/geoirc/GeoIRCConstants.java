@@ -56,7 +56,11 @@ public interface GeoIRCConstants
         "exit",
         "listdockedwindows",
         "floatwindow",
-        "undockwindow"
+        "undockwindow",
+        "pageup",
+        "pagedown",
+        "nudgeup",
+        "nudgedown"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -82,6 +86,10 @@ public interface GeoIRCConstants
     public static final int CMD_NEXT_HISTORY_ENTRY = 9;
     public static final int CMD_NEXT_WINDOW = 7;
     public static final int CMD_NICK = 6;
+    public static final int CMD_NUDGE_DOWN = 38;
+    public static final int CMD_NUDGE_UP = 37;
+    public static final int CMD_PAGE_DOWN = 36;
+    public static final int CMD_PAGE_UP = 35;
     public static final int CMD_PART = 14;
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
@@ -209,4 +217,6 @@ public interface GeoIRCConstants
     static final int NO_PANE = -1;
     static final int INFO_PANE = 0;
     static final int TEXT_PANE = 1;
+
+    static final int DEFAULT_NUDGE_AMOUNT = 20;
 }

@@ -193,4 +193,59 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         this.filter = filter;
         title = filter;
     }
+    
+    public void pageUp()
+    {
+        int min = scrollbar.getMinimum();
+        int value = scrollbar.getValue() - scrollbar.getVisibleAmount();
+        if( value < min )
+        {
+            value = min;
+        }
+        scrollbar.setValue( value );
+    }
+    
+    public void pageDown()
+    {
+        int max = scrollbar.getMaximum();
+        int value = scrollbar.getValue() + scrollbar.getVisibleAmount();
+        if( value > max )
+        {
+            value = max;
+        }
+        scrollbar.setValue( value );
+    }
+    
+    public void nudgeUp()
+    {
+        int min = scrollbar.getMinimum();
+        int value =
+            scrollbar.getValue()
+            - settings_manager.getInt(
+                "/gui/nudge amount",
+                DEFAULT_NUDGE_AMOUNT
+            );
+        if( value < min )
+        {
+            value = min;
+        }
+        scrollbar.setValue( value );
+    }
+    
+    public void nudgeDown()
+    {
+        int max = scrollbar.getMaximum();
+        int value =
+            scrollbar.getValue()
+            + settings_manager.getInt(
+                "/gui/nudge amount",
+                DEFAULT_NUDGE_AMOUNT
+            );
+        if( value > max )
+        {
+            value = max;
+        }
+        scrollbar.setValue( value );
+    }
+    
 }
