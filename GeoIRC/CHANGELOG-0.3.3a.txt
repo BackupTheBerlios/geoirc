@@ -38,3 +38,9 @@ Pistos 2003-10-01
 
 Added "/misc/global pre-filter" setting.
 Pistos 2003-10-01
+
+Fixed bug so that reconnection is actually made when a connection is broken.
+Pistos 2003-10-02
+
+Alternate nicks are actually used now.
+Pistos 2003-10-02

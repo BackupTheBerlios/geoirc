@@ -244,7 +244,8 @@ public interface GeoIRCConstants
         "KICK",
         "331",
         "TOPIC",
-        "MODE"
+        "MODE",
+        "433"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -267,6 +268,7 @@ public interface GeoIRCConstants
     static final int IRCMSG_RPL_NOTOPIC = 18;
     static final int IRCMSG_TOPIC = 19;
     static final int IRCMSG_MODE = 20;
+    static final int IRCMSG_ERR_NICKNAMEINUSE = 21;
     
     static final String [] CTCP_CMDS =
     {

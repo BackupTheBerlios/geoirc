@@ -553,8 +553,6 @@ public class Server
                 
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_ERR_NICKNAMEINUSE ] ) )
                 {
-                    display_manager.printlnDebug( "Current nick: '" + current_nick + "'" );
-                    
                     int nick_index = 1;
                     String another_nick;
                     while( GOD_IS_GOOD )
@@ -563,8 +561,6 @@ public class Server
                             "/personal/nick" + Integer.toString( nick_index ),
                             ""
                         );
-                        
-                        display_manager.printlnDebug( "Another nick: '" + another_nick + "'" );
                         
                         if( another_nick.equals( current_nick ) )
                         {
@@ -588,13 +584,6 @@ public class Server
                                 ""
                             );
                             break;
-                        }
-                        else
-                        {
-                            display_manager.printlnDebug(
-                                "'" + current_nick + "' is not equal to '"
-                                + current_nick + "'"
-                            );
                         }
                         
                         nick_index++;

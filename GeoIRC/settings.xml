@@ -66,9 +66,7 @@
           <node name="channels">
             <map />
             <node name="0">
-              <map>
-                <entry key="name" value="#geoirc" />
-              </map>
+              <map />
             </node>
           </node>
         </node>
@@ -107,14 +105,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="4" />
                 <entry key="location" value="2" />
                 <entry key="divider location" value="825" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="4" />
+                <entry key="pane" value="5" />
                 <entry key="location" value="1" />
                 <entry key="divider location" value="990" />
               </map>
@@ -146,11 +144,18 @@
             <node name="3">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="from=NickServ and %self or NickServ and from=%self" />
+                <entry key="filter" value="from=NickServ and %self or NickServ and from=%self" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="%debug" />
                 <entry key="filter" value="%debug" />
               </map>
             </node>
-            <node name="4">
+            <node name="5">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
@@ -166,9 +171,9 @@
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
                 <entry key="height" value="779" />
-                <entry key="width" value="1048" />
+                <entry key="width" value="971" />
                 <entry key="state" value="1" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -177,9 +182,9 @@
                 <entry key="title" value="#geoirc on irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="742" />
-                <entry key="width" value="1048" />
-                <entry key="state" value="0" />
+                <entry key="height" value="779" />
+                <entry key="width" value="971" />
+                <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
               </map>
@@ -194,6 +199,18 @@
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="2" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="title" value="from=NickServ and %self or NickServ and from=%self" />
+                <entry key="x" value="80" />
+                <entry key="y" value="80" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="3" />
               </map>
             </node>
           </node>
