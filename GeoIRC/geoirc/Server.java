@@ -106,7 +106,7 @@ public class Server
     {
         if( isConnected() )
         {
-            Channel channel = new Channel( this, channel_name, info_manager );
+            Channel channel = new Channel( this, channel_name, info_manager, settings_manager );
             channels.add( channel );
             info_manager.addChannel( channel );
         }

@@ -10,3 +10,6 @@ Pistos 2003-07-15
 
 Nick changes now register properly in the Info windows.
 Pistos 2003-07-15
+
+Added nick completion suffix and prefix settings, to decorate nick completions.
+Pistos 2003-07-15

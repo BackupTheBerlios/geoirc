@@ -66,7 +66,7 @@
             </node>
             <node name="1">
               <map>
-                <entry key="name" value="#geoshell" />
+                <entry key="name" value="#geocards" />
               </map>
             </node>
           </node>
@@ -124,10 +124,10 @@
               <entry key="title" value="Info" />
               <entry key="x" value="743" />
               <entry key="y" value="57" />
-              <entry key="height" value="587" />
+              <entry key="height" value="634" />
               <entry key="width" value="310" />
               <entry key="state" value="0" />
-              <entry key="selected" value="true" />
+              <entry key="selected" value="false" />
               <entry key="path" value="/" />
             </map>
           </node>
@@ -147,14 +147,14 @@
           <node name="4">
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="#geoshell on irc.freenode.net" />
+              <entry key="title" value="#geocards" />
               <entry key="x" value="20" />
               <entry key="y" value="20" />
               <entry key="height" value="500" />
               <entry key="width" value="700" />
               <entry key="state" value="0" />
-              <entry key="selected" value="false" />
-              <entry key="filter" value="irc.freenode.net AND #geoshell" />
+              <entry key="selected" value="true" />
+              <entry key="filter" value="#geocards" />
             </map>
           </node>
           <node name="5">
@@ -223,6 +223,12 @@
           <entry key="Ctrl|0" value="switchwindow irc.freenode.net" />
           <entry key="|Tab" value="completenick" />
           <entry key="Shift|Tab" value="focus_on_input_field" />
+        </map>
+      </node>
+      <node name="misc">
+        <map>
+          <entry key="nick completion suffix" value=": " />
+          <entry key="nick completion prefix" value="" />
         </map>
       </node>
       <node name="personal">

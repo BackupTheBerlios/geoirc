@@ -23,15 +23,22 @@ public class Channel
     protected Vector members;
     protected Server server;
     protected InfoManager info_manager;
+    protected SettingsManager settings_manager;
     
     // No default constructor
     private Channel() { }
     
-    public Channel( Server server, String name, InfoManager info_manager )
+    public Channel(
+        Server server,
+        String name,
+        InfoManager info_manager,
+        SettingsManager settings_manager
+    )
     {
         this.server = server;
         this.name = name;
         this.info_manager = info_manager;
+        this.settings_manager = settings_manager;
         topic = null;
         topic_setter = null;
         topic_set_date = null;
@@ -153,9 +160,18 @@ public class Channel
         {
             u = (User) members.elementAt( i );
             nick = u.getNick();
-            if( nick.startsWith( incomplete_nick ) )
+            if( nick.toLowerCase().startsWith( incomplete_nick.toLowerCase() ) )
             {
-                completed_nick = nick;
+                completed_nick =
+                    settings_manager.getString(
+                        "/misc/nick completion prefix",
+                        ""
+                    )
+                    + nick
+                    + settings_manager.getString(
+                        "/misc/nick completion suffix",
+                        ": "
+                    );
                 break;
             }
         }
