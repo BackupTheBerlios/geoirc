@@ -19,7 +19,7 @@ public class SettingsManager {
     private static Preferences myPreferences = Preferences.userNodeForPackage(GeoIRC.class);
     private static final String SETTINGS_FILE_PATH = "c:\\";
     private static final String SETTINGS_FILE_NAME = "settings.xml";    
-    private DisplayManager displayMgr = null;
+    protected DisplayManager displayMgr = null;
     /** Creates a new instance of SettingsManager */
     public SettingsManager(DisplayManager newDisplayMgr) {
         displayMgr = newDisplayMgr;
