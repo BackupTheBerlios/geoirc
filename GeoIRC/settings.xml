@@ -72,26 +72,13 @@
           <node name="channels">
             <map />
             <node name="0">
-              <map />
-            </node>
-          </node>
-        </node>
-        <node name="1">
-          <map>
-            <entry key="type" value="class geoirc.Server" />
-            <entry key="hostname" value="irc.arcti.ca" />
-            <entry key="port" value="6667" />
-          </map>
-          <node name="channels">
-            <map />
-            <node name="0">
               <map>
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
           </node>
         </node>
-        <node name="2">
+        <node name="1">
           <map />
         </node>
       </node>
@@ -119,14 +106,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="2" />
                 <entry key="location" value="0" />
                 <entry key="divider location" value="122" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="4" />
+                <entry key="pane" value="3" />
                 <entry key="location" value="1" />
                 <entry key="divider location" value="973" />
               </map>
@@ -151,18 +138,11 @@
             <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="irc.arcti.ca" />
-                <entry key="filter" value="irc.arcti.ca" />
-              </map>
-            </node>
-            <node name="3">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="debug" />
                 <entry key="filter" value="debug" />
               </map>
             </node>
-            <node name="4">
+            <node name="3">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
@@ -176,9 +156,9 @@
               <map>
                 <entry key="title" value="#geoirc" />
                 <entry key="x" value="0" />
-                <entry key="y" value="414" />
-                <entry key="height" value="207" />
-                <entry key="width" value="954" />
+                <entry key="y" value="399" />
+                <entry key="height" value="399" />
+                <entry key="width" value="958" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
@@ -189,23 +169,11 @@
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="207" />
-                <entry key="width" value="954" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="true" />
-                <entry key="pane" value="1" />
-              </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="title" value="irc.arcti.ca" />
-                <entry key="x" value="0" />
-                <entry key="y" value="207" />
-                <entry key="height" value="207" />
-                <entry key="width" value="954" />
+                <entry key="height" value="399" />
+                <entry key="width" value="958" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
-                <entry key="pane" value="2" />
+                <entry key="pane" value="1" />
               </map>
             </node>
           </node>

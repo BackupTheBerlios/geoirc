@@ -64,7 +64,8 @@ public class GeoIRC
     
     protected IdentServer ident_server;
     
-    protected boolean listening_to_servers;
+    protected boolean listening_to_connections;
+    protected RemoteMachine current_rm;
 
     protected LinkedList input_history;
     protected int input_history_pointer;
@@ -74,7 +75,6 @@ public class GeoIRC
     protected ActionMap action_map;
     
     protected String preferred_nick;
-    protected RemoteMachine current_remote_machine;
 
     /* **************************************************************** */
     
@@ -99,7 +99,7 @@ public class GeoIRC
         );
         
         
-        listening_to_servers = false;
+        listening_to_connections = false;
         
         // Settings.
         
@@ -188,7 +188,7 @@ public class GeoIRC
         this.setTitle( "GeoIRC" );
         
         display_manager = new DisplayManager(
-            getContentPane(), menu_bar, settings_manager, input_field
+            this, menu_bar, settings_manager, input_field
         );
         display_manager.printlnDebug( skin_errors );
         
@@ -277,19 +277,15 @@ public class GeoIRC
                 
         // Restore connections, if any.
         
-        current_remote_machine = null;
+        current_rm = null;
         remote_machines = new Vector();
         restoreConnections();
-        if( ( current_remote_machine == null ) && ( remote_machines.size() > 0 ) )
-        {
-            current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
-        }
         
         // Final miscellaneous initialization
         
         settings_manager.listenToPreferences();
         display_manager.beginListening();
-        listening_to_servers = true;
+        listening_to_connections = true;
         
         display_manager.printlnDebug(
             "GeoIRC " + GEOIRC_VERSION
@@ -381,29 +377,21 @@ public class GeoIRC
     {
         Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, variables, hostname, port );
         remote_machines.add( s );
-        if( listening_to_servers )
+        if( listening_to_connections )
         {
             recordConnections();
         }
-        current_remote_machine = s;
         
         return s;
     }
     
-    protected void removeServer( Server s )
+    protected void removeRemoteMachine( RemoteMachine rm )
     {
-        remote_machines.remove( s );
-        info_manager.removeRemoteMachine( s );
-        if( current_remote_machine == s )
+        remote_machines.remove( rm );
+        info_manager.removeRemoteMachine( rm );
+        if( listening_to_connections )
         {
-            if( remote_machines.size() > 0 )
-            {
-                current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
-            }
-            else
-            {
-                current_remote_machine = null;
-            }
+            recordConnections();
         }
     }
     
@@ -494,20 +482,43 @@ public class GeoIRC
         return retval;
     }
     
-    public RemoteMachine getRemoteMachineByName( String name )
+    public boolean setCurrentRemoteMachine( String rm_name )
     {
         RemoteMachine rm;
-        RemoteMachine retval = null;
+        boolean was_set = false;
         
         for( int i = 0, n = remote_machines.size(); i < n; i++ )
         {
             rm = (RemoteMachine) remote_machines.elementAt( i );
-            if( rm.getHostname().equals( name ) )
+            if( rm.getHostname().equals( rm_name ) )
             {
-                retval = rm;
+                current_rm = rm;
+                was_set = true;
                 break;
             }
         }
+        
+        return was_set;
+    }
+    
+    public void setCurrentRemoteMachine( RemoteMachine rm )
+    {
+        current_rm = rm;
+    }
+    
+    public RemoteMachine getRemoteMachineByIDString( String id )
+    {
+        int server_id = -1;
+        RemoteMachine retval = null;
+
+        try
+        {
+            server_id = Integer.parseInt( id );
+            if( ( server_id >= 0 ) && ( server_id < remote_machines.size() ) )
+            {
+                retval = (RemoteMachine) remote_machines.elementAt( server_id );
+            }
+        } catch( NumberFormatException e ) { }
         
         return retval;
     }
@@ -726,83 +737,54 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_CHANGE_SERVER:
+            case CMD_COMPLETE_NICK:
                 {
-                    int id = -1;
-                    boolean problem = false;
-                    try
+                    if( current_rm instanceof Server )
                     {
-                        id = Integer.parseInt( args[ 0 ] );
-                        if( ( id < 0 ) || ( id >= remote_machines.size() ) )
+                        String input_line = input_field.getText();
+                        int caret_pos = input_field.getCaretPosition();
+                        int left_space_pos;
+                        if( caret_pos > 0 )
                         {
-                            problem = true;
+                            left_space_pos = input_line.lastIndexOf( " ", caret_pos - 1 );
                         }
                         else
                         {
-                            current_remote_machine = (RemoteMachine) remote_machines.elementAt( id );
+                            left_space_pos = -1;
                         }
-                    }
-                    catch( NumberFormatException e )
-                    {
-                        problem = true;
-                    }
-                    
-                    if( problem )
-                    {
-                        display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
-                        display_manager.printlnDebug(
-                            "Try /"
-                            + CMDS[ CMD_LIST_SERVERS ]
-                        );
-                    }
-                }
-                break;
-            case CMD_COMPLETE_NICK:
-                if( current_remote_machine instanceof Server )
-                {
-                    String input_line = input_field.getText();
-                    int caret_pos = input_field.getCaretPosition();
-                    int left_space_pos;
-                    if( caret_pos > 0 )
-                    {
-                        left_space_pos = input_line.lastIndexOf( " ", caret_pos - 1 );
-                    }
-                    else
-                    {
-                        left_space_pos = -1;
-                    }
-                    int right_space_pos = input_line.indexOf( " ", caret_pos );
-                    String word = null;
-                    if( right_space_pos > -1 )
-                    {
-                        word = input_line.substring( left_space_pos + 1, right_space_pos );
-                    }
-                    else
-                    {
-                        word = input_line.substring( left_space_pos + 1 );
-                    }
-                    
-                    if( word != null )
-                    {
-                        Server s = (Server) current_remote_machine;
-                        Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
-                        if( channel != null )
+                        int right_space_pos = input_line.indexOf( " ", caret_pos );
+                        String word = null;
+                        if( right_space_pos > -1 )
                         {
-                            String completed_nick = channel.completeNick( word, (left_space_pos == -1) );
-                            if( right_space_pos > -1 )
+                            word = input_line.substring( left_space_pos + 1, right_space_pos );
+                        }
+                        else
+                        {
+                            word = input_line.substring( left_space_pos + 1 );
+                        }
+
+                        if( word != null )
+                        {
+                            Server s = (Server) current_rm;
+                            Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
+                            if( channel != null )
                             {
-                                input_line =
-                                    input_line.substring( 0, left_space_pos + 1 )
-                                    + completed_nick
-                                    + input_line.substring( right_space_pos );
+                                String completed_nick = channel.completeNick( word, (left_space_pos == -1) );
+                                if( right_space_pos > -1 )
+                                {
+                                    input_line =
+                                        input_line.substring( 0, left_space_pos + 1 )
+                                        + completed_nick
+                                        + input_line.substring( right_space_pos );
+                                }
+                                else
+                                {
+                                    input_line =
+                                        input_line.substring( 0, left_space_pos + 1 )
+                                        + completed_nick;
+                                }
+                                input_field.setText( input_line );
                             }
-                            else
-                            {
-                                input_line =
-                                    input_line.substring( 0, left_space_pos + 1 )
-                                    + completed_nick;
-                            }
-                            input_field.setText( input_line );
                         }
                     }
                 }
@@ -813,48 +795,31 @@ public class GeoIRC
                     
                     if( arg_string != null )
                     {
-                        int server_id = -1;
-                        boolean problem = true;
-
-                        try
-                        {
-                            server_id = Integer.parseInt( args[ 0 ] );
-                            if( ( server_id >= 0 ) && ( server_id < remote_machines.size() ) )
-                            {
-                                RemoteMachine rm = (RemoteMachine) remote_machines.elementAt( server_id );
-                                if( rm instanceof Server )
-                                {
-                                    s = (Server) rm;
-                                    problem = false;
-                                }
-                            }
-                        } catch( NumberFormatException e ) { }
+                        RemoteMachine rm = getRemoteMachineByIDString( args[ 0 ] );
                         
-                        if( problem )
+                        if( rm instanceof Server )
                         {
-                            display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
+                            s = (Server) rm;
+                        }
+                        else
+                        {
+                            display_manager.printlnDebug( "Invalid machine id: '" + args[ 0 ] + "'" );
                             display_manager.printlnDebug(
                                 "Try /"
-                                + CMDS[ CMD_LIST_SERVERS ]
+                                + CMDS[ CMD_LIST_CONNECTIONS ]
                             );
                         }
                     }
                     else
                     {
-                        if( current_remote_machine instanceof Server )
+                        if( current_rm instanceof Server )
                         {
-                            s = (Server) current_remote_machine;
+                            s = (Server) current_rm;
                         }
                         else
                         {
                             display_manager.printlnDebug(
-                                "First use /"
-                                + CMDS[ CMD_CHANGE_SERVER ]
-                                + " <server id>"
-                            );
-                            display_manager.printlnDebug(
-                                "To see a list of server id's, use /"
-                                + CMDS[ CMD_LIST_SERVERS ]
+                                "First switch to a window associated with a server."
                             );
                         }
                     }
@@ -862,6 +827,40 @@ public class GeoIRC
                     if( s != null )
                     {
                         s.connect( preferred_nick );
+                    }
+                }
+                break;
+            case CMD_DISCONNECT:
+                {
+                    RemoteMachine rm = null;
+                    
+                    if( arg_string != null )
+                    {
+                        rm = getRemoteMachineByIDString( args[ 0 ] );
+                        
+                        if( rm == null )
+                        {
+                            display_manager.printlnDebug( "Invalid machine id: '" + args[ 0 ] + "'" );
+                            display_manager.printlnDebug(
+                                "Try /"
+                                + CMDS[ CMD_LIST_CONNECTIONS ]
+                            );
+                        }
+                    }
+                    else
+                    {
+                        if( current_rm == null )
+                        {
+                            display_manager.printlnDebug(
+                                "First switch to a window associated with a remote machine."
+                            );
+                        }
+                    }
+                    
+                    if( rm != null )
+                    {
+                        rm.close();
+                        removeRemoteMachine( rm );
                     }
                 }
                 break;
@@ -973,9 +972,9 @@ public class GeoIRC
             case CMD_JOIN:
                 if( args != null )
                 {
-                    if( current_remote_machine instanceof Server )
+                    if( current_rm instanceof Server )
                     {
-                        Server s = (Server) current_remote_machine;
+                        Server s = (Server) current_rm;
                         if( s != null )
                         {
                             GIWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
@@ -989,40 +988,25 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug(
-                            "First use /"
-                            + CMDS[ CMD_CHANGE_SERVER ]
-                            + " <server id>"
-                        );
-                        display_manager.printlnDebug(
-                            "To see a list of server id's, use /"
-                            + CMDS[ CMD_LIST_SERVERS ]
+                            "First switch to a window associated with a server."
                         );
                     }
                 }
                 break;
             case CMD_LIST_CHANNELS:
-                if( current_remote_machine instanceof Server )
                 {
-                    Server s = (Server) current_remote_machine;
-                    Channel [] channels = s.getChannels();
-                    for( int i = 0; i < channels.length; i++ )
+                    if( current_rm instanceof Server )
                     {
-                        display_manager.printlnDebug( channels[ i ].toString() );
+                        Server s = (Server) current_rm;
+                        Channel [] channels = s.getChannels();
+                        for( int i = 0; i < channels.length; i++ )
+                        {
+                            display_manager.printlnDebug( channels[ i ].toString() );
+                        }
                     }
                 }
                 break;
-            case CMD_LIST_DOCKED_WINDOWS:
-                display_manager.listDockedPanes();
-                break;
-            case CMD_LIST_FONTS:
-                GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                Font [] fonts = genv.getAllFonts();
-                for( int i = 0; i < fonts.length; i++ )
-                {
-                    display_manager.printlnDebug( fonts[ i ].getName() + " -- " + fonts[ i ].getFontName() );
-                }
-                break;
-            case CMD_LIST_SERVERS:
+            case CMD_LIST_CONNECTIONS:
                 {
                     int n = remote_machines.size();
                     RemoteMachine rm;
@@ -1030,7 +1014,7 @@ public class GeoIRC
                     for( int i = 0; i < n; i++ )
                     {
                         rm = (RemoteMachine) remote_machines.elementAt( i );
-                        if( rm == current_remote_machine )
+                        if( rm == current_rm )
                         {
                             current_marker = " (current remote machine)";
                         }
@@ -1043,6 +1027,17 @@ public class GeoIRC
                             + rm.toString() + current_marker
                         );
                     }
+                }
+                break;
+            case CMD_LIST_DOCKED_WINDOWS:
+                display_manager.listDockedPanes();
+                break;
+            case CMD_LIST_FONTS:
+                GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                Font [] fonts = genv.getAllFonts();
+                for( int i = 0; i < fonts.length; i++ )
+                {
+                    display_manager.printlnDebug( fonts[ i ].getName() + " -- " + fonts[ i ].getFontName() );
                 }
                 break;
             case CMD_LIST_WINDOWS:
@@ -1191,9 +1186,9 @@ public class GeoIRC
             case CMD_PART:
                 if( args != null )
                 {
-                    if( current_remote_machine instanceof Server )
+                    if( current_rm instanceof Server )
                     {
-                        Server s = (Server) current_remote_machine;
+                        Server s = (Server) current_rm;
                         if( s != null )
                         {
                             execute( CMDS[ CMD_SEND_RAW ] + " " + command );
@@ -1203,13 +1198,7 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug(
-                            "First use /"
-                            + CMDS[ CMD_CHANGE_SERVER ]
-                            + " <server id>"
-                        );
-                        display_manager.printlnDebug(
-                            "To see a list of server id's, use /"
-                            + CMDS[ CMD_LIST_SERVERS ]
+                            "First switch to a window associated with a server."
                         );
                     }
                 }
@@ -1271,9 +1260,9 @@ public class GeoIRC
             case CMD_SEND_RAW:
                 if( ( args != null ) && ( ! args.equals( "" ) ) )
                 {
-                    Server s = (Server) current_remote_machine;
-                    if( s != null )
+                    if( current_rm instanceof Server )
                     {
+                        Server s = (Server) current_rm;
                         s.send( arg_string );
                         if( args[ 0 ].toUpperCase().equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                         {

@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.util.Util;
 import java.io.*;
 import java.net.Socket;
 
@@ -27,6 +28,7 @@ public class RemoteMachine
     protected Socket socket;
     protected PrintWriter out;
     
+    protected boolean closed;
     
     // No default constructor.
     private RemoteMachine() { }
@@ -60,12 +62,31 @@ public class RemoteMachine
         
         socket = null;
         out = null;
-        
+        closed = false;
+    }
+    
+    public void close()
+    {
+        closed = true;
+        if( socket != null )
+        {
+            try
+            {
+                socket.close();
+            }
+            catch( IOException e )
+            {
+                Util.printException(
+                    display_manager, e,
+                    "I/O error when closing socket of server " + toString()
+                );
+            }
+        }
     }
     
     public boolean isConnected()
     {
-        return ( ( socket != null ) && socket.isConnected() );
+        return ( ( socket != null ) && socket.isConnected() && ( ! socket.isClosed() ) );
     }
     
     // Sends a line out to the server, including newline.

@@ -73,20 +73,16 @@ public class InfoManager
         display_manager.activateInfoPanes( path, model );
     }
     
-    public void removeRemoteMachine( DefaultMutableTreeNode node )
-    {
-        root.remove( node );
-        tree.reload( root );
-        tree_inverse.remove( node.getUserObject() );
-    }
-    
     public void removeRemoteMachine( RemoteMachine rm )
     {
-        root.remove( (DefaultMutableTreeNode) tree_inverse.get( rm ) );
+        DefaultMutableTreeNode rm_node = (DefaultMutableTreeNode) tree_inverse.get( rm );
+        root.remove( rm_node );
         tree.reload( root );
+        
         tree_inverse.remove( rm );
         String path = "/" + rm.toString();
         tree_for_path.remove( path );
+        
         display_manager.deactivateInfoPanes( path );
     }
     

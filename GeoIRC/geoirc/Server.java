@@ -126,7 +126,7 @@ public class Server
                 
         return isConnected();
     }
-
+    
     public void addChannel( String channel_name )
     {
         if( isConnected() )
@@ -215,6 +215,7 @@ public class Server
                 break;
             }
             
+            geoirc.setCurrentRemoteMachine( this );
             geoirc.execute( CMDS[ CMD_SEND_RAW ] + " JOIN " + channel_name );
             
             i++;
@@ -333,7 +334,7 @@ public class Server
             }
 
             String line = "";
-            while( line != null )
+            while( ( line != null ) && ( isConnected() ) )
             {
                 try
                 {
@@ -354,19 +355,25 @@ public class Server
                 }
                 catch( IOException e )
                 {
-                    Util.printException(
-                        display_manager,
-                        e,
-                        "I/O error while reading from server " + toString()
-                    );
-                    
-                    if( ! isConnected() )
+                    if( ! isConnected() && ( ! closed ) )
                     {
-                        display_manager.printlnDebug( "Connection to " + toString() + " lost." );
-                        display_manager.printlnDebug( "Attempting to reconnect..." );
-                        connect( current_nick );
-                        break;
+                        display_manager.printlnDebug( "Connection to " + Server.this.toString() + " lost." );
+                        Util.printException(
+                            display_manager,
+                            e,
+                            "I/O error while reading from server " + Server.this.toString()
+                        );
                     }
+                }
+            }
+            
+            if( ! isConnected() )
+            {
+                display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
+                if( ! closed )
+                {
+                    display_manager.printlnDebug( "Attempting to reconnect..." );
+                    connect( current_nick );
                 }
             }
         }
@@ -754,7 +761,10 @@ public class Server
                     
                     if( nick.equals( current_nick ) )
                     {
-                        // TODO remove server
+                        geoirc.execute(
+                            CMDS[ CMD_DISCONNECT ] + " "
+                            + geoirc.getRemoteMachineID( Server.this )
+                        );
                     }
                     else
                     {

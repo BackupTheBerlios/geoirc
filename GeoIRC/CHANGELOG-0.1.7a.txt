@@ -1,3 +1,12 @@
+Changelog for GeoIRC 0.1.7a
+---------------------------
+
+Added exec command.
+Pistos 2003-07-21
+
+Added "variables" to GeoIRC.  Accessible only from aliases for the moment.  The
+first variable available is %lasturl.
+Pistos 2003-07-21
 
 Fixed "channel messages appearing in all windows" bug.
 Pistos 2003-07-21
@@ -12,5 +21,13 @@ Pistos 2003-07-22
 Increased the maximum window button width.
 Pistos 2003-07-22
 
-Added welcome message (001) to handler.
+Added welcome message (001) to handler.  This helps keep the user's current
+nick accurate with what it is on the server (in case of nick truncation).
+Pistos 2003-07-22
+
+"Current" server is now detected automatically when windows are activated, based
+on window filters.
+Pistos 2003-07-22
+
+Added a disconnect command.
 Pistos 2003-07-22

@@ -37,11 +37,11 @@ public class DisplayManager
     protected SettingsManager settings_manager;
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
+    protected GeoIRC geoirc;
     protected boolean listening;
 
     protected JTextField input_field;
     
-    protected Container content_pane;
     protected JScrollDesktopPane desktop_pane;
     
     protected Vector windows;
@@ -68,12 +68,13 @@ public class DisplayManager
     private DisplayManager() { }
     
     public DisplayManager(
-        Container content_pane,
+        GeoIRC parent,
         JMenuBar menu_bar,
         SettingsManager settings_manager,
         JTextField input_field
     )
     {
+        geoirc = parent;
         listening = false;
         
         this.settings_manager = settings_manager;
@@ -87,9 +88,8 @@ public class DisplayManager
         undocked_panes = new Vector();
         panes = new Vector();
         
-        this.content_pane = content_pane;
         desktop_pane = new JScrollDesktopPane( menu_bar );
-        content_pane.add( desktop_pane );
+        geoirc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
         
         restoreDesktopState();
@@ -199,7 +199,7 @@ public class DisplayManager
            
         return addTextWindow(
             channel_name + " on " + s.toString(),
-            s.toString() + " AND " + channel_name
+            s.toString() + " and " + channel_name
         );
     }
     
@@ -307,38 +307,6 @@ public class DisplayManager
                         {
                             retval = filter.substring( pound_index );
                         }
-                    }
-                }
-            }
-        }
-        
-        return retval;
-    }
-
-    public RemoteMachine getSelectedRemoteMachine()
-    {
-        GIPane pane;
-        RemoteMachine retval = null;
-        GIWindow giw = (GIWindow) last_activated_frame;
-        if( giw == null )
-        {
-            giw = getSelectedFrame();
-        }
-
-        if( giw != null )
-        {
-            pane = giw.getPane();
-            if( pane instanceof GITextPane )
-            {
-                String filter = ((GITextPane) pane).getFilter();
-                if( filter != null )
-                {
-                    // Search for a server name in this filter.
-                    Matcher m = Pattern.compile( "irc\\.\\S+" ).matcher( filter );
-                    if( m.find() )
-                    {
-                        String server_name = m.group();
-                        
                     }
                 }
             }
@@ -556,11 +524,27 @@ public class DisplayManager
     public void internalFrameActivated( InternalFrameEvent e )
     {
         last_activated_frame = e.getInternalFrame();
-        GIWindow window = (GIWindow) e.getSource();
-        JToggleButton button = window.getAssociatedButton();
+        GIWindow giw = (GIWindow) e.getSource();
+        JToggleButton button = giw.getAssociatedButton();
         if( button != null )
         {
             button.setForeground( DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR );
+        }
+        
+        GIPane pane = giw.getPane();
+        if( pane instanceof GITextPane )
+        {
+            String filter = ((GITextPane) pane).getFilter();
+            if( filter != null )
+            {
+                // Search for a server name in this filter.
+                Matcher m = Pattern.compile( "irc\\.\\S+" ).matcher( filter );
+                if( m.find() )
+                {
+                    String server_name = m.group();
+                    geoirc.setCurrentRemoteMachine( server_name );
+                }
+            }
         }
     }
     
