@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$1" == "" ]
+then
+    echo "Usage: $0 <version string>"
+fi
+
+if [ ! -e geoirc-$1.zip ]
+then
+    echo "geoirc-$1.zip not found."
+    exit 1
+fi
+
+rm -r GeoIRC
+unzip geoirc-$1.zip
+chmod +x GeoIRC/geoirc
+rm GeoIRC/*.bat
+rm geoirc-*.tar.gz
+tar zcvf geoirc-$1.tar.gz GeoIRC
+
+exit 0

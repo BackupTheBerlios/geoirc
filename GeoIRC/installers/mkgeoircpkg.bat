@@ -39,6 +39,7 @@ copy /y C:\settings.xml "%PKG_SRC_DIR%"
 
 rem Copy to Linux machine for creation of tar.gz
 echo Copying to Linux...
+del "K:\geoirc-*.zip"
 copy "%PKG_OUTPUT_DIR%\geoirc-%1.zip" K:\
 
 goto end
