@@ -1055,13 +1055,11 @@ public class GeoIRC
     public void focusGained( FocusEvent e ) { }
     public void focusLost( FocusEvent e )
     {
-        Component thief = e.getOppositeComponent();
+        if( ! mouse_button_depressed )
+        {
+            Component thief = e.getOppositeComponent();
         
-        if( ! mouse_button_depressed && !(thief instanceof SettingsDialog) )
-        {            
-            if(
-                ( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
-            )
+            if( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
             {
                 SwingUtilities.invokeLater( new Runnable()
                     {
@@ -1071,14 +1069,29 @@ public class GeoIRC
                             {
                                 Thread.sleep( 300 );  // milliseconds
                             } catch( InterruptedException e ) { }
-                            input_field.grabFocus();                          
+                            input_field.grabFocus();
                         }
                     }
                 );
             }
             else
-            {               
-                input_field.grabFocus();
+            {
+                boolean is_in_settings = false;
+                Component c = thief;
+                while( c != null )
+                {
+                    if( c instanceof SettingsDialog )
+                    {
+                        is_in_settings = true;
+                        break;
+                    }
+                    c = c.getParent();
+                }
+                
+                if( ! is_in_settings )
+                {
+                    input_field.grabFocus();
+                }
             }
             /*
             else if( thief != null )
