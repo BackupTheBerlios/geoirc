@@ -15,21 +15,23 @@ import javax.swing.text.*;
  */
 public class HighlightManager implements GeoIRCConstants
 {
-    
     protected Vector triggers;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     
     // No default constructor
     private HighlightManager() { }
     
     public HighlightManager(
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         triggers = new Vector();
         
         int i = 0;
@@ -88,7 +90,7 @@ public class HighlightManager implements GeoIRCConstants
         HighlightTrigger ht;
         try
         {
-            ht = new HighlightTrigger( display_manager, filter, regexp, format );
+            ht = new HighlightTrigger( display_manager, i18n_manager, filter, regexp, format );
             triggers.add( ht );
         }
         catch( java.util.regex.PatternSyntaxException e )

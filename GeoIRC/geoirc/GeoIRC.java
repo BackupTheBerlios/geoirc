@@ -209,7 +209,7 @@ public class GeoIRC
         input_saved = false;
 
         display_manager = new DisplayManager(
-            this, menu_bar, settings_manager, variable_manager, input_field
+            this, menu_bar, settings_manager, variable_manager, i18n_manager, input_field
         );
 
         applySettings();
@@ -235,7 +235,7 @@ public class GeoIRC
         
         display_manager.restoreDesktopState();
         
-        info_manager = new InfoManager( settings_manager, display_manager );
+        info_manager = new InfoManager( settings_manager, display_manager, i18n_manager );
         
         /*
         display_manager.printlnDebug(
@@ -265,7 +265,7 @@ public class GeoIRC
         
         // Ident server.
         
-        ident_server = new IdentServer( settings_manager, display_manager );
+        ident_server = new IdentServer( settings_manager, display_manager, i18n_manager );
         ident_server.start();
                 
         // Restore connections, if any.
@@ -433,8 +433,8 @@ public class GeoIRC
         // Managers
         
         style_manager = new StyleManager( settings_manager, display_manager );
-        highlight_manager = new HighlightManager( settings_manager, display_manager );
-        log_manager = new LogManager( settings_manager, display_manager );
+        highlight_manager = new HighlightManager( settings_manager, display_manager, i18n_manager );
+        log_manager = new LogManager( settings_manager, display_manager, i18n_manager );
         display_manager.setLogManager( log_manager );
         trigger_manager = new TriggerManager( this, settings_manager, display_manager );
         alias_manager = new AliasManager( settings_manager, display_manager, variable_manager );
@@ -447,7 +447,7 @@ public class GeoIRC
         python_methods = new Hashtable();
         python_interpreter = new PythonInterpreter();
         python_script_interface = new PythonScriptInterface(
-            this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
+            this, settings_manager, display_manager, variable_manager, i18n_manager, python_interpreter, python_methods
         );
         python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
 
@@ -556,7 +556,8 @@ public class GeoIRC
     {
         Server s = new Server(
             this, display_manager, settings_manager, trigger_manager,
-            info_manager, variable_manager, conversation_words, hostname, port
+            info_manager, variable_manager, i18n_manager,
+            conversation_words, hostname, port
         );
         addRemoteMachine( s );
         
@@ -578,6 +579,7 @@ public class GeoIRC
             display_manager,
             settings_manager,
             trigger_manager,
+            i18n_manager,
             hostname,
             port,
             type,
@@ -1597,6 +1599,7 @@ public class GeoIRC
                                         settings_manager,
                                         display_manager,
                                         trigger_manager,
+                                        i18n_manager,
                                         args[ 0 ],
                                         s.getCurrentNick()
                                     );
@@ -1681,7 +1684,12 @@ public class GeoIRC
                         
                         if( rm == null )
                         {
-                            display_manager.printlnDebug( "Invalid machine id: '" + args[ 0 ] + "'" );
+                            display_manager.printlnDebug(
+                                i18n_manager.getString(
+                                    "bad machine id",
+                                    new Object [] { args[ 0 ] }
+                                )
+                            );
                             display_manager.printlnDebug(
                                 "Try /"
                                 + CMDS[ CMD_LIST_CONNECTIONS ]
@@ -1692,9 +1700,7 @@ public class GeoIRC
                     {
                         if( current_rm == null )
                         {
-                            display_manager.printlnDebug(
-                                "First switch to a window associated with a remote machine."
-                            );
+                            display_manager.printlnDebug( i18n_manager.getString( "go to rm window" ) );
                         }
                         else
                         {
@@ -1738,11 +1744,11 @@ public class GeoIRC
                     {
                         if( display_manager.dock( location, window_index ) )
                         {
-                            display_manager.printlnDebug( "Window docked." );
+                            display_manager.printlnDebug( i18n_manager.getString( "docked" ) );
                         }
                         else
                         {
-                            display_manager.printlnDebug( "Failed to dock window." );
+                            display_manager.printlnDebug( i18n_manager.getString( "dock failed" ) );
                         }
                         pack();
                     }
@@ -1767,9 +1773,10 @@ public class GeoIRC
                             GITextPane gitp = (GITextPane) pane;
                             gitp.setPaintMIRCCodes( true );
                             display_manager.printlnDebug(
-                                "Display of colour codes enabled for '"
-                                + giw.getTitle()
-                                + "'"
+                                i18n_manager.getString(
+                                    "codes enabled",
+                                    new Object [] { giw.getTitle() }
+                                )
                             );
                         }
                     }
@@ -1783,14 +1790,14 @@ public class GeoIRC
                     try
                     {
                         GIProcess gip = new GIProcess(
-                            display_manager, processes, arg_string, this, command_id
+                            display_manager, i18n_manager, processes, arg_string, this, command_id
                         );
                     }
                     catch( IOException e )
                     {
                         Util.printException(
-                            display_manager, e, 
-                            "I/O exception during external execution."
+                            display_manager, e,
+                            i18n_manager.getString( "io exception 1" )
                         );
                     }
                 }
@@ -1822,7 +1829,10 @@ public class GeoIRC
                         }
                         catch( Exception e )
                         {
-                            Util.printException( display_manager, e, "Failed to execute python method." );
+                            Util.printException(
+                                display_manager,
+                                e,
+                                i18n_manager.getString( "py method failure" ) );
                         }
                     }
                 }
@@ -1843,7 +1853,7 @@ public class GeoIRC
                     }
                     catch( TclException e )
                     {
-                        Util.printException( display_manager, e, "Tcl error:" );
+                        Util.printException( display_manager, e, i18n_manager.getString( "tcl error" ) );
                     }
                 }
                 else
@@ -1897,7 +1907,7 @@ public class GeoIRC
                 break;
             case CMD_HELP:
                 {
-                    display_manager.printlnDebug( "Built-in commands:" );
+                    display_manager.printlnDebug( i18n_manager.getString( "commands" ) );
                     
                     String [] sa = (String []) CMDS.clone();
                     Arrays.sort( sa );
@@ -1906,7 +1916,7 @@ public class GeoIRC
                         display_manager.printlnDebug( sa[ i ] );
                     }
                     
-                    display_manager.printlnDebug( "Known aliases:" );
+                    display_manager.printlnDebug( i18n_manager.getString( "aliases" ) );
                     
                     sa = alias_manager.getAliases();
                     Arrays.sort( sa );
@@ -1935,7 +1945,7 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug(
-                            "First switch to a window associated with a server."
+                            i18n_manager.getString( "go to server window" )
                         );
                     }
                 }
@@ -2000,7 +2010,9 @@ public class GeoIRC
                         rm = (RemoteMachine) it.next();
                         if( rm == current_rm )
                         {
-                            current_marker = " (current remote machine)";
+                            current_marker = " ("
+                                + i18n_manager.getString( "current rm" )
+                                + ")";
                         }
                         else
                         {
@@ -2074,7 +2086,7 @@ public class GeoIRC
                 else
                 {
                     display_manager.printlnDebug(
-                        "First switch to a window associated with a server."
+                        i18n_manager.getString( "go to server window" )
                     );
                 }
                 break;
@@ -2098,7 +2110,9 @@ public class GeoIRC
             case CMD_LOAD_PY:
                 if( arg_string != null )
                 {
-                    display_manager.printlnDebug( "Loading " + arg_string + "..." );
+                    display_manager.printlnDebug(
+                        i18n_manager.getString( "loading", new Object [] { arg_string } )
+                    );
                     python_interpreter.execfile( arg_string );
                 }
                 else
@@ -2112,7 +2126,9 @@ public class GeoIRC
             case CMD_LOAD_TCL:
                 if( arg_string != null )
                 {
-                    display_manager.printlnDebug( "Loading " + arg_string + "..." );
+                    display_manager.printlnDebug(
+                        i18n_manager.getString( "loading", new Object [] { arg_string } )
+                    );
                     try
                     {
                         tcl_interpreter.evalFile( arg_string );
@@ -2121,7 +2137,7 @@ public class GeoIRC
                     {
                         Util.printException(
                             display_manager, e,
-                            "Failed to load '" + arg_string + "':"
+                            i18n_manager.getString( "load failure", new Object [] { arg_string } )
                         );
                     }
                 }
@@ -2421,7 +2437,7 @@ public class GeoIRC
                 else
                 {
                     display_manager.printlnDebug(
-                        "First switch to a window associated with a server."
+                        i18n_manager.getString( "go to server window" )
                     );
                 }
                 break;
@@ -2447,7 +2463,12 @@ public class GeoIRC
                         catch ( java.net.MalformedURLException e )
                         {
                             display_manager.printlnDebug( e.getMessage() );
-                            display_manager.printlnDebug( "Failed to load audio file '" + sound_file + "'" );
+                            display_manager.printlnDebug(
+                                i18n_manager.getString(
+                                    "audio load failure",
+                                    new Object [] { sound_file }
+                                )
+                            );
                         }
                     }
                     
@@ -2457,7 +2478,12 @@ public class GeoIRC
                     }
                     else
                     {
-                        display_manager.printlnDebug( "Failed to load audio file '" + sound_file + "'" );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "audio load failure",
+                                new Object [] { sound_file }
+                            )
+                        );
                     }
                     
                 }
@@ -2604,7 +2630,7 @@ public class GeoIRC
                 else
                 {
                     display_manager.printlnDebug(
-                        "First switch to a window associated with a server."
+                        i18n_manager.getString( "go to server window" )
                     );
                 }
                 break;
@@ -2764,7 +2790,7 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug(
-                            "First switch to a window associated with a server."
+                            i18n_manager.getString( "go to server window" )
                         );
                     }
                 }
@@ -2892,7 +2918,7 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug(
-                            "First select a window associated with a channel."
+                            i18n_manager.getString( "go to channel window" )
                         );
                     }
                 }
@@ -2927,7 +2953,12 @@ public class GeoIRC
             
             case UNKNOWN_COMMAND:
             default:
-                display_manager.printlnDebug( "Invalid command name: " + command_name );
+                display_manager.printlnDebug(
+                    i18n_manager.getString(
+                        "bad command",
+                        new Object [] { command_name }
+                    )
+                );
                 result = CommandExecutor.EXEC_BAD_COMMAND;
                 break;
         }

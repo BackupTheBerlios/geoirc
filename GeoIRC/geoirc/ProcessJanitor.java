@@ -17,14 +17,21 @@ public class ProcessJanitor extends Thread implements GeoIRCConstants
     protected GIProcess process;
     protected Hashtable processes;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     
     private ProcessJanitor() { }
     
-    public ProcessJanitor( DisplayManager display_manager, GIProcess process, Hashtable processes )
+    public ProcessJanitor(
+        DisplayManager display_manager,
+        I18nManager i18n_manager,
+        GIProcess process,
+        Hashtable processes
+    )
     {
         this.process = process;
         this.processes = processes;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
     }
     
     public void run()
@@ -50,8 +57,13 @@ public class ProcessJanitor extends Thread implements GeoIRCConstants
         processes.remove( new Integer( process.getPID() ) );
 
         display_manager.printlnDebug(
-            "Process " + process.getPIDString() + " terminated with exit value "
-            + Integer.toString( exit_value )
+            i18n_manager.getString(
+                "process death",
+                    new Object [] {
+                        process.getPIDString(),
+                        new Integer( exit_value )
+                    }
+            )
         );
     }
 }

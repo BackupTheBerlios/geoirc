@@ -74,4 +74,19 @@ public class I18nManager implements GeoIRCConstants
         catch( MissingResourceException e ) { }
         return retval;
     }
+    
+    public String getLanguage()
+    {
+        return language;
+    }
+    
+    public String getCountry()
+    {
+        return country;
+    }
+    
+    public Locale getLocale()
+    {
+        return locale;
+    }
 }

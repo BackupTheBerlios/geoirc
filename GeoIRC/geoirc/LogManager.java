@@ -18,6 +18,7 @@ public class LogManager implements GeoIRCConstants
     protected Vector loggers;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     protected String log_path;
     protected boolean initializing;
     
@@ -26,11 +27,13 @@ public class LogManager implements GeoIRCConstants
     
     public LogManager(
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         loggers = new Vector();
         initializing = true;
         
@@ -108,7 +111,7 @@ public class LogManager implements GeoIRCConstants
         try
         {
             logger = new Logger(
-                display_manager, file, filter, regexp,
+                display_manager, i18n_manager, file, filter, regexp,
                 settings_manager.getString(
                     "/logs/log start message", DEFAULT_LOG_START_MESSAGE
                 )             
@@ -120,10 +123,12 @@ public class LogManager implements GeoIRCConstants
                 recordLoggers();
             }
             
-            display_manager.printlnDebug( "Logging begun for:" );
-            display_manager.printlnDebug( "   File: " + file );
-            display_manager.printlnDebug( "   Filter: " + filter );
-            display_manager.printlnDebug( "   Regular Expression: " + regexp );
+            display_manager.printlnDebug(
+                i18n_manager.getString(
+                    "logging started",
+                    new Object [] { file, filter, regexp }
+                )
+            );
             
             success = true;
         }
@@ -139,10 +144,12 @@ public class LogManager implements GeoIRCConstants
         l.close();
         recordLoggers();
         
-        display_manager.printlnDebug( "Logging stopped for:" );
-        display_manager.printlnDebug( "   File: " + l.getFilename() );
-        display_manager.printlnDebug( "   Filter: " + l.getFilter() );
-        display_manager.printlnDebug( "   Regular Expression: " + l.getRegexp() );
+        display_manager.printlnDebug(
+            i18n_manager.getString(
+                "logging stopped",
+                new Object [] { l.getFilename(), l.getFilter(), l.getRegexp() }
+            )
+        );
     }
     
     protected void recordLoggers()

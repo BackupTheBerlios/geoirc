@@ -386,14 +386,6 @@ public interface GeoIRCConstants
 
     static final int DELAY_FOR_SERVER_READER_DEATH = 100;  // milliseconds
     
-    static final String [] VARS =
-    {
-        "lasturl",
-        "linesunread"
-    };
-    static final int VAR_LAST_URL = 0;
-    static final int VAR_LINES_UNREAD = 1;
-    
     static final String POSITION_TOP = "top";
     static final String POSITION_RIGHT = "right";
     static final String POSITION_BOTTOM = "bottom";

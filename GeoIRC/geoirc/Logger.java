@@ -21,11 +21,13 @@ public class Logger implements GeoIRCConstants
     protected String filter;
     protected Pattern regexp;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     
     private Logger() { }
     
     public Logger(
         DisplayManager display_manager,
+        I18nManager i18n_manager,
         String filename,
         String filter,
         String regexp_str,
@@ -34,6 +36,7 @@ public class Logger implements GeoIRCConstants
         throws PatternSyntaxException, IOException
     {
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         this.filename = filename;
         this.filter = filter;
         
@@ -47,8 +50,7 @@ public class Logger implements GeoIRCConstants
         catch( PatternSyntaxException e )
         {
             display_manager.printlnDebug(
-                "Regular expression syntax error for expression '"
-                + regexp_str + "'"
+                i18n_manager.getString( "regexp error", new Object [] { regexp_str } )
             );
             display_manager.printlnDebug( e.getMessage() );
             throw e;
@@ -56,7 +58,7 @@ public class Logger implements GeoIRCConstants
         catch( IOException e )
         {
             display_manager.printlnDebug(
-                "I/O error when trying to create log file for '" + filename + "'."
+                i18n_manager.getString( "io exception 6", new Object [] { filename } )
             );
             display_manager.printlnDebug( e.getMessage() );
             throw e;
@@ -78,7 +80,9 @@ public class Logger implements GeoIRCConstants
         }
         catch( BadExpressionException e )
         {
-            display_manager.printlnDebug( "Filter evaluation error for filter '" + filter + "'" );
+            display_manager.printlnDebug(
+                i18n_manager.getString( "filter error", new Object [] { filter } )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         

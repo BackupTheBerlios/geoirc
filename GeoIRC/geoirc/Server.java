@@ -50,12 +50,13 @@ public class Server
         TriggerManager trigger_manager,
         InfoManager info_manager,
         VariableManager variable_manager,
+        I18nManager i18n_manager,
         Set conversation_words,
         String hostname,
         String port
     )
     {
-        super( parent, display_manager, settings_manager, trigger_manager, hostname, port );
+        super( parent, display_manager, settings_manager, trigger_manager, i18n_manager, hostname, port );
         
         listening_to_channels = false;
         channels = new Vector();
@@ -115,7 +116,9 @@ public class Server
         }
         catch( UnknownHostException e )
         {
-            display_manager.printlnDebug( "Unknown host: " + hostname );
+            display_manager.printlnDebug(
+                i18n_manager.getString( "unknown host", new Object [] { hostname } )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         catch( IOException e )
@@ -130,7 +133,7 @@ public class Server
     {
         if( isConnected() )
         {
-            Channel channel = new Channel( this, channel_name, info_manager, settings_manager, display_manager );
+            Channel channel = new Channel( this, channel_name, info_manager, settings_manager, display_manager, i18n_manager );
             channels.add( channel );
             info_manager.addChannel( channel );
         }
@@ -396,7 +399,7 @@ public class Server
                     Util.printException(
                         display_manager,
                         e,
-                        "NullPointerException in interpretLine.\nProblem line: " + line
+                        i18n_manager.getString( "interpretline npe", new Object [] { line } )
                     );
                 }
                 
@@ -425,17 +428,27 @@ public class Server
                     Util.printException(
                         display_manager,
                         e,
-                        "I/O error while reading from server " + Server.this.toString()
+                        i18n_manager.getString( "io exception 8", new Object [] { Server.this.toString() } )
                     );
                     
                     if( ! isConnected() && ( ! closed ) )
                     {
-                        display_manager.printlnDebug( "Connection to " + Server.this.toString() + " lost." );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "connection lost",
+                                new Object [] { Server.this.toString() }
+                            )
+                        );
                     }
                     
                     if( e.getMessage().equals( "Connection reset" ) )
                     {
-                        display_manager.printlnDebug( "Connection to " + Server.this.toString() + " reset." );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "connection reset",
+                                new Object [] { Server.this.toString() }
+                            )
+                        );
                         reset = true;
                     }
                 }
@@ -445,14 +458,19 @@ public class Server
             {
                 //geoirc.recordConnections();
                 
-                display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
+                display_manager.printlnDebug(
+                    i18n_manager.getString(
+                        "no longer connected",
+                        new Object [] { Server.this.toString() }
+                    )
+                );
                 listening_to_channels = false;
                 channels = new Vector();
                 info_manager.removeRemoteMachine( Server.this );
                 
                 if( ! closed )
                 {
-                    display_manager.printlnDebug( "Attempting to reconnect..." );
+                    display_manager.printlnDebug( i18n_manager.getString( "attempting reconnect" ) );
                     connect( current_nick );
                 }
             }
@@ -533,7 +551,9 @@ public class Server
                 }
                 catch( BadExpressionException e )
                 {
-                    display_manager.printlnDebug( "Filter evaluation error for filter '" + filter + "'" );
+                    display_manager.printlnDebug(
+                        i18n_manager.getString( "filter error", new Object [] { filter } )
+                    );
                     display_manager.printlnDebug( e.getMessage() );
                 }
                 
@@ -618,7 +638,9 @@ public class Server
                                     if( another_nick.equals( "" ) )
                                     {
                                         another_nick = current_nick;
-                                        display_manager.printlnDebug( "No more alternate nicks." );
+                                        display_manager.printlnDebug(
+                                            i18n_manager.getString( "no more nicks" )
+                                        );
                                     }
                                     break;
                                 }
@@ -667,13 +689,22 @@ public class Server
                         break;
                     case STAGE_PROCESSING:
                         {
-                            String text = getPadded( nick );                                        
-                            //show dns username and host?
-                            if( settings_manager.getBoolean("/gui/format/complete join message", false) == true )
+                            String text;
+                            String padded_nick = getPadded( nick );
+                            String user_string = "";
+                            
+                            if(
+                                settings_manager.getBoolean(
+                                    "/gui/format/complete join message", false
+                                ) == true
+                            )
                             {                    
-                                text += " (" + getUserNameAndHost( tokens[ 0 ] ) + ")";
+                                user_string = " (" + getUserNameAndHost( tokens[ 0 ] ) + ")";
                             }
-                            text += " has joined " + channel + ".";
+                            text = i18n_manager.getString(
+                                "join",
+                                new Object [] { padded_nick, nick, user_string, channel }
+                            );
 
                             windows_printed_to += display_manager.println(
                                 GeoIRC.getATimeStamp(
@@ -698,8 +729,9 @@ public class Server
                                 else
                                 {
                                     display_manager.printlnDebug(
-                                        "Warning: No associated channel object for '"
-                                        + channel + "'."
+                                        i18n_manager.getString(
+                                            "no channel object", new Object [] { channel }
+                                        )
                                     );
                                 }
                             }
@@ -735,9 +767,12 @@ public class Server
                         break;
                     case STAGE_PROCESSING:
                         {
-                            String text =
-                                getPadded( kicker ) + " has kicked " + nick
-                                + " from " + channel + " (" + message + ").";
+                            String text;
+                            String padded_kicker = getPadded( kicker );
+                            text = i18n_manager.getString(
+                                "kick",
+                                new Object [] { padded_kicker, kicker, nick, channel, message }
+                            );
 
                             User user = getUserByNick( nick );
                             if( user != null )
@@ -804,208 +839,249 @@ public class Server
                         switch( stage )
                         {
                             case STAGE_SCRIPTING:
-                                {
-                                    String qualities = transformed_message[ MSG_QUALITIES ]
-                                        + " " + channel
-                                        + " from=" + nick
-                                        + " " + FILTER_SPECIAL_CHAR + "mode"
-                                        + " mode=" + mode
-                                        + " polarity=" + polarity
-                                        + " acode=" + irc_code;
-                                    
-                                    if(
-                                        ( mode.equals( MODE_OP ) )
-                                        || ( mode.equals( MODE_HALFOP ) )
-                                        || ( mode.equals( MODE_VOICE ) )
-                                    )
-                                    {
-                                        qualities += " recipient=" + nick;
-                                    }
+                            {
+                                String qualities = transformed_message[ MSG_QUALITIES ]
+                                    + " " + channel
+                                    + " from=" + nick
+                                    + " " + FILTER_SPECIAL_CHAR + "mode"
+                                    + " mode=" + mode
+                                    + " polarity=" + polarity
+                                    + " acode=" + irc_code;
 
-                                    transformed_message = geoirc.onRaw(
-                                        transformed_message[ MSG_TEXT ],
-                                        qualities
-                                    );
+                                if(
+                                    ( mode.equals( MODE_OP ) )
+                                    || ( mode.equals( MODE_HALFOP ) )
+                                    || ( mode.equals( MODE_VOICE ) )
+                                )
+                                {
+                                    qualities += " recipient=" + nick;
                                 }
-                                break;
+
+                                transformed_message = geoirc.onRaw(
+                                    transformed_message[ MSG_TEXT ],
+                                    qualities
+                                );
+                            }
+                            break;
                             case STAGE_PROCESSING:
+                            {
+                                String text = null;
+                                if( user != null )
                                 {
-                                    String text = null;
-                                    if( user != null )
-                                    {
-                                        user.noteActivity();
-                                    }
-
-                                    if( mode.equals( MODE_OP ) )
-                                    {
-                                        User recipient_user = getUserByNick( arg );
-                                        if( recipient_user != null )
-                                        {
-                                            if( polarity.equals( "+" ) )
-                                            {
-                                                recipient_user.addModeFlag( c, MODE_OP );
-                                                c.acknowledgeUserChange( user );
-                                                c.acknowledgeUserChange( recipient_user );
-                                                text = getPadded( nick ) + " has given channel operator privileges for "
-                                                    + channel + " to " + arg + ".";
-                                            }
-                                            else if( polarity.equals( "-" ) )
-                                            {
-                                                recipient_user.removeModeFlag( c, MODE_OP );
-                                                c.acknowledgeUserChange( user );
-                                                c.acknowledgeUserChange( recipient_user );
-                                                text = getPadded( nick ) + " has taken channel operator privileges for "
-                                                    + channel + " from " + arg + ".";
-                                            }
-                                        }
-                                    }
-                                    else if( mode.equals( MODE_HALFOP ) )
-                                    {
-                                        User recipient_user = getUserByNick( arg );
-                                        if( recipient_user != null )
-                                        {
-                                            if( polarity.equals( "+" ) )
-                                            {
-                                                recipient_user.addModeFlag( c, MODE_HALFOP );
-                                                c.acknowledgeUserChange( user );
-                                                c.acknowledgeUserChange( recipient_user );
-                                                text = getPadded( nick ) + " has given half operator privileges for "
-                                                    + channel + " to " + arg + ".";
-                                            }
-                                            else if( polarity.equals( "-" ) )
-                                            {
-                                                recipient_user.removeModeFlag( c, MODE_HALFOP );
-                                                c.acknowledgeUserChange( user );
-                                                c.acknowledgeUserChange( recipient_user );
-                                                text = getPadded( nick ) + " has taken half operator privileges for "
-                                                    + channel + " from " + arg + ".";
-                                            }
-                                        }
-                                    }
-                                    else if( mode.equals( "p" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made " + channel
-                                                + " a private channel.";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has removed the private status of "
-                                                + channel + ".";
-                                        }
-                                    }
-                                    else if( mode.equals( "s" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made " + channel
-                                                + " a secret channel.";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has removed the secret status of "
-                                                + channel + ".";
-                                        }
-                                    }
-                                    else if( mode.equals( "i" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made " + channel
-                                                + " invite-only.";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has removed the invite-only status of "
-                                                + channel + ".";
-                                        }
-                                    }
-                                    else if( mode.equals( "t" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made the topic of " + channel
-                                                + " settable only by channel operators.";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made the topic of " + channel
-                                                + " settable by anyone.";
-                                        }
-                                    }
-                                    else if( mode.equals( "n" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has blocked messages to  " + channel
-                                                + " from people who are not in the channel.";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has allowed messages to  " + channel
-                                                + " from people who are not in the channel.";
-                                        }
-                                    }
-                                    else if( mode.equals( "m" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made " + channel
-                                                + " a moderated channel.";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has made " + channel
-                                                + " an unmoderated channel.";
-                                        }
-                                    }
-                                    else if( mode.equals( "b" ) )
-                                    {
-                                        if( polarity.equals( "+" ) )
-                                        {
-                                            text = getPadded( nick ) + " has added the ban " + arg + " for "
-                                                + channel + ".";
-                                        }
-                                        else if( polarity.equals( "-" ) )
-                                        {
-                                            text = getPadded( nick ) + " has lifted the ban " + arg + " for "
-                                                + channel + ".";
-                                        }
-                                    }
-                                    else if( mode.equals( MODE_VOICE ) )
-                                    {
-                                        User recipient_user = getUserByNick( arg );
-                                        if( recipient_user != null )
-                                        {
-                                            if( polarity.equals( "+" ) )
-                                            {
-                                                recipient_user.addModeFlag( c, MODE_VOICE );
-                                                c.acknowledgeUserChange( user );
-                                                c.acknowledgeUserChange( recipient_user );
-                                                text = getPadded( nick ) + " has given voice in "
-                                                    + channel + " to " + arg + ".";
-                                            }
-                                            else if( polarity.equals( "-" ) )
-                                            {
-                                                recipient_user.removeModeFlag( c, MODE_VOICE );
-                                                c.acknowledgeUserChange( user );
-                                                c.acknowledgeUserChange( recipient_user );
-                                                text = getPadded( nick ) + " has taken voice in "
-                                                    + channel + " from " + arg + ".";
-                                            }
-                                        }
-                                    }
-
-                                    windows_printed_to += display_manager.println(
-                                        GeoIRC.getATimeStamp(
-                                            settings_manager.getString( "/gui/format/timestamp", "" )
-                                        ) + text,
-                                        transformed_message[ MSG_QUALITIES ]
-                                    );
-                                    trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                                    user.noteActivity();
                                 }
-                                break;
+                                String padded_nick = getPadded( nick );
+
+                                if( mode.equals( MODE_OP ) )
+                                {
+                                    User recipient_user = getUserByNick( arg );
+                                    if( recipient_user != null )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            recipient_user.addModeFlag( c, MODE_OP );
+                                            c.acknowledgeUserChange( user );
+                                            c.acknowledgeUserChange( recipient_user );
+                                            text = i18n_manager.getString(
+                                                "chanop give",
+                                                new Object [] { padded_nick, nick, channel, arg }
+                                            );
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            recipient_user.removeModeFlag( c, MODE_OP );
+                                            c.acknowledgeUserChange( user );
+                                            c.acknowledgeUserChange( recipient_user );
+                                            text = i18n_manager.getString(
+                                                "chanop take",
+                                                new Object [] { padded_nick, nick, channel, arg }
+                                            );
+                                        }
+                                    }
+                                }
+                                else if( mode.equals( MODE_HALFOP ) )
+                                {
+                                    User recipient_user = getUserByNick( arg );
+                                    if( recipient_user != null )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            recipient_user.addModeFlag( c, MODE_HALFOP );
+                                            c.acknowledgeUserChange( user );
+                                            c.acknowledgeUserChange( recipient_user );
+                                            text = i18n_manager.getString(
+                                                "halfop give",
+                                                new Object [] { padded_nick, nick, channel, arg }
+                                            );
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            recipient_user.removeModeFlag( c, MODE_HALFOP );
+                                            c.acknowledgeUserChange( user );
+                                            c.acknowledgeUserChange( recipient_user );
+                                            text = i18n_manager.getString(
+                                                "halfop take",
+                                                new Object [] { padded_nick, nick, channel, arg }
+                                            );
+                                        }
+                                    }
+                                }
+                                else if( mode.equals( "p" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "private channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "nonprivate channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( "s" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "secret channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "nonsecret channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( "i" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "invite channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "noninvite channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( "t" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "topic chanop",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "topic all",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( "n" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "members only",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "not members only",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( "m" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "moderated channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "unmoderated channel",
+                                            new Object [] { padded_nick, nick, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( "b" ) )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "ban",
+                                            new Object [] { padded_nick, nick, arg, channel }
+                                        );
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        text = i18n_manager.getString(
+                                            "unban",
+                                            new Object [] { padded_nick, nick, arg, channel }
+                                        );
+                                    }
+                                }
+                                else if( mode.equals( MODE_VOICE ) )
+                                {
+                                    User recipient_user = getUserByNick( arg );
+                                    if( recipient_user != null )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            recipient_user.addModeFlag( c, MODE_VOICE );
+                                            c.acknowledgeUserChange( user );
+                                            c.acknowledgeUserChange( recipient_user );
+                                            text = i18n_manager.getString(
+                                                "voice give",
+                                                new Object [] { padded_nick, nick, channel, arg }
+                                            );
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            recipient_user.removeModeFlag( c, MODE_VOICE );
+                                            c.acknowledgeUserChange( user );
+                                            c.acknowledgeUserChange( recipient_user );
+                                            text = i18n_manager.getString(
+                                                "voice take",
+                                                new Object [] { padded_nick, nick, channel, arg }
+                                            );
+                                        }
+                                    }
+                                }
+
+                                windows_printed_to += display_manager.println(
+                                    GeoIRC.getATimeStamp(
+                                        settings_manager.getString( "/gui/format/timestamp", "" )
+                                    ) + text,
+                                    transformed_message[ MSG_QUALITIES ]
+                                );
+                                trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            }
+                            break;
                         }
                     }
                     catch( ArrayIndexOutOfBoundsException e )
@@ -1100,7 +1176,12 @@ public class Server
                         break;
                     case STAGE_PROCESSING:
                         {
-                            String text = getPadded( old_nick ) + " is now known as " + new_nick + ".";
+                            String text;
+                            String padded_nick = getPadded( old_nick );
+                            text = i18n_manager.getString(
+                                "nick change",
+                                new Object [] { padded_nick, old_nick, new_nick }
+                            );
                             windows_printed_to += display_manager.println(
                                 GeoIRC.getATimeStamp(
                                     settings_manager.getString( "/gui/format/timestamp", "" )
@@ -1301,7 +1382,11 @@ public class Server
                                 user.noteActivity();
                             }
 
-                            String text = getPadded( nick ) + " has left " + channel + " (" + message + ").";
+                            String padded_nick = getPadded( nick );
+                            String text = i18n_manager.getString(
+                                "part",
+                                new Object [] { padded_nick, nick, channel, message }
+                            );
 
                             if( message != null )
                             {
@@ -1354,7 +1439,10 @@ public class Server
                             }
                             send( "PONG " + pong_arg );
                             display_manager.println(
-                                "PONG sent to " + Server.this.toString(),
+                                i18n_manager.getString(
+                                    "pong",
+                                    new Object [] { Server.this.toString() }
+                                ),
                                 transformed_message[ MSG_QUALITIES ]
                             );
                         }
@@ -1502,8 +1590,10 @@ public class Server
 
                             if( ( command_id != UNKNOWN_CTCP_CMD ) && ( stage == STAGE_PROCESSING ) )
                             {
-                                text = "Received CTCP " + CTCP_CMDS[ command_id ]
-                                    + " from " + nick;
+                                text = i18n_manager.getString(
+                                    "got ctcp",
+                                    new Object [] { CTCP_CMDS[ command_id ], nick }
+                                );
                             }
 
                             switch( stage )
@@ -1581,8 +1671,10 @@ public class Server
                                             );
                                             break;
                                         default:
-                                            text = "Unknown CTCP command from " + nick + ": "
-                                                + ctcp_message;
+                                            text = i18n_manager.getString(
+                                                "unknown ctcp",
+                                                new Object [] { nick, ctcp_message }
+                                            );
                                             break;
                                     }
                                     break;
@@ -1592,12 +1684,18 @@ public class Server
                     else if( stage == STAGE_PROCESSING )
                     {
                         words = Util.tokensToArray( text );
-                        text = getPadded( "<" + nick + ">" ) + " " + text;
+                        text = i18n_manager.getString(
+                            "privmsg",
+                            new Object [] { nick, text }
+                        );
                     }
                 }
                 else if( stage == STAGE_PROCESSING )
                 {
-                    text = getPadded( "<" + nick + ">" );
+                    text = i18n_manager.getString(
+                        "privmsg",
+                        new Object [] { nick, "" }
+                    );
                 }
 
                 switch( stage )
@@ -1673,7 +1771,11 @@ public class Server
                         break;
                     case STAGE_PROCESSING:
                         message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
-                        text = getPadded( nick ) + " has quit (" + message + ").";
+                        String padded_nick = getPadded( nick );
+                        text = i18n_manager.getString(
+                            "quit",
+                            new Object [] { padded_nick, nick, message }
+                        );
 
                         if( nick.equals( current_nick ) )
                         {
@@ -1771,7 +1873,10 @@ public class Server
                         break;
                     case STAGE_PROCESSING:
                         {
-                            String text = channel + " has no topic set.";
+                            String text = i18n_manager.getString(
+                                "no topic",
+                                new Object [] { channel }
+                            );
 
                             windows_printed_to += display_manager.println(
                                 GeoIRC.getATimeStamp(
@@ -1802,7 +1907,10 @@ public class Server
                     case STAGE_PROCESSING:
                         {
                             String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
-                            String text = "The topic of " + channel + " is: " + topic;
+                            String text = i18n_manager.getString(
+                                "topic",
+                                new Object [] { channel, topic }
+                            );
 
                             extractVariables( topic, transformed_message[ MSG_QUALITIES ] );
                             windows_printed_to += display_manager.println(
@@ -1835,18 +1943,20 @@ public class Server
                             String setter = tokens[ 4 ];
                             String time_str = tokens[ 5 ];
                             long time_in_seconds;
-                            String time = "an unknown date and time";
+                            String time = i18n_manager.getString( "unknown datetime" );
                             try
                             {
                                 time_in_seconds = Integer.parseInt( time_str );
                                 DateFormat df = DateFormat.getDateTimeInstance(
-                                    DateFormat.LONG, DateFormat.LONG
+                                    DateFormat.LONG, DateFormat.LONG, i18n_manager.getLocale()
                                 );
                                 time = df.format( new Date( time_in_seconds * 1000 ) );
                             } catch( NumberFormatException e ) { }
 
-                            String text = "The topic for " + channel + " was set by "
-                                + setter + " on " + time;
+                            String text = i18n_manager.getString(
+                                "topic setter",
+                                new Object [] { channel, setter, time }
+                            );
                             windows_printed_to += display_manager.println(
                                 GeoIRC.getATimeStamp(
                                     settings_manager.getString( "/gui/format/timestamp", "" )
@@ -1878,7 +1988,11 @@ public class Server
                         {
                             String topic = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
 
-                            String text = getPadded( nick ) + " has changed the topic for " + channel + " to: " + topic;
+                            String padded_nick = getPadded( nick );
+                            String text = i18n_manager.getString(
+                                "topic change",
+                                new Object [] { padded_nick, nick, channel, topic }
+                            );
 
                             extractVariables( topic, transformed_message[ MSG_QUALITIES ] );
                             windows_printed_to += display_manager.println(

@@ -19,6 +19,7 @@ public class RemoteMachine implements GeoIRCConstants
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected TriggerManager trigger_manager;
+    protected I18nManager i18n_manager;
     protected String hostname;
     protected int port;
     protected GeoIRC geoirc;
@@ -39,6 +40,7 @@ public class RemoteMachine implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         TriggerManager trigger_manager,
+        I18nManager i18n_manager,
         String hostname,
         String port
     )
@@ -59,6 +61,7 @@ public class RemoteMachine implements GeoIRCConstants
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
         this.trigger_manager = trigger_manager;
+        this.i18n_manager = i18n_manager;
         geoirc = parent;
         
         socket = null;
@@ -81,7 +84,7 @@ public class RemoteMachine implements GeoIRCConstants
             {
                 Util.printException(
                     display_manager, e,
-                    "I/O error when closing socket of server " + toString()
+                    i18n_manager.getString( "io exception 7", new Object [] { toString() } )
                 );
             }
         }

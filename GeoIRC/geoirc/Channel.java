@@ -26,6 +26,7 @@ public class Channel implements GeoIRCConstants
     protected InfoManager info_manager;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     protected int sort_order;
     protected UserComparator comparator;
     
@@ -37,7 +38,8 @@ public class Channel implements GeoIRCConstants
         String name,
         InfoManager info_manager,
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.server = server;
@@ -45,6 +47,7 @@ public class Channel implements GeoIRCConstants
         this.info_manager = info_manager;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         topic = null;
         topic_setter = null;
         topic_set_date = null;
@@ -56,7 +59,7 @@ public class Channel implements GeoIRCConstants
             )
         )
         {
-            throw new IllegalArgumentException( "Invalid sort order." );
+            throw new IllegalArgumentException( i18n_manager.getString( "bad sort order" ) );
         }
         
         members = new Vector();
@@ -169,8 +172,10 @@ public class Channel implements GeoIRCConstants
         catch( ArrayIndexOutOfBoundsException e )
         {
             display_manager.printlnDebug(
-                "Bad insertion point for new member: "
-                + Integer.toString( insertion_point )
+                i18n_manager.getString(
+                    "bad insertion",
+                    new Object [] { new Integer( insertion_point ) }
+                )
             );
         }
     }

@@ -16,17 +16,20 @@ public class IdentServer extends Thread implements GeoIRCConstants
     protected String os_string;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     
     // No default constructor.
     private IdentServer() { }
 
     public IdentServer(
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         
         this.user_id = settings_manager.getString( "/personal/ident/username", "Pistos" );
         this.local_ident_port = DEFAULT_IDENT_PORT;
@@ -89,7 +92,9 @@ public class IdentServer extends Thread implements GeoIRCConstants
                             + " : " + user_id
                             + "\r\n"
                         );
-                        display_manager.printlnDebug( "Sent ident response." );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString( "ident sent" )
+                        );
                         // Now according to the protocol, this is all the Ident server really needs to send unless you're using a different
                         // operating system other then specified on RFC 931. I don't think anyone will not specify UNIX or WINDOWS anyways.
                         // By the way, this sends ident response.
@@ -108,7 +113,9 @@ public class IdentServer extends Thread implements GeoIRCConstants
         }
         catch( IOException e )
         {
-            display_manager.printlnDebug( "Ident server I/O error." );
+            display_manager.printlnDebug(
+                i18n_manager.getString( "io exception 5" )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         

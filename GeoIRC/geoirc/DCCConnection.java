@@ -27,6 +27,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
     protected TriggerManager trigger_manager;
+    protected I18nManager i18n_manager;
     protected PrintWriter out;
     protected BufferedReader in;
     protected boolean closed;
@@ -41,6 +42,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         SettingsManager settings_manager,
         DisplayManager display_manager,
         TriggerManager trigger_manager,
+        I18nManager i18n_manager,
         String offeree_nick,
         String user_nick
     ) throws IOException
@@ -48,6 +50,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         this.trigger_manager = trigger_manager;
+        this.i18n_manager = i18n_manager;
         this.offeree_nick = offeree_nick;
         this.user_nick = user_nick;
         
@@ -107,7 +110,11 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         }
         catch( IOException e )
         {
-            Util.printException( display_manager, e, "Could not establish DCC connection:" );
+            Util.printException(
+                display_manager,
+                e,
+                i18n_manager.getString( "could not dcc connect" )
+            );
         }
         
         if( socket != null )
@@ -142,7 +149,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
                 Util.printException(
                     display_manager,
                     e,
-                    "I/O error during DCC chat with " + offeree_nick + ":"
+                    i18n_manager.getString( "io exception 3", new Object [] { offeree_nick } )
                 );
             }
         }
@@ -158,7 +165,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
             Util.printException(
                 display_manager,
                 e,
-                "I/O error when closing DCC chat with " + offeree_nick + ":"
+                i18n_manager.getString( "io exception 4", new Object [] { offeree_nick } )
             );
         }
         
@@ -169,7 +176,11 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         return
             offeree_nick
             + "@" + remote_ip
-            + ( ( socket != null ) ? " (connected)" : " (inactive)" );
+            + (
+                ( socket != null )
+                ? " (" + i18n_manager.getString( "connected" ) + ")"
+                : " (" + i18n_manager.getString( "connection inactive" ) + ")"
+            );
     }
     
     public String getUserNick()

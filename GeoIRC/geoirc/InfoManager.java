@@ -19,6 +19,7 @@ public class InfoManager
 {
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     protected DefaultTreeModel tree;
     protected DefaultMutableTreeNode root;
     protected Hashtable tree_inverse;
@@ -29,12 +30,14 @@ public class InfoManager
     
     public InfoManager(
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        root = new DefaultMutableTreeNode( "Connections" );
+        this.i18n_manager = i18n_manager;
+        root = new DefaultMutableTreeNode( i18n_manager.getString( "connections" ) );
         tree = new DefaultTreeModel( root );
         tree_inverse = new Hashtable();
         tree_for_path = new Hashtable();

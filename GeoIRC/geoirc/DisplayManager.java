@@ -55,6 +55,7 @@ public class DisplayManager
     protected SettingsManager settings_manager;
     protected VariableManager variable_manager;
     protected LogManager log_manager;
+    protected I18nManager i18n_manager;
     protected GeoIRC geoirc;
     protected boolean listening;
 
@@ -87,6 +88,7 @@ public class DisplayManager
         JMenuBar menu_bar,
         SettingsManager settings_manager,
         VariableManager variable_manager,
+        I18nManager i18n_manager,
         JTextField input_field
     )
     {
@@ -95,6 +97,7 @@ public class DisplayManager
         
         this.settings_manager = settings_manager;
         this.variable_manager = variable_manager;
+        this.i18n_manager = i18n_manager;
         log_manager = null;
 
         windows = new Vector();
@@ -118,7 +121,7 @@ public class DisplayManager
         }
         catch( FileNotFoundException e )
         {
-            printlnDebug( "Could not find all user icons." );
+            printlnDebug( i18n_manager.getString( "icons missing" ) );
             cell_renderer = new DefaultTreeCellRenderer();
         }
         
@@ -203,7 +206,7 @@ public class DisplayManager
     protected GITextPane addTextPane( String title, String filter )
     {
         GITextPane gitp = new GITextPane(
-            geoirc, this, settings_manager, title, filter
+            geoirc, this, settings_manager, i18n_manager, title, filter
         );
         panes.add( gitp );
         return gitp;
@@ -324,8 +327,7 @@ public class DisplayManager
                         {
                             Util.printException(
                                 this, e,
-                                "Failed to close window '"
-                                + giw.getTitle() + "'"
+                                i18n_manager.getString( "window closure failure 1", new Object [] { giw.getTitle() } )
                             );
                         }
                     }
@@ -380,7 +382,14 @@ public class DisplayManager
             }
             catch( PropertyVetoException e )
             {
-                Util.printException( this, e, "Failed to close window " + Integer.toString( index ) );
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "window closure failure 2",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -396,7 +405,14 @@ public class DisplayManager
             }
             catch( PropertyVetoException e )
             {
-                Util.printException( this, e, "Failed to maximize window " + Integer.toString( index ) );
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "maximize failure",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -412,7 +428,14 @@ public class DisplayManager
             }
             catch( PropertyVetoException e )
             {
-                Util.printException( this, e, "Failed to minimize window " + Integer.toString( index ) );
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "minimize failure",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -435,7 +458,14 @@ public class DisplayManager
             }
             catch( PropertyVetoException e )
             {
-                Util.printException( this, e, "Failed to restore window " + Integer.toString( index ) );
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "restoration failure",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -455,7 +485,14 @@ public class DisplayManager
             }
             catch( PropertyVetoException e )
             {
-                Util.printException( this, e, "Failed to size window " + Integer.toString( index ) );
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "size failure",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -475,7 +512,14 @@ public class DisplayManager
             }
             catch( PropertyVetoException e )
             {
-                Util.printException( this, e, "Failed to position window " + Integer.toString( index ) );
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "position failure",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -558,7 +602,12 @@ public class DisplayManager
         }
         catch( BadExpressionException e )
         {
-            printlnDebug( "Filter evaluation error for filter '" + prefilter + "'" );
+            printlnDebug(
+                i18n_manager.getString(
+                    "filter error",
+                    new Object [] { prefilter }
+                )
+            );
             printlnDebug( e.getMessage() );
         }
 
@@ -1346,7 +1395,7 @@ public class DisplayManager
                 else
                 {
                     // Huh?  Unknown pane type.
-                    printlnDebug( "Unknown pane type in settings." );
+                    printlnDebug( i18n_manager.getString( "unknown pane" ) );
                 }
 
                 if( giw != null )
@@ -1432,7 +1481,7 @@ public class DisplayManager
             else
             {
                 // Huh?  Unknown pane type.
-                printlnDebug( "Unknown pane type in settings." );
+                printlnDebug( i18n_manager.getString( "unknown pane" ) );
             }
             
             // Dock the pane.

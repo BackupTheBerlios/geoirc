@@ -23,6 +23,7 @@ public class PythonScriptInterface
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected VariableManager variable_manager;
+    protected I18nManager i18n_manager;
     protected PythonInterpreter python_interpreter;
     protected Hashtable python_methods;
     
@@ -37,6 +38,7 @@ public class PythonScriptInterface
         SettingsManager settings_manager,
         DisplayManager display_manager,
         VariableManager variable_manager,
+        I18nManager i18n_manager,
         PythonInterpreter python_interpreter,
         Hashtable python_methods
     )
@@ -45,6 +47,7 @@ public class PythonScriptInterface
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         this.variable_manager = variable_manager;
+        this.i18n_manager = i18n_manager;
         this.python_interpreter = python_interpreter;
         this.python_methods = python_methods;
         
@@ -117,7 +120,11 @@ public class PythonScriptInterface
                 }
                 catch( Exception e )
                 {
-                    Util.printException( display_manager, e, "Exception when executing Python raw parser." );
+                    Util.printException(
+                        display_manager,
+                        e,
+                        i18n_manager.getString( "python raw exception" )
+                    );
                 }
                 if( transformed_message != null )
                 {
@@ -154,7 +161,11 @@ public class PythonScriptInterface
                 }
                 catch( Exception e )
                 {
-                    Util.printException( display_manager, e, "Exception when executing Python input parser." );
+                    Util.printException(
+                        display_manager,
+                        e,
+                        i18n_manager.getString( "python input exception" )
+                    );
                 }
                 if( transformed_line != null )
                 {

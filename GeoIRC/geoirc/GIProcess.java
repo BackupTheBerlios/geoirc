@@ -25,11 +25,13 @@ public class GIProcess implements GeoIRCConstants
     protected PrintWriter stdin;
     protected String exec_string;
     protected CommandExecutor executor;
+    protected I18nManager i18n_manager;
     
     private GIProcess() { }
     
     public GIProcess(
         DisplayManager display_manager,
+        I18nManager i18n_manager,
         Hashtable processes,
         String exec_string,
         CommandExecutor executor,
@@ -37,6 +39,8 @@ public class GIProcess implements GeoIRCConstants
     )
         throws IOException
     {
+        this.i18n_manager = i18n_manager;
+        
         this.exec_string = exec_string;
         if( exec_type == CMD_EXEC2 )
         {
@@ -88,7 +92,7 @@ public class GIProcess implements GeoIRCConstants
             this
         ).start();
         
-        new ProcessJanitor( display_manager, this, processes ).start();
+        new ProcessJanitor( display_manager, i18n_manager, this, processes ).start();
     }
     
     public int getPID()

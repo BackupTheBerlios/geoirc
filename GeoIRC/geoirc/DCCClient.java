@@ -34,6 +34,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         TriggerManager trigger_manager,
+        I18nManager i18n_manager,
         String host_ip,
         String port,
         int dcc_type,
@@ -43,7 +44,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         int filesize
     )
     {
-        super( parent, display_manager, settings_manager, trigger_manager, host_ip, port );
+        super( parent, display_manager, settings_manager, trigger_manager, i18n_manager, host_ip, port );
         this.dcc_type = dcc_type;
         this.remote_nick = remote_nick;
         this.user_nick = user_nick;
@@ -126,14 +127,16 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                 else
                 {
                     display_manager.printlnDebug(
-                        "Failed to create DCC stream reader."
+                        i18n_manager.getString( "dcc chat reader failure" )
                     );
                 }
             }
         }
         catch( UnknownHostException e )
         {
-            display_manager.printlnDebug( "Unknown host: " + hostname );
+            display_manager.printlnDebug(
+                i18n_manager.getString( "unknown host", new Object [] { hostname } )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         catch( IOException e )
@@ -192,7 +195,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                     Util.printException(
                         display_manager,
                         e,
-                        "NullPointerException in interpretLine.\nProblem line: " + line
+                        i18n_manager.getString( "interpretline npe", new Object [] { line } )
                     );
                 }
                 
@@ -205,17 +208,27 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                     Util.printException(
                         display_manager,
                         e,
-                        "I/O error while reading from ip " + DCCClient.this.toString()
+                        i18n_manager.getString( "io exception 2", new Object [] { DCCClient.this.toString() } )
                     );
                     
                     if( ! isConnected() && ( ! closed ) )
                     {
-                        display_manager.printlnDebug( "Connection to " + DCCClient.this.toString() + " lost." );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "connection lost",
+                                new Object [] { DCCClient.this.toString() }
+                            )
+                        );
                     }
                     
                     if( e.getMessage().equals( "Connection reset" ) )
                     {
-                        display_manager.printlnDebug( "Connection to " + DCCClient.this.toString() + " reset." );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "connection reset",
+                                new Object [] { DCCClient.this.toString() }
+                            )
+                        );
                         reset = true;
                     }
                 }
@@ -225,8 +238,21 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
             {
                 if( ! isConnected() )
                 {
-                    display_manager.printlnDebug( "No longer connected to " + DCCClient.this.toString() );
+                    display_manager.printlnDebug(
+                        i18n_manager.getString(
+                            "no longer connected",
+                            new Object [] { DCCClient.this.toString() }
+                        )
+                    );
                 }
+                
+                /*
+                if( ! closed )
+                {
+                    display_manager.printlnDebug( "Attempting to reconnect..." );
+                    connect();
+                }
+                 */
             }
         }
         
@@ -315,17 +341,30 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                         Util.printException(
                             display_manager,
                             e,
-                            "I/O error while reading from ip " + DCCClient.this.toString()
+                            i18n_manager.getString(
+                                "io exception 2",
+                                new Object [] { DCCClient.this.toString() }
+                            )
                         );
 
                         if( ! isConnected() && ( ! closed ) )
                         {
-                            display_manager.printlnDebug( "Connection to " + DCCClient.this.toString() + " lost." );
+                            display_manager.printlnDebug(
+                                i18n_manager.getString(
+                                    "connection lost",
+                                    new Object [] { DCCClient.this.toString() }
+                                )
+                            );
                         }
 
                         if( e.getMessage().equals( "Connection reset" ) )
                         {
-                            display_manager.printlnDebug( "Connection to " + DCCClient.this.toString() + " reset." );
+                            display_manager.printlnDebug(
+                                i18n_manager.getString(
+                                    "connection reset",
+                                    new Object [] { DCCClient.this.toString() }
+                                )
+                            );
                             reset = true;
                         }
                     }
@@ -333,10 +372,12 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
 
                 if( ( ! isConnected() ) || reset )
                 {
-                    if( ! isConnected() )
-                    {
-                        display_manager.printlnDebug( "No longer connected to " + DCCClient.this.toString() );
-                    }
+                    display_manager.printlnDebug(
+                        i18n_manager.getString(
+                            "no longer connected",
+                            new Object [] { DCCClient.this.toString() }
+                        )
+                    );
                 }
                 
                 file_out.flush();
@@ -345,14 +386,14 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
             catch( IOException e )
             {
                 Util.printException(
-                    display_manager, e,
-                    "Error during open of or write to " + file.getAbsolutePath()
+                    display_manager,
+                    e,
+                    i18n_manager.getString( "io exception 9", new Object [] { file.getAbsolutePath() } )
                 );
             }
         }
         
-        protected void interpretLine(int stage, String[] transformed_message_) {
-        }
+        protected void interpretLine( int stage, String[] transformed_message_ ) { }
         
     }
 }

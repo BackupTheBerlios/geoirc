@@ -31,11 +31,13 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     protected Color foreground_colour;
     protected Color background_colour;
     protected boolean paint_mirc_codes;
+    protected I18nManager i18n_manager;
     
     public GITextPane(
         MouseListener mouse_listener,
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        I18nManager i18n_manager,
         String title
     )
     {
@@ -43,6 +45,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             mouse_listener,
             display_manager,
             settings_manager,
+            i18n_manager,
             title,
             (String) null
         );
@@ -52,12 +55,14 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         MouseListener mouse_listener,
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        I18nManager i18n_manager,
         String title,
         String filter
     )
     {
         super( display_manager, settings_manager, title, null );
         
+        this.i18n_manager = i18n_manager;
         this.filter = filter;
         this.title = title;
         
@@ -351,7 +356,9 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         }
         catch( BadExpressionException e )
         {
-            display_manager.printlnDebug( "Filter evaluation error for filter '" + filter + "'" );
+            display_manager.printlnDebug(
+                i18n_manager.getString( "filter error", new Object [] { filter } )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         return result;
