@@ -278,24 +278,27 @@ public class DisplayManager
             giw = getSelectedFrame();
         }
 
-        pane = giw.getPane();
-        if( pane instanceof GITextPane )
+        if( giw != null )
         {
-            String filter = ((GITextPane) pane).getFilter();
-            if( filter != null )
+            pane = giw.getPane();
+            if( pane instanceof GITextPane )
             {
-                // Search for a channel in this filter.
-                int pound_index = filter.indexOf( "#" );
-                if( pound_index > -1 )
+                String filter = ((GITextPane) pane).getFilter();
+                if( filter != null )
                 {
-                    int space_index = filter.indexOf( " ", pound_index );
-                    if( space_index > -1 )
+                    // Search for a channel in this filter.
+                    int pound_index = filter.indexOf( "#" );
+                    if( pound_index > -1 )
                     {
-                        retval = filter.substring( pound_index, space_index );
-                    }
-                    else
-                    {
-                        retval = filter.substring( pound_index );
+                        int space_index = filter.indexOf( " ", pound_index );
+                        if( space_index > -1 )
+                        {
+                            retval = filter.substring( pound_index, space_index );
+                        }
+                        else
+                        {
+                            retval = filter.substring( pound_index );
+                        }
                     }
                 }
             }
@@ -421,6 +424,64 @@ public class DisplayManager
         }
         
         return success;
+    }
+    
+    public void undock( int pane_index )
+    {
+        if( ( pane_index < 0 ) || ( pane_index >= panes.size() ) )
+        {
+            return;
+        }
+        
+        GIPane pane = (GIPane) docked_panes.elementAt( pane_index );
+        if( ! ( pane.getParent() instanceof JSplitPane ) )
+        {
+            return;
+        }
+        
+        JSplitPane split_pane = (JSplitPane) pane.getParent();
+        Container split_pane_parent = split_pane.getParent();
+        Component other_component = null;
+        
+        if( split_pane.getTopComponent() == pane )
+        {
+            other_component = split_pane.getBottomComponent();
+        }
+        else
+        {
+            other_component = split_pane.getTopComponent();
+        }
+        
+        /* Replace the split pane which housed the pane we're undocking with
+         * the 'partner component' of the pane.
+         *
+         * e.g. if a JSplitPane, A, contained some Component B, and the
+         * pane we are undocking, C, then we want to replace A with B.
+         */
+        
+        if( split_pane_parent instanceof JSplitPane )
+        {
+            JSplitPane parental_split_pane = (JSplitPane) split_pane_parent;
+            if( parental_split_pane.getTopComponent() == split_pane )
+            {
+                parental_split_pane.setTopComponent( other_component );
+            }
+            else
+            {
+                parental_split_pane.setBottomComponent( other_component );
+            }
+        }
+        else
+        {
+            split_pane_parent.remove( split_pane );
+            split_pane_parent.add( other_component );
+        }
+        
+        GIWindow window = new GIWindow( this, settings_manager, pane.getTitle() );
+        undocked_panes.add( pane );
+        docked_panes.remove( pane );
+        window.addPane( pane );
+        addNewWindow( window );
     }
     
     /* ************************************************************

@@ -823,9 +823,8 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug(
-                        "/dockwindow [window id number] [t|r|b|l]"
-                    );
+                    display_manager.printlnDebug( "/listwindows" );
+                    display_manager.printlnDebug( "/dockwindow [window id number] [t|r|b|l]" );
                 }
                 break;
             case CMD_EXIT:
@@ -875,6 +874,7 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug( "First use /changeserver <server id>" );
+                        display_manager.printlnDebug( "To see a list of server id's, use /listservers" );
                     }
                 }
                 break;
@@ -1015,6 +1015,7 @@ public class GeoIRC
                     else
                     {
                         display_manager.printlnDebug( "First use /changeserver <server id>" );
+                        display_manager.printlnDebug( "To see a list of server id's, use /listservers" );
                     }
                 }
                 break;
@@ -1147,6 +1148,30 @@ public class GeoIRC
                 else
                 {
                     display_manager.printlnDebug( "/switchwindow <title regexp>" );
+                }
+                break;
+            case CMD_UNDOCK_WINDOW:
+            case CMD_FLOAT_WINDOW:
+                {
+                    boolean problem = true;
+                    
+                    if( args != null )
+                    {
+                        int index;
+                        try
+                        {
+                            index = Integer.parseInt( args[ 0 ] );
+                            display_manager.undock( index );
+                            pack();
+                            problem = false;
+                        } catch( NumberFormatException e ) { }
+                    }
+                    
+                    if( problem )
+                    {
+                        display_manager.printlnDebug( "/listdockedwindows" );
+                        display_manager.printlnDebug( "/undockwindow <docked window index>" );
+                    }
                 }
                 break;
             
