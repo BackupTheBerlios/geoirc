@@ -113,7 +113,8 @@ public interface GeoIRCConstants
         "minimizewindow",
         "restorewindow",
         "sizewindow",
-        "positionwindow"
+        "positionwindow",
+        "opensettings"
     };
     
     public static final String[] IRC_CMDS =
@@ -190,6 +191,7 @@ public interface GeoIRCConstants
     public static final int CMD_NICK = 6;
     public static final int CMD_NUDGE_DOWN = 38;
     public static final int CMD_NUDGE_UP = 37;
+    public static final int CMD_OPEN_SETTINGS = 85;
     public static final int CMD_PAGE_DOWN = 36;
     public static final int CMD_PAGE_UP = 35;
     public static final int CMD_PART = 14;

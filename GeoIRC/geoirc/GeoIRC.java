@@ -2251,6 +2251,9 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_OPEN_SETTINGS:
+                new geoirc.conf.SettingsDialog( settings_manager, display_manager ).setVisible( true );
+                break;
             case CMD_PAGE_DOWN:
                 {
                     GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
