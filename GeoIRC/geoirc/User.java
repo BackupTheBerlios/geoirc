@@ -7,7 +7,7 @@
 package geoirc;
 
 import java.util.Date;
-import java.util.Vector;
+import java.util.HashSet;
 
 /**
  *
@@ -19,7 +19,7 @@ public class User
     protected String nick;
     protected String username;
     protected String host;
-    protected String mode_flags;
+    protected HashSet mode_flags;
     protected Date time_of_last_activity;
     protected Object lock_owner;
     
@@ -31,7 +31,7 @@ public class User
         this.nick = nick_possibly_with_flags;
         username = null;
         host = null;
-        mode_flags = "";
+        mode_flags = new HashSet();
         lock_owner = null;
         noteActivity();
         
@@ -43,26 +43,17 @@ public class User
             switch( nick.charAt( 0 ) )
             {
                 case NAMLIST_OP_CHAR:
-                    mode_flags += MODE_OP;
+                    addModeFlag( MODE_OP );
                     nick = nick.substring( 1 );
                     mode_char_found = true;
                     break;
                 case NAMLIST_VOICE_CHAR:
-                    mode_flags += MODE_VOICE;
+                    addModeFlag( MODE_VOICE );
                     nick = nick.substring( 1 );
                     mode_char_found = true;
                     break;
             }
         } while( mode_char_found );
-    }
-    
-    public boolean isInitialized()
-    {
-        return(
-            ( username == null )
-            || ( host == null )
-            || ( mode_flags == null )
-        );
     }
     
     public String getNick()
@@ -137,5 +128,15 @@ public class User
         }
         
         return retval;
+    }
+    
+    public void addModeFlag( String mode_flag )
+    {
+        mode_flags.add( mode_flag );
+    }
+    
+    public void removeModeFlag( String mode_flag )
+    {
+        mode_flags.remove( mode_flag );
     }
 }
