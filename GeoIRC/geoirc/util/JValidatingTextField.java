@@ -6,6 +6,7 @@
 package geoirc.util;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -29,6 +30,9 @@ public class JValidatingTextField
 		BorderFactory.createLineBorder(Color.BLACK);
 	private static final Border errorBorder =
 		BorderFactory.createLineBorder(Color.RED);
+	public static final int PREFERED_WIDTH = 120;
+	public static final int PREFERED_HEIGHT = 18;
+	
 	private boolean textValid;
 	private Pattern pattern;
 
@@ -38,28 +42,26 @@ public class JValidatingTextField
 	public JValidatingTextField()
 	{
 		super();
+		this.setPreferredSize(new Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
 	}
 	
 	/**
-	 * Creates a new instance
+	 * Creates a new instance with an available value
 	 * @param regex regular expression to use for validating input
+	 * @param value value to be inserted in the text field
 	 */
-	public JValidatingTextField(String regex)
+	public JValidatingTextField(String regex, String value)
 	{
-		super();
+		this();
 		setPattern(regex);
+		if(value != null)
+			this.setText(value);
 	}
 
-	/**
-	 * Creates a new instance with an available value
-	 * @param value value to be inserted in the text field
-	 * @param regex regular expression to use for validating input
-	 */
-	public JValidatingTextField(String value, String regex)
+	public JValidatingTextField(String regex, String value, int width)
 	{
-		super();
-		setPattern(regex);
-		this.setText(value);
+		this(regex, value);
+		this.setPreferredSize(new Dimension(width, PREFERED_HEIGHT));
 	}
 
 	/* (non-Javadoc)
@@ -85,6 +87,8 @@ public class JValidatingTextField
 	 */
 	public void setPattern(String regex)
 	{
+		if(regex == null)
+			regex = new String(".+");
 		pattern = Pattern.compile(regex);
 		validateText();
 	}
@@ -137,5 +141,5 @@ public class JValidatingTextField
 	public void changedUpdate(DocumentEvent arg0)
 	{
 		validateText();		
-	}
+	}	
 }

@@ -25,7 +25,7 @@ public class GeoIRCDefaults
 {
 	private HashMap defaults = new HashMap();
 	private DisplayManager displayManager;
-	private XmlProcessable xmlPrcoessor;
+	private XmlProcessable xmlProcessor;
 
 	/**
 	 * Creates a new instance of GeoIRCDefaults
@@ -45,8 +45,8 @@ public class GeoIRCDefaults
 	public GeoIRCDefaults(DisplayManager newDisplayMgr, String filePath, boolean isResource)
 	{
 		this.displayManager = newDisplayMgr;
-		this.xmlPrcoessor = new BaseXmlHandler(newDisplayMgr, filePath, isResource);
-		this.xmlPrcoessor.loadSettingsFromXML();
+		this.xmlProcessor = new BaseXmlHandler(newDisplayMgr, filePath, isResource);
+		this.xmlProcessor.loadSettingsFromXML();
 		extractDefaults();
 	}
 
@@ -57,7 +57,7 @@ public class GeoIRCDefaults
 	private void extractDefaults()
 	{
 		//load default value rules
-		Element root = (Element)this.xmlPrcoessor.getBuffer();
+		Element root = (Element)this.xmlProcessor.getBuffer();
 		List childs = root.getChild("defaults").getChildren();
 		Iterator it = childs.iterator();
 
@@ -70,7 +70,7 @@ public class GeoIRCDefaults
 					defName,
 					rule.getChildText("pattern"),
 					rule.getChildText("javaType"),
-					rule.getChildText("value"));
+					rule.getChildText("default"));
 
 			if (defName != null)
 				defaults.put(defName, def);
