@@ -109,6 +109,17 @@ public class JValidatingTextField
 	{
 		return textValid;
 	}
+	
+	public boolean isEmpty()
+	{
+		String str = getText();
+		if(str == null)
+			return true;
+		else if(str.length() == 0)
+			return true;
+			
+		return false;
+	}
 
 	protected void setTextValid(boolean valid)
 	{
