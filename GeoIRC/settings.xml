@@ -34,14 +34,14 @@
         <_1 type="1" title="GeoIRC Desktop Pane" parent="11" split_rank="1" />
         <_2 type="3" title="%debug" parent="11" split_rank="0" filter="%debug" />
         <_3 type="4" title="Info" parent="10" split_rank="1" path="/" />
-        <_4 type="2" title="irc.freenode.net and %raw and not %printed" parent="-1" split_rank="-1" x="160" y="44" height="500" width="700" state="0" selected="true" />
+        <_4 type="2" title="irc.freenode.net and %raw and not %printed" parent="-1" split_rank="-1" x="160" y="44" height="500" width="700" state="0" selected="false" />
         <_5 type="3" title="irc.freenode.net and %raw and not %printed" parent="4" split_rank="-1" filter="irc.freenode.net and %raw and not %printed" />
         <_6 type="2" title="from=NickServ and %self or NickServ and from=%self" parent="-1" split_rank="-1" x="430" y="158" height="500" width="700" state="0" selected="false" />
         <_7 type="3" title="from=NickServ and %self or NickServ and from=%self" parent="6" split_rank="-1" filter="from=NickServ and %self or NickServ and from=%self" />
         <_8 type="2" title="#geoirc on irc.freenode.net" parent="-1" split_rank="-1" x="90" y="34" height="680" width="881" state="0" selected="false" />
         <_9 type="3" title="#geoirc on irc.freenode.net" parent="10" split_rank="0" filter="irc.freenode.net and #geoirc" />
         <_10 type="5" title="Split Pane" parent="8" split_rank="-1" orientation="1" divider_location="660" />
-        <_11 type="5" title="(4) GeoIRC" parent="0" split_rank="-1" orientation="0" divider_location="139" />
+        <_11 type="5" title="GeoIRC" parent="0" split_rank="-1" orientation="0" divider_location="139" />
       </panes>
     </desktop>
   </gui>
