@@ -367,9 +367,24 @@ public class GeoIRC
             recordConnections();
         }
         current_remote_machine = s;
-        //GITextWindow window = display_manager.addServerWindow( s );
         
         return s;
+    }
+    
+    protected void removeServer( Server s )
+    {
+        remote_machines.remove( s );
+        if( current_remote_machine == s )
+        {
+            if( remote_machines.size() > 0 )
+            {
+                current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
+            }
+            else
+            {
+                current_remote_machine = null;
+            }
+        }
     }
     
     protected void recordConnections()
@@ -798,7 +813,6 @@ public class GeoIRC
                         }
                     }
                     Server s = addServer( host, port );
-                    //display_manager.addServerWindow( s );
                     display_manager.addTextWindow( s.toString(), s.toString() );
                     s.connect( preferred_nick );
                 }

@@ -417,11 +417,6 @@ public class Server
                         qualities
                     );
                     sound_manager.check( text, qualities );
-                    
-                    if( nick.equals( current_nick ) )
-                    {
-                        
-                    }
                 }
 
             }
