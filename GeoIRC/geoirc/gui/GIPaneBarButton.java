@@ -13,7 +13,9 @@ import javax.swing.Icon;
  *
  * @author  Pistos
  */
-public class GIPaneBarButton extends javax.swing.JToggleButton implements java.awt.event.ActionListener
+public class GIPaneBarButton
+    extends javax.swing.JToggleButton
+    implements java.awt.event.ActionListener
 {
     protected GIPaneWrapper associated_pane;
     
@@ -42,5 +44,6 @@ public class GIPaneBarButton extends javax.swing.JToggleButton implements java.a
     {
         associated_pane.activate();
     }
+    
     
 }

@@ -6,8 +6,12 @@
 
 package geoirc.gui;
 
+import geoirc.Channel;
 import geoirc.CommandExecutor;
+import geoirc.GeoIRC;
+import geoirc.RemoteMachine;
 import geoirc.SettingsManager;
+import geoirc.User;
 
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -26,19 +30,19 @@ public class MenuManager
         geoirc.GeoIRCConstants,
         java.awt.event.ActionListener
 {
-    protected CommandExecutor executor;
+    protected GeoIRC geo_irc;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
     protected JPopupMenu popup_menu;
     
     /** Creates a new instance of MenuManager */
     public MenuManager(
-        CommandExecutor executor,
+        GeoIRC geo_irc,
         SettingsManager settings_manager,
         DisplayManager display_manager
     )
     {
-        this.executor = executor;
+        this.geo_irc = geo_irc;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         popup_menu = null;
@@ -57,6 +61,7 @@ public class MenuManager
     public void showPopup( MouseEvent event, Object param1, Object param2 )
     {
         popup_menu = new JPopupMenu();
+        String [] args;
         
         if( event.getSource() instanceof javax.swing.JTextPane )
         {
@@ -73,7 +78,7 @@ public class MenuManager
                 index_str = "";
             }
             
-            String [] args = new String [] {
+            args = new String [] {
                 index_str,
                 gipw.getTitle()
             };
@@ -94,7 +99,112 @@ public class MenuManager
         }
         else if( event.getSource() instanceof javax.swing.JTree )
         {
+            GIPaneWrapper gipw = (GIPaneWrapper) param1;
+            
+            GIInfoPane giip = (GIInfoPane) gipw.getPane();
+            Object user_object = giip.getUserObjectForLocation( event );
+            if( user_object != null )
+            {
+                if( user_object instanceof RemoteMachine )
+                {
+                    // %0  remote machine id number
+                    
+                    RemoteMachine rm = (RemoteMachine) user_object;
+                    args = new String [] {
+                        geo_irc.getRemoteMachineID( rm )
+                    };
+                    buildMenu(
+                        popup_menu,
+                        settings_manager.getChildren(
+                            "/menu/context/remote_machine/",
+                            DONT_CREATE_NODES
+                        ),
+                        args
+                    );
+                }
+                else if( user_object instanceof Channel )
+                {
+                    // %0  user nick
+                    
+                    Channel channel = (Channel) user_object;
+                    args = new String [] {
+                        channel.getName()
+                    };
+                    buildMenu(
+                        popup_menu,
+                        settings_manager.getChildren(
+                            "/menu/context/channel/",
+                            DONT_CREATE_NODES
+                        ),
+                        args
+                    );
+                }
+                else if( user_object instanceof User )
+                {
+                    // %0  user nick
+                    
+                    User user = (User) user_object;
+                    args = new String [] {
+                        user.getNick()
+                    };
+                    buildMenu(
+                        popup_menu,
+                        settings_manager.getChildren(
+                            "/menu/context/user/",
+                            DONT_CREATE_NODES
+                        ),
+                        args
+                    );
+                }
+            }
+            else
+            {
+                // %0  pane index
+            
+                int index = display_manager.trueIndexToUserIndex(
+                    display_manager.getPaneIndexByPaneWrapper( gipw )
+                );
+                String index_str = Integer.toString( index );
+                if( index == -1 )
+                {
+                    index_str = "";
+                }
+
+                args = new String [] {
+                    index_str
+                };
+
+                buildMenu(
+                    popup_menu,
+                    settings_manager.getChildren(
+                        "/menu/context/info_pane/",
+                        DONT_CREATE_NODES
+                    ),
+                    args
+                );
+            }
+            
+            if( popup_menu.getComponentCount() > 0 )
+            {
+                popup_menu.show( event.getComponent(), event.getX(), event.getY() );
+            }
+        }
+        else if( event.getSource() instanceof org.jscroll.JScrollDesktopPane )
+        {
+            // No arguments.
+            buildMenu(
+                popup_menu,
+                settings_manager.getChildren(
+                    "/menu/context/desktop/",
+                    DONT_CREATE_NODES
+                ),
+                new String [ 0 ]
+            );
+        }
+        else if( event.getSource() instanceof geoirc.gui.GIPaneBarButton )
+        {
             // %0  pane index
+            // %1  pane title
             
             GIPaneWrapper gipw = (GIPaneWrapper) param1;
             int index = display_manager.trueIndexToUserIndex(
@@ -106,14 +216,15 @@ public class MenuManager
                 index_str = "";
             }
             
-            String [] args = new String [] {
-                index_str
+            args = new String [] {
+                index_str,
+                gipw.getTitle()
             };
 
             buildMenu(
                 popup_menu,
                 settings_manager.getChildren(
-                    "/menu/context/info_pane/",
+                    "/menu/context/pane_bar_button/",
                     DONT_CREATE_NODES
                 ),
                 args
@@ -215,7 +326,7 @@ public class MenuManager
     
     public void actionPerformed( java.awt.event.ActionEvent e )
     {
-        executor.execute( e.getActionCommand() );
+        geo_irc.execute( e.getActionCommand() );
     }
     
 }

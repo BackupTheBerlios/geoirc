@@ -1343,21 +1343,21 @@ public class GeoIRC
     public void mouseReleased( MouseEvent e )
     {
         mouse_button_depressed = false;
-        
+
         Component component = e.getComponent();
         if( component instanceof JTextPane )
         {
             JTextPane text_pane = (JTextPane) component;
             text_pane.copy();
         }
-        
+
         //if( e.getButton() == MouseEvent.BUTTON3 )
         if( javax.swing.SwingUtilities.isMiddleMouseButton( e ) )
         {
             //input_field.paste();
             execute( CMDS[ CMD_EXTENDED_PASTE ] );
         }
-        
+
         input_field.grabFocus();
     }
     
@@ -2567,9 +2567,12 @@ public class GeoIRC
                 }
                 else
                 {
+                    display_manager.addConsoleWindow( "Console" );
+                    /*
                     display_manager.printlnDebug(
                         "/" + CMDS[ CMD_NEW_WINDOW ] + " <title>"
                     );
+                     */
                 }
                 break;
             case CMD_NEW_EXTERNAL_WINDOW:
@@ -2906,7 +2909,10 @@ public class GeoIRC
                     try
                     {
                         int index = Integer.parseInt( args[ 0 ] );
-                        display_manager.consolePrint( index, Util.stringArrayToString( args, 1 ) );
+                        display_manager.consolePrint(
+                            index,
+                            Util.convertEscapeCharacters( Util.stringArrayToString( args, 1 ) )
+                        );
                         problem = false;
                     }
                     catch( NumberFormatException e ) { }
@@ -2932,7 +2938,12 @@ public class GeoIRC
                         int index = Integer.parseInt( args[ 0 ] );
                         int x = Integer.parseInt( args[ 1 ] );
                         int y = Integer.parseInt( args[ 2 ] );
-                        display_manager.consolePrintAt( index, Util.stringArrayToString( args, 3 ), x, y );
+                        display_manager.consolePrintAt(
+                            index,
+                            Util.convertEscapeCharacters( Util.stringArrayToString( args, 3 ) ),
+                            x,
+                            y
+                        );
                         problem = false;
                     }
                     catch( NumberFormatException e ) { }

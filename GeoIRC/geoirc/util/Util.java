@@ -408,4 +408,141 @@ public class Util implements GeoIRCConstants
         
         return ks;
     }
+    
+    /**
+     * Converts backslashed escape sequences, as per bash's sequences.
+     *
+     * @return the converted string
+     */
+    public static String convertEscapeCharacters( String string )
+    {
+        String retval = null;
+        
+        if( string != null )
+        {
+            retval = "";
+            int len = string.length();
+            char c;
+            for( int i = 0; i < len; i++ )
+            {
+                c = string.charAt( i );
+                if( c == '\\' )
+                {
+                    if( i == len - 1 )
+                    {
+                        retval += c;
+                    }
+                    else
+                    {
+                        i++;
+                        switch( string.charAt( i ) )
+                        {
+                            case '\\':
+                                retval += "\\";
+                                break;
+                            case '"':
+                                retval += "\"";
+                                break;
+                            case '\'':
+                                retval += "'";
+                                break;
+                            case 'a':
+                                retval += "\007";
+                                break;
+                            case 'b':
+                            //case 'd':
+                                retval += "\008";
+                                break;
+                            case 'f':
+                                retval += "\014";
+                                break;
+                            case 'n':
+                                retval += "\012";
+                                break;
+                            case 'r':
+                                retval += "\015";
+                                break;
+                            case 't':
+                                retval += "\011";
+                                break;
+                            case 'v':
+                                retval += "\013";
+                                break;
+                            case 'x':
+                            {
+                                i++;
+                                if( i == len )
+                                {
+                                    break;
+                                }
+                                
+                                char d = string.charAt( i );
+                                int num = 0;
+                                String value_str = "";
+                                while(
+                                    Character.isDigit( d )
+                                    || ( Character.toLowerCase( d ) >= 'a' && Character.toLowerCase( d ) <= 'f' )
+                                )
+                                {
+                                    num++;
+                                    if( num > 2 ) { break; }
+                                    i++;
+                                    value_str += d;
+                                    if( i >= len )
+                                    {
+                                        break;
+                                    }
+                                    d = string.charAt( i );
+                                }
+                                i--;
+                                try
+                                {
+                                    int value = Integer.parseInt( value_str, 16 );
+                                    retval += (char) value;
+                                } catch( NumberFormatException e ) { }
+                                break;
+                            }
+                            case '0':
+                            case '1':
+                            case '2':
+                            case '3':
+                            case '4':
+                            case '5':
+                            case '6':
+                            case '7':
+                            case '8':
+                            case '9':
+                            {
+                                char d = string.charAt( i );
+                                int num = 0;
+                                String value_str = "";
+                                while( Character.isDigit( d ) )
+                                {
+                                    num++;
+                                    if( num > 3 ) { break; }
+                                    i++;
+                                    value_str += d;
+                                    if( i >= len ) { break; }
+                                    d = string.charAt( i );
+                                }
+                                i--;
+                                try
+                                {
+                                    int value = Integer.parseInt( value_str, 8 );
+                                    retval += (char) value;
+                                } catch( NumberFormatException e ) { }
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    retval += c;
+                }
+            }
+        }
+        
+        return retval;
+    }
 }

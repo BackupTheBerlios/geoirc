@@ -141,6 +141,10 @@ public class GIProcess implements GeoIRCConstants
     
     public void destroy()
     {
-        process.destroy();
+        if( process != null )
+        {
+            process.destroy();
+            process = null;
+        }
     }
 }

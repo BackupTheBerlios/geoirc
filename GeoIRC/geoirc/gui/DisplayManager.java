@@ -1649,7 +1649,7 @@ public class DisplayManager
             recordDesktopState();
         }
     }
-    
+
     /* ************************************************************ */
     
     protected void recordDesktopState()

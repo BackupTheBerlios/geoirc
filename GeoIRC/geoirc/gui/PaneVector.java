@@ -6,13 +6,16 @@
 
 package geoirc.gui;
 
+import java.awt.event.MouseEvent;
 import org.jscroll.components.ResizableToolBar;
 
 /**
  *
  * @author  Pistos
  */
-public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstants
+public class PaneVector
+    extends java.util.Vector
+    implements geoirc.GeoIRCConstants, java.awt.event.MouseListener
 {
     protected ResizableToolBar pane_bar;
     protected DisplayManager display_manager;
@@ -35,6 +38,7 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
             {
                 GIPaneBarButton gipbb = new GIPaneBarButton( gipw );
                 pane_bar.add( gipbb );
+                gipbb.addMouseListener( this );
                 break;
             }
         }
@@ -53,9 +57,25 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
             {
                 GIPaneBarButton gipbb = gipw.getAssociatedButton();
                 pane_bar.remove( gipbb );
+                gipbb.removeMouseListener( this );
                 break;
             }
         }
         return super.remove( gipw );
+    }
+    
+    public void mouseClicked( MouseEvent e ) { }
+    public void mouseEntered( MouseEvent e ) { }
+    public void mouseExited( MouseEvent e ) { }
+    public void mousePressed( MouseEvent e ) { }
+    public void mouseReleased( MouseEvent e )
+    {
+        if( e.isPopupTrigger() )
+        {
+            display_manager.getMenuManager().showPopup(
+                e,
+                ((GIPaneBarButton) e.getSource()).getAssociatedPane()
+            );
+        }
     }
 }
