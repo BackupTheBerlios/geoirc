@@ -6,6 +6,7 @@
 
 package geoirc.util;
 
+import geoirc.DisplayManager;
 import java.util.*;
 
 /**
@@ -87,5 +88,25 @@ public class Util
         }
         
         return retval;
+    }
+    
+    public static void printException(
+        DisplayManager display_manager,
+        Throwable t,
+        String user_message
+    )
+    {
+        if( user_message != null )
+        {
+            display_manager.printlnDebug( user_message );
+        }
+        
+        display_manager.printlnDebug( t.getMessage() );
+        
+        StackTraceElement [] stes = t.getStackTrace();
+        for( int i = 0, n = stes.length; i < n; i++ )
+        {
+            display_manager.printlnDebug( stes[ i ].toString() );
+        }
     }
 }

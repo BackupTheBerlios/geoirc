@@ -146,10 +146,10 @@
             <node name="0">
               <map>
                 <entry key="title" value="debug" />
-                <entry key="x" value="567" />
-                <entry key="y" value="504" />
-                <entry key="height" value="252" />
-                <entry key="width" value="567" />
+                <entry key="x" value="0" />
+                <entry key="y" value="464" />
+                <entry key="height" value="464" />
+                <entry key="width" value="633" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
@@ -158,22 +158,22 @@
             <node name="1">
               <map>
                 <entry key="title" value="Info" />
-                <entry key="x" value="567" />
-                <entry key="y" value="252" />
-                <entry key="height" value="252" />
-                <entry key="width" value="567" />
+                <entry key="x" value="0" />
+                <entry key="y" value="0" />
+                <entry key="height" value="464" />
+                <entry key="width" value="633" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="1" />
               </map>
             </node>
             <node name="2">
               <map>
                 <entry key="title" value="irc.freenode.net" />
-                <entry key="x" value="567" />
+                <entry key="x" value="633" />
                 <entry key="y" value="0" />
-                <entry key="height" value="252" />
-                <entry key="width" value="567" />
+                <entry key="height" value="309" />
+                <entry key="width" value="633" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="2" />
@@ -182,10 +182,10 @@
             <node name="3">
               <map>
                 <entry key="title" value="#geoirc" />
-                <entry key="x" value="0" />
-                <entry key="y" value="378" />
-                <entry key="height" value="378" />
-                <entry key="width" value="567" />
+                <entry key="x" value="633" />
+                <entry key="y" value="309" />
+                <entry key="height" value="309" />
+                <entry key="width" value="633" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="3" />
@@ -194,12 +194,12 @@
             <node name="4">
               <map>
                 <entry key="title" value="#geocards" />
-                <entry key="x" value="0" />
-                <entry key="y" value="0" />
-                <entry key="height" value="378" />
-                <entry key="width" value="567" />
+                <entry key="x" value="633" />
+                <entry key="y" value="618" />
+                <entry key="height" value="309" />
+                <entry key="width" value="633" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="4" />
               </map>
             </node>

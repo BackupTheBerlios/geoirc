@@ -115,30 +115,28 @@ public class InfoManager
         display_manager.deactivateInfoPanes( path );
     }
     
-    public void addMember( User u )
+    public void addMember( User u, Channel c )
     {
-        Channel channel = u.getChannel();
-        DefaultMutableTreeNode node
-            = (DefaultMutableTreeNode) tree_inverse.get( channel );
+        DefaultMutableTreeNode channel_node
+            = (DefaultMutableTreeNode) tree_inverse.get( c );
         DefaultMutableTreeNode user_node = new DefaultMutableTreeNode( u );
-        node.add( user_node );
-        tree.reload( node );
+        channel_node.add( user_node );
+        tree.reload( channel_node );
         tree_inverse.put( u, user_node );
-        String path = "/" + channel.getServer().toString()
-            + "/" + channel.getName()
+        String path = "/" + c.getServer().toString()
+            + "/" + c.getName()
             + "/" + u.getNick();
         DefaultTreeModel model = new DefaultTreeModel( user_node );
         tree_for_path.put( path, model );
         display_manager.activateInfoPanes( path, model );
     }
     
-    public void removeMember( User u )
+    public void removeMember( User u, Channel c )
     {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_inverse.get( u );
         ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
         tree.reload( node );
         tree_inverse.remove( u );
-        Channel c = u.getChannel();
         String path = "/" + c.toString()
             + "/" + c.getName()
             + "/" + u.getNick();

@@ -65,78 +65,52 @@ public class Channel
      * Clears any current membership list, and reinitializes it
      * using the provided content of a RPL_NAMREPLY message.
      */
-    public void setChannelMembership( String namlist )
+    public void setChannelMembership( Vector new_member_list )
     {
         info_manager.removeChannel( this );
-        members = new Vector();
+        if( new_member_list == null )
+        {
+            members = new Vector();
+        }
+        else
+        {
+            members = new_member_list;
+        }
         info_manager.addChannel( this );
         
         User user;
-        String [] nicks = Util.tokensToArray( namlist );
-        for( int i = 0; i < nicks.length; i++ )
+        for( int i = 0, n = members.size(); i < n; i++ )
         {
-            user = new User( this, nicks[ i ] );
-            members.add( user );
-            info_manager.addMember( user );
+            user = (User) members.elementAt( i );
+            info_manager.addMember( user, this );
         }
     }
     
-    public void addMember( String nick )
+    public void addMember( User user )
     {
-        User user = new User( this, nick );
         members.add( user );
-        info_manager.addMember( user );
+        info_manager.addMember( user, this );
     }
     
-    public void removeMember( String nick )
-    {
-        int n = members.size();
-        User u;
-        for( int i = 0; i < n; i++ )
-        {
-            u = (User) members.elementAt( i );
-            if( u.getNick().equals( nick ) )
-            {
-                members.remove( u );
-                info_manager.removeMember( u );
-                break;
-            }
-        }
-    }
-    
-    public boolean acknowledgeNickChange( String old_nick, String new_nick )
-    {
-        boolean changed = false;
-        int n = members.size();
-        User u;
-        for( int i = 0; i < n; i++ )
-        {
-            u = (User) members.elementAt( i );
-            if( u.getNick().equals( old_nick ) )
-            {
-                u.setNick( new_nick );
-                changed = true;
-                break;
-            }
-        }
-        
-        return changed;
-    }
-    
-    public User getUserByNick( String nick )
+    public User removeMember( String nick )
     {
         User retval = null;
+        User user;
         
-        User u;
-        int n = members.size();
-        for( int i = 0; i < n; i++ )
+        for( int i = 0, n = members.size(); i < n; i++ )
         {
-            u = (User) members.elementAt( i );
-            if( u.getNick().equals( nick ) )
+            user = (User) members.elementAt( i );
+            if( user.getNick().equals( nick ) )
             {
-                retval = u;
+                retval = user;
                 break;
             }
+        }
+        
+        if( retval != null )
+        {
+            members.remove( retval );
+            info_manager.removeMember( retval, this );
         }
         
         return retval;
@@ -147,7 +121,7 @@ public class Channel
      */
     public boolean nickIsPresent( String nick )
     {
-        return( getUserByNick( nick ) != null );
+        return( server.getUserByNick( nick ) != null );
     }
     
     public String completeNick( String incomplete_nick, boolean decorated )

@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.*;
 
@@ -47,6 +48,7 @@ public class Server
         listening_to_channels = false;
         server_reader = null;
         channels = new Vector();
+        users = new HashSet();
         current_nick = "";
         this.info_manager = info_manager;
     }
@@ -203,7 +205,7 @@ public class Server
         return current_nick;
     }
 
-    public Channel getChannelByName( String name )
+    protected Channel getChannelByName( String name )
     {
         int n = channels.size();
         Channel retval = null;
@@ -221,6 +223,90 @@ public class Server
         return retval;
     }
 
+    protected boolean acknowledgeNickChange( String old_nick, String new_nick )
+    {
+        boolean changed = false;
+        Iterator it = users.iterator();
+        User u;
+        while( it.hasNext() )
+        {
+            u = (User) it.next();
+            if( u.getNick().equals( old_nick ) )
+            {
+                u.setNick( new_nick );
+                changed = true;
+                break;
+            }
+        }
+        
+        return changed;
+    }
+
+    /* Searches the memberships of all channels, returning the first
+     * User object which matches.
+     */
+    protected User getUserByNick( String nick )
+    {
+        Iterator it = users.iterator();
+        User retval = null;
+        User user;
+        while( it.hasNext() )
+        {
+            user = (User) it.next();
+            if( user.getNick().equals( nick ) )
+            {
+                retval = user;
+                break;
+            }
+        }
+
+        return retval;
+    }
+
+    protected User addMember( String nick )
+    {
+        User u = new User( nick );
+        if( users.contains( u ) )
+        {
+            Iterator it = users.iterator();
+            while( it.hasNext() )
+            {
+                u = (User) it.next();
+                if( u.getNick().equals( nick ) )
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            users.add( u );
+        }
+        
+        return u;
+    }
+
+    /*
+    protected User getUser( User user )
+    {
+        User retval = null;
+        User user;
+        Iterator it = users.iterator();
+        while( it.hasNext() )
+        {
+            user = (User) it.next();
+            if( user.equals( user ) )
+            {
+                retval = user;
+                break;
+            }
+        }
+
+        return retval;
+    }
+     */
+
+    
     /* ******************************************************************** */
     
     protected class ServerReader
@@ -252,18 +338,27 @@ public class Server
                 try
                 {
                     interpretLine( line );
-                    line = in.readLine();
                 }
                 catch( NullPointerException e )
                 {
-                    display_manager.printlnDebug(
-                        "NullPointerException in interpretLine."
+                    Util.printException(
+                        display_manager,
+                        e,
+                        "NullPointerException in interpretLine.\nProblem line: " + line
                     );
-                    display_manager.printlnDebug( "Problem line: " + line );
+                }
+                
+                try
+                {
+                    line = in.readLine();
                 }
                 catch( IOException e )
                 {
-                    display_manager.printlnDebug( e.getMessage() );
+                    Util.printException(
+                        display_manager,
+                        e,
+                        "I/O error while reading from server " + toString()
+                    );
                 }
             }
         }
@@ -273,27 +368,6 @@ public class Server
             return nick_and_username_and_host.substring( 1, nick_and_username_and_host.indexOf( "!" ) );
         }
         
-        /* Searches the memberships of all channels, returning the first
-         * User object which matches.
-         */
-        protected User getUserByNick( String nick )
-        {
-            int n = channels.size();
-            User retval = null;
-            Channel c;
-            for( int i = 0; i < n; i++ )
-            {
-                c = (Channel) channels.elementAt( i );
-                retval = c.getUserByNick( nick );
-                if( retval != null )
-                {
-                    break;
-                }
-            }
-            
-            return retval;
-        }
-
         public Vector handleNamesList( String namlist )
         {
             Vector list_members = new Vector();
@@ -302,11 +376,16 @@ public class Server
             String [] nicks = Util.tokensToArray( namlist );
             for( int i = 0; i < nicks.length; i++ )
             {
-                user = new User( nicks[ i ] );
+                user = getUserByNick( nicks[ i ] );
+                if( user == null )
+                {
+                    user = new User( nicks[ i ] );
+                    users.add( user );
+                }
                 list_members.add( user );
             }
 
-            users.addAll( list_members );
+            //users.addAll( list_members );
             
             return list_members;
         }
@@ -343,7 +422,8 @@ public class Server
                         Channel chan_obj = getChannelByName( channel );
                         if( chan_obj != null )
                         {
-                            chan_obj.addMember( nick );
+                            User user = addMember( nick );
+                            chan_obj.addMember( user );
                         }
                     }
                 }
@@ -363,6 +443,8 @@ public class Server
                         {
                             info_manager.acknowledgeNickChange( (Channel) channels.elementAt( i ) );
                         }
+                        
+                        qualities += " $self";
                     }
                     else
                     {
@@ -379,18 +461,18 @@ public class Server
                                 info_manager.acknowledgeNickChange( c );
                             }
                         }
-                        
-                        String text = old_nick + " is now known as " + new_nick + ".";
-                        qualities += " from=" + new_nick
-                            + " " + FILTER_SPECIAL_CHAR + "nick";
-                        display_manager.println(
-                            GeoIRC.getATimeStamp(
-                                settings_manager.getString( "/gui/format/timestamp", "" )
-                            ) + text,
-                            qualities
-                        );
-                        sound_manager.check( text, qualities );
                     }
+                    
+                    String text = old_nick + " is now known as " + new_nick + ".";
+                    qualities += " from=" + new_nick
+                        + " " + FILTER_SPECIAL_CHAR + "nick";
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NOTICE ] ) )
                 {
@@ -623,14 +705,19 @@ public class Server
                     {
                         Channel channel = null;
                         int n = channels.size();
+                        User user = null;
                         for( int i = 0; i < n; i++ )
                         {
                             channel = (Channel) channels.elementAt( i );
                             if( channel.nickIsPresent( nick ) )
                             {
                                 qualities += " " + channel.getName();
-                                channel.removeMember( nick );
+                                user = channel.removeMember( nick );
                             }
+                        }
+                        if( user != null )
+                        {
+                            users.remove( user );
                         }
                     }
                     
@@ -658,7 +745,8 @@ public class Server
                     {
                         String namlist = Util.stringArrayToString( tokens, 5 );
                         namlist = namlist.substring( 1 );  // remove leading colon
-                        channel.setChannelMembership( namlist );
+                        Vector v = handleNamesList( namlist );
+                        channel.setChannelMembership( v );
                     }
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
