@@ -156,11 +156,9 @@ public class TclScriptInterface
             {
                 try
                 {
-                    display_manager.printlnDebug( "old line: " + line );
                     line = line.replaceAll( "\\\\", "\\\\\\\\" );
                     line = line.replaceAll( "\\{", "\\\\{" );
                     line = line.replaceAll( "\\}", "\\\\}" );
-                    display_manager.printlnDebug( "new line: " + line );
                     tcl_interpreter.eval( tcl_proc + " {" + line + "}" );
                     transformed_line = tcl_interpreter.getResult();
                     if( transformed_line != null )

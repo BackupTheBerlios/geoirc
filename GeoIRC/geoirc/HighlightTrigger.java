@@ -66,33 +66,35 @@ public class HighlightTrigger implements GeoIRCConstants
             Matcher matcher = regexp.matcher( line );
             String group = null;
         
-            if(
-                BoolExpEvaluator.evaluate( filter, qualities )
-                && matcher.find()
-            )
+            if( BoolExpEvaluator.evaluate( filter, qualities ) )
             {
-                if( matcher.groupCount() > 0 )
+                while( matcher.find() )
                 {
-                    // There are one or more groups marked off by parentheses,
-                    // so we want to apply the highlighting only to those groups.
-                    
-                    do
+                    int group_count = matcher.groupCount();
+                    if( group_count == 0 )
                     {
-                        group = matcher.group( 1 );
-                        if( ( group != null ) && ( ! group.equals( "" ) ) )
+                        // No parentheses, so highlight the whole line.
+
+                        text_pane.applyStyle( offset, length, format );
+                        break;
+                    }
+                    else
+                    {
+                        // There are one or more groups marked off by parentheses,
+                        // so we want to apply the highlighting only to those groups.
+
+                        for( int group_number = 1; group_number <= group_count; group_number++ )
                         {
-                            int start = offset + matcher.start( 1 );
-                            int end = offset + matcher.end( 1 );
-                            
-                            text_pane.applyStyle( start, end - start, format );
+                            group = matcher.group( group_number );
+                            if( ( group != null ) && ( ! group.equals( "" ) ) )
+                            {
+                                int start = offset + matcher.start( group_number );
+                                int end = offset + matcher.end( group_number );
+
+                                text_pane.applyStyle( start, end - start, format );
+                            }
                         }
-                    } while( matcher.find() );
-                }
-                else
-                {
-                    // No parentheses, so highlight the whole line.
-                    
-                    text_pane.applyStyle( offset, length, format );
+                    }
                 }
             }
         }

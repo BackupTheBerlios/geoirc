@@ -18,3 +18,6 @@ Pistos 2003-09-19
 
 Fixed the bug where MDI child window buttons were no longer operating.
 Pistos 2003-09-19
+
+Fixed highlighting so that multiple parenthesis pairs take effect.
+Pistos 2003-09-19
