@@ -158,7 +158,7 @@ public class PythonScriptInterface
                 }
                 if( transformed_line != null )
                 {
-                    line = ( transformed_line.__findattr__( new PyString( "text" ) ) ).toString();
+                    line = transformed_line.toString();
                 }
             }
         }
