@@ -64,12 +64,13 @@ public class DisplayManager
     
     protected JScrollDesktopPane desktop_pane;
     
-    protected Vector windows;
     protected JInternalFrame last_activated_frame;
     protected int last_added_frame_x;
     protected int last_added_frame_y;
     protected GITextPane last_activated_text_pane;
     
+    protected Vector windows;
+    protected Vector frames;
     protected Vector inactive_info_panes;
     protected Vector active_info_panes;
     protected Vector docked_panes;
@@ -102,11 +103,13 @@ public class DisplayManager
         log_manager = null;
 
         windows = new Vector();
+        frames = new Vector();
         inactive_info_panes = new Vector();
         active_info_panes = new Vector();
         docked_panes = new Vector();
         undocked_panes = new Vector();
         panes = new Vector();
+        panes.add( geoirc.getContentPane() );
         
         desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
 		JMenu settings_menu = JMenuHelper.addMenuBarItem(menu_bar, "_Settings");
@@ -1006,8 +1009,9 @@ public class DisplayManager
     public void internalFrameOpened(InternalFrameEvent e)
     {
         JInternalFrame jif = (JInternalFrame) e.getSource();
-        //jif.addComponentListener( this );
         windows.add( jif );
+        frames.add( jif );
+        panes.add( jif.getContentPane() );
         if( listening )
         {
             recordDesktopState();

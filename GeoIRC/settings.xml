@@ -237,7 +237,7 @@
             <node name="0">
               <map>
                 <entry key="filter" value="not from=%self" />
-                <entry key="regexp" value=".*[Pp]istos.*" />
+                <entry key="regexp" value=".*GeoIRC_User.*" />
                 <entry key="format" value="bg0000ff" />
               </map>
             </node>
@@ -291,7 +291,6 @@
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
           <entry key="Ctrl|4" value="switchwindow .*statfreak.*" />
           <entry key="Ctrl|5" value="switchwindow .*christian.*" />
-          <entry key="Ctrl|9" value="switchwindow Pistos" />
           <entry key="Ctrl|0" value="switchwindow .*%raw.*" />
           <entry key="Ctrl|B" value="charbold" />
           <entry key="Ctrl|N" value="charitalic" />
@@ -331,7 +330,7 @@
         <map>
           <entry key="nick completion suffix" value=": " />
           <entry key="nick completion prefix" value="" />
-          <entry key="quit message" value="http://geoirc.berlios.de" />
+          <entry key="quit message" value="http://purepistos.net/geoirc/" />
           <entry key="global pre-filter" value="" />
           <entry key="server timeout" value="60000" />
         </map>
@@ -356,7 +355,7 @@
         <node name="ctcp">
           <map>
             <entry key="version" value="" />
-            <entry key="userinfo" value="http://geoirc.berlios.de" />
+            <entry key="userinfo" value="http://purepistos.net/geoirc/" />
           </map>
         </node>
         <node name="ident">

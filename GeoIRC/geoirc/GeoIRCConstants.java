@@ -19,7 +19,7 @@ public interface GeoIRCConstants
     static final String GEOIRC_VERSION = "0.3.5a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
-    static final String GEOIRC_HOMEPAGE = "http://geoirc.berlios.de";
+    static final String GEOIRC_HOMEPAGE = "http://purepistos.net/geoirc";
     static final String GEOIRC_DEVPAGE = "http://developer.berlios.de/projects/geoirc";
     static final String DEFAULT_NEW_CONTENT_TITLE_PREFIX = "*";
     
