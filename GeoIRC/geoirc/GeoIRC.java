@@ -769,6 +769,7 @@ public class GeoIRC
         }
         
         String command = alias_manager.expand( command_ );
+        command = variable_manager.replaceAll( command );
         
         int result = CommandExecutor.EXEC_GENERAL_FAILURE;
         int space_index = command.indexOf( " " );
@@ -1387,6 +1388,20 @@ public class GeoIRC
                     display_manager.println( arg_string, "debug" );
                 }
                 break;
+            case CMD_PRINTLN:
+                if( arg_string != null )
+                {
+                    int index = arg_string.indexOf( PRINTLN_SEPARATOR_CHAR );
+                    String text = arg_string;
+                    String qualities = "debug";
+                    if( ( index > -1 ) && ( index < arg_string.length() - 1 ) )
+                    {
+                        text = arg_string.substring( index + 1 );
+                        qualities = arg_string.substring( 0, index );
+                    }
+                    display_manager.println( text, qualities );
+                }
+                break;
             case CMD_PRIVMSG:
             case CMD_MSG:
                 if( ( args != null ) || ( args.length < 2 ) )
@@ -1410,6 +1425,8 @@ public class GeoIRC
                 }
                 break;
             case CMD_SEND_RAW:
+            case CMD_QUOTE:
+            case CMD_RAW:
                 if( ( args != null ) && ( ! args.equals( "" ) ) )
                 {
                     if( current_rm instanceof Server )

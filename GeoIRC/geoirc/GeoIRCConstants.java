@@ -70,7 +70,10 @@ public interface GeoIRCConstants
         "listmembers",
         "showqualities",
         "exec2",
-        "play"
+        "play",
+        "quote",
+        "raw",
+        "println"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -109,7 +112,10 @@ public interface GeoIRCConstants
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_PRINT = 25;
+    public static final int CMD_PRINTLN = 47;
     public static final int CMD_PRIVMSG = 19;
+    public static final int CMD_QUOTE = 45;
+    public static final int CMD_RAW = 46;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
     public static final int CMD_SET = 16;
@@ -217,6 +223,7 @@ public interface GeoIRCConstants
     static final String VARIABLE_CHAR = "%";
     
     static final char FILTER_SPECIAL_CHAR = '%';
+    static final String PRINTLN_SEPARATOR_CHAR = ";";
     
     static final char CTCP_MARKER = (char) 1;
     

@@ -24,3 +24,13 @@ Pistos 2003-08-06
 Removed SoundTriggers and generalized them to Triggers, which can execute any
 command.  Added a play command to play sound files.
 Pistos 2003-08-06
+
+Added quote and raw commands, to conform more to standards.
+Pistos 2003-08-06
+
+Added a println command which lets you specify message qualities in addition to
+the text to print.
+Pistos 2003-08-06
+
+Generalized the %lasturl variable into user-definable capture variables.
+Pistos 2003-08-06

@@ -6,7 +6,7 @@
 
 package geoirc;
 
-import geoirc.util.Util;
+import geoirc.util.*;
 import java.awt.Component;
 import java.io.*;
 import java.net.Socket;
@@ -445,31 +445,55 @@ public class Server
             return list_members;
         }
         
-        protected String extractLastURL( String text )
+        protected void extractVariables( String text, String qualities )
         {
-            String url = null;
+            String variable;
+            String filter;
+            String regexp;
+            int i = 0;
+            String path;
             
-            String url_regexp = settings_manager.getString(
-                "/misc/url regexp",
-                "\\b(http://.+)\\b"
-            );
-            
-            Matcher matcher = Pattern.compile( url_regexp ).matcher( text );
-            
-            if( matcher.groupCount() > 0 )
+            while( GOD_IS_GOOD )
             {
-                while( matcher.find() )
-                {
-                    url = matcher.group();
+                path = "/variables/captured/" + Integer.toString( i );
 
-                    variable_manager.setString(
-                        VARS[ VAR_LAST_URL ],
-                        url
-                    );
+                variable = settings_manager.getString( path + "/name", "" );
+                if( variable.equals( "" ) )
+                {
+                    // No more variables stored in the settings.
+                    break;
                 }
+                
+                filter = settings_manager.getString( path + "/filter", "" );
+                
+                boolean passed = false;
+                try
+                {
+                    passed = BoolExpEvaluator.evaluate( filter, qualities );
+                }
+                catch( BadExpressionException e )
+                {
+                    display_manager.printlnDebug( "Filter evaluation error for filter '" + filter + "'" );
+                    display_manager.printlnDebug( e.getMessage() );
+                }
+                
+                if( passed )
+                {
+                    regexp = settings_manager.getString( path + "/regexp", ".*" );
+
+                    Matcher matcher = Pattern.compile( regexp ).matcher( text );
+
+                    if( matcher.groupCount() > 0 )
+                    {
+                        while( matcher.find() )
+                        {
+                            variable_manager.setString( variable, matcher.group() );
+                        }
+                    }
+                }
+                
+                i++;
             }
-            
-            return url;
         }
         
         protected void interpretLine( String line )
@@ -478,11 +502,6 @@ public class Server
             if( tokens != null )
             {
                 String qualities = Server.this.toString();
-                
-                /*
-                :Viper874!rnxyl@trvl-216-12-83-225.access.ntelos.net JOIN :#GeoShell
-                :ChanServ!ChanServ@services. MODE #geoshell +v Viper874 
-                 */
                 
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
@@ -600,8 +619,6 @@ public class Server
                         }
                     }
                     
-                    extractLastURL( text );
-                    
                     qualities += " " + FILTER_SPECIAL_CHAR + "notice";
 
                     if( 
@@ -657,6 +674,7 @@ public class Server
                     qualities += " " + tokens[ 2 ]
                         + " from=" + nick;
 
+                    extractVariables( text, qualities );
                     display_manager.println(
                         timestamp + text,
                         qualities
@@ -671,7 +689,6 @@ public class Server
                     if( message != null )
                     {
                         message = message.substring( 1 );  // remove leading colon
-                        extractLastURL( message );
                     }
                     User user = getUserByNick( nick );
                     if( user != null )
@@ -683,6 +700,12 @@ public class Server
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "part";
+                    
+                    if( message != null )
+                    {
+                        extractVariables( message, qualities );
+                    }
+                    
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
@@ -733,8 +756,6 @@ public class Server
                         );
                     }
 
-                    extractLastURL( text );
-                    
                     if( text.length() > 0 )
                     {
 
@@ -850,6 +871,8 @@ public class Server
                     );
                     qualities += " " + tokens[ 2 ]
                         + " from=" + nick;
+                    
+                    extractVariables( text, qualities );
 
                     display_manager.println(
                         timestamp + text,
@@ -862,8 +885,6 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
 
-                    extractLastURL( message );
-                    
                     String text = nick + " has quit (" + message + ").";
                     qualities += " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "quit";
@@ -895,6 +916,7 @@ public class Server
                         }
                     }
                     
+                    extractVariables( message, qualities );
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
@@ -928,11 +950,11 @@ public class Server
                     String channel = tokens[ 3 ];
                     String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
                     
-                    extractLastURL( topic );
-                    
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
                         + " " + channel;
                     String text = "The topic for " + channel + " is: " + topic;
+                    
+                    extractVariables( topic, qualities );
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )

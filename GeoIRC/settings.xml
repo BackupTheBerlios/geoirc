@@ -72,9 +72,6 @@
             </node>
           </node>
         </node>
-        <node name="1">
-          <map />
-        </node>
       </node>
       <node name="dcc">
         <map />
@@ -104,14 +101,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="2" />
+                <entry key="pane" value="3" />
                 <entry key="location" value="0" />
                 <entry key="divider location" value="149" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="4" />
                 <entry key="location" value="1" />
                 <entry key="divider location" value="961" />
               </map>
@@ -136,11 +133,18 @@
             <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="irc.arcti.ca" />
+                <entry key="filter" value="irc.arcti.ca" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="debug" />
                 <entry key="filter" value="debug" />
               </map>
             </node>
-            <node name="3">
+            <node name="4">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
@@ -167,11 +171,23 @@
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="772" />
+                <entry key="height" value="520" />
                 <entry key="width" value="946" />
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="title" value="irc.arcti.ca" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="2" />
               </map>
             </node>
           </node>
@@ -263,7 +279,6 @@
         <map>
           <entry key="nick completion suffix" value=": " />
           <entry key="nick completion prefix" value="" />
-          <entry key="url regexp" value="(http://\S+)" />
         </map>
       </node>
       <node name="personal">
@@ -314,6 +329,38 @@
             <entry key="regexp" value=".*" />
             <entry key="command" value="play ./page.wav" />
           </map>
+        </node>
+        <node name="4">
+          <map />
+        </node>
+      </node>
+      <node name="variables">
+        <map />
+        <node name="captured">
+          <map />
+          <node name="0">
+            <map>
+              <entry key="filter" value="" />
+              <entry key="regexp" value="(http://\S+)" />
+              <entry key="name" value="lasturl" />
+            </map>
+          </node>
+          <node name="1">
+            <map>
+              <entry key="filter" value="" />
+              <entry key="regexp" value="^(.*)$" />
+              <entry key="name" value="lastline" />
+            </map>
+          </node>
+          <node name="2">
+            <map />
+          </node>
+        </node>
+        <node name="constants">
+          <map />
+          <node name="0">
+            <map />
+          </node>
         </node>
       </node>
     </node>

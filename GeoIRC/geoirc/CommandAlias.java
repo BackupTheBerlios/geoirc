@@ -68,8 +68,8 @@ public class CommandAlias implements GeoIRCConstants
             );
             
             // Variable substitution
-
-            retval = variable_manager.replaceAll( retval );
+            //retval = variable_manager.replaceAll( retval );
+            // (Already handled now in the GeoIRC class)
         }
         
         return retval;
