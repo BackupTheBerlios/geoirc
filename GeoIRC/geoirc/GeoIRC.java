@@ -853,7 +853,6 @@ public class GeoIRC
                         if( s != null )
                         {
                             execute( CMDS[ CMD_SEND_RAW ] + " " + command );
-                            s.removeChannel( args[ 0 ] );
                             result = CommandExecutor.EXEC_SUCCESS;
                         }
                     }

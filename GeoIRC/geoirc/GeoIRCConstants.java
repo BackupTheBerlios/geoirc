@@ -14,6 +14,8 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
+    static final String GEOIRC_VERSION = "0.1.4a";
+    
     static final boolean GOD_IS_GOOD = true;
     
     static final int DEFAULT_IDENT_PORT = 113;
@@ -87,6 +89,13 @@ public interface GeoIRCConstants
     static final int IRCMSG_PING = 4;
     static final int IRCMSG_NICK = 5;
     
+    static final String [] CTCP_CMDS =
+    {
+        "VERSION"
+    };
+    static final int UNKNOWN_CTCP_CMD = -1;
+    static final int CTCP_CMD_VERSION = 0;
+    
     static final boolean NEXT_WINDOW = false;
     static final boolean PREVIOUS_WINDOW = true;
     
@@ -130,4 +139,8 @@ public interface GeoIRCConstants
     static final String ALIAS_ARG_CHAR = "$";
     static final String ALIAS_ARG_REST_CHAR = "&";
     static final int MAX_ALIAS_ARGS = 20;
+    
+    static final char FILTER_SPECIAL_CHAR = '$';
+    
+    static final char CTCP_MARKER = (char) 1;
 }

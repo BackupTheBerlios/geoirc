@@ -232,15 +232,17 @@ public class Server
             String [] tokens = Util.tokensToArray( line );
             if( tokens != null )
             {
+                String qualities = "";
+                
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
                     String text = nick + " joined " + channel + ".";
-                    String qualities = Server.this.toString()
+                    qualities += " " + Server.this.toString()
                         + " " + channel
                         + " from=" + nick
-                        + " join";
+                        + " " + FILTER_SPECIAL_CHAR + "join";
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
@@ -263,9 +265,9 @@ public class Server
                         // Someone else's nick changed.
                         
                         String text = old_nick + " is now known as " + new_nick + ".";
-                        String qualities = Server.this.toString()
+                        qualities += " " + Server.this.toString()
                             + " from=" + new_nick
-                            + " nick";
+                            + " " + FILTER_SPECIAL_CHAR + "nick";
                         display_manager.println(
                             GeoIRC.getATimeStamp(
                                 settings_manager.getString( "/gui/format/timestamp", "" )
@@ -281,10 +283,10 @@ public class Server
                     String channel = tokens[ 2 ];
                     String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
                     String text = nick + " left " + channel + " (" + message + ").";
-                    String qualities = Server.this.toString()
+                    qualities += " " + Server.this.toString()
                         + " " + channel
                         + " from=" + nick
-                        + " part";
+                        + " " + FILTER_SPECIAL_CHAR + "part";
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
@@ -292,6 +294,11 @@ public class Server
                         qualities
                     );
                     sound_manager.check( text, qualities );
+                    
+                    if( nick.equals( current_nick ) )
+                    {
+                        removeChannel( channel );
+                    }
                 }
                 else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
                 {
@@ -310,6 +317,72 @@ public class Server
                     )
                     {
                         text = "* " + nick + text.substring( 7, text.length() - 1 );
+                        qualities += " " + FILTER_SPECIAL_CHAR + "action";
+                    }
+                    else if(
+                        ( text.charAt( 0 ) == CTCP_MARKER )
+                    )
+                    {
+                        // CTCP message.
+                        
+                        qualities += " " + FILTER_SPECIAL_CHAR + "ctcp";
+                        
+                        String ctcp_message = text.substring(
+                            1,
+                            text.lastIndexOf( CTCP_MARKER )
+                        );
+                        
+                        int space_index = ctcp_message.indexOf( " " );
+                        String command_name;
+                        String arg_string;
+                        if( space_index > -1 )
+                        {
+                            command_name = ctcp_message.substring( 0, space_index );
+                            arg_string = ctcp_message.substring( space_index + 1 );
+                        }
+                        else
+                        {
+                            command_name = ctcp_message;
+                            arg_string = null;
+                        }
+                        String [] args = Util.tokensToArray( arg_string );
+
+                        int command_id = UNKNOWN_CTCP_CMD;
+                        for( int i = 0; i < CTCP_CMDS.length; i++ )
+                        {
+                            if( command_name.equals( CTCP_CMDS[ i ] ) )
+                            {
+                                command_id = i;
+                                break;
+                            }
+                        }
+
+                        text = "Received CTCP " + CTCP_CMDS[ command_id ]
+                            + " from " + nick;
+                        
+                        switch( command_id )
+                        {
+                            case CTCP_CMD_VERSION:
+                                send(
+                                    IRCMSGS[ IRCMSG_PRIVMSG ] + " "
+                                    + nick + " :"
+                                    + CTCP_MARKER 
+                                    + CTCP_CMDS[ CTCP_CMD_VERSION ]
+                                    + " GeoIRC/" + GEOIRC_VERSION + " "
+                                    + settings_manager.getString(
+                                        "/personal/ctcp/os", "unknown"
+                                    ) + " "
+                                    + settings_manager.getString( 
+                                        "/personal/ctcp/contact", "unknown"
+                                    )
+                                    + CTCP_MARKER
+                                );
+                                break;
+                            default:
+                                text = "Unknown CTCP command from " + nick + ": "
+                                    + ctcp_message;
+                                break;
+                        }
                     }
                     else
                     {
@@ -319,7 +392,7 @@ public class Server
                     String timestamp = GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     );
-                    String qualities = Server.this.toString()
+                    qualities += " " + Server.this.toString()
                         + " " + tokens[ 2 ]
                         + " from=" + nick;
 
@@ -334,9 +407,9 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
                     String text = nick + " has quit (" + message + ").";
-                    String qualities = Server.this.toString()
+                    qualities += " " + Server.this.toString()
                         + " from=" + nick
-                        + " quit";
+                        + " " + FILTER_SPECIAL_CHAR + "quit";
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
@@ -344,6 +417,11 @@ public class Server
                         qualities
                     );
                     sound_manager.check( text, qualities );
+                    
+                    if( nick.equals( current_nick ) )
+                    {
+                        
+                    }
                 }
 
             }

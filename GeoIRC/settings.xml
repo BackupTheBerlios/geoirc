@@ -58,9 +58,6 @@
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
-            <node name="1">
-              <map />
-            </node>
           </node>
         </node>
         <node name="1">
@@ -93,7 +90,7 @@
               <entry key="height" value="252" />
               <entry key="width" value="1134" />
               <entry key="state" value="0" />
-              <entry key="selected" value="true" />
+              <entry key="selected" value="false" />
               <entry key="filter" value="debug" />
             </map>
           </node>
@@ -121,6 +118,19 @@
               <entry key="state" value="0" />
               <entry key="selected" value="false" />
               <entry key="filter" value="#geoirc" />
+            </map>
+          </node>
+          <node name="3">
+            <map>
+              <entry key="type" value="class geoirc.GITextWindow" />
+              <entry key="title" value="#geocards on irc.freenode.net" />
+              <entry key="x" value="233" />
+              <entry key="y" value="735" />
+              <entry key="height" value="185" />
+              <entry key="width" value="700" />
+              <entry key="state" value="0" />
+              <entry key="selected" value="true" />
+              <entry key="filter" value="irc.freenode.net AND #geocards" />
             </map>
           </node>
         </node>
@@ -159,6 +169,13 @@
               </map>
             </node>
             <node name="2">
+              <map>
+                <entry key="filter" value="from=$self" />
+                <entry key="regexp" value=".*" />
+                <entry key="format" value="fgff9933" />
+              </map>
+            </node>
+            <node name="3">
               <map />
             </node>
           </node>
@@ -184,10 +201,16 @@
           <entry key="nick2" value="GeoIRC|User" />
           <entry key="nick3" value="GeoIRCUser" />
         </map>
+        <node name="ctcp">
+          <map>
+            <entry key="os" value="unknown" />
+            <entry key="contact" value="unknown" />
+          </map>
+        </node>
         <node name="ident">
           <map>
             <entry key="username" value="Pistos" />
-            <entry key="os" value="Windows" />
+            <entry key="os" value="Unknown OS" />
           </map>
         </node>
       </node>
