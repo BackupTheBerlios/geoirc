@@ -28,7 +28,7 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
     
 public class SettingsManager
-    implements PreferenceChangeListener, NodeChangeListener
+    implements PreferenceChangeListener, NodeChangeListener, XmlProcessable
 {
     
     private static Preferences root = Preferences.userNodeForPackage( GeoIRC.class );
@@ -278,4 +278,12 @@ public class SettingsManager
             printlnDebug( e.getMessage() );
         }
     }
+
+	/* (non-Javadoc)
+	 * @see geoirc.XmlProcessable#getBuffer()
+	 */
+	public Object getBuffer()
+	{
+		return root;
+	}
 }
