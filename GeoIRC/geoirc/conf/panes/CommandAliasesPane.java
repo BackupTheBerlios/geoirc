@@ -28,11 +28,13 @@ import geoirc.conf.TitlePane;
 /**
  * @author netseeker aka Michael Manske
  */
-public class CommandAliasesPane extends BaseSettingsPanel implements Storable, GeoIRCConstants
+public class CommandAliasesPane
+	extends BaseSettingsPanel
+	implements Storable, GeoIRCConstants
 {
 	LittleTableModel ltm = new LittleTableModel();
 	private JTable table;
-	
+
 	/**
 	 * @param settings
 	 * @param valueRules
@@ -46,7 +48,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
 		super(settings, valueRules, name);
 		initComponents();
 	}
-	
+
 	private void initComponents()
 	{
 		table = new JTable(ltm);
@@ -55,43 +57,44 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
 		//setting up table cell with combo box for commands
 		TableColumn cmdColumn = table.getColumnModel().getColumn(1);
 		JComboBox cmdCombo = new JComboBox();
-		cmdCombo.addItem("none");
-		for(int i = 0; i < CMDS.length; i++)
+		cmdCombo.addItem("");
+		for (int i = 0; i < CMDS.length; i++)
 		{
-			cmdCombo.addItem(CMDS[i]);
+			cmdCombo.addItem(CMDS[i].toLowerCase());
 		}
 		cmdColumn.setCellEditor(new DefaultCellEditor(cmdCombo));
 
 		//setting up table cell with combo box for irc commands
-		TableColumn ircCmdColumn = table.getColumnModel().getColumn(1);
+		TableColumn ircCmdColumn = table.getColumnModel().getColumn(2);
 		JComboBox ircCombo = new JComboBox();
-		ircCombo.addItem("none");
-		for(int i = 0; i < IRCMSGS.length; i++)
+		ircCombo.addItem("");
+		for (int i = 0; i < IRCMSGS.length; i++)
 		{
-			ircCombo.addItem(IRCMSGS[i]);
+			ircCombo.addItem(IRCMSGS[i].toLowerCase());
 		}
 		ircCmdColumn.setCellEditor(new DefaultCellEditor(ircCombo));
-		
+
 		addComponent(new TitlePane("Command Aliases"), 0, 0, 10, 1, 0, 0);
 		String path = "/command aliases/";
 		int i = 0;
 		String nodePath = path + String.valueOf(i) + "/";
-		while ( settings_manager.nodeExists(nodePath) )
+		while (settings_manager.nodeExists(nodePath))
 		{
 			String alias = settings_manager.getString(nodePath + "alias", "");
-			String expansion = settings_manager.getString(nodePath + "expansion", "");
+			String expansion =
+				settings_manager.getString(nodePath + "expansion", "");
 			ltm.addCommandAlias(new CommandAlias(alias, expansion));
 			i++;
 			nodePath = path + String.valueOf(i) + "/";
 		}
-		
+
 		table.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		JScrollPane scroller = new JScrollPane(table);
 		addComponent(scroller, 0, 1, 5, 1, 0, 0);
-		
-		addLayoutStopper(0,2);		
+
+		addLayoutStopper(0, 2);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see geoirc.conf.Storable#saveData()
 	 */
@@ -131,48 +134,61 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
 		{
 			return columnNames.length;
 		}
-		
+
 		public Class getColumnClass(int c)
 		{
 			return String.class;
 		}
 
-		public String getColumnName(int col) {
-			 return columnNames[col];
-		 }		
+		public String getColumnName(int col)
+		{
+			return columnNames[col];
+		}
 
 		/* (non-Javadoc)
 		 * @see javax.swing.table.TableModel#getValueAt(int, int)
 		 */
 		public Object getValueAt(int row, int col)
 		{
-			CommandAlias ca = (CommandAlias)data.get(row);
+			CommandAlias ca = (CommandAlias) data.get(row);
 			Object ret = null;
-			
-			switch(col)
+
+			switch (col)
 			{
-				case 0: ret = ca.getAlias();
+				case 0 :
+					ret = ca.getAlias();
 					break;
-				case 1: ret = ca.getCommand();
+				case 1 :
+					ret = ca.getCommand();
+					if (ret == null)
+						ret = "";
+					else
+						ret = ((String) ret).toLowerCase();
 					break;
-				case 2: ret = ca.getIRCCommand();
-					break; 
-				case 3: ret = ca.getParamString();
+				case 2 :
+					ret = ca.getIRCCommand();
+					if (ret == null)
+						ret = "";
+					else
+						ret = ((String) ret).toLowerCase();
+					break;
+				case 3 :
+					ret = ca.getParamString();
 					break;
 			}
 			return ret;
 		}
-		
+
 		public void addCommandAlias(CommandAlias ca)
 		{
 			data.add(ca);
 			fireTableDataChanged();
 		}
-		
+
 		public boolean isCellEditable(int row, int col)
 		{
 			return true;
 		}
-		
+
 	}
 }
