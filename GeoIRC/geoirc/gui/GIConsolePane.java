@@ -8,6 +8,7 @@ package geoirc.gui;
 
 import enigma.console.java2d.Java2DTextWindow;
 import enigma.console.TextAttributes;
+import enigma.console.terminal.AnsiOutputStream;
 import enigma.core.Enigma;
 
 import geoirc.I18nManager;
@@ -53,6 +54,7 @@ public class GIConsolePane
     protected TextAttributes current_attributes;
     protected PrintStream print_stream;
     protected PrintWriter console_writer;
+    protected AnsiOutputStream ansi_stream;
     
     public GIConsolePane(
         MouseListener mouse_listener,
@@ -128,6 +130,8 @@ public class GIConsolePane
                 }
             }
         );
+        
+        ansi_stream = new AnsiOutputStream( this );
         
         setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
@@ -585,6 +589,11 @@ public class GIConsolePane
     public enigma.console.TextWindow getEnigmaTextWindow()
     {
         return console_pane;
+    }
+    
+    public AnsiOutputStream getANSIStream()
+    {
+        return ansi_stream;
     }
     
     public PrintStream getPrintStream()

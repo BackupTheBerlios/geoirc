@@ -20,5 +20,6 @@ Pistos 2003-11-07
 Added basic CTCP functionality (outgoing).
 Pistos 2003-11-08
 
-Added newconsolewindow, printconsole, and printconsoleat commands.
-Pistos 2003-11-09
+Added console windows.  Added newconsolewindow, printconsole, and printconsoleat
+commands.
+Pistos 2003-11-09 to 2003-11-10

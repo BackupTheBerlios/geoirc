@@ -77,7 +77,6 @@ public class DisplayManager
     protected GIFrameWrapper last_activated_frame;
     protected int last_added_frame_x;
     protected int last_added_frame_y;
-    protected GITextPane last_activated_text_pane;
     
     protected Vector inactive_info_panes;
     protected Vector active_info_panes;
@@ -150,7 +149,6 @@ public class DisplayManager
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
-        last_activated_text_pane = null;
         last_activated_pane = null;
         
         show_qualities = false;
@@ -272,7 +270,6 @@ public class DisplayManager
         panes.add( gipw );
         last_activated_pane = gipw;
         paneActivated( gipw );
-        last_activated_text_pane = (GITextPane) gipw.getPane();
         return gipw;
     }
 
@@ -1245,10 +1242,14 @@ public class DisplayManager
     
     public void printlnToActiveTextPane( String line )
     {
-        if( ( line != null ) && ( last_activated_text_pane != null ) )
+        if(
+            ( line != null )
+            && ( last_activated_pane != null )
+            && ( last_activated_pane.getType() == TEXT_PANE )
+        )
         {
             appendAndHighlightLine(
-                last_activated_text_pane, line, ""
+                (GITextPane) last_activated_pane.getPane(), line, ""
             );
         }
     }
@@ -1428,7 +1429,12 @@ public class DisplayManager
     {
         String retval = null;
         
-        GITextPane gitp = last_activated_text_pane;
+        GIPaneWrapper gipw = last_activated_pane;
+        GITextPane gitp = null;
+        if( gipw.getType() == TEXT_PANE )
+        {
+            gitp = (GITextPane) gipw.getPane();
+        }
         if( gitp != null )
         {
             String filter = gitp.getFilter();
@@ -1460,7 +1466,6 @@ public class DisplayManager
         if( gipw.getType() == TEXT_PANE )
         {
             GITextPane gitp = (GITextPane) gipw.getPane();
-            last_activated_text_pane = gitp;
             
             String filter = gitp.getFilter();
             if( filter != null )
@@ -1500,7 +1505,7 @@ public class DisplayManager
     {
         GIWindow giw = (GIWindow) e.getInternalFrame();
         last_activated_frame = giw.getFrameWrapper();
-        giw.activateFirstTextPane();
+        giw.activateFirstTextOrConsolePane();
     }
     
     public void internalFrameClosed( InternalFrameEvent e )
@@ -1598,7 +1603,7 @@ public class DisplayManager
     {
         GIExternalWindow giew = (GIExternalWindow) e.getSource();
         last_activated_frame = giew.getFrameWrapper();
-        giew.activateFirstTextPane();
+        giew.activateFirstTextOrConsolePane();
     }
     
     public void windowClosed( WindowEvent e )

@@ -226,12 +226,12 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         }
     }
     
-    public GIPaneWrapper getFirstTextPaneWrapper()
+    public GIPaneWrapper getFirstTextOrConsolePaneWrapper()
     {
-        return getFirstTextPaneWrapper( pane );
+        return getFirstTextOrConsolePaneWrapper( pane );
     }
     
-    protected GIPaneWrapper getFirstTextPaneWrapper( Component component )
+    protected GIPaneWrapper getFirstTextOrConsolePaneWrapper( Component component )
     {
         GIPaneWrapper retval = null;
         if( component != null )
@@ -239,15 +239,19 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
             if( component instanceof JSplitPane )
             {
                 JSplitPane split_pane = (JSplitPane) component;
-                retval = getFirstTextPaneWrapper( split_pane.getTopComponent() );
+                retval = getFirstTextOrConsolePaneWrapper( split_pane.getTopComponent() );
                 if( retval == null )
                 {
-                    retval = getFirstTextPaneWrapper( split_pane.getBottomComponent() );
+                    retval = getFirstTextOrConsolePaneWrapper( split_pane.getBottomComponent() );
                 }
             }
             else if( component instanceof GITextPane )
             {
                 retval = ((GITextPane) component).getPaneWrapper();
+            }
+            else if( component instanceof GIConsolePane )
+            {
+                retval = ((GIConsolePane) component).getPaneWrapper();
             }
             else if(
                 ( component instanceof GIInfoPane )
@@ -261,7 +265,7 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
                 Container container = (Container) component;
                 if( container.getComponentCount() > 0 )
                 {
-                    retval = getFirstTextPaneWrapper( container.getComponent( 0 ) );
+                    retval = getFirstTextOrConsolePaneWrapper( container.getComponent( 0 ) );
                 }
             }
         }

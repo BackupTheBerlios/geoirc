@@ -113,12 +113,12 @@ public class GIExternalWindow
         setVisible( true );
     }
     
-    public boolean activateFirstTextPane()
+    public boolean activateFirstTextOrConsolePane()
     {
         boolean activated = false;
         if( gipw != null )
         {
-            GIPaneWrapper gitpw = gipw.getFirstTextPaneWrapper();
+            GIPaneWrapper gitpw = gipw.getFirstTextOrConsolePaneWrapper();
             if( gitpw != null )
             {
                 gitpw.activate();

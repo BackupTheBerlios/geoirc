@@ -6,6 +6,8 @@
 
 package geoirc.util;
 
+import enigma.console.terminal.AnsiOutputStream;
+
 import geoirc.CommandExecutor;
 import geoirc.GIProcess;
 import geoirc.gui.DisplayManager;
@@ -20,7 +22,7 @@ public class InputStreamReaderThread extends Thread
     protected BufferedReader reader;
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
-    protected PrintStream out;
+    protected AnsiOutputStream out;
     protected GIProcess parent;
     
     private InputStreamReaderThread() { }
@@ -31,7 +33,7 @@ public class InputStreamReaderThread extends Thread
     public InputStreamReaderThread(
         CommandExecutor executor,
         DisplayManager display_manager,
-        PrintStream out,
+        AnsiOutputStream out,
         BufferedReader reader,
         GIProcess parent
     )

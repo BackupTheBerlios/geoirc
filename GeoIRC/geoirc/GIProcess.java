@@ -6,6 +6,8 @@
 
 package geoirc;
 
+import enigma.console.terminal.AnsiOutputStream;
+
 import geoirc.GeoIRCConstants;
 import geoirc.ProcessJanitor;
 import geoirc.gui.DisplayManager;
@@ -87,23 +89,23 @@ public class GIProcess implements GeoIRCConstants
         BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
         BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
         
-        PrintStream print_stream = null;
+        AnsiOutputStream ansi_stream = null;
         if( gicp != null )
         {
-            print_stream = gicp.getPrintStream();
+            ansi_stream = gicp.getANSIStream();
         }
 
         new InputStreamReaderThread(
             this.executor,
             display_manager,
-            print_stream,
+            ansi_stream,
             out,
             this
         ).start();
         new InputStreamReaderThread(
             this.executor,
             display_manager,
-            print_stream,
+            ansi_stream,
             err,
             this
         ).start();
