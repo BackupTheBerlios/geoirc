@@ -35,3 +35,7 @@ Pistos 2003-10-09
 
 Reorganized files within the GeoIRC application directory.
 Pistos 2003-10-15
+
+Fixed bug where changes made to the trigger settings would not get applied
+without restarting GeoIRC.
+Pistos 2003-10-15

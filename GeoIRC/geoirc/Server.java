@@ -48,7 +48,6 @@ public class Server
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        TriggerManager trigger_manager,
         InfoManager info_manager,
         VariableManager variable_manager,
         I18nManager i18n_manager,
@@ -57,7 +56,7 @@ public class Server
         String port
     )
     {
-        super( parent, display_manager, settings_manager, trigger_manager, i18n_manager, hostname, port );
+        super( parent, display_manager, settings_manager, i18n_manager, hostname, port );
         
         listening_to_channels = false;
         channels = new Vector();
@@ -737,7 +736,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
 
                             if( nick.equals( current_nick ) )
                             {
@@ -816,7 +815,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
 
                             if( nick.equals( current_nick ) )
                             {
@@ -1104,7 +1103,7 @@ public class Server
                                     ) + text,
                                     transformed_message[ MSG_QUALITIES ]
                                 );
-                                trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                                geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                             }
                             break;
                         }
@@ -1213,7 +1212,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }
@@ -1375,7 +1374,7 @@ public class Server
                                     transformed_message[ MSG_QUALITIES ]
                                 );
                             }
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }
@@ -1426,7 +1425,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
 
                             if( nick.equals( current_nick ) )
                             {
@@ -1500,7 +1499,7 @@ public class Server
                             text,
                             transformed_message[ MSG_QUALITIES ]
                         );
-                        trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         break;
                     }
                 }
@@ -1786,7 +1785,7 @@ public class Server
                                 timestamp + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }
@@ -1862,7 +1861,7 @@ public class Server
                             ) + text,
                             transformed_message[ MSG_QUALITIES ]
                         );
-                        trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         break;
                 }
             }
@@ -1936,7 +1935,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }
@@ -1971,7 +1970,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }
@@ -2015,7 +2014,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }
@@ -2053,7 +2052,7 @@ public class Server
                                 ) + text,
                                 transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                            geoirc.checkAgainstTriggers( text, transformed_message[ MSG_QUALITIES ] );
                         }
                         break;
                 }

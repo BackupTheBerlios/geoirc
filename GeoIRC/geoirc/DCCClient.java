@@ -34,7 +34,6 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        TriggerManager trigger_manager,
         I18nManager i18n_manager,
         String host_ip,
         String port,
@@ -45,7 +44,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         int filesize
     )
     {
-        super( parent, display_manager, settings_manager, trigger_manager, i18n_manager, host_ip, port );
+        super( parent, display_manager, settings_manager, i18n_manager, host_ip, port );
         this.dcc_type = dcc_type;
         this.remote_nick = remote_nick;
         this.user_nick = user_nick;
@@ -305,7 +304,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                         ) + "<" + remote_nick + "> " + transformed_message[ MSG_TEXT ],
                         transformed_message[ MSG_QUALITIES ]
                     );
-                    trigger_manager.check( transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ] );
+                    geoirc.checkAgainstTriggers( transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ] );
                     break;
             }
         }

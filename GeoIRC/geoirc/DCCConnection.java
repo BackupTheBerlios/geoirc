@@ -24,12 +24,12 @@ import java.util.Random;
  */
 public class DCCConnection extends Thread implements GeoIRCConstants
 {
+    protected GeoIRC geoirc;
     protected ServerSocket listening_socket;
     protected Socket socket;
     protected int listening_port;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
-    protected TriggerManager trigger_manager;
     protected I18nManager i18n_manager;
     protected PrintWriter text_out;
     protected BufferedReader text_in;
@@ -46,9 +46,9 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     private DCCConnection() { }
     
     public DCCConnection(
+        GeoIRC parent,
         SettingsManager settings_manager,
         DisplayManager display_manager,
-        TriggerManager trigger_manager,
         I18nManager i18n_manager,
         int type,
         String offeree_nick,
@@ -56,9 +56,9 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         BufferedInputStream file
     ) throws IOException
     {
+        geoirc = parent;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        this.trigger_manager = trigger_manager;
         this.i18n_manager = i18n_manager;
         this.type = type;
         this.offeree_nick = offeree_nick;
@@ -170,7 +170,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
                                 ) + "<" + offeree_nick + "> " + line,
                                 qualities
                             );
-                            trigger_manager.check( line, qualities );
+                            geoirc.checkAgainstTriggers( line, qualities );
                         }
                     }
                     catch( IOException e )

@@ -18,7 +18,6 @@ public class RemoteMachine implements GeoIRCConstants
 {
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
-    protected TriggerManager trigger_manager;
     protected I18nManager i18n_manager;
     protected String hostname;
     protected int port;
@@ -39,7 +38,6 @@ public class RemoteMachine implements GeoIRCConstants
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        TriggerManager trigger_manager,
         I18nManager i18n_manager,
         String hostname,
         String port
@@ -60,7 +58,6 @@ public class RemoteMachine implements GeoIRCConstants
         this.port = i_port;
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
-        this.trigger_manager = trigger_manager;
         this.i18n_manager = i18n_manager;
         geoirc = parent;
         

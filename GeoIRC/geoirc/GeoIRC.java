@@ -516,9 +516,8 @@ public class GeoIRC
     protected Server addServer( String hostname, String port )
     {
         Server s = new Server(
-            this, display_manager, settings_manager, trigger_manager,
-            info_manager, variable_manager, i18n_manager,
-            conversation_words, hostname, port
+            this, display_manager, settings_manager, info_manager, variable_manager,
+            i18n_manager, conversation_words, hostname, port
         );
         addRemoteMachine( s );
         
@@ -539,7 +538,6 @@ public class GeoIRC
             this,
             display_manager,
             settings_manager,
-            trigger_manager,
             i18n_manager,
             hostname,
             port,
@@ -868,6 +866,11 @@ public class GeoIRC
             "/misc/paste flood/delay",
             DEFAULT_PASTE_FLOOD_DELAY
         );
+    }
+    
+    public void checkAgainstTriggers( String message, String qualities )
+    {
+        trigger_manager.check( message, qualities );
     }
     
     /**
@@ -1586,9 +1589,9 @@ public class GeoIRC
                                     {
                                         case CMD_DCC_CHAT:
                                             dcc = new DCCConnection(
+                                                this,
                                                 settings_manager,
                                                 display_manager,
-                                                trigger_manager,
                                                 i18n_manager,
                                                 DCC_CHAT,
                                                 args[ 0 ],
@@ -1626,9 +1629,9 @@ public class GeoIRC
                                                 )
                                             );
                                             dcc = new DCCConnection(
+                                                this,
                                                 settings_manager,
                                                 display_manager,
-                                                trigger_manager,
                                                 i18n_manager,
                                                 DCC_SEND,
                                                 args[ 0 ],
