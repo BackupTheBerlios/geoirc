@@ -70,6 +70,8 @@ public class DisplayManager
     
     protected boolean show_qualities;  // for debugging purposes
     
+    protected GITreeCellRenderer cell_renderer;
+    
     // No default constructor
     private DisplayManager() { }
     
@@ -102,6 +104,8 @@ public class DisplayManager
         
         geoirc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
+        
+        cell_renderer = new GITreeCellRenderer();
         
         last_activated_frame = null;
         last_added_frame_x = 0;
@@ -312,6 +316,11 @@ public class DisplayManager
                 }
             }
         }
+    }
+    
+    public GITreeCellRenderer getCellRenderer()
+    {
+        return cell_renderer;
     }
     
     public int printlnDebug( String line )

@@ -359,6 +359,17 @@ public class Server
         }
         return Util.getPadding( " ", current_nick_width - text.length() ) + text;
     }
+    
+    protected void acknowledgeUserChange( User user )
+    {
+        int n = channels.size();
+        Channel c;
+        for( int i = 0; i < n; i++ )
+        {
+            c = (Channel) channels.elementAt( i );
+            c.acknowledgeUserChange( user );
+        }
+    }
 
     /* ******************************************************************** */
     
@@ -667,12 +678,14 @@ public class Server
                                     if( polarity.equals( "+" ) )
                                     {
                                         recipient_user.addModeFlag( MODE_OP );
+                                        Server.this.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has given channel operator privileges for "
                                             + channel + " to " + arg + ".";
                                     }
                                     else if( polarity.equals( "-" ) )
                                     {
                                         recipient_user.removeModeFlag( MODE_OP );
+                                        Server.this.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has taken channel operator privileges for "
                                             + channel + " from " + arg + ".";
                                     }
@@ -779,12 +792,14 @@ public class Server
                                     if( polarity.equals( "+" ) )
                                     {
                                         recipient_user.addModeFlag( MODE_VOICE );
+                                        Server.this.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has given voice in "
                                             + channel + " to " + arg + ".";
                                     }
                                     else if( polarity.equals( "-" ) )
                                     {
                                         recipient_user.removeModeFlag( MODE_VOICE );
+                                        Server.this.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has taken voice in "
                                             + channel + " from " + arg + ".";
                                     }
@@ -829,7 +844,6 @@ public class Server
                             c = (Channel) channels.elementAt( i );
                             qualities += " " + c.getName();
                             c.acknowledgeUserChange( user );
-                            //info_manager.acknowledgeNickChange( c );
                         }
                         
                         qualities += " " + FILTER_SPECIAL_CHAR + "self";

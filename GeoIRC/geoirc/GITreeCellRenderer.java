@@ -16,7 +16,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  *
  * @author  Pistos
  */
-public class GITreeCellRenderer extends DefaultTreeCellRenderer
+public class GITreeCellRenderer
+    extends DefaultTreeCellRenderer
+    implements GeoIRCConstants
 {
     ImageIcon regular_icon;
     ImageIcon voiced_icon;
@@ -24,9 +26,9 @@ public class GITreeCellRenderer extends DefaultTreeCellRenderer
     
     public GITreeCellRenderer()
     {
-        regular_icon = new ImageIcon( "regular_user.png" );
-        voiced_icon = new ImageIcon( "voiced_user.png", "voiced" );
-        op_icon = new ImageIcon( "op_user.png" );
+        regular_icon = new ImageIcon( "regular_icon.png" );
+        voiced_icon = new ImageIcon( "voiced_icon.png", "voiced" );
+        op_icon = new ImageIcon( "op_icon.png", "operator" );
     }
     
     public Component getTreeCellRendererComponent(
@@ -41,13 +43,27 @@ public class GITreeCellRenderer extends DefaultTreeCellRenderer
     {
         super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
         
+        this.setIcon( null );
+        
         if( leaf )
         {
             if( value != null )
             {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-                User user = (User) node.getUserObject();
-                setIcon( regular_icon );
+                Object obj = node.getUserObject();
+                if( obj instanceof User )
+                {
+                    User user = (User) obj;
+                    setIcon( regular_icon );
+                    if( user.hasModeFlag( MODE_VOICE ) )
+                    {
+                        setIcon( voiced_icon );
+                    }
+                    if( user.hasModeFlag( MODE_OP ) )
+                    {
+                        setIcon( op_icon );
+                    }
+                }
             }
         }
         

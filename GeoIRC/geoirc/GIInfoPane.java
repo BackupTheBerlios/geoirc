@@ -45,6 +45,7 @@ public class GIInfoPane extends GIPane
     public void activate( javax.swing.tree.TreeModel model )
     {
         tree = new JTree( model );
+        tree.setCellRenderer( display_manager.getCellRenderer() );
         setViewportView( tree );
         tree.addKeyListener( display_manager );
     }

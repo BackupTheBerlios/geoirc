@@ -150,13 +150,6 @@
                 <entry key="path" value="/" />
               </map>
             </node>
-            <node name="4">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="dcc=192.168.2.158 and %dccchat" />
-                <entry key="filter" value="dcc=192.168.2.158 and %dccchat" />
-              </map>
-            </node>
           </node>
           <node name="windows">
             <map />
@@ -182,18 +175,6 @@
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
-              </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="title" value="dcc=192.168.2.158 and %dccchat" />
-                <entry key="x" value="80" />
-                <entry key="y" value="80" />
-                <entry key="height" value="500" />
-                <entry key="width" value="700" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="true" />
-                <entry key="pane" value="4" />
               </map>
             </node>
           </node>
