@@ -45,7 +45,8 @@ public class GeoIRC
         "nextwindow",
         "previouswindow",
         "next_history_entry",
-        "previous_history_entry"
+        "previous_history_entry",
+        "server"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -59,6 +60,7 @@ public class GeoIRC
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_SEND_RAW = 0;
+    public static final int CMD_SERVER = 11;
     
     protected static final int MAX_HISTORY_SIZE = 30;
     protected static final int MOST_RECENT_ENTRY = 0;
@@ -465,6 +467,7 @@ public class GeoIRC
                     display_manager.printlnDebug( fonts[ i ].getName() + " -- " + fonts[ i ].getFontName() );
                 }
                 break;
+            case CMD_SERVER:
             case CMD_NEW_SERVER:
                 if( args != null )
                 {
