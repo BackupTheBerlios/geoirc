@@ -1,5 +1,12 @@
 Changelog for GeoIRC 0.3.4a
 ---------------------------
 
-Added a rudimental variables configuration dialog to settings gui
+Renamed DCC CHAT related commands to more generic "DCC request" and "DCC offer"
+commands.  Added DCC SEND capabilities.
+Pistos 2003-10-05
+
+Renamed "/dcc/default download directory" to "/dcc/download directory".
+Pistos 2003-10-05
+
+Added a rudimentaly variables configuration dialog to settings gui
 netseeker 2003-10-06
