@@ -17,7 +17,7 @@ import javax.swing.JSplitPane;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.3.5a";
+    static final String GEOIRC_VERSION = "0.3.6a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
     static final String GEOIRC_HOMEPAGE = "http://purepistos.net/geoirc";
