@@ -16,6 +16,8 @@ public interface GeoIRCConstants
 {
     static final boolean GOD_IS_GOOD = true;
     
+    static final int DEFAULT_IDENT_PORT = 113;
+    
     public static final String [] CMDS =
     {
         "sendraw",

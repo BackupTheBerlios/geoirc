@@ -62,27 +62,30 @@ public class HighlightTrigger implements GeoIRCConstants
         {
             if(
                 BoolExpEvaluator.evaluate( filter, qualities )
-                && matcher.matches()
+                && matcher.find()
             )
             {
                 if( matcher.groupCount() > 0 )
                 {
-                    group = matcher.group( 1 );
-                    if( ( group != null ) && ( ! group.equals( "" ) ) )
+                    do
                     {
-                        int start = matcher.start( 1 );
-                        int end = matcher.end( 1 );
-                        highlighted_line =
-                            line.substring( 0, start )
-                            + STYLE_ESCAPE_SEQUENCE
-                            + format
-                            + STYLE_TERMINATION_SEQUENCE
-                            + group
-                            + STYLE_ESCAPE_SEQUENCE
-                            + "normal"
-                            + STYLE_TERMINATION_SEQUENCE
-                            + line.substring( end );
-                    }
+                        group = matcher.group( 1 );
+                        if( ( group != null ) && ( ! group.equals( "" ) ) )
+                        {
+                            int start = matcher.start( 1 );
+                            int end = matcher.end( 1 );
+                            highlighted_line =
+                                line.substring( 0, start )
+                                + STYLE_ESCAPE_SEQUENCE
+                                + format
+                                + STYLE_TERMINATION_SEQUENCE
+                                + group
+                                + STYLE_ESCAPE_SEQUENCE
+                                + "normal"
+                                + STYLE_TERMINATION_SEQUENCE
+                                + line.substring( end );
+                        }
+                    } while( matcher.find() );
                 }
                 else
                 {

@@ -184,6 +184,12 @@
           <entry key="nick2" value="GeoIRC|User" />
           <entry key="nick3" value="GeoIRCUser" />
         </map>
+        <node name="ident">
+          <map>
+            <entry key="username" value="Pistos" />
+            <entry key="os" value="Windows" />
+          </map>
+        </node>
       </node>
       <node name="sound">
         <map />

@@ -43,6 +43,8 @@ public class GeoIRC
     protected SoundManager sound_manager;
     protected AliasManager alias_manager;
     
+    protected IdentServer ident_server;
+    
     protected boolean listening_to_servers;
 
     protected LinkedList input_history;
@@ -226,6 +228,11 @@ public class GeoIRC
         // Command aliases.
         
         alias_manager = new AliasManager( settings_manager, display_manager );
+        
+        // Ident server.
+        
+        ident_server = new IdentServer( settings_manager, display_manager );
+        ident_server.run();
         
         // Restore connections, if any.
         
