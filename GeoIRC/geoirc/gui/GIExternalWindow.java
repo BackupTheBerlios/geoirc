@@ -75,4 +75,8 @@ public class GIExternalWindow extends JFrame
         this.pane_wrapper = pane_wrapper;
     }
     
+    public void selectFrame()
+    {
+        setVisible( true );
+    }
 }

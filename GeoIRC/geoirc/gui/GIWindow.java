@@ -51,16 +51,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
         pane = null;
         pane_wrapper = null;
         
-        //selectFrameAndAssociatedButtons();
-        try
-        {
-            setSelected( true );
-            setIcon( false ); // select and de-iconify the frame
-        } catch (java.beans.PropertyVetoException pve)
-        {
-            display_manager.printlnDebug( pve.getMessage() );
-        }
-        setVisible( true );
+        selectFrame();
     }
     
     public void addPane( Container pane )
@@ -90,5 +81,18 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     public void setPaneWrapper( GIPaneWrapper pane_wrapper )
     {
         this.pane_wrapper = pane_wrapper;
+    }
+    
+    public void selectFrame()
+    {
+        try
+        {
+            setSelected( true );
+            setIcon( false ); // select and de-iconify the frame
+        } catch (java.beans.PropertyVetoException pve)
+        {
+            display_manager.printlnDebug( pve.getMessage() );
+        }
+        setVisible( true );
     }
 }

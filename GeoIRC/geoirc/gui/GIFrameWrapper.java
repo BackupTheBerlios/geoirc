@@ -35,6 +35,10 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         {
             type = GIWINDOW_FRAME;
         }
+        else if( frame instanceof GIExternalWindow )
+        {
+            type = GIEXTERNALWINDOW_FRAME;
+        }
     }
     
     public Container getFrame()
@@ -58,6 +62,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
             case GIWINDOW_FRAME:
                 retval = ((GIWindow) frame).getContentPane();
                 break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = ((GIExternalWindow) frame).getContentPane();
+                break;
         }
         
         return retval;
@@ -73,6 +80,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
             case GIWINDOW_FRAME:
                 ((GIWindow) frame).addPane( c );
                 break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).addPane( c );
+                break;
         }
     }
     
@@ -86,6 +96,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
                 break;
             case GIWINDOW_FRAME:
                 retval = ((GIWindow) frame).getTitle();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = ((GIExternalWindow) frame).getTitle();
                 break;
         }
         
@@ -101,6 +114,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
                 break;
             case GIWINDOW_FRAME:
                 ((GIWindow) frame).setTitle( title );
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setTitle( title );
                 break;
         }
     }
@@ -128,7 +144,10 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         switch( type )
         {
             case GIWINDOW_FRAME:
-                ((GIWindow) frame).selectFrameAndAssociatedButtons();
+                ((GIWindow) frame).selectFrame();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).selectFrame();
                 break;
         }
     }

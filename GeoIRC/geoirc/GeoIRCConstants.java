@@ -413,6 +413,10 @@ public interface GeoIRCConstants
     static final int UNKNOWN_FRAME_TYPE = -1;
     static final int GEOIRC_FRAME = 0;
     static final int GIWINDOW_FRAME = 1;
+    static final int GIEXTERNALWINDOW_FRAME = 2;
+    
+    static final int INTERNAL_WINDOW = 0;
+    static final int EXTERNAL_WINDOW = 1;
     
     static final int NO_PARENT = -1;
 

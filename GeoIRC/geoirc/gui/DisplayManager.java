@@ -74,7 +74,7 @@ public class DisplayManager
     
     protected JScrollDesktopPane desktop_pane;
     
-    protected GIWindow last_activated_frame;
+    protected Container last_activated_frame;
     protected int last_added_frame_x;
     protected int last_added_frame_y;
     protected GITextPane last_activated_text_pane;
@@ -197,7 +197,7 @@ public class DisplayManager
      *
      */
     
-    protected void addNewWindow( GIWindow window )
+    protected void addNewWindow( Container window )
     {
         last_added_frame_x += NEW_WINDOW_X_INCREMENT;
         if( last_added_frame_x + DEFAULT_WINDOW_WIDTH > desktop_pane.getWidth() - 30 )
@@ -242,22 +242,46 @@ public class DisplayManager
         return gipw;
     }
 
-    public GIWindow addTextWindow( String title, String filter )
+    public Container addTextWindow( String title, String filter )
+    {
+        return addTextWindow( title, filter, INTERNAL_WINDOW );
+    }
+    
+    public Container addTextWindow( String title, String filter, int window_type )
     {
         String actual_title = title;
         if( actual_title == null )
         {
             actual_title = "";
         }
-        GIWindow text_window = new GIWindow(
-            this, settings_manager, actual_title
-        );
         GIPaneWrapper gipw = addTextPane( actual_title, filter );
-        text_window.addPane( gipw.getPane() );
-        gipw.setParent( text_window.getPaneWrapper() );
-        addNewWindow( text_window );
+        Container window;
+        switch( window_type )
+        {
+            case INTERNAL_WINDOW:
+            {
+                GIWindow text_window = new GIWindow(
+                    this, settings_manager, actual_title
+                );
+                text_window.addPane( gipw.getPane() );
+                gipw.setParent( text_window.getPaneWrapper() );
+                window = text_window;
+                break;
+            }
+            case EXTERNAL_WINDOW:
+            {
+                GIExternalWindow text_window = new GIExternalWindow(
+                    this, settings_manager, actual_title
+                );
+                text_window.addPane( gipw.getPane() );
+                gipw.setParent( text_window.getPaneWrapper() );
+                window = text_window;
+                break;
+            }
+        }
+        addNewWindow( window );
         
-        return text_window;
+        return window;
     }
     
     protected GIPaneWrapper addInfoPane( String title, String path )
@@ -1099,7 +1123,7 @@ public class DisplayManager
         return last_activated_pane;
     }
     
-    public GIWindow getSelectedFrame()
+    public Container getSelectedFrame()
     {
         return last_activated_frame;
     }
@@ -1204,12 +1228,6 @@ public class DisplayManager
     public void internalFrameActivated( InternalFrameEvent e )
     {
         last_activated_frame = (GIWindow) e.getInternalFrame();
-        GIWindow giw = (GIWindow) e.getSource();
-        JToggleButton button = giw.getAssociatedButton();
-        if( button != null )
-        {
-            button.setForeground( DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR );
-        }
     }
     
     public void internalFrameClosed( InternalFrameEvent e )
@@ -1316,7 +1334,35 @@ public class DisplayManager
     public void windowActivated(WindowEvent e) {
     }
     
-    public void windowClosed(WindowEvent e) {
+    public void windowClosed( WindowEvent e )
+    {
+        GIExternalWindow window = (GIExternalWindow) e.getSource();
+
+        if( last_activated_frame == window )
+        {
+            last_activated_frame = null;
+        }
+        
+        GIPaneWrapper pw;
+        for( int i = 0; i < panes.size(); i++ )
+        {
+            pw = (GIPaneWrapper) panes.elementAt( i );
+            Container pw_pane = pw.getPane();
+            if( window.isAncestorOf( pw_pane ) )
+            {
+                panes.remove( pw );
+                i--;
+                active_info_panes.remove( pw_pane );
+                inactive_info_panes.remove( pw_pane );
+            }
+        }
+        
+        frames.remove( window );
+        
+        if( ! restoring )
+        {
+            recordDesktopState();
+        }
     }
     
     public void windowClosing(WindowEvent e) {
@@ -1331,7 +1377,25 @@ public class DisplayManager
     public void windowIconified(WindowEvent e) {
     }
     
-    public void windowOpened(WindowEvent e) {
+    public void windowOpened( WindowEvent e )
+    {
+        GIExternalWindow giew = (GIExternalWindow) e.getSource();
+        frames.add( giew );
+        GIPaneWrapper gipw = new GIPaneWrapper(
+            settings_manager,
+            this,
+            giew.getContentPane(),
+            "External Content Pane",
+            CHILD_CONTENT_PANE
+        );
+        gipw.setFrame( new GIFrameWrapper( giew ) );
+        giew.setPaneWrapper( gipw );
+        panes.add( gipw );
+        
+        if( ! restoring )
+        {
+            recordDesktopState();
+        }
     }
     
     
