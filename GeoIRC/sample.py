@@ -10,6 +10,13 @@ class Message:
         self.text = text_
         self.qualities = qualities_
 
+# InputListeners have the ability to change the line that they receive and
+# send it back to GeoIRC in an altered state.  You can define your class by any
+# name you like, as long as it has a "text" attribute.
+class InputLine:
+    def __init__( self, text_ ):
+        self.txt = text_
+
 # Here we define a RawListener--it can have any name, but must have an
 # onRaw method which takes two string arguments, the message text and
 # the message qualities.  We are returning a Message object (as defined above)
@@ -23,7 +30,19 @@ class RawChanger:
             if( line[ 1 ] == "PRIVMSG" ):
                 text = text + "!!"
         msg = Message( text, qualities )
-        return msg; 
+        return msg
+
+# Here we define an InputListener.  It can have any name, but must have an
+# onInput method which takes a single string argument, which is the text
+# entered by the user in the input field.  An InputLine object (as defined
+# above) is returned, containing the input line which has possibly been
+# altered.
+
+class InputChanger:
+    def onInput( self, text_ ):
+        text = text_
+        input_line = InputLine( text )
+        return input_line
 
 class Rand:
     def generate( self, range ):
@@ -35,6 +54,11 @@ class Rand:
 changer = RawChanger()
 # ... and register it with GeoIRC.
 geoirc.registerRawListener( changer )
+
+# Instantiate our InputListener ...
+input_changer = InputChanger()
+# ... and register it with GeoIRC.
+geoirc.registerInputListener( input_changer )
 
 rando = Rand()
 

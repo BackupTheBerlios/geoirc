@@ -37,8 +37,8 @@ proc rawchanger {text qualities} {
 proc inputchanger {text} {
     set new_text $text
     
-    if {[string index 0] != "/"} {
-	set new_text "$new_text!!"
+    if {[string index $new_text 0] != "/"} {
+	set new_text "$new_text??"
     }
     
     return $new_text
