@@ -596,7 +596,11 @@ public class DisplayManager
                 setting_path + "/type",
                 pane.getClass().toString()
             );
-
+            settings_manager.putString(
+                setting_path + "/title",
+                pane.getTitle()
+            );
+            
             if( pane instanceof GITextPane )
             {
                 settings_manager.putString(
@@ -732,7 +736,8 @@ public class DisplayManager
         
         Hashtable filters = new Hashtable();
         Hashtable paths = new Hashtable();
-        Hashtable pane_types = new Hashtable();
+        Vector pane_types = new Vector();
+        Vector pane_titles = new Vector();
         
         // Panes
         
@@ -742,15 +747,14 @@ public class DisplayManager
             i_str = Integer.toString( i );
             setting_path = "/gui/desktop/panes/" + i_str;
             
-            type = settings_manager.getString(
-                setting_path + "/type",
-                ""
-            );
+            type = settings_manager.getString( setting_path + "/type", "" );
             
             if( type.equals( "" ) )
             {
                 break;
             }
+            
+            pane_titles.add( settings_manager.getString( setting_path + "/title", "" ) );
             
             if( type.equals( "class geoirc.GIInfoPane" ) )
             {
@@ -761,7 +765,7 @@ public class DisplayManager
                         ""
                     )
                 );
-                pane_types.put( i_str, new Integer( INFO_PANE ) );
+                pane_types.add( new Integer( INFO_PANE ) );
             }
             else if( type.equals( "class geoirc.GITextPane" ) )
             {
@@ -772,7 +776,7 @@ public class DisplayManager
                         ""
                     )
                 );
-                pane_types.put( i_str, new Integer( TEXT_PANE ) );
+                pane_types.add( new Integer( TEXT_PANE ) );
             }
             
             i++;
@@ -835,11 +839,7 @@ public class DisplayManager
                 -1
             );
             
-            pane_type = (
-                (Integer) pane_types.get(
-                    Integer.toString( pane_index )
-                )
-            ).intValue();
+            pane_type = ( (Integer) pane_types.elementAt( pane_index ) ).intValue();
             
             GIWindow giw = null;
             if( pane_type == TEXT_PANE )
@@ -923,24 +923,20 @@ public class DisplayManager
                 DEFAULT_DIVIDER_LOCATION
             );
 
-            pane_type = (
-                (Integer) pane_types.get(
-                    Integer.toString( pane_index )
-                )
-            ).intValue();
+            pane_type = ( (Integer) pane_types.elementAt( pane_index ) ).intValue();
             
             GIPane gip = null;
             if( pane_type == TEXT_PANE )
             {
                 gip = addTextPane(
-                    title,
+                    (String) pane_titles.elementAt( pane_index ),
                     (String) filters.get( Integer.toString( pane_index ) )
                 );
             }
             else if( pane_type == INFO_PANE )
             {
                 gip = addInfoPane(
-                    title,
+                    (String) pane_titles.elementAt( pane_index ),
                     (String) paths.get( Integer.toString( pane_index ) )
                 );
                 inactive_info_panes.add( gip );

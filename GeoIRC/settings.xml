@@ -110,24 +110,28 @@
             <node name="0">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="#geoirc" />
                 <entry key="filter" value="#geoirc" />
               </map>
             </node>
             <node name="1">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="irc.freenode.net" />
                 <entry key="filter" value="irc.freenode.net" />
               </map>
             </node>
             <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="debug" />
                 <entry key="filter" value="debug" />
               </map>
             </node>
             <node name="3">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="title" value="" />
                 <entry key="path" value="/" />
               </map>
             </node>
