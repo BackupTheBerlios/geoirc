@@ -88,12 +88,6 @@
         </map>
         <node name="desktop">
           <map />
-          <node name="docked panes">
-            <map />
-            <node name="0">
-              <map />
-            </node>
-          </node>
           <node name="panes">
             <map />
             <node name="0">
@@ -108,15 +102,6 @@
                 <entry key="filter" value="irc.freenode.net" />
               </map>
             </node>
-            <node name="2">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="filter" value="debug" />
-              </map>
-            </node>
-            <node name="3">
-              <map />
-            </node>
           </node>
           <node name="windows">
             <map />
@@ -124,11 +109,11 @@
               <map>
                 <entry key="title" value="#geoirc" />
                 <entry key="x" value="0" />
-                <entry key="y" value="252" />
-                <entry key="height" value="252" />
-                <entry key="width" value="1134" />
+                <entry key="y" value="0" />
+                <entry key="height" value="285" />
+                <entry key="width" value="1136" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -136,28 +121,13 @@
               <map>
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
-                <entry key="y" value="504" />
-                <entry key="height" value="252" />
-                <entry key="width" value="1134" />
+                <entry key="y" value="285" />
+                <entry key="height" value="285" />
+                <entry key="width" value="1136" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
               </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="title" value="debug" />
-                <entry key="x" value="0" />
-                <entry key="y" value="0" />
-                <entry key="height" value="252" />
-                <entry key="width" value="1134" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="true" />
-                <entry key="pane" value="2" />
-              </map>
-            </node>
-            <node name="3">
-              <map />
             </node>
           </node>
         </node>

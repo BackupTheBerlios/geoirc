@@ -245,7 +245,7 @@ public class DisplayManager
             return;
         }
         
-        int n = windows.size();
+        int n = panes.size();
         GITextPane text_pane;
         GIPane pane;
         for( int i = 0; i < n; i++ )
@@ -323,7 +323,8 @@ public class DisplayManager
             
             if( dock( location, pane ) )
             {
-                //giw.dispose();
+                success = true;
+                giw.dispose();
             }
         }
 

@@ -795,7 +795,7 @@ public class GeoIRC
                     
                     for( int i = 0; i < DOCK_STR.length; i++ )
                     {
-                        if( args[ 0 ].equals( DOCK_STR[ i ] ) )
+                        if( args[ 1 ].equals( DOCK_STR[ i ] ) )
                         {
                             location = i;
                             break;
@@ -804,7 +804,7 @@ public class GeoIRC
                     
                     try
                     {
-                        window_index = Integer.parseInt( args[ 1 ] );
+                        window_index = Integer.parseInt( args[ 0 ] );
                     }
                     catch( NumberFormatException e ) { }
                     
@@ -812,13 +812,13 @@ public class GeoIRC
                     {
                         if( display_manager.dock( location, window_index ) )
                         {
-                            pack();
                             display_manager.printlnDebug( "Window docked." );
                         }
                         else
                         {
                             display_manager.printlnDebug( "Failed to dock window." );
                         }
+                        pack();
                     }
                 }
                 else
