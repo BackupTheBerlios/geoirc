@@ -47,7 +47,7 @@ Alternate nicks are actually used now.
 Pistos 2003-10-02
 
 Reworked the processing pipeline so that scripts have access to message
-qualities.
+qualities, and can handle IRC messages with GeoIRC does not yet handle.
 Pistos 2003-10-03
 
 Fixed bug where receiving a RPL_NAMREPLY which had a user that we already had
