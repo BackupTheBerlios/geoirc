@@ -108,8 +108,8 @@ public class TclScriptInterface
                 {
                     tcl_interpreter.eval(
                         tcl_proc + " "
-                        + "\"" + line
-                        + "\" \"" + qualities + "\""
+                        + "{" + line
+                        + "} {" + qualities + "}"
                     );
                     transformed_message = tcl_interpreter.getResult();
                     if( transformed_message != null )
@@ -150,7 +150,7 @@ public class TclScriptInterface
             {
                 try
                 {
-                    tcl_interpreter.eval( tcl_proc + " \"" + line + "\"" );
+                    tcl_interpreter.eval( tcl_proc + " {" + line + "}" );
                     transformed_line = tcl_interpreter.getResult();
                     if( transformed_line != null )
                     {
