@@ -99,6 +99,8 @@ public class GeneralPane extends BaseSettingsPanel implements Storable
         value = settings_manager.getString(path + "userinfo", rule.getValue().toString());
         addComponent(new JLabel("Userinfo"), 0, 10, 1, 1, 0, 0);
         save_handler.register(addComponent(new JValidatingTextField(".+", value, 180), 1, 10, 1, 1, 1, 1), path + "userinfo");
+        
+        addLayoutStopper(0, 11);
     }
 
     /* (non-Javadoc)
