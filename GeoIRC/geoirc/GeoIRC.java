@@ -118,6 +118,7 @@ public class GeoIRC
     protected LogManager log_manager;
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
+    protected I18nManager i18n_manager;
     protected PythonScriptInterface python_script_interface;
     protected TclScriptInterface tcl_script_interface;
     
@@ -148,7 +149,7 @@ public class GeoIRC
     protected Set conversation_words;
     
     protected boolean mouse_button_depressed;
-
+    
     /* **************************************************************** */
     
     public GeoIRC()
@@ -158,19 +159,6 @@ public class GeoIRC
     
     public GeoIRC( String settings_filepath )
     {
-        System.out.println(
-            "GeoIRC " + GEOIRC_VERSION
-        );
-        System.out.println(
-            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
-        );
-        System.out.println(
-            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-        );
-        System.out.println(
-            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-        );
-
         listening_to_connections = false;
         
         // Settings.
@@ -226,16 +214,37 @@ public class GeoIRC
 
         applySettings();
         
+        /*
+        System.out.println(
+            "GeoIRC " + GEOIRC_VERSION
+        );
+        System.out.println(
+            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
+        );
+         */
+        System.out.println( i18n_manager.getString( "version string" ) );
+        System.out.println( i18n_manager.getString( "copyright" ) );
+        System.out.println(
+            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+        );
+        System.out.println(
+            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+        );
+        
         display_manager.restoreDesktopState();
         
         info_manager = new InfoManager( settings_manager, display_manager );
         
+        /*
         display_manager.printlnDebug(
             "GeoIRC " + GEOIRC_VERSION
         );
         display_manager.printlnDebug(
             "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
         );
+         */
+        display_manager.printlnDebug( i18n_manager.getString( "version string" ) );
+        display_manager.printlnDebug( i18n_manager.getString( "copyright" ) );
         display_manager.printlnDebug(
             "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
         );
@@ -287,6 +296,8 @@ public class GeoIRC
      */
     public void applySettings()
     {
+        i18n_manager = new I18nManager( settings_manager );
+        
         // Apply skin, if any specified.
         
         String skin1 = settings_manager.getString( "/gui/skin1", null );
@@ -1329,6 +1340,10 @@ public class GeoIRC
                 break;
             case CMD_CLEAR_INPUT_FIELD:
                 input_field.setText( null );
+                break;
+            case CMD_CLEAR_INPUT_HISTORY:
+                input_history = new LinkedList();
+                input_history_pointer = MOST_RECENT_ENTRY;
                 break;
             case CMD_CLEAR_WINDOW:
                 if( arg_string != null )

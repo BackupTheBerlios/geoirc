@@ -433,7 +433,7 @@
           <node name="0">
             <map>
               <entry key="filter" value="" />
-              <entry key="regexp" value="(http://\S+)" />
+              <entry key="regexp" value="((?:http://\S+)|(?:www\.\S+))" />
               <entry key="name" value="lasturl" />
             </map>
           </node>

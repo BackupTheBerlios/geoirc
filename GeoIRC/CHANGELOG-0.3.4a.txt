@@ -10,3 +10,9 @@ Pistos 2003-10-05
 
 Added a rudimentaly variables configuration dialog to settings gui
 netseeker 2003-10-06
+
+Added a clearinputhistory command.
+Pistos 2003-10-07
+
+Added "/personal/language" and "/personal/country" settings.
+Pistos 2003-10-07

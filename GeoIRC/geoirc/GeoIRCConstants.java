@@ -449,5 +449,4 @@ public interface GeoIRCConstants
     
     static final String DEFAULT_LANGUAGE = "en";
     static final String DEFAULT_COUNTRY = "CA";
-    static final String PROPERTIES_FILENAME = "geoirc_messages";
 }
