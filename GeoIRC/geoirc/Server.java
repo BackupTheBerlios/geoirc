@@ -707,11 +707,14 @@ public class Server
             {
                 String nick = getNick( tokens[ 0 ] );
                 String channel = tokens[ 2 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
+                /*
                 if( channel.charAt( 0 ) == ':' )
                 {
                     // Remove leading colon.
                     channel = channel.substring( 1 );
                 }
+                 */
 
                 switch( stage )
                 {
@@ -783,6 +786,7 @@ public class Server
                 
                 String kicker = getNick( tokens[ 0 ] );
                 String channel = tokens[ 2 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
                 String nick = tokens[ 3 ];
                 String message = Util.stringArrayToString( tokens, 4 );
                 
@@ -1401,6 +1405,7 @@ public class Server
             {
                 String nick = getNick( tokens[ 0 ] );
                 String channel = tokens[ 2 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
                 switch( stage )
                 {
                     case STAGE_SCRIPTING:
@@ -1930,6 +1935,7 @@ public class Server
             else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) ) && ( tokens.length > 3 ) )
             {
                 String channel = tokens[ 3 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
 
                 switch( stage )
                 {
@@ -1963,6 +1969,7 @@ public class Server
             else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) ) && ( tokens.length > 3 ) )
             {
                 String channel = tokens[ 3 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
                 
                 switch( stage )
                 {
@@ -1998,6 +2005,7 @@ public class Server
             else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) ) && ( tokens.length > 3 ) )
             {
                 String channel = tokens[ 3 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
                 
                 switch( stage )
                 {
@@ -2043,6 +2051,7 @@ public class Server
             {
                 String nick = getNick( tokens[ 0 ] );
                 String channel = tokens[ 2 ].toLowerCase( i18n_manager.getLocale() );
+                channel = channel.substring( channel.indexOf( "#" ) );
                 
                 switch( stage )
                 {
