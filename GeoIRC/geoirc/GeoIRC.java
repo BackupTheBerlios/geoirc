@@ -1599,6 +1599,7 @@ public class GeoIRC
                                 try
                                 {
                                     DCCConnection dcc = null;
+                                    File f = null;
                                     switch( command_id )
                                     {
                                         case CMD_DCC_CHAT:
@@ -1619,7 +1620,7 @@ public class GeoIRC
                                             {
                                                 break;
                                             }
-                                            File f = new File( Util.stringArrayToString( args, 1 ) );
+                                            f = new File( Util.stringArrayToString( args, 1 ) );
                                             if( ! f.exists() )
                                             {
                                                 break;
@@ -1645,15 +1646,33 @@ public class GeoIRC
                                         dcc_offers.add( dcc );
                                         int port = dcc.listen();
 
-                                        execute(
-                                            CMDS[ CMD_SEND_RAW ]
-                                            + " PRIVMSG "
-                                            + args[ 0 ]
-                                            + " :\001DCC CHAT chat "
-                                            + Util.get32BitAddressString( addr_str ) + " "
-                                            + Integer.toString( port )
-                                            + "\001"
-                                        );
+                                        switch( command_id )
+                                        {
+                                            case CMD_DCC_CHAT:
+                                                execute(
+                                                    CMDS[ CMD_SEND_RAW ]
+                                                    + " PRIVMSG "
+                                                    + args[ 0 ]
+                                                    + " :\001DCC CHAT chat "
+                                                    + Util.get32BitAddressString( addr_str ) + " "
+                                                    + Integer.toString( port )
+                                                    + "\001"
+                                                );
+                                                break;
+                                            case CMD_DCC_SEND:
+                                                execute(
+                                                    CMDS[ CMD_SEND_RAW ]
+                                                    + " PRIVMSG "
+                                                    + args[ 0 ]
+                                                    + " :\001DCC SEND "
+                                                    + f.getName() + " "
+                                                    + Util.get32BitAddressString( addr_str ) + " "
+                                                    + Integer.toString( port ) + " "
+                                                    + Long.toString( f.length() )
+                                                    + "\001"
+                                                );
+                                                break;
+                                        }
                                     }
                                 }
                                 catch( IOException e )
