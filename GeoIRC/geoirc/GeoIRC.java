@@ -60,10 +60,11 @@ public class GeoIRC
     
     protected static final int MAX_HISTORY_SIZE = 30;
     protected static final int MOST_RECENT_ENTRY = 0;
-    protected static Preferences myPrefs = Preferences.userNodeForPackage(GeoIRC.class);
     
     protected Vector servers; // of Server objects
     protected DisplayManager display_manager;
+    protected Preferences myPrefs;
+
     protected LinkedList input_history;
     protected int input_history_pointer;
     protected boolean input_saved;
@@ -95,6 +96,7 @@ public class GeoIRC
         
         SettingsManager myMgr = new SettingsManager(display_manager);
         myMgr.reloadXML();
+        myPrefs = Preferences.userNodeForPackage(GeoIRC.class);
         myPrefs = myPrefs.node("personal");
         current_nick = myPrefs.get("PrimaryNick", "GeoIRC_Guest");
         //current_nick = "Pistos|GeoIRC";
@@ -454,13 +456,16 @@ public class GeoIRC
         geoirc.show();
     }
     
-    public void childAdded(NodeChangeEvent evt) {
+    public void childAdded( NodeChangeEvent evt )
+    {
     }    
     
-    public void childRemoved(NodeChangeEvent evt) {
+    public void childRemoved( NodeChangeEvent evt )
+    {
     }
     
-    public void preferenceChange(PreferenceChangeEvent evt) {
+    public void preferenceChange( PreferenceChangeEvent evt )
+    {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

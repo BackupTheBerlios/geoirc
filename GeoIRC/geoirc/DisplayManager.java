@@ -90,7 +90,7 @@ public class DisplayManager implements InternalFrameListener
             last_added_frame_y = MIN_NEW_WINDOW_Y;
         }
         desktop_pane.add( text_window, last_added_frame_x, last_added_frame_y );
-        text_window.setBounds( last_added_frame_x, last_added_frame_y, 700, 700 );
+        text_window.setBounds( last_added_frame_x, last_added_frame_y, 700, 500 );
         
         windows.add( text_window );
         
