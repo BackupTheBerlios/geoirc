@@ -1,2 +1,10 @@
 Changelog for GeoIRC 0.3.2a
 ---------------------------
+
+fixed the error which caused that invalid user input in validating
+textfields got saved
+netseeker 2003-09-18
+
+settings gui: changed textfield for ctcp version to accept
+alphanumeric input
+netseeker 2003-09-18
