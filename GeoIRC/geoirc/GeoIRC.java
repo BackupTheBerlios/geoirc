@@ -65,6 +65,7 @@ public class GeoIRC
     protected AliasManager alias_manager;
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
+    protected LogManager log_manager;
     
     protected Hashtable audio_clips;
     
@@ -202,7 +203,9 @@ public class GeoIRC
             this, menu_bar, settings_manager, variable_manager, input_field
         );
         display_manager.printlnDebug( skin_errors );
-        
+
+        log_manager = new LogManager( settings_manager, display_manager );
+        display_manager.setLogManager( log_manager );
         info_manager = new InfoManager( settings_manager, display_manager );
         
         // Read settings.
@@ -1137,6 +1140,9 @@ public class GeoIRC
                     display_manager.printlnDebug( fonts[ i ].getName() + " -- " + fonts[ i ].getFontName() );
                 }
                 break;
+            case CMD_LIST_LOGS:
+                log_manager.listLogs();
+                break;
             case CMD_LIST_MEMBERS:
                 if( current_rm instanceof Server )
                 {
@@ -1158,6 +1164,64 @@ public class GeoIRC
                 break;
             case CMD_LIST_WINDOWS:
                 display_manager.listWindows();
+                break;
+            case CMD_LOG:
+                if( arg_string != null )
+                {
+                    int index1 = arg_string.indexOf( COMMAND_ARGUMENT_SEPARATOR_CHAR );
+                    int index2 = arg_string.lastIndexOf( COMMAND_ARGUMENT_SEPARATOR_CHAR );
+                    
+                    String filename = null;
+                    String filter = "";
+                    String regexp = ".*";
+                    
+                    if( index1 > -1 )
+                    {
+                        filename = arg_string.substring( 0, index1 );
+                        try
+                        {
+                            if( index2 != index1 )
+                            {
+                                // Regexp specified.
+                                filter = arg_string.substring( index1 + 1, index2 );
+                                regexp = arg_string.substring( index2 + 1 );
+                            }
+                            else
+                            {
+                                // No regexp specified.
+                                filter = arg_string.substring( index1 + 1 );
+                            }
+                        }
+                        catch( StringIndexOutOfBoundsException e ) { }
+                    }
+                    else
+                    {
+                        filename = arg_string;
+                        
+                        // Assign the filter of the current window, if any.
+                        // No regexp specified.
+                        
+                        GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                        if( giw != null )
+                        {
+                            GIPane pane = giw.getPane();
+                            if( pane instanceof GITextPane )
+                            {
+                                GITextPane gitp = (GITextPane) pane;
+                                filter = gitp.getFilter();
+                            }
+                        }
+                    }
+                    
+                    log_manager.addLogger( filter, regexp, filename );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_LOG ] +
+                        " <filename>;[filter];[regexp]"
+                    );
+                }
                 break;
             case CMD_NEW_INFO_WINDOW:
                 {
@@ -1385,15 +1449,15 @@ public class GeoIRC
             case CMD_PRINT:
                 if( arg_string != null )
                 {
-                    display_manager.println( arg_string, "debug" );
+                    display_manager.printlnDebug( arg_string );
                 }
                 break;
             case CMD_PRINTLN:
                 if( arg_string != null )
                 {
-                    int index = arg_string.indexOf( PRINTLN_SEPARATOR_CHAR );
+                    int index = arg_string.indexOf( COMMAND_ARGUMENT_SEPARATOR_CHAR );
                     String text = arg_string;
-                    String qualities = "debug";
+                    String qualities = FILTER_SPECIAL_CHAR + "debug";
                     if( ( index > -1 ) && ( index < arg_string.length() - 1 ) )
                     {
                         text = arg_string.substring( index + 1 );
@@ -1422,6 +1486,31 @@ public class GeoIRC
                         "/"
                         + CMDS[ CMD_PRIVMSG ]
                         + " <nick/channel> <message>" );
+                }
+                break;
+            case CMD_REMOVE_LOG:
+                {
+                    boolean problem = true;
+                    
+                    if( arg_string != null )
+                    {
+                        int index;
+                        try
+                        {
+                            index = Integer.parseInt( arg_string );
+                            log_manager.removeLogger( index );
+                            problem = false;
+                        }
+                        catch( NumberFormatException e ) { }
+                    }
+                    
+                    if( problem )
+                    {
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_REMOVE_LOG ]
+                            + " <index of log to remove>"
+                        );
+                    }
                 }
                 break;
             case CMD_SEND_RAW:

@@ -38,6 +38,7 @@ public class DisplayManager
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
     protected VariableManager variable_manager;
+    protected LogManager log_manager;
     protected GeoIRC geoirc;
     protected boolean listening;
 
@@ -83,6 +84,7 @@ public class DisplayManager
         
         this.settings_manager = settings_manager;
         this.variable_manager = variable_manager;
+        log_manager = null;
         style_manager = new StyleManager( settings_manager, this );
         highlight_manager = new HighlightManager( settings_manager, this );
 
@@ -114,6 +116,11 @@ public class DisplayManager
     public void setShowQualities( boolean setting )
     {
         show_qualities = setting;
+    }
+    
+    public void setLogManager( LogManager log_manager )
+    {
+        this.log_manager = log_manager;
     }
     
     protected void addNewWindow( GIWindow window )
@@ -249,7 +256,7 @@ public class DisplayManager
     
     public void printlnDebug( String line )
     {
-        println( line, "debug" );
+        println( line, FILTER_SPECIAL_CHAR + "debug" );
     }
     
     public void println( String line, String qualities )
@@ -294,6 +301,11 @@ public class DisplayManager
                 "(" + Integer.toString( lines_unread ) + ") "
                 + BASE_GEOIRC_TITLE
             );
+        }
+        
+        if( log_manager != null )
+        {
+            log_manager.log( line, qualities );
         }
     }
     

@@ -40,3 +40,9 @@ Pistos 2003-08-06
 
 Added support for the KICK message.
 Pistos 2003-08-06
+
+Added logging.  Added log, removelog and listlogs commands.
+Pistos 2003-08-07
+
+Changed the "debug" quality to "%debug".
+Pistos 2003-08-07

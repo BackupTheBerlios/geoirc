@@ -73,7 +73,10 @@ public interface GeoIRCConstants
         "play",
         "quote",
         "raw",
-        "println"
+        "println",
+        "log",
+        "removelog",
+        "listlogs"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -93,8 +96,10 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_CONNECTIONS = 13;
     public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
+    public static final int CMD_LIST_LOGS = 50;
     public static final int CMD_LIST_MEMBERS = 41;
     public static final int CMD_LIST_WINDOWS = 27;
+    public static final int CMD_LOG = 48;
     public static final int CMD_MSG = 20;
     public static final int CMD_NEW_INFO_WINDOW = 29;
     public static final int CMD_NEW_SERVER = 5;
@@ -116,6 +121,7 @@ public interface GeoIRCConstants
     public static final int CMD_PRIVMSG = 19;
     public static final int CMD_QUOTE = 45;
     public static final int CMD_RAW = 46;
+    public static final int CMD_REMOVE_LOG = 49;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
     public static final int CMD_SET = 16;
@@ -205,6 +211,9 @@ public interface GeoIRCConstants
      */
     
     static final String DEFAULT_SETTINGS_FILEPATH = "./settings.xml";
+    static final String DEFAULT_LOG_PATH = "./logs/";
+    
+    static final String DEFAULT_LOG_START_MESSAGE = "**** Logging begun at y MM dd HH:mm:ss ****";
     
     static final int GI_NORMAL = 0;
     static final int GI_MAXIMIZED = 1;
@@ -225,7 +234,7 @@ public interface GeoIRCConstants
     static final String VARIABLE_CHAR = "%";
     
     static final char FILTER_SPECIAL_CHAR = '%';
-    static final String PRINTLN_SEPARATOR_CHAR = ";";
+    static final String COMMAND_ARGUMENT_SEPARATOR_CHAR = ";";
     
     static final char CTCP_MARKER = (char) 1;
     

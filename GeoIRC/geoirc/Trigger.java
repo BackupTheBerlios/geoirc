@@ -36,7 +36,7 @@ public class Trigger
         String regexp_str,
         String command
     )
-    throws PatternSyntaxException
+        throws PatternSyntaxException
     {
         this.executor = executor;
         this.display_manager = display_manager;
