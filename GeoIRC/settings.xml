@@ -29,6 +29,14 @@
           <entry key="confirm receive" value="true" />
         </map>
       </node>
+      <node name="keyboard">
+        <map>
+          <entry key="|Up" value="previous_history_entry" />
+          <entry key="|Down" value="next_history_entry" />
+          <entry key="Alt|Left" value="previouswindow" />
+          <entry key="Alt|Right" value="nextwindow" />
+        </map>
+      </node>
     </node>
   </root>
 </preferences>

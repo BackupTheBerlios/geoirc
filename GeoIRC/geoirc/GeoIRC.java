@@ -113,14 +113,61 @@ public class GeoIRC
 
         // Map input (keystrokes, mouseclicks, etc.)
         
-        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_UP, 0 ), "UP" );
-        action_map.put( "UP", new GIAction( "previous_history_entry", this ) );
-        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "DOWN" );
-        action_map.put( "DOWN", new GIAction( "next_history_entry", this ) );
-        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, InputEvent.ALT_DOWN_MASK ), "ALT|RIGHT" );
-        action_map.put( "ALT|RIGHT", new GIAction( "nextwindow", this ) );
-        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK ), "ALT|LEFT" );
-        action_map.put( "ALT|LEFT", new GIAction( "previouswindow", this ) );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_UP );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_DOWN );
+        setupKeyMapping( ALT, KeyEvent.VK_RIGHT );
+        setupKeyMapping( ALT, KeyEvent.VK_LEFT );
+    }
+    
+    /* ********************************************************************* */
+    
+    protected void setupKeyMapping( int modifiers, int keycode )
+    {
+        int java_modifiers;
+        
+        switch( modifiers )
+        {
+            case SHIFT:
+                java_modifiers = InputEvent.SHIFT_DOWN_MASK;
+                break;
+            case CTRL:
+                java_modifiers = InputEvent.CTRL_DOWN_MASK;
+                break;
+            case CTRL+SHIFT:
+                java_modifiers = InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
+                break;
+            case ALT:
+                java_modifiers = InputEvent.ALT_DOWN_MASK;
+                break;
+            case ALT+SHIFT:
+                java_modifiers = InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
+                break;
+            case CTRL+ALT:
+                java_modifiers = InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK;
+                break;
+            case CTRL+ALT+SHIFT:
+                java_modifiers = InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
+                break;
+            case NO_MODIFIER_KEYS:
+            default:
+                java_modifiers = 0;
+                break;
+        }
+        
+        String stroke_text =
+            InputEvent.getModifiersExText( java_modifiers ) + "|"
+            + KeyEvent.getKeyText( keycode );
+        
+        display_manager.printlnDebug( stroke_text );
+        
+        input_map.put(
+            KeyStroke.getKeyStroke( keycode, java_modifiers ),
+            stroke_text
+        );
+        action_map.put(
+            stroke_text,
+            new GIAction( settings_manager.getString( "/keyboard/" + stroke_text, "default" ), this )
+        );
     }
             
     // Returns the Server created.
@@ -172,6 +219,12 @@ public class GeoIRC
             input_history.removeLast();
         }
     }
+
+    /* *********************************************************************
+     *
+     * Listener Implementations
+     *
+     * ********************************************************************* */
     
     // When the user presses enter in the text field, this method is called.
     public void actionPerformed( ActionEvent event )
@@ -238,7 +291,7 @@ public class GeoIRC
     {
     }
     
-    /* ********************************************************
+    /* *********************************************************************
      *
      * @param command   the command to execute
      *
@@ -248,6 +301,11 @@ public class GeoIRC
     
     public int execute( String command )
     {
+        if( ( command == null ) || ( command.equals( "" ) ) )
+        {
+            return CommandExecutor.EXEC_BAD_COMMAND;
+        }
+        
         int result = CommandExecutor.EXEC_GENERAL_FAILURE;
         int space_index = command.indexOf( " " );
         String command_name;

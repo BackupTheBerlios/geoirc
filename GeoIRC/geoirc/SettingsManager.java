@@ -38,12 +38,7 @@ public class SettingsManager {
     public boolean loadSettingsFromXML()
     {
         InputStream is = null;
-<<<<<<< SettingsManager.java
-
-=======
         boolean success = true;
-        
->>>>>>> 1.4
         try {
             is = new BufferedInputStream(new FileInputStream( filepath ));
         } catch (FileNotFoundException e) {
@@ -126,5 +121,15 @@ public class SettingsManager {
     public String getString( String path, String default_ )
     {
         return root.node( getNodePath( path ) ).get( getKey( path ), default_ );
+    }
+    
+    public int getInt( String path, int default_ )
+    {
+        return root.node( getNodePath( path ) ).getInt( getKey( path ), default_ );
+    }
+
+    public boolean getBoolean( String path, boolean default_ )
+    {
+        return root.node( getNodePath( path ) ).getBoolean( getKey( path ), default_ );
     }
 }
