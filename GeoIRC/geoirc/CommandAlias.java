@@ -7,9 +7,10 @@
 package geoirc;
 
 import geoirc.util.Util;
+import java.util.regex.*;
 
 /**
- *
+ * Argument indices are 1-based, not 0-based.
  * @author  Pistos
  */
 public class CommandAlias implements GeoIRCConstants
@@ -25,55 +26,38 @@ public class CommandAlias implements GeoIRCConstants
         this.expansion = expansion;
     }
     
-    public String getAlias()
+    public String expand( String command_line )
     {
-        return alias;
-    }
-    
-    public String expand( String arg_string )
-    {
-        String retval = null;
-        String [] expansion_array = Util.tokensToArray( expansion );
-        String [] args = Util.tokensToArray( arg_string );
-        String token;
-        String token_remainder;
-        int index;
+        String [] tokens = Util.tokensToArray( command_line );
+        String retval = command_line;
         
-        for( int i = 0; i < expansion_array.length; i++ )
+        if( tokens[ 0 ].equals( alias ) )
         {
-            token = expansion_array[ i ];
-            token_remainder = token.substring( 1 );
-            switch( token.charAt( 0 ) )
+            retval = expansion;
+            String i_str;
+            for( int i = 1; i < tokens.length; i++ )
             {
-                case ALIAS_ARG_CHAR:
-                    try
-                    {
-                        index = Integer.parseInt( token_remainder );
-                        expansion_array[ i ] = args[ index ];
-                    }
-                    catch( NumberFormatException e )
-                    {
-                        // Treat literally.
-                    }
-                    break;
-                case ALIAS_ARG_REST_CHAR:
-                    try
-                    {
-                        index = Integer.parseInt( token_remainder );
-                        expansion_array[ i ] = Util.stringArrayToString( args, index );
-                    }
-                    catch( NumberFormatException e )
-                    {
-                        // Treat literally.
-                    }
-                    break;
-                default:
-                    // Treat literally.
-                    break;
+                i_str = Integer.toString( i );
+                retval = retval.replaceAll(
+                    ALIAS_ARG_CHAR + i_str,
+                    tokens[ i ]
+                );
+                retval = retval.replaceAll(
+                    ALIAS_ARG_REST_CHAR + i_str,
+                    Util.stringArrayToString( tokens, i )
+                );
             }
+            
+            // Missing arguments are just replaced with empty strings.
+            retval = retval.replaceAll(
+                ALIAS_ARG_CHAR + "\\d+",
+                ""
+            );
+            retval = retval.replaceAll(
+                ALIAS_ARG_REST_CHAR + "\\d+",
+                ""
+            );
         }
-        
-        retval = Util.stringArrayToString( expansion_array );
         
         return retval;
     }

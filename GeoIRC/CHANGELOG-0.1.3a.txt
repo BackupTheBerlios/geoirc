@@ -6,3 +6,6 @@ Pistos 2003-07-09
 
 Added privmsg and msg commands.
 Pistos 2003-07-09
+
+Added command aliases.
+Pistos 2003-07-09 and 2003-07-10

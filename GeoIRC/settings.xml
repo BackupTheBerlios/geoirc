@@ -18,10 +18,28 @@
         <node name="0">
           <map>
             <entry key="alias" value="ns" />
-            <entry key="expansion" value="sendraw PRIVMSG nickserv :$r" />
+            <entry key="expansion" value="sendraw PRIVMSG nickserv :&amp;1" />
           </map>
         </node>
         <node name="1">
+          <map>
+            <entry key="alias" value="cs" />
+            <entry key="expansion" value="sendraw PRIVMSG chanserv :&amp;1" />
+          </map>
+        </node>
+        <node name="2">
+          <map>
+            <entry key="alias" value="ms" />
+            <entry key="expansion" value="sendraw PRIVMSG memoserv :&amp;1" />
+          </map>
+        </node>
+        <node name="3">
+          <map>
+            <entry key="alias" value="ss" />
+            <entry key="expansion" value="sendraw PRIVMSG seenserv :&amp;1" />
+          </map>
+        </node>
+        <node name="4">
           <map />
         </node>
       </node>

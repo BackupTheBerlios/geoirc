@@ -70,13 +70,10 @@ public class HighlightTrigger implements GeoIRCConstants
                     group = matcher.group( 1 );
                     if( ( group != null ) && ( ! group.equals( "" ) ) )
                     {
-                        /* Problem: We're searching for the first match of this
-                         * matched group.  The ACTUAL match may not be the first
-                         * one!  :(  Ugh.
-                         */
-                        int index = line.indexOf( group );
+                        int start = matcher.start( 1 );
+                        int end = matcher.end( 1 );
                         highlighted_line =
-                            line.substring( 0, index )
+                            line.substring( 0, start )
                             + STYLE_ESCAPE_SEQUENCE
                             + format
                             + STYLE_TERMINATION_SEQUENCE
@@ -84,7 +81,7 @@ public class HighlightTrigger implements GeoIRCConstants
                             + STYLE_ESCAPE_SEQUENCE
                             + "normal"
                             + STYLE_TERMINATION_SEQUENCE
-                            + line.substring( index + group.length() );
+                            + line.substring( end );
                     }
                 }
                 else

@@ -41,6 +41,8 @@ public class GeoIRC
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected SoundManager sound_manager;
+    protected AliasManager alias_manager;
+    
     protected boolean listening_to_servers;
 
     protected LinkedList input_history;
@@ -64,11 +66,15 @@ public class GeoIRC
     {
         listening_to_servers = false;
         
+        // Settings.
+        
         settings_manager = new SettingsManager(
             display_manager,
             ( settings_filepath == null ) ? DEFAULT_SETTINGS_FILEPATH : settings_filepath
         );
         settings_manager.loadSettingsFromXML();
+        
+        // Apply skin, if any specified.
         
         String skin1 = settings_manager.getString( "/gui/skin1", null );
         String skin2 = settings_manager.getString( "/gui/skin2", null );
@@ -217,6 +223,10 @@ public class GeoIRC
         
         sound_manager = new SoundManager( settings_manager, display_manager );
         
+        // Command aliases.
+        
+        alias_manager = new AliasManager( settings_manager, display_manager );
+        
         // Restore connections, if any.
         
         current_remote_machine = null;
@@ -232,6 +242,8 @@ public class GeoIRC
         settings_manager.listenToPreferences();
         display_manager.beginListening();
         listening_to_servers = true;
+        
+        // Open the curtains!
 
         show();
     }
@@ -559,12 +571,14 @@ public class GeoIRC
      *
      */
     
-    public int execute( String command )
+    public int execute( String command_ )
     {
-        if( ( command == null ) || ( command.equals( "" ) ) )
+        if( ( command_ == null ) || ( command_.equals( "" ) ) )
         {
             return CommandExecutor.EXEC_BAD_COMMAND;
         }
+        
+        String command = alias_manager.expand( command_ );
         
         int result = CommandExecutor.EXEC_GENERAL_FAILURE;
         int space_index = command.indexOf( " " );
@@ -642,7 +656,6 @@ public class GeoIRC
             case CMD_JOIN:
                 if( args != null )
                 {
-                    //Server s = (Server) display_manager.getSelectedRemoteMachine();
                     if( current_remote_machine instanceof Server )
                     {
                         Server s = (Server) current_remote_machine;
@@ -830,8 +843,8 @@ public class GeoIRC
                 }
                 break;
             case CMD_SEND_RAW:
+                if( ( args != null ) && ( ! args.equals( "" ) ) )
                 {
-                    //Server s = (Server) display_manager.getSelectedRemoteMachine();
                     Server s = (Server) current_remote_machine;
                     if( s != null )
                     {
