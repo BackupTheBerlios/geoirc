@@ -18,11 +18,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.io.FileNotFoundException;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -79,9 +76,7 @@ public class DisplayManager
     
     protected DefaultTreeCellRenderer cell_renderer;
     
-    protected HashSet opened_top_windows;
-    protected WindowListener top_window_listener;
-        
+       
     // No default constructor
     private DisplayManager() { }
     
@@ -106,41 +101,6 @@ public class DisplayManager
         docked_panes = new Vector();
         undocked_panes = new Vector();
         panes = new Vector();
-        opened_top_windows = new HashSet();
-        top_window_listener = new WindowListener()
-        {
-            public void windowActivated(WindowEvent evt)
-            {
-            }
-
-            public void windowClosed(WindowEvent evt)
-            {
-                opened_top_windows.remove( evt.getWindow() );
-            }
-
-            public void windowClosing(WindowEvent evt)
-            {
-                opened_top_windows.remove( evt.getWindow() );
-            }
-
-            public void windowDeactivated(WindowEvent evt)
-            {
-            }
-
-            public void windowDeiconified(WindowEvent evt)
-            {
-                opened_top_windows.add( evt.getWindow() );
-            }
-
-            public void windowIconified(WindowEvent evt)
-            {
-                opened_top_windows.remove( evt.getWindow() );
-            }
-
-            public void windowOpened(WindowEvent evt)
-            {
-            }
-        };
         
         desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
 		JMenu settings_menu = JMenuHelper.addMenuBarItem(menu_bar, "_Settings");
@@ -1468,17 +1428,10 @@ public class DisplayManager
         }
     }
     
-    public boolean hasActiveTopWindows()
-    {
-        return opened_top_windows.size() != 0;
-    }
-    
     public void openSettingsDialog()
     {
         SettingsDialog dlg = new SettingsDialog(settings_manager, this);
-        opened_top_windows.add( dlg );
-        dlg.addWindowListener( top_window_listener );
-        dlg.setVisible( true );       
+        dlg.setVisible( true );
     }
 
 	class OpenSettingsDialogListener implements java.awt.event.ActionListener

@@ -26,6 +26,7 @@
 
 package geoirc;
 
+import geoirc.conf.SettingsDialog;
 import geoirc.util.Util;
 
 import java.applet.AudioClip;
@@ -1054,9 +1055,10 @@ public class GeoIRC
     public void focusGained( FocusEvent e ) { }
     public void focusLost( FocusEvent e )
     {
-        if( ! mouse_button_depressed && ! display_manager.hasActiveTopWindows() )
-        {
-            Component thief = e.getOppositeComponent();
+        Component thief = e.getOppositeComponent();
+        
+        if( ! mouse_button_depressed && !(thief instanceof SettingsDialog) )
+        {            
             if(
                 ( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
             )
@@ -1069,16 +1071,13 @@ public class GeoIRC
                             {
                                 Thread.sleep( 300 );  // milliseconds
                             } catch( InterruptedException e ) { }
-                            if( ! mouse_button_depressed && ! display_manager.hasActiveTopWindows() )
-                            {
-                                input_field.grabFocus();
-                            }                            
+                            input_field.grabFocus();                          
                         }
                     }
                 );
             }
             else
-            {
+            {               
                 input_field.grabFocus();
             }
             /*
