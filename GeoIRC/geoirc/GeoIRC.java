@@ -80,6 +80,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  *
@@ -265,7 +266,7 @@ public class GeoIRC
     {
         i18n_manager = new I18nManager( settings_manager );
         
-        // Apply skin, if any specified.        
+        // Apply skin, if any specified.
         String skin1 = settings_manager.getString( "/gui/skin1", null );
         String skin2 = settings_manager.getString( "/gui/skin2", null );
 
@@ -276,12 +277,24 @@ public class GeoIRC
             skin_manager.applySkin(skin1, skin2, i18n_manager);
             display_manager.printlnDebug( skin_manager.getSkinMessages() );
             use_skinning = true;
+            /*
+            UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName()
+            );
+             */
         }
         catch (ClassNotFoundException e)
         {
             display_manager.printlnDebug( "SkinLF library not found. If you want to use skins install SkinLF from http://www.l2fprod.com." );
             use_skinning = false;
-        }            
+        }
+        /*
+        catch( Exception e )
+        {
+            System.err.println( "Urg." );
+            e.printStackTrace();
+        }
+         */
 
         // GUI
         
