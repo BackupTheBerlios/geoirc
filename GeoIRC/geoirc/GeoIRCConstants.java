@@ -81,7 +81,9 @@ public interface GeoIRCConstants
         "QUIT",
         "PING",
         "NICK",
-        "NOTICE"
+        "NOTICE",
+        "332",
+        "333"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -90,6 +92,8 @@ public interface GeoIRCConstants
     static final int IRCMSG_PING = 4;
     static final int IRCMSG_NICK = 5;
     static final int IRCMSG_NOTICE = 6;
+    static final int IRCMSG_RPL_TOPIC = 7;
+    static final int IRCMSG_RPL_TOPIC_SETTER = 8;
     
     static final String [] CTCP_CMDS =
     {

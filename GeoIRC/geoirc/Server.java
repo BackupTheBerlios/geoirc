@@ -11,6 +11,8 @@ import java.awt.Component;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Vector;
 import javax.swing.*;
 
@@ -232,15 +234,14 @@ public class Server
             String [] tokens = Util.tokensToArray( line );
             if( tokens != null )
             {
-                String qualities = "";
+                String qualities = Server.this.toString();
                 
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
                     String text = nick + " joined " + channel + ".";
-                    qualities += " " + Server.this.toString()
-                        + " " + channel
+                    qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "join";
                     display_manager.println(
@@ -265,8 +266,7 @@ public class Server
                         // Someone else's nick changed.
                         
                         String text = old_nick + " is now known as " + new_nick + ".";
-                        qualities += " " + Server.this.toString()
-                            + " from=" + new_nick
+                        qualities += " from=" + new_nick
                             + " " + FILTER_SPECIAL_CHAR + "nick";
                         display_manager.println(
                             GeoIRC.getATimeStamp(
@@ -331,8 +331,7 @@ public class Server
                     String timestamp = GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     );
-                    qualities += " " + Server.this.toString()
-                        + " " + tokens[ 2 ]
+                    qualities += " " + tokens[ 2 ]
                         + " from=" + nick;
 
                     display_manager.println(
@@ -347,8 +346,7 @@ public class Server
                     String channel = tokens[ 2 ];
                     String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
                     String text = nick + " left " + channel + " (" + message + ").";
-                    qualities += " " + Server.this.toString()
-                        + " " + channel
+                    qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "part";
                     display_manager.println(
@@ -474,8 +472,7 @@ public class Server
                     String timestamp = GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     );
-                    qualities += " " + Server.this.toString()
-                        + " " + tokens[ 2 ]
+                    qualities += " " + tokens[ 2 ]
                         + " from=" + nick;
 
                     display_manager.println(
@@ -489,9 +486,51 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
                     String text = nick + " has quit (" + message + ").";
-                    qualities += " " + Server.this.toString()
-                        + " from=" + nick
+                    qualities += " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "quit";
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
+                {
+                    String channel = tokens[ 3 ];
+                    String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
+                    qualities += " " + FILTER_SPECIAL_CHAR + "topic"
+                        + " " + channel;
+                    String text = "The topic for " + channel + " is: " + topic;
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) )
+                {
+                    String channel = tokens[ 3 ];
+                    String setter = tokens[ 4 ];
+                    String time_str = tokens[ 5 ];
+                    long time_in_seconds;
+                    String time = "an unknown date and time";
+                    try
+                    {
+                        time_in_seconds = Integer.parseInt( time_str );
+                        DateFormat df = DateFormat.getDateTimeInstance(
+                            DateFormat.LONG, DateFormat.LONG
+                        );
+                        time = df.format( new Date( time_in_seconds * 1000 ) );
+                    } catch( NumberFormatException e ) { }
+                    
+                    qualities += " " + FILTER_SPECIAL_CHAR + "topicsetter"
+                        + " " + channel;
+                    String text = "The topic for " + channel + " was set by "
+                        + setter + " on " + time;
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )

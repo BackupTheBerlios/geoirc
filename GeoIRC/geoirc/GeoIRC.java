@@ -281,7 +281,7 @@ public class GeoIRC
         display_manager.beginListening();
         listening_to_servers = true;
         
-        System.out.println(
+        display_manager.printlnDebug(
             "GeoIRC " + GEOIRC_VERSION
         );
         display_manager.printlnDebug(
@@ -292,6 +292,9 @@ public class GeoIRC
         );
         display_manager.printlnDebug(
             "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+        );
+        display_manager.printlnDebug(
+            "----------------------\n"
         );
         
         // Open the curtains!
