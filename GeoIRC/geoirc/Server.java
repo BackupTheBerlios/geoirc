@@ -1431,6 +1431,7 @@ public class Server
                                 "part",
                                 new Object [] { padded_nick, nick, channel, message }
                             );
+                            current_nick_width = 0;
 
                             if( message != null )
                             {
@@ -1845,6 +1846,7 @@ public class Server
                             "quit",
                             new Object [] { padded_nick, nick, message }
                         );
+                        current_nick_width = 0;
 
                         if( nick.equals( current_nick ) )
                         {
