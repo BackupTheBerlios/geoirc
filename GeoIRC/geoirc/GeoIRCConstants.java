@@ -14,7 +14,7 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.1.9a";
+    static final String GEOIRC_VERSION = "0.2.0a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
     static final String DEFAULT_NEW_CONTENT_TITLE_PREFIX = "*";
@@ -66,7 +66,8 @@ public interface GeoIRCConstants
         "nudgedown",
         "connect",
         "exec",
-        "listmembers"
+        "listmembers",
+        "showqualities"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -109,6 +110,7 @@ public interface GeoIRCConstants
     public static final int CMD_SET = 16;
     public static final int CMD_SET_FILTER = 17;
     public static final int CMD_SET_TITLE = 18;
+    public static final int CMD_SHOW_QUALITIES = 42;
     public static final int CMD_SWITCH_WINDOW = 21;
     public static final int CMD_UNDOCK_WINDOW = 34;
     
@@ -154,12 +156,14 @@ public interface GeoIRCConstants
     {
         "VERSION",
         "SOURCE",
-        "USERINFO"
+        "USERINFO",
+        "PAGE"
     };
     static final int UNKNOWN_CTCP_CMD = -1;
     static final int CTCP_CMD_VERSION = 0;
     static final int CTCP_CMD_SOURCE = 1;
     static final int CTCP_CMD_USERINFO = 2;
+    static final int CTCP_CMD_PAGE = 3;
     
     static final boolean NEXT_WINDOW = false;
     static final boolean PREVIOUS_WINDOW = true;

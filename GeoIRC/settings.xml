@@ -311,7 +311,11 @@
             </map>
           </node>
           <node name="3">
-            <map />
+            <map>
+              <entry key="filter" value="%page" />
+              <entry key="regexp" value=".*" />
+              <entry key="filename" value="./page.wav" />
+            </map>
           </node>
         </node>
       </node>

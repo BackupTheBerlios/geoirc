@@ -20,11 +20,7 @@ public class SettingsManager
     implements PreferenceChangeListener, NodeChangeListener
 {
     
-    private static Preferences root = Preferences.userNodeForPackage(GeoIRC.class);
-    /*
-    private static final String SETTINGS_FILE_PATH = "";
-    private static final String SETTINGS_FILE_NAME = "settings.xml";    
-     */
+    private static Preferences root = Preferences.userNodeForPackage( GeoIRC.class );
     protected String filepath;
     protected DisplayManager displayMgr = null;
 

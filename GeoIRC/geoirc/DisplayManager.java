@@ -65,6 +65,8 @@ public class DisplayManager
     protected static final int DEFAULT_WINDOW_WIDTH = 700;
     protected static final int DEFAULT_WINDOW_HEIGHT = 500;
     
+    protected boolean show_qualities;  // for debugging purposes
+    
     // No default constructor
     private DisplayManager() { }
     
@@ -100,11 +102,18 @@ public class DisplayManager
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
+        
+        show_qualities = false;
     }
     
     public void beginListening()
     {
         listening = true;
+    }
+    
+    public void setShowQualities( boolean setting )
+    {
+        show_qualities = setting;
     }
     
     protected void addNewWindow( GIWindow window )
@@ -248,6 +257,11 @@ public class DisplayManager
         if( line == null )
         {
             return;
+        }
+        
+        if( show_qualities )
+        {
+            line = "[" + qualities + "] " + line;
         }
         
         int n = panes.size();

@@ -1,0 +1,10 @@
+Changelog for GeoIRC 0.2.0a
+---------------------------
+
+Fixed bug where NOTICEs would be endowed with channel-name qualities when they
+weren't supposed to be.
+Pistos 2003-08-01
+
+Added support for the CTCP PAGE message, which marks the message with the 
+%page quality.
+Pistos 2003-08-01
