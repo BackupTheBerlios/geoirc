@@ -152,22 +152,61 @@ public class GeoIRC
         
         // Map input (keystrokes, mouseclicks, etc.)
         
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F1 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F2 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F3 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F4 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F5 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F6 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F7 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F8 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F9 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F10 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F11 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F12 );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_UP );
-        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_DOWN );
-        setupKeyMapping( ALT, KeyEvent.VK_RIGHT );
-        setupKeyMapping( ALT, KeyEvent.VK_LEFT );
+        setupFullKeyMapping( KeyEvent.VK_F1 );
+        setupFullKeyMapping( KeyEvent.VK_F2 );
+        setupFullKeyMapping( KeyEvent.VK_F3 );
+        setupFullKeyMapping( KeyEvent.VK_F4 );
+        setupFullKeyMapping( KeyEvent.VK_F5 );
+        setupFullKeyMapping( KeyEvent.VK_F6 );
+        setupFullKeyMapping( KeyEvent.VK_F7 );
+        setupFullKeyMapping( KeyEvent.VK_F8 );
+        setupFullKeyMapping( KeyEvent.VK_F9 );
+        setupFullKeyMapping( KeyEvent.VK_F10 );
+        setupFullKeyMapping( KeyEvent.VK_F11 );
+        setupFullKeyMapping( KeyEvent.VK_F12 );
+        setupFullKeyMapping( KeyEvent.VK_UP );
+        setupFullKeyMapping( KeyEvent.VK_DOWN );
+        setupFullKeyMapping( KeyEvent.VK_LEFT );
+        setupFullKeyMapping( KeyEvent.VK_RIGHT );
+        setupFullKeyMapping( KeyEvent.VK_PAGE_UP );
+        setupFullKeyMapping( KeyEvent.VK_PAGE_DOWN );
+        setupFullKeyMapping( KeyEvent.VK_ESCAPE );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_A );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_B );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_C );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_D );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_E );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_F );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_G );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_H );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_I );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_J );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_K );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_L );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_M );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_N );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_O );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_P );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_Q );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_R );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_S );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_T );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_U );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_V );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_W );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_X );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_Y );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_Z );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_1 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_2 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_3 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_4 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_5 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_6 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_7 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_8 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_9 );
+        setupNotQuiteFullKeyMapping( KeyEvent.VK_0 );
         
         // Sound
         
@@ -242,7 +281,40 @@ public class GeoIRC
             new GIAction( settings_manager.getString( "/keyboard/" + stroke_text, "default" ), this )
         );
     }
-            
+    
+    protected void setupFullKeyMapping( int keycode )
+    {
+        setupKeyMapping( NO_MODIFIER_KEYS, keycode );
+        setupKeyMapping( CTRL, keycode );
+        setupKeyMapping( ALT, keycode );
+        setupKeyMapping( SHIFT, keycode );
+        setupKeyMapping( CTRL+ALT, keycode );
+        setupKeyMapping( ALT+SHIFT, keycode );
+        setupKeyMapping( CTRL+SHIFT, keycode );
+        setupKeyMapping( CTRL+ALT+SHIFT, keycode );
+    }
+    
+    protected void setupNearlyFullKeyMapping( int keycode )
+    {
+        setupKeyMapping( CTRL, keycode );
+        setupKeyMapping( ALT, keycode );
+        setupKeyMapping( SHIFT, keycode );
+        setupKeyMapping( CTRL+ALT, keycode );
+        setupKeyMapping( ALT+SHIFT, keycode );
+        setupKeyMapping( CTRL+SHIFT, keycode );
+        setupKeyMapping( CTRL+ALT+SHIFT, keycode );
+    }
+
+    protected void setupNotQuiteFullKeyMapping( int keycode )
+    {
+        setupKeyMapping( CTRL, keycode );
+        setupKeyMapping( ALT, keycode );
+        setupKeyMapping( CTRL+ALT, keycode );
+        setupKeyMapping( ALT+SHIFT, keycode );
+        setupKeyMapping( CTRL+SHIFT, keycode );
+        setupKeyMapping( CTRL+ALT+SHIFT, keycode );
+    }
+    
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
