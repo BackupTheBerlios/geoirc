@@ -279,52 +279,55 @@ public class GeoIRC
         
         // Apply skin, if any specified.
         
-        String skin1 = settings_manager.getString( "/gui/skin1", null );
-        String skin2 = settings_manager.getString( "/gui/skin2", null );
-        String skin_errors = "";
-        
-        try
+        if( settings_manager.getBoolean( "/modules/skinning", false ) == true )
         {
-            Skin skin = null;
+            String skin1 = settings_manager.getString( "/gui/skin1", null );
+            String skin2 = settings_manager.getString( "/gui/skin2", null );
+            String skin_errors = "";
 
-            if( ( skin1 != null ) && ( skin2 != null ) )
+            try
             {
-                skin = new CompoundSkin(
-                    SkinLookAndFeel.loadSkin( skin1 ),
-                    SkinLookAndFeel.loadSkin( skin2 )
-                );
+                Skin skin = null;
+
+                if( ( skin1 != null ) && ( skin2 != null ) )
+                {
+                    skin = new CompoundSkin(
+                        SkinLookAndFeel.loadSkin( skin1 ),
+                        SkinLookAndFeel.loadSkin( skin2 )
+                    );
+                }
+                else if( skin1 != null )
+                {
+                    skin = SkinLookAndFeel.loadSkin( skin1 );
+                    skin_errors += i18n_manager.getString( "no second skin" );
+                }
+                else
+                {
+                    skin_errors += i18n_manager.getString( "no skins" );
+                }
+
+                if( skin != null )
+                {
+                    SkinLookAndFeel.setSkin( skin );
+                    UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+                    UIManager.setLookAndFeel( new SkinLookAndFeel() );
+                    skin_errors += i18n_manager.getString( "skin applied" );
+                }
+                else
+                {
+                    skin_errors += i18n_manager.getString( "no skin applied" );
+                }
             }
-            else if( skin1 != null )
+            catch( Exception e )
             {
-                skin = SkinLookAndFeel.loadSkin( skin1 );
-                skin_errors += i18n_manager.getString( "no second skin" );
-            }
-            else
-            {
-                skin_errors += i18n_manager.getString( "no skins" );
+                skin_errors += i18n_manager.getString( "skin failure" );
+                if( skin1 != null ) { skin_errors += "(" + skin1 + ")\n"; }
+                if( skin2 != null ) { skin_errors += "(" + skin2 + ")\n"; }
+                skin_errors += e.getMessage() + "\n";
             }
 
-            if( skin != null )
-            {
-                SkinLookAndFeel.setSkin( skin );
-                UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-                UIManager.setLookAndFeel( new SkinLookAndFeel() );
-                skin_errors += i18n_manager.getString( "skin applied" );
-            }
-            else
-            {
-                skin_errors += i18n_manager.getString( "no skin applied" );
-            }
+            display_manager.printlnDebug( skin_errors );
         }
-        catch( Exception e )
-        {
-            skin_errors += i18n_manager.getString( "skin failure" );
-            if( skin1 != null ) { skin_errors += "(" + skin1 + ")\n"; }
-            if( skin2 != null ) { skin_errors += "(" + skin2 + ")\n"; }
-            skin_errors += e.getMessage() + "\n";
-        }
-        
-        display_manager.printlnDebug( skin_errors );
 
         // GUI
         
@@ -419,33 +422,51 @@ public class GeoIRC
     
     protected void initializeScriptingInterfaces()
     {
-        python_methods = new Hashtable();
-        python_interpreter = new PythonInterpreter();
-        python_script_interface = new PythonScriptInterface(
-            this, settings_manager, display_manager, variable_manager, i18n_manager, python_interpreter, python_methods
-        );
-        python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
-
-        display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
-        
-        tcl_procs = new Vector();
-        tcl_interpreter = new Interp();
-        tcl_script_interface = new TclScriptInterface(
-            this, settings_manager, display_manager, variable_manager, tcl_interpreter, tcl_procs
-        );
-        try
+        if( settings_manager.getBoolean( "/modules/python", false ) == true )
         {
-            tcl_interpreter.setVar(
-                "geoirc",
-                ReflectObject.newInstance( tcl_interpreter, TclScriptInterface.class, tcl_script_interface ),
-                0
+            python_methods = new Hashtable();
+            python_interpreter = new PythonInterpreter();
+            python_script_interface = new PythonScriptInterface(
+                this, settings_manager, display_manager, variable_manager, i18n_manager, python_interpreter, python_methods
             );
+            python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
             
-            display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
+            display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
         }
-        catch( TclException e )
+        else
         {
-            Util.printException( display_manager, e, i18n_manager.getString( "tcl init error" ) );
+            python_methods = null;
+            python_interpreter = null;
+            python_script_interface = null;
+        }
+        
+        if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+        {
+            tcl_procs = new Vector();
+            tcl_interpreter = new Interp();
+            tcl_script_interface = new TclScriptInterface(
+                this, settings_manager, display_manager, variable_manager, tcl_interpreter, tcl_procs
+            );
+            try
+            {
+                tcl_interpreter.setVar(
+                    "geoirc",
+                    ReflectObject.newInstance( tcl_interpreter, TclScriptInterface.class, tcl_script_interface ),
+                    0
+                );
+
+                display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
+            }
+            catch( TclException e )
+            {
+                Util.printException( display_manager, e, i18n_manager.getString( "tcl init error" ) );
+            }
+        }
+        else
+        {
+            tcl_procs = null;
+            tcl_interpreter = null;
+            tcl_script_interface = null;
         }
     }
     
@@ -894,12 +915,19 @@ public class GeoIRC
         transformed_message[ MSG_TEXT ] = line;
         transformed_message[ MSG_QUALITIES ] = qualities;
         
-        transformed_message = python_script_interface.onRaw(
-            transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
-        );
-        transformed_message = tcl_script_interface.onRaw(
-            transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
-        );
+        if( settings_manager.getBoolean( "/modules/python", false ) == true )
+        {
+            transformed_message = python_script_interface.onRaw(
+                transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
+            );
+        }
+        
+        if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+        {
+            transformed_message = tcl_script_interface.onRaw(
+                transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
+            );
+        }
         
         return transformed_message;
     }
@@ -962,8 +990,14 @@ public class GeoIRC
         }
         input_saved = false;
 
-        text = python_script_interface.onInput( text );
-        text = tcl_script_interface.onInput( text );
+        if( settings_manager.getBoolean( "/modules/python", false ) == true )
+        {
+            text = python_script_interface.onInput( text );
+        }
+        if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+        {
+            text = tcl_script_interface.onInput( text );
+        }
 
         /* What we do with this input depends on its nature.
          * 
@@ -1120,7 +1154,10 @@ public class GeoIRC
         {
             Component thief = e.getOppositeComponent();
         
-            if( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
+            if(
+                ( settings_manager.getBoolean( "/modules/skinning", false ) == true )
+                && ( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
+            )
             {
                 SwingUtilities.invokeLater( new Runnable()
                     {
@@ -1827,56 +1864,74 @@ public class GeoIRC
                 }
                 break;
             case CMD_EXEC_PY_METHOD:
-                if( args.length > 0 )
+                if( settings_manager.getBoolean( "/modules/python", false ) == true )
                 {
-                    PyMethod method = (PyMethod) python_methods.get( args[ 0 ] );
-                    if( method != null )
+                    if( args.length > 0 )
                     {
-                        try
+                        PyMethod method = (PyMethod) python_methods.get( args[ 0 ] );
+                        if( method != null )
                         {
-                            if( args.length > 1 )
+                            try
                             {
-                                method.__call__( new PyString( Util.stringArrayToString( args, 1 ) ) );
+                                if( args.length > 1 )
+                                {
+                                    method.__call__( new PyString( Util.stringArrayToString( args, 1 ) ) );
+                                }
+                                else
+                                {
+                                    method.__call__();
+                                }
                             }
-                            else
+                            catch( Exception e )
                             {
-                                method.__call__();
+                                Util.printException(
+                                    display_manager,
+                                    e,
+                                    i18n_manager.getString( "py method failure" ) );
                             }
                         }
-                        catch( Exception e )
-                        {
-                            Util.printException(
-                                display_manager,
-                                e,
-                                i18n_manager.getString( "py method failure" ) );
-                        }
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_EXEC_PY_METHOD ]
+                            + " <Python method name> [arguments]"
+                        );
                     }
                 }
                 else
                 {
                     display_manager.printlnDebug(
-                        "/" + CMDS[ CMD_EXEC_PY_METHOD ]
-                        + " <Python method name> [arguments]"
+                        i18n_manager.getString( "python not loaded" )
                     );
                 }
                 break;
             case CMD_EXEC_TCL:
-                if( arg_string != null )
+                if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
                 {
-                    try
+                    if( arg_string != null )
                     {
-                        tcl_interpreter.eval( arg_string );
+                        try
+                        {
+                            tcl_interpreter.eval( arg_string );
+                        }
+                        catch( TclException e )
+                        {
+                            Util.printException( display_manager, e, i18n_manager.getString( "tcl error" ) );
+                        }
                     }
-                    catch( TclException e )
+                    else
                     {
-                        Util.printException( display_manager, e, i18n_manager.getString( "tcl error" ) );
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_EXEC_TCL ]
+                            + " <Tcl code>"
+                        );
                     }
                 }
                 else
                 {
                     display_manager.printlnDebug(
-                        "/" + CMDS[ CMD_EXEC_TCL ]
-                        + " <Tcl code>"
+                        i18n_manager.getString( "tcl not loaded" )
                     );
                 }
                 break;
@@ -2124,44 +2179,62 @@ public class GeoIRC
                 display_manager.listWindows();
                 break;
             case CMD_LOAD_PY:
-                if( arg_string != null )
+                if( settings_manager.getBoolean( "/modules/python", false ) == true )
                 {
-                    display_manager.printlnDebug(
-                        i18n_manager.getString( "loading", new Object [] { arg_string } )
-                    );
-                    python_interpreter.execfile( arg_string );
-                }
-                else
-                {
-                    display_manager.printlnDebug(
-                        "/" + CMDS[ CMD_LOAD_PY ]
-                        + " <Python script filename>"
-                    );
-                }
-                break;
-            case CMD_LOAD_TCL:
-                if( arg_string != null )
-                {
-                    display_manager.printlnDebug(
-                        i18n_manager.getString( "loading", new Object [] { arg_string } )
-                    );
-                    try
+                    if( arg_string != null )
                     {
-                        tcl_interpreter.evalFile( arg_string );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString( "loading", new Object [] { arg_string } )
+                        );
+                        python_interpreter.execfile( arg_string );
                     }
-                    catch( TclException e )
+                    else
                     {
-                        Util.printException(
-                            display_manager, e,
-                            i18n_manager.getString( "load failure", new Object [] { arg_string } )
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_LOAD_PY ]
+                            + " <Python script filename>"
                         );
                     }
                 }
                 else
                 {
                     display_manager.printlnDebug(
-                        "/" + CMDS[ CMD_LOAD_TCL ]
-                        + " <Tcl script filename>"
+                        i18n_manager.getString( "python not loaded" )
+                    );
+                }
+                break;
+            case CMD_LOAD_TCL:
+                if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+                {
+                    if( arg_string != null )
+                    {
+                        display_manager.printlnDebug(
+                            i18n_manager.getString( "loading", new Object [] { arg_string } )
+                        );
+                        try
+                        {
+                            tcl_interpreter.evalFile( arg_string );
+                        }
+                        catch( TclException e )
+                        {
+                            Util.printException(
+                                display_manager, e,
+                                i18n_manager.getString( "load failure", new Object [] { arg_string } )
+                            );
+                        }
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_LOAD_TCL ]
+                            + " <Tcl script filename>"
+                        );
+                    }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        i18n_manager.getString( "tcl not loaded" )
                     );
                 }
                 break;

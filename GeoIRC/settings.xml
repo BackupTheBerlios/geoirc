@@ -382,6 +382,13 @@
           </map>
         </node>
       </node>
+      <node name="modules">
+        <map>
+          <entry key="python" value="false" />
+          <entry key="tcl" value="false" />
+          <entry key="skinning" value="false" />
+        </map>
+      </node>
       <node name="personal">
         <map>
           <entry key="nick1" value="GeoIRC_User" />
