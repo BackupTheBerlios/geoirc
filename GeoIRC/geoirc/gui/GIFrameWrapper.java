@@ -364,4 +364,17 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         }
         return retval;
     }
+    
+    public void repaint()
+    {
+        switch( type )
+        {
+            case GEOIRC_FRAME:
+                ((GeoIRC) frame).repaint();
+                break;
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).revalidate();
+                break;
+        }
+    }
 }

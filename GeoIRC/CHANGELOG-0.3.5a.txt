@@ -8,7 +8,7 @@ dockpane, floatwindow to floatpane, undockwindow to undockpane, clearwindow to
 clearpane.  Removed command:
 listdockedwindows.  Added commands: nextpane, previouspane, listpanes,
 activatepane, activatetextpane, activatepanebyindex, newexternalwindow.
-Pistos 2003-10-23 to 2003-10-29
+Pistos 2003-10-23 to 2003-11-03
 
 Changed underlying XML processing code for settings.
 Pistos 2003-10-27 to 2003-10-28

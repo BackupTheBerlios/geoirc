@@ -432,6 +432,13 @@ public class DisplayManager
                 GIPaneWrapper partner_gipw = (GIPaneWrapper) panes.elementAt( partner_index );
                 Container pane = gipw.getPane();
                 Container partner = partner_gipw.getPane();
+                
+                if( gipw.getParent().getType() == SPLIT_PANE )
+                {
+                    // The pane we're docking is already docked somewhere;
+                    // undock it before docking it into the new parent pane.
+                    undock( gipw );
+                }
 
                 JSplitPane split_pane = null;
 
@@ -578,9 +585,16 @@ public class DisplayManager
                 
                 if( partner_index == DESKTOP_PANE_INDEX )
                 {
+                    /*
                     geo_irc.recordMainFrameState();
                     geo_irc.pack();
                     geo_irc.restoreMainFrameState();
+                     */
+                    geoirc_gifw.repaint();
+                }
+                else
+                {
+                    gipw.getFrame().repaint();
                 }
 
                 success = true;
@@ -595,85 +609,103 @@ public class DisplayManager
         undock( userIndexToTrueIndex( pane_user_index ) );
     }
     
-    public void undock( int pane_index )
+    public boolean undock( int pane_index )
     {
+        boolean success = false;
+        
         if(
-            ( pane_index < 0 )
-            || ( pane_index >= panes.size() )
-            || ( ! isUserPane( pane_index, EXCLUDE_SPLIT_PANES ) )
+            ( pane_index >= 0 )
+            && ( pane_index < panes.size() )
+            && isUserPane( pane_index, EXCLUDE_SPLIT_PANES )
         )
         {
-            return;
-        }
         
-        GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( pane_index );
-        GIPaneWrapper parent_gipw = gipw.getParent();
-        if( parent_gipw.getType() != SPLIT_PANE )
-        {
-            return;
-        }
-        
-        panes.remove( parent_gipw );
-        
-        Container pane = gipw.getPane();
-        JSplitPane split_pane = (JSplitPane) parent_gipw.getPane();
-        Container split_pane_parent = split_pane.getParent();
-        Component other_component = null;
-        
-        if( split_pane.getTopComponent() == pane )
-        {
-            other_component = split_pane.getBottomComponent();
-        }
-        else
-        {
-            other_component = split_pane.getTopComponent();
-        }
-        GIPaneWrapper partner_gipw = getPaneWrapperByPane( other_component );
-        
-        gipw.setSplitRank( SPLIT_NOT_SPLIT_MEMBER );
-        partner_gipw.setSplitRank( SPLIT_NOT_SPLIT_MEMBER );
-        
-        /* Replace the split pane which housed the pane we're undocking with
-         * the 'partner component' of the pane.
-         *
-         * e.g. if a JSplitPane, A, contained some Component B, and the
-         * pane we are undocking, C, then we want to replace A with B.
-         */
-        
-        if( split_pane_parent instanceof JSplitPane )
-        {
-            JSplitPane parental_split_pane = (JSplitPane) split_pane_parent;
-            if( parental_split_pane.getTopComponent() == split_pane )
+            GIPaneWrapper gipw = (GIPaneWrapper) panes.elementAt( pane_index );
+            if( undock( gipw ) )
             {
-                parental_split_pane.setTopComponent( other_component );
-                partner_gipw.setSplitRank( SPLIT_PRIMARY );
+                GIWindow window = new GIWindow( this, settings_manager, gipw.getTitle(), panes, frames );
+                window.addPane( gipw.getPane() );
+                gipw.setParent( window.getPaneWrapper() );
+                addNewWindow( window );
+
+                recordDesktopState();
+                
+                success = true;
+            }
+        }
+        
+        return success;
+    }
+    
+    protected boolean undock( GIPaneWrapper gipw )
+    {
+        boolean success = false;
+        
+        GIPaneWrapper parent_gipw = gipw.getParent();
+        if( parent_gipw.getType() == SPLIT_PANE )
+        {
+            panes.remove( parent_gipw );
+
+            Container pane = gipw.getPane();
+            JSplitPane split_pane = (JSplitPane) parent_gipw.getPane();
+            Container split_pane_parent = split_pane.getParent();
+            Component other_component = null;
+
+            if( split_pane.getTopComponent() == pane )
+            {
+                other_component = split_pane.getBottomComponent();
             }
             else
             {
-                parental_split_pane.setBottomComponent( other_component );
-                partner_gipw.setSplitRank( SPLIT_SECONDARY );
+                other_component = split_pane.getTopComponent();
             }
-        }
-        else
-        {
-            split_pane_parent.remove( split_pane );
-            split_pane_parent.add( other_component );
-            if( split_pane_parent instanceof GeoIRC )
+            GIPaneWrapper partner_gipw = getPaneWrapperByPane( other_component );
+
+            gipw.setSplitRank( SPLIT_NOT_SPLIT_MEMBER );
+            partner_gipw.setSplitRank( SPLIT_NOT_SPLIT_MEMBER );
+
+            /* Replace the split pane which housed the pane we're undocking with
+             * the 'partner component' of the pane.
+             *
+             * e.g. if a JSplitPane, A, contained some Component B, and the
+             * pane we are undocking, C, then we want to replace A with B.
+             */
+
+            if( split_pane_parent instanceof JSplitPane )
             {
-                geo_irc.recordMainFrameState();
-                geo_irc.pack();
-                geo_irc.restoreMainFrameState();
+                JSplitPane parental_split_pane = (JSplitPane) split_pane_parent;
+                if( parental_split_pane.getTopComponent() == split_pane )
+                {
+                    parental_split_pane.setTopComponent( other_component );
+                    partner_gipw.setSplitRank( SPLIT_PRIMARY );
+                }
+                else
+                {
+                    parental_split_pane.setBottomComponent( other_component );
+                    partner_gipw.setSplitRank( SPLIT_SECONDARY );
+                }
             }
+            else
+            {
+                split_pane_parent.remove( split_pane );
+                split_pane_parent.add( other_component );
+                if( split_pane_parent instanceof GeoIRC )
+                {
+                    /*
+                    geo_irc.recordMainFrameState();
+                    geo_irc.pack();
+                    geo_irc.restoreMainFrameState();
+                     */
+                    geoirc_gifw.repaint();
+                }
+            }
+            GIPaneWrapper spp_gipw = getPaneWrapperByPane( split_pane_parent );
+            partner_gipw.setParent( spp_gipw );
+            
+            success = true;
         }
-        GIPaneWrapper spp_gipw = getPaneWrapperByPane( split_pane_parent );
-        partner_gipw.setParent( spp_gipw );
         
-        GIWindow window = new GIWindow( this, settings_manager, gipw.getTitle(), panes, frames );
-        window.addPane( pane );
-        gipw.setParent( window.getPaneWrapper() );
-        addNewWindow( window );
-        
-        recordDesktopState();
+        return success;
     }
     
     public GIFrameWrapper getFrameByIndex( int index )
