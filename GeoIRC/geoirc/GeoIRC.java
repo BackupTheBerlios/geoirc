@@ -33,10 +33,7 @@ import java.awt.event.*;
 import java.beans.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 import java.util.prefs.*;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -590,21 +587,24 @@ public class GeoIRC
     public void focusLost( FocusEvent e )
     {
         Component thief = e.getOppositeComponent();
-        /*
         if(
-            ( thief instanceof JTextPane )
+            ( thief instanceof com.l2fprod.gui.plaf.skin.SkinWindowButton )
         )
         {
             SwingUtilities.invokeLater( new Runnable()
                 {
                     public void run()
                     {
+                        try
+                        {
+                            Thread.sleep( 300 );  // milliseconds
+                        } catch( InterruptedException e ) { }
                         input_field.grabFocus();
                     }
                 }
             );
         }
-        else */if( thief != null )
+        else if( thief != null )
         {
             display_manager.printlnDebug( "Focus stolen by: " 
             + thief.getClass().toString() );
@@ -698,6 +698,27 @@ public class GeoIRC
                     {
                         display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
                         display_manager.printlnDebug( "Try /listservers" );
+                    }
+                }
+                break;
+            case CMD_HELP:
+                {
+                    display_manager.printlnDebug( "Built-in commands:" );
+                    
+                    String [] sa = (String []) CMDS.clone();
+                    Arrays.sort( sa );
+                    for( int i = 0; i < sa.length; i++ )
+                    {
+                        display_manager.printlnDebug( sa[ i ] );
+                    }
+                    
+                    display_manager.printlnDebug( "Known aliases:" );
+                    
+                    sa = alias_manager.getAliases();
+                    Arrays.sort( sa );
+                    for( int i = 0; i < sa.length; i++ )
+                    {
+                        display_manager.printlnDebug( sa[ i ] );
                     }
                 }
                 break;

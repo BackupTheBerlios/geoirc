@@ -296,6 +296,7 @@ public class Server
                 else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
                 {
                     send( "PONG GeoIRC" );
+                    display_manager.printlnDebug( "PONG sent to " + Server.this.toString() );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                 {

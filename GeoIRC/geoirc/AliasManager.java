@@ -80,4 +80,9 @@ public class AliasManager implements GeoIRCConstants
         aliases.add( ca );
     }
     
+    public String [] getAliases()
+    {
+        String [] retval = new String[ 0 ];
+        return (String []) aliases.toArray( retval );
+    }
 }
