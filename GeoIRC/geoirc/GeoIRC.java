@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 import java.util.LinkedList;
+import java.util.prefs.*;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.swing.*;
@@ -26,7 +27,9 @@ public class GeoIRC
     implements
         GeoIRCConstants,
         ActionListener,
-        CommandExecutor
+        CommandExecutor,
+        PreferenceChangeListener,
+        NodeChangeListener
 {
     public static final String [] CMDS =
     {
@@ -57,6 +60,7 @@ public class GeoIRC
     
     protected static final int MAX_HISTORY_SIZE = 30;
     protected static final int MOST_RECENT_ENTRY = 0;
+    protected static Preferences myPrefs = Preferences.userNodeForPackage(GeoIRC.class);
     
     protected Vector servers; // of Server objects
     protected DisplayManager display_manager;
@@ -89,7 +93,12 @@ public class GeoIRC
         display_manager = new DisplayManager( getContentPane(), menu_bar );
         setFocusable( false );
         
-        current_nick = "Pistos|GeoIRC";
+        SettingsManager myMgr = new SettingsManager(display_manager);
+        myMgr.reloadXML();
+        myPrefs = myPrefs.node("personal");
+        current_nick = myPrefs.get("PrimaryNick", "GeoIRC_Guest");
+        //current_nick = "Pistos|GeoIRC";
+        
 
         // Load settings.
         
@@ -445,6 +454,14 @@ public class GeoIRC
         geoirc.show();
     }
     
+    public void childAdded(NodeChangeEvent evt) {
+    }    
+    
+    public void childRemoved(NodeChangeEvent evt) {
+    }
+    
+    public void preferenceChange(PreferenceChangeEvent evt) {
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu file_menu;
