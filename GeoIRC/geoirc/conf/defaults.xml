@@ -57,6 +57,11 @@
             <pattern>\d{1,2}+</pattern>
             <javaType>java.lang.Integer</javaType>
 		</rule>
+		<rule name="COLOR">
+			<default>fgffffff</default>
+            <pattern>[0-9a-fA-F]{6}+</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>																		
 		<rule name="FGCOLOR">
 			<default>000000</default>
             <pattern>[0-9a-fA-F]{6}+</pattern>
