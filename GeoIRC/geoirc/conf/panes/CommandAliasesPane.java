@@ -11,6 +11,7 @@ import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.JValidatingTable;
+import geoirc.conf.SettingsPeer;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
 import geoirc.conf.beans.ValueRule;
@@ -53,6 +54,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
 
     public void initialize()
     {
+        ltm.setData( SettingsPeer.loadCommandAliases( settings_manager ) );
         table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);        
@@ -71,21 +73,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
         table.setValidatingCellEditor(command_field, 1);
         
         addComponent(new TitlePane("Command Aliases"), 0, 0, 5, 1, 0, 0);
-        String path = "/command aliases/";
-        int i = 0;
-        String nodePath = path + String.valueOf(i) + "/";
-        while (settings_manager.nodeExists(nodePath))
-        {
-            String alias = settings_manager.getString(nodePath + "alias", "");
-            String expansion = settings_manager.getString(nodePath + "expansion", "");
-            if (alias.length() > 0)
-            {
-                ltm.addRow(new CommandAlias(alias, expansion));
-            }
-            i++;
-            nodePath = path + String.valueOf(i) + "/";
-        }
-
+        
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(120);
         table.getColumnModel().getColumn(1).setPreferredWidth(380);

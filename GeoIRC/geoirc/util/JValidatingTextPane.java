@@ -14,6 +14,7 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeListener;
 import java.util.regex.Pattern;
 
+import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -72,6 +73,8 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
      */
     protected void init()
     {
+        this.setBorder( BorderFactory.createLineBorder(Color.BLACK) );
+        
         if (pattern == null || pattern.pattern() == null)
         {
             pattern = Pattern.compile(".*", Pattern.DOTALL);
@@ -205,7 +208,14 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
     public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
-        validateText();
+        if( !enabled )
+        {
+            this.setBackground( Color.LIGHT_GRAY );
+        }
+        else
+        {
+            this.setBackground( Color.WHITE );
+        }        
     }
 
     /**
@@ -228,4 +238,22 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
     {
         removePropertyChangeListener(listener);
     }    
+
+    /* (non-Javadoc)
+     * @see javax.swing.text.JTextComponent#setEditable(boolean)
+     */
+    public void setEditable(boolean enabled)
+    {
+        super.setEditable(enabled);
+        
+        if( !enabled )
+        {
+            this.setBackground( Color.LIGHT_GRAY );
+        }
+        else
+        {
+            this.setBackground( Color.WHITE );
+        }        
+    }
+
 }

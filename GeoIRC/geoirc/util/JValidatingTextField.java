@@ -230,8 +230,23 @@ public class JValidatingTextField extends JTextField implements DocumentListener
         {
             this.setBackground( Color.WHITE );
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.Component#setEnabled(boolean)
+     */
+    public void setEditable(boolean enabled)
+    {
+        super.setEditable(enabled);
         
-        validateText();
+        if( !enabled )
+        {
+            this.setBackground( Color.LIGHT_GRAY );
+        }
+        else
+        {
+            this.setBackground( Color.WHITE );
+        }        
     }
 
     /**
