@@ -56,6 +56,7 @@ public class SoundTrigger
         catch( SoundException e )
         {
             display_manager.printlnDebug( e.getMessage() );
+            display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
         }
     }
     

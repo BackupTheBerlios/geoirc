@@ -63,10 +63,10 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="debug" />
-              <entry key="x" value="567" />
-              <entry key="y" value="378" />
-              <entry key="height" value="378" />
-              <entry key="width" value="567" />
+              <entry key="x" value="0" />
+              <entry key="y" value="0" />
+              <entry key="height" value="464" />
+              <entry key="width" value="633" />
               <entry key="filter" value="debug" />
             </map>
           </node>
@@ -75,9 +75,9 @@
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="irc.freenode.net" />
               <entry key="x" value="0" />
-              <entry key="y" value="373" />
-              <entry key="height" value="378" />
-              <entry key="width" value="567" />
+              <entry key="y" value="464" />
+              <entry key="height" value="464" />
+              <entry key="width" value="633" />
               <entry key="filter" value="irc.freenode.net" />
             </map>
           </node>
@@ -85,10 +85,10 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geoirc on irc.freenode.net" />
-              <entry key="x" value="567" />
+              <entry key="x" value="633" />
               <entry key="y" value="0" />
-              <entry key="height" value="378" />
-              <entry key="width" value="567" />
+              <entry key="height" value="464" />
+              <entry key="width" value="633" />
               <entry key="filter" value="irc.freenode.net AND #geoirc" />
             </map>
           </node>
@@ -96,10 +96,10 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geoshell on irc.freenode.net" />
-              <entry key="x" value="4" />
-              <entry key="y" value="2" />
-              <entry key="height" value="378" />
-              <entry key="width" value="567" />
+              <entry key="x" value="633" />
+              <entry key="y" value="465" />
+              <entry key="height" value="464" />
+              <entry key="width" value="633" />
               <entry key="filter" value="irc.freenode.net AND #geoshell" />
             </map>
           </node>
@@ -138,6 +138,22 @@
           <entry key="nick2" value="GeoIRC|User" />
           <entry key="nick3" value="GeoIRCUser" />
         </map>
+      </node>
+      <node name="sound">
+        <map />
+        <node name="triggers">
+          <map />
+          <node name="0">
+            <map>
+              <entry key="filter" value="from=Pistos" />
+              <entry key="regexp" value=".*" />
+              <entry key="filename" value="D:\\GeoIRC\\package\\bloop.wav" />
+            </map>
+          </node>
+          <node name="1">
+            <map />
+          </node>
+        </node>
       </node>
     </node>
   </root>
