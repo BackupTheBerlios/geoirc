@@ -26,6 +26,7 @@ public class TclScriptInterface
     protected Vector tcl_procs;
     
     protected Vector raw_listeners;
+    protected Vector input_listeners;
     protected Vector print_listeners;
     
     private TclScriptInterface() { }
@@ -47,6 +48,7 @@ public class TclScriptInterface
         this.tcl_procs = tcl_procs;
         
         raw_listeners = new Vector();
+        input_listeners = new Vector();
         print_listeners = new Vector();
     }
     
@@ -77,6 +79,11 @@ public class TclScriptInterface
     public void registerRawListener( String proc )
     {
         raw_listeners.add( proc );
+    }
+    
+    public void registerInputListener( String proc )
+    {
+        input_listeners.add( proc );
     }
     
     public void registerProc( String proc_name )
@@ -123,6 +130,37 @@ public class TclScriptInterface
         retval[ 1 ] = qualities;
         
         return retval;
+    }
+    
+    public String onInput( String input_line )
+    {
+        String tcl_proc;
+        TclObject transformed_line = null;
+        
+        String line = input_line;
+        
+        for( int i = 0, n = input_listeners.size(); i < n; i++ )
+        {
+            tcl_proc = (String) input_listeners.elementAt( i );
+            if( tcl_proc != null )
+            {
+                try
+                {
+                    tcl_interpreter.eval( tcl_proc + " \"" + line + "\"" );
+                    transformed_line = tcl_interpreter.getResult();
+                    if( transformed_line != null )
+                    {
+                        line = transformed_line.toString();
+                    }
+                }
+                catch( Exception e )
+                {
+                    Util.printException( display_manager, e, "Exception when executing Tcl input parser." );
+                }
+            }
+        }
+        
+        return line;
     }
     
 }

@@ -27,6 +27,7 @@ public class PythonScriptInterface
     protected Hashtable python_methods;
     
     protected Vector raw_listeners;
+    protected Vector input_listeners;
     protected Vector print_listeners;
     
     private PythonScriptInterface() { }
@@ -48,6 +49,7 @@ public class PythonScriptInterface
         this.python_methods = python_methods;
         
         raw_listeners = new Vector();
+        input_listeners = new Vector();
         print_listeners = new Vector();
     }
     
@@ -78,6 +80,11 @@ public class PythonScriptInterface
     public void registerRawListener( PyObject listener )
     {
         raw_listeners.add( listener );
+    }
+    
+    public void registerInputListener( PyObject listener )
+    {
+        input_listeners.add( listener );
     }
     
     public void registerMethod( PyString object, PyString method )
@@ -125,6 +132,38 @@ public class PythonScriptInterface
         retval[ 1 ] = qualities;
         
         return retval;
+    }
+
+    public String onInput( String line_ )
+    {
+        PyObject py_object;
+        PyMethod method;
+        PyObject transformed_line = null;
+        
+        String line = line_;
+        
+        for( int i = 0, n = input_listeners.size(); i < n; i++ )
+        {
+            py_object = (PyObject) input_listeners.elementAt( i );
+            method = (PyMethod) py_object.__findattr__( new PyString( "onInput" ) );
+            if( method != null )
+            {
+                try
+                {
+                    transformed_line = method.__call__( new PyString( line ) );
+                }
+                catch( Exception e )
+                {
+                    Util.printException( display_manager, e, "Exception when executing Python input parser." );
+                }
+                if( transformed_line != null )
+                {
+                    line = ( transformed_line.__findattr__( new PyString( "text" ) ) ).toString();
+                }
+            }
+        }
+        
+        return line;
     }
     
 }

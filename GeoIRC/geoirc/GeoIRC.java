@@ -902,6 +902,10 @@ public class GeoIRC
     public void useInputField()
     {
         String text = input_field.getText();
+        
+        text = python_script_interface.onInput( text );
+        text = tcl_script_interface.onInput( text );
+        
         if( ( text == null ) || ( text.equals( "" ) ) )
         {
             return;
