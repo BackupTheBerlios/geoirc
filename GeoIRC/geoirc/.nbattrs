@@ -27,10 +27,10 @@
         <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="HighlightManager"/>
     </fileobject>
     <fileobject name="DisplayManager.java">
-        <attr name="class_dependency_java.awt.event.KeyListener" stringvalue="DisplayManager"/>
         <attr name="class_dependency_java.awt.event.ComponentListener" stringvalue="DisplayManager"/>
-        <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="DisplayManager.OpenSettingsDialogListener"/>
+        <attr name="class_dependency_java.awt.event.KeyListener" stringvalue="DisplayManager"/>
         <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="DisplayManager"/>
+        <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="DisplayManager.OpenSettingsDialogListener"/>
         <attr name="class_dependency_javax.swing.event.InternalFrameListener" stringvalue="DisplayManager"/>
     </fileobject>
     <fileobject name="GIInfoPane.java">
@@ -54,8 +54,8 @@
         <attr name="class_dependency_geoirc.CommandExecutor" stringvalue="GeoIRC"/>
         <attr name="class_dependency_java.awt.event.FocusListener" stringvalue="GeoIRC"/>
         <attr name="class_dependency_geoirc.DCCAgent" stringvalue="GeoIRC"/>
-        <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="GeoIRC"/>
         <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="GeoIRC"/>
+        <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="GeoIRC"/>
         <attr name="class_dependency_javax.swing.JFrame" stringvalue="GeoIRC"/>
     </fileobject>
 </attributes>

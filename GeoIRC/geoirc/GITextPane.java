@@ -123,157 +123,128 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         
         // Colours
         
-        int mirc_char_index = text.indexOf( MIRC_COLOUR_CONTROL_CHAR );
+        int ptr = 0;
         String remainder;
         Matcher m;
         String format;
         Vector formats = new Vector();
         Vector indices = new Vector();
-        
-        while( mirc_char_index > -1 )
-        {
-            // Get the number(s) following the control code.
-            
-            remainder = text.substring( mirc_char_index + 1 );
-            m = Pattern.compile( "^(\\d{1,2}(?:,\\d{1,2})?).*" ).matcher( remainder );
-            format = "";
-            SimpleAttributeSet formatting = new SimpleAttributeSet();
-            
-            if( m.find() )
-            {
-                format = m.group( 1 );
-                
-                String [] fg_bg = format.split( "," );
-                int [] rgb = new int[ 3 ];
-                rgb = Util.getRGB(
-                    settings_manager.getString(
-                        "/gui/format/mirc colours/" + fg_bg[ 0 ],
-                        DEFAULT_MIRC_FOREGROUND_COLOUR
-                    )
-                );
-                StyleConstants.setForeground(
-                    formatting,
-                    new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
-                );
-                
-                if( fg_bg.length > 1 )
-                {
-                    rgb = Util.getRGB(
-                        settings_manager.getString(
-                            "/gui/format/mirc colours/" + fg_bg[ 1 ],
-                            DEFAULT_MIRC_BACKGROUND_COLOUR
-                        )
-                    );
-                    StyleConstants.setBackground(
-                        formatting,
-                        new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
-                    );
-                }
-
-                formats.add( formatting );
-            }
-            else
-            {
-                StyleConstants.setForeground( formatting, foreground_colour );
-                StyleConstants.setBackground( formatting, background_colour );
-                formats.add( formatting );
-            }
-            indices.add( new Integer( mirc_char_index ) );
-            
-            // Remove the parsed format code string.
-            text =
-                text.substring( 0, mirc_char_index )
-                + text.substring( mirc_char_index + format.length() + 1 );
-            
-            mirc_char_index = text.indexOf( MIRC_COLOUR_CONTROL_CHAR, mirc_char_index );
-        }
-        
-        // Bold
-        
-        mirc_char_index = text.indexOf( MIRC_BOLD_CONTROL_CHAR );
         boolean bold = false;
-        while( mirc_char_index > -1 )
-        {
-            bold = ! bold;
-            SimpleAttributeSet formatting = new SimpleAttributeSet();
-            StyleConstants.setBold(
-                formatting,
-                bold
-            );
-            
-            formats.add( formatting );
-            indices.add( new Integer( mirc_char_index ) );
-            
-            // Remove the parsed format code string.
-            text =
-                text.substring( 0, mirc_char_index )
-                + text.substring( mirc_char_index + 1 );
-            
-            mirc_char_index = text.indexOf( MIRC_BOLD_CONTROL_CHAR, mirc_char_index );
-        }
-        
-        // Italics
-        
-        mirc_char_index = text.indexOf( MIRC_ITALIC_CONTROL_CHAR );
         boolean italic = false;
-        while( mirc_char_index > -1 )
-        {
-            italic = ! italic;
-            SimpleAttributeSet formatting = new SimpleAttributeSet();
-            StyleConstants.setItalic(
-                formatting,
-                italic
-            );
-            
-            formats.add( formatting );
-            indices.add( new Integer( mirc_char_index ) );
-            
-            // Remove the parsed format code string.
-            text =
-                text.substring( 0, mirc_char_index )
-                + text.substring( mirc_char_index + 1 );
-            
-            mirc_char_index = text.indexOf( MIRC_ITALIC_CONTROL_CHAR, mirc_char_index );
-        }
-        
-        // Underline
-        
-        mirc_char_index = text.indexOf( MIRC_UNDERLINE_CONTROL_CHAR );
         boolean underline = false;
-        while( mirc_char_index > -1 )
-        {
-            underline = ! underline;
-            SimpleAttributeSet formatting = new SimpleAttributeSet();
-            StyleConstants.setUnderline(
-                formatting,
-                underline
-            );
-            
-            formats.add( formatting );
-            indices.add( new Integer( mirc_char_index ) );
-            
-            // Remove the parsed format code string.
-            text =
-                text.substring( 0, mirc_char_index )
-                + text.substring( mirc_char_index + 1 );
-            
-            mirc_char_index = text.indexOf( MIRC_UNDERLINE_CONTROL_CHAR, mirc_char_index );
-        }
+        SimpleAttributeSet formatting;
+        int len = text.length();
         
-        // Normal
-        
-        mirc_char_index = text.indexOf( MIRC_NORMAL_CONTROL_CHAR );
-        while( mirc_char_index > -1 )
+        while( ptr < len )
         {
-            formats.add( null );
-            indices.add( new Integer( mirc_char_index ) );
-            
-            // Remove the parsed format code string.
-            text =
-                text.substring( 0, mirc_char_index )
-                + text.substring( mirc_char_index + 1 );
-            
-            mirc_char_index = text.indexOf( MIRC_NORMAL_CONTROL_CHAR, mirc_char_index );
+            switch( text.charAt( ptr ) )
+            {
+                case MIRC_COLOUR_CONTROL_CHAR:
+                    // Get the number(s) following the control code.
+
+                    remainder = text.substring( ptr + 1 );
+                    m = Pattern.compile( "^(\\d{1,2}(?:,\\d{1,2})?).*" ).matcher( remainder );
+                    format = "";
+                    formatting = new SimpleAttributeSet();
+
+                    if( m.find() )
+                    {
+                        format = m.group( 1 );
+
+                        String [] fg_bg = format.split( "," );
+                        int [] rgb = new int[ 3 ];
+                        rgb = Util.getRGB(
+                            settings_manager.getString(
+                                "/gui/format/mirc colours/" + fg_bg[ 0 ],
+                                DEFAULT_MIRC_FOREGROUND_COLOUR
+                            )
+                        );
+                        StyleConstants.setForeground(
+                            formatting,
+                            new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                        );
+
+                        if( fg_bg.length > 1 )
+                        {
+                            rgb = Util.getRGB(
+                                settings_manager.getString(
+                                    "/gui/format/mirc colours/" + fg_bg[ 1 ],
+                                    DEFAULT_MIRC_BACKGROUND_COLOUR
+                                )
+                            );
+                            StyleConstants.setBackground(
+                                formatting,
+                                new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                            );
+                        }
+
+                        formats.add( formatting );
+                    }
+                    else
+                    {
+                        StyleConstants.setForeground( formatting, foreground_colour );
+                        StyleConstants.setBackground( formatting, background_colour );
+                        formats.add( formatting );
+                    }
+                    indices.add( new Integer( ptr ) );
+
+                    // Remove the parsed format code string.
+                    text =
+                        text.substring( 0, ptr )
+                        + text.substring( ptr + format.length() + 1 );
+                    len = text.length();
+                    break;
+                    
+                case MIRC_BOLD_CONTROL_CHAR:
+                    bold = ! bold;
+                    formatting = new SimpleAttributeSet();
+                    StyleConstants.setBold( formatting, bold );
+
+                    formats.add( formatting );
+                    indices.add( new Integer( ptr ) );
+
+                    // Remove the parsed format code string.
+                    text = text.substring( 0, ptr ) + text.substring( ptr + 1 );
+                    len = text.length();
+                    
+                    break;
+                case MIRC_ITALIC_CONTROL_CHAR:
+                    italic = ! italic;
+                    formatting = new SimpleAttributeSet();
+                    StyleConstants.setItalic( formatting, italic );
+
+                    formats.add( formatting );
+                    indices.add( new Integer( ptr ) );
+
+                    // Remove the parsed format code string.
+                    text = text.substring( 0, ptr ) + text.substring( ptr + 1 );
+                    len = text.length();
+                    break;
+                case MIRC_UNDERLINE_CONTROL_CHAR:
+                    underline = ! underline;
+                    formatting = new SimpleAttributeSet();
+                    StyleConstants.setUnderline( formatting, underline );
+
+                    formats.add( formatting );
+                    indices.add( new Integer( ptr ) );
+
+                    // Remove the parsed format code string.
+                    text = text.substring( 0, ptr ) + text.substring( ptr + 1 );
+                    len = text.length();
+                    break;
+                case MIRC_NORMAL_CONTROL_CHAR:
+                    formats.add( null );
+                    indices.add( new Integer( ptr ) );
+
+                    // Remove the parsed format code string.
+                    text = text.substring( 0, ptr ) + text.substring( ptr + 1 );
+                    len = text.length();
+                    break;
+                default:
+                    ptr++;
+                    continue;
+                    //break;
+            }
         }
         
         try
