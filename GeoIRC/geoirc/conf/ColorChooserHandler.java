@@ -44,19 +44,7 @@ public class ColorChooserHandler implements ActionListener
 		Color col = JColorChooser.showDialog(pane, "Choose Color", color);
 		if(col != null)
 		{				
-			StringBuffer sCol = new StringBuffer();				
-			appendHexColor(sCol, col.getRed());
-			appendHexColor(sCol, col.getGreen());
-			appendHexColor(sCol, col.getBlue());
-			field.setText(sCol.toString());
+			field.setText( Util.colorToHexString(col));
 		}							
-	}
-		
-	private void appendHexColor(StringBuffer sb, int val)
-	{
-		if(val == 0)
-			sb.append("00");
-		else
-			sb.append(Integer.toHexString(val));
-	}
+	}		
 }	
