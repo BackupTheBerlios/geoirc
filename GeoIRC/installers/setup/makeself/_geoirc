@@ -14,7 +14,7 @@ FILES=`find $SETUP/*|wc -l|sed -e 's/ //g'`
 echo "$FILES files copied."
 
 echo "Creating install script..."
-./makeself.sh --bzip2 $SETUP geoirc-install.run GeoIRC './setup.sh' >/dev/null 2>&1
+./makeself.sh --bzip2 $SETUP geoirc-install.run GeoIRC './setup' >/dev/null 2>&1
 
 echo "Cleaning up..."
 rm -rf $SETUP
