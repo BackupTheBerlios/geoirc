@@ -74,7 +74,7 @@ public class HighlightningPane
 
 	private void initComponents()
 	{
-		addComponent(new TitlePane("Highlightning"), 0, 0, 5, 1, 0, 0);
+		addComponent(new TitlePane("Highlightning"), 0, 0, 10, 1, 0, 0);
 
 		table = new JTable(ltm);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -112,10 +112,10 @@ public class HighlightningPane
 			}			
 		});
 		
-		addComponent(button, 4, 2, 1, 1, 1, 0, GridBagConstraints.NORTHEAST);
+		addComponent(button, 4, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
 		
-		addLayoutStopper(0,3);
-		
+		addHorizontalLayoutStopper(5,2);
+		addLayoutStopper(0,3);		
 	}
 
 	private List getHighlightnings()
