@@ -6,6 +6,8 @@
 
 package geoirc;
 
+import geoirc.util.Util;
+
 /**
  *
  * @author  Pistos
@@ -47,12 +49,7 @@ public class DCCRequest implements GeoIRCConstants
         String address_str = args[ 2 ];
         port_str = args[ 3 ];
 
-        long ip = Long.parseLong( address_str );
-        ip_str =
-            Long.toString( ( ip & 0xFF000000 ) / 0x1000000 ) + "."
-            + Long.toString( ( ip & 0x00FF0000 ) / 0x10000 ) + "."
-            + Long.toString( ( ip & 0x0000FF00 ) / 0x100 ) + "."
-            + Long.toString( ip & 0x000000FF );
+        ip_str = Util.getIPAddressString( address_str );
 
         // Parse for the sake of checking data correctness.
         Integer.parseInt( port_str );

@@ -11,6 +11,7 @@ import geoirc.GeoIRCConstants;
 
 import java.awt.Color;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -181,5 +182,53 @@ public class Util implements GeoIRCConstants
     public static String getDefaultIfNull(Object object, String def)
     {
         return getDefaultIfNull(object, (Object)def).toString();
+    }
+    
+    public static String get32BitAddressString( String ip_address )
+    {
+        String retval = null;
+        
+        if( Pattern.matches( "\\d+\\.\\d+\\.\\d+\\.\\d+", ip_address ) )
+        {
+            try
+            {
+                // Get the byte for each of the four parts of the IP address.
+                
+                String [] ip_parts = ip_address.split( "\\." );
+                int [] bytes = new int[ 4 ];
+                for( int i = 0; i < 4; i++ )
+                {
+                    bytes[ i ] = Integer.parseInt( ip_parts[ i ] );
+                }
+                
+                long net_addr =
+                    bytes[ 0 ] * 0x1000000
+                    + bytes[ 1 ] * 0x10000
+                    + bytes[ 2 ] * 0x100
+                    + bytes[ 3 ];
+                
+                retval = Long.toString( net_addr );
+            }
+            catch( NumberFormatException e ) { }
+        }
+        
+        return retval;
+    }
+    
+    public static String getIPAddressString( String _32bit_address_string )
+    {
+        // Example: DCC CHAT chat 3655733111 4453
+        // 3655733111 == 0xD9E60F77
+        // 0xD9 == 217
+        // 0xE6 == 230
+        // 0x0F == 15
+        // 0x77 == 119
+        // 217.230.15.119
+        
+        long ip = Long.parseLong( _32bit_address_string );
+        return Long.toString( ( ip & 0xFF000000 ) / 0x1000000 ) + "."
+            + Long.toString( ( ip & 0x00FF0000 ) / 0x10000 ) + "."
+            + Long.toString( ( ip & 0x0000FF00 ) / 0x100 ) + "."
+            + Long.toString( ip & 0x000000FF );
     }
 }

@@ -1126,13 +1126,6 @@ public class Server
                                     qualities += " " + FILTER_SPECIAL_CHAR + "page";
                                     break;
                                 case CTCP_CMD_DCC:
-                                    // Example: DCC CHAT chat 3655733111 4453
-                                    // 3655733111 == 0xD9E60F77
-                                    // 0xD9 == 217
-                                    // 0xE6 == 230
-                                    // 0x0F == 15
-                                    // 0x77 == 119
-                                    // 217.230.15.119
                                     try
                                     {
                                         geoirc.addDCCChatRequest( args, nick );

@@ -1322,6 +1322,7 @@ public class GeoIRC
                                         args[ 0 ],
                                         s.getCurrentNick()
                                     );
+                                    dcc_chat_offers.add( dcc );
                                     int port = dcc.listen();
 
                                     execute(
@@ -1329,7 +1330,7 @@ public class GeoIRC
                                         + " PRIVMSG "
                                         + args[ 0 ]
                                         + " :\001DCC CHAT chat "
-                                        + addr_str
+                                        + addr_str + " "
                                         + Integer.toString( port )
                                         + "\001"
                                     );
