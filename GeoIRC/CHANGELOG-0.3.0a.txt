@@ -46,3 +46,10 @@ Pistos 2003-08-20
 Added a "/gui/format/maximum nick width" setting, to columnize nicks (like in
 xchat).  Can be set to 0 to disable.
 Pistos 2003-08-20
+
+Added a "connections/x/channels/x/autojoin" setting to allow enabling/disabling
+of automatic channel joining at startup
+netseeker 2003-08-21
+
+Added settings gui "geoirc.conf.*", also added a "Settings->Options" menu entry
+netseeker 2003-08-23
