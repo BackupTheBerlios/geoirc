@@ -7,6 +7,8 @@
 package geoirc;
 
 import geoirc.util.Util;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.regex.*;
 
 /**
@@ -26,7 +28,7 @@ public class CommandAlias implements GeoIRCConstants
         this.expansion = expansion;
     }
     
-    public String expand( String command_line )
+    public String expand( String command_line, Hashtable variables )
     {
         String [] tokens = Util.tokensToArray( command_line );
         String retval = command_line;
@@ -38,14 +40,21 @@ public class CommandAlias implements GeoIRCConstants
             for( int i = 1; i < tokens.length; i++ )
             {
                 i_str = Integer.toString( i );
+                
+                // Single argument substitutions.
+                
                 retval = retval.replaceAll(
                     ALIAS_ARG_CHAR + i_str,
                     tokens[ i ]
                 );
+                
+                // "Rest of line" substitutions.
+                
                 retval = retval.replaceAll(
                     ALIAS_ARG_REST_CHAR + i_str,
                     Util.stringArrayToString( tokens, i )
                 );
+                
             }
             
             // Missing arguments are just replaced with empty strings.
@@ -57,6 +66,23 @@ public class CommandAlias implements GeoIRCConstants
                 ALIAS_ARG_REST_CHAR + "\\d+",
                 ""
             );
+            
+            // Variable substitution
+
+            for( Enumeration enum = variables.keys(); enum.hasMoreElements(); )
+            {
+                String variable = (String) enum.nextElement();
+                String value = (String) variables.get( variable );
+                if( value == null )
+                {
+                    value = "";
+                }
+                
+                retval = retval.replaceAll(
+                    ALIAS_ARG_CHAR + variable,
+                    value
+                );
+            }
         }
         
         return retval;

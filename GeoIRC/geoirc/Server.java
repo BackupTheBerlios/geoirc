@@ -14,8 +14,10 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.regex.*;
 import javax.swing.*;
 
 /**
@@ -32,6 +34,7 @@ public class Server
     protected String current_nick;
     protected InfoManager info_manager;
     protected HashSet users;
+    protected Hashtable variables;
     
     public Server(
         GeoIRC parent,
@@ -39,6 +42,7 @@ public class Server
         SettingsManager settings_manager,
         SoundManager sound_manager,
         InfoManager info_manager,
+        Hashtable variables,
         String hostname,
         String port
     )
@@ -51,6 +55,7 @@ public class Server
         users = new HashSet();
         current_nick = "";
         this.info_manager = info_manager;
+        this.variables = variables;
     }
     
     // Returns whether a connection has been established.
@@ -393,6 +398,33 @@ public class Server
             return list_members;
         }
         
+        protected String extractLastURL( String text )
+        {
+            String url = null;
+            
+            String url_regexp = settings_manager.getString(
+                "/misc/url regexp",
+                "\\b(http://.+)\\b"
+            );
+            
+            Matcher matcher = Pattern.compile( url_regexp ).matcher( text );
+            
+            if( matcher.groupCount() > 0 )
+            {
+                while( matcher.find() )
+                {
+                    url = matcher.group();
+
+                    variables.put(
+                        VARS[ VAR_LAST_URL ],
+                        url
+                    );
+                }
+            }
+            
+            return url;
+        }
+        
         protected void interpretLine( String line )
         {
             String [] tokens = Util.tokensToArray( line );
@@ -447,7 +479,7 @@ public class Server
                             info_manager.acknowledgeNickChange( (Channel) channels.elementAt( i ) );
                         }
                         
-                        qualities += " $self";
+                        qualities += " " + FILTER_SPECIAL_CHAR + "self";
                     }
                     else
                     {
@@ -482,6 +514,9 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String text = Util.stringArrayToString( tokens, 3 );
                     text = text.substring( 1 );  // Remove leading colon.
+                    
+                    extractLastURL( text );
+                    
                     qualities += " " + FILTER_SPECIAL_CHAR + "notice";
 
                     if( text.charAt( 0 ) == CTCP_MARKER )
@@ -545,6 +580,9 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
                     String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
+                    
+                    extractLastURL( message );
+                    
                     String text = nick + " left " + channel + " (" + message + ").";
                     qualities += " " + channel
                         + " from=" + nick
@@ -581,6 +619,8 @@ public class Server
                     String text = Util.stringArrayToString( tokens, 3 );
                     text = text.substring( 1 );  // Remove leading colon.
 
+                    extractLastURL( text );
+                    
                     if(
                         ( text.charAt( 0 ) == (char) 1 )
                         && ( text.substring( 1, 7 ).equals( "ACTION" ) )
@@ -696,6 +736,9 @@ public class Server
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
+
+                    extractLastURL( message );
+                    
                     String text = nick + " has quit (" + message + ").";
                     qualities += " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "quit";
@@ -756,6 +799,9 @@ public class Server
                 {
                     String channel = tokens[ 3 ];
                     String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
+                    
+                    extractLastURL( topic );
+                    
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
                         + " " + channel;
                     String text = "The topic for " + channel + " is: " + topic;

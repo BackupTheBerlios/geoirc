@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 /**
@@ -20,14 +21,20 @@ public class AliasManager implements GeoIRCConstants
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
     protected Vector aliases;
+    protected Hashtable variables;
     
     // No default constructor
     private AliasManager() { }
     
-    public AliasManager( SettingsManager settings_manager, DisplayManager display_manager )
+    public AliasManager(
+        SettingsManager settings_manager,
+        DisplayManager display_manager,
+        Hashtable variables
+    )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.variables = variables;
         aliases = new Vector();
         
         int i = 0;
@@ -68,7 +75,7 @@ public class AliasManager implements GeoIRCConstants
         for( int i = 0; i < n; i++ )
         {
             ca = (CommandAlias) aliases.elementAt( i );
-            expansion = ca.expand( expansion );
+            expansion = ca.expand( expansion, variables );
         }
         
         return expansion;

@@ -14,7 +14,7 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.1.6a";
+    static final String GEOIRC_VERSION = "0.1.7a";
     
     static final boolean GOD_IS_GOOD = true;
     
@@ -61,7 +61,8 @@ public interface GeoIRCConstants
         "pagedown",
         "nudgeup",
         "nudgedown",
-        "connect"
+        "connect",
+        "exec"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -70,6 +71,7 @@ public interface GeoIRCConstants
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_DOCK_WINDOW = 28;
+    public static final int CMD_EXEC = 40;
     public static final int CMD_EXIT = 31;
     public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
@@ -193,11 +195,11 @@ public interface GeoIRCConstants
     static final String STYLE_ITALIC = "it";
     static final String STYLE_UNDERLINE = "un";
     
-    static final String ALIAS_ARG_CHAR = "$";
+    static final String ALIAS_ARG_CHAR = "%";
     static final String ALIAS_ARG_REST_CHAR = "&";
     static final int MAX_ALIAS_ARGS = 20;
     
-    static final char FILTER_SPECIAL_CHAR = '$';
+    static final char FILTER_SPECIAL_CHAR = '%';
     
     static final char CTCP_MARKER = (char) 1;
     
@@ -223,4 +225,10 @@ public interface GeoIRCConstants
     static final int DEFAULT_NUDGE_AMOUNT = 20;
     
     static final int DELAY_FOR_SERVER_READER_DEATH = 100;  // milliseconds
+    
+    static final String [] VARS =
+    {
+        "lasturl"
+    };
+    static final int VAR_LAST_URL = 0;
 }

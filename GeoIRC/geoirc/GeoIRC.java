@@ -60,6 +60,7 @@ public class GeoIRC
     protected SoundManager sound_manager;
     protected AliasManager alias_manager;
     protected InfoManager info_manager;
+    protected Hashtable variables;
     
     protected IdentServer ident_server;
     
@@ -266,7 +267,8 @@ public class GeoIRC
         
         // Command aliases.
         
-        alias_manager = new AliasManager( settings_manager, display_manager );
+        variables = new Hashtable();
+        alias_manager = new AliasManager( settings_manager, display_manager, variables );
         
         // Ident server.
         
@@ -377,7 +379,7 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, hostname, port );
+        Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, variables, hostname, port );
         remote_machines.add( s );
         if( listening_to_servers )
         {
@@ -730,7 +732,10 @@ public class GeoIRC
                     if( problem )
                     {
                         display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
-                        display_manager.printlnDebug( "Try /listservers" );
+                        display_manager.printlnDebug(
+                            "Try /"
+                            + CMDS[ CMD_LIST_SERVERS ]
+                        );
                     }
                 }
                 break;
@@ -810,7 +815,10 @@ public class GeoIRC
                         if( problem )
                         {
                             display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
-                            display_manager.printlnDebug( "Try /listservers" );
+                            display_manager.printlnDebug(
+                                "Try /"
+                                + CMDS[ CMD_LIST_SERVERS ]
+                            );
                         }
                     }
                     else
@@ -821,8 +829,15 @@ public class GeoIRC
                         }
                         else
                         {
-                            display_manager.printlnDebug( "First use /changeserver <server id>" );
-                            display_manager.printlnDebug( "To see a list of server id's, use /listservers" );
+                            display_manager.printlnDebug(
+                                "First use /"
+                                + CMDS[ CMD_CHANGE_SERVER ]
+                                + " <server id>"
+                            );
+                            display_manager.printlnDebug(
+                                "To see a list of server id's, use /"
+                                + CMDS[ CMD_LIST_SERVERS ]
+                            );
                         }
                     }
                     
@@ -868,8 +883,36 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "/listwindows" );
-                    display_manager.printlnDebug( "/dockwindow [window id number] [t|r|b|l]" );
+                    display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_DOCK_WINDOW ]
+                        + " [window id number] [t|r|b|l]" );
+                }
+                break;
+            case CMD_EXEC:
+                if( arg_string != null )
+                {
+                    Runtime rt = Runtime.getRuntime();
+                    try
+                    {
+                        rt.exec( arg_string );
+                    }
+                    catch( IOException e )
+                    {
+                        Util.printException(
+                            display_manager, e, 
+                            "I/O exception during external execution."
+                        );
+                    }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_EXEC ]
+                        + " <program to execute, with any arguments>"
+                    );
                 }
                 break;
             case CMD_EXIT:
@@ -927,8 +970,15 @@ public class GeoIRC
                     }
                     else
                     {
-                        display_manager.printlnDebug( "First use /changeserver <server id>" );
-                        display_manager.printlnDebug( "To see a list of server id's, use /listservers" );
+                        display_manager.printlnDebug(
+                            "First use /"
+                            + CMDS[ CMD_CHANGE_SERVER ]
+                            + " <server id>"
+                        );
+                        display_manager.printlnDebug(
+                            "To see a list of server id's, use /"
+                            + CMDS[ CMD_LIST_SERVERS ]
+                        );
                     }
                 }
                 break;
@@ -1011,7 +1061,10 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "/newserver <host> [port]" );
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_NEW_SERVER ]
+                        + " <host> [port]" );
                 }
                 break;
             case CMD_NEW_TEXT_WINDOW:
@@ -1048,7 +1101,10 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "/nick <new nickname>" );
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_NICK ]
+                        + " <new nickname>" );
                 }
                 break;
             case CMD_NUDGE_DOWN:
@@ -1117,8 +1173,15 @@ public class GeoIRC
                     }
                     else
                     {
-                        display_manager.printlnDebug( "First use /changeserver <server id>" );
-                        display_manager.printlnDebug( "To see a list of server id's, use /listservers" );
+                        display_manager.printlnDebug(
+                            "First use /"
+                            + CMDS[ CMD_CHANGE_SERVER ]
+                            + " <server id>"
+                        );
+                        display_manager.printlnDebug(
+                            "To see a list of server id's, use /"
+                            + CMDS[ CMD_LIST_SERVERS ]
+                        );
                     }
                 }
                 break;
@@ -1170,7 +1233,10 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "/privmsg <nick/channel> <message>" );
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_PRIVMSG ]
+                        + " <nick/channel> <message>" );
                 }
                 break;
             case CMD_SEND_RAW:
@@ -1202,7 +1268,7 @@ public class GeoIRC
                                 )
                                 + text,
                                 s.toString() + " " + args[ 1 ]
-                                + " from=$self"
+                                + " from=" + FILTER_SPECIAL_CHAR + "self"
                             );
                         }
                         result = CommandExecutor.EXEC_SUCCESS;
@@ -1250,7 +1316,10 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.printlnDebug( "/switchwindow <title regexp>" );
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_SWITCH_WINDOW ]
+                        + " <title regexp>" );
                 }
                 break;
             case CMD_UNDOCK_WINDOW:
@@ -1272,8 +1341,11 @@ public class GeoIRC
                     
                     if( problem )
                     {
-                        display_manager.printlnDebug( "/listdockedwindows" );
-                        display_manager.printlnDebug( "/undockwindow <docked window index>" );
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_DOCKED_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_UNDOCK_WINDOW ]
+                            + " <docked window index>" );
                     }
                 }
                 break;

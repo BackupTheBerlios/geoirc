@@ -40,7 +40,16 @@
           </map>
         </node>
         <node name="5">
-          <map />
+          <map>
+            <entry key="alias" value="openurl" />
+            <entry key="expansion" value="exec C:\Program Files\Opera7\opera.exe &amp;1" />
+          </map>
+        </node>
+        <node name="6">
+          <map>
+            <entry key="alias" value="openlasturl" />
+            <entry key="expansion" value="exec C:\Program Files\Opera7\opera.exe %lasturl" />
+          </map>
         </node>
       </node>
       <node name="config">
@@ -62,11 +71,6 @@
             <node name="0">
               <map>
                 <entry key="name" value="#geoirc" />
-              </map>
-            </node>
-            <node name="1">
-              <map>
-                <entry key="name" value="#geocards" />
               </map>
             </node>
           </node>
@@ -97,7 +101,18 @@
           <node name="docked panes">
             <map />
             <node name="0">
-              <map />
+              <map>
+                <entry key="pane" value="2" />
+                <entry key="location" value="0" />
+                <entry key="divider location" value="122" />
+              </map>
+            </node>
+            <node name="1">
+              <map>
+                <entry key="pane" value="3" />
+                <entry key="location" value="1" />
+                <entry key="divider location" value="1106" />
+              </map>
             </node>
           </node>
           <node name="panes">
@@ -105,106 +120,57 @@
             <node name="0">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="debug" />
-                <entry key="filter" value="debug" />
+                <entry key="title" value="#geoirc" />
+                <entry key="filter" value="#geoirc" />
               </map>
             </node>
             <node name="1">
-              <map>
-                <entry key="type" value="class geoirc.GIInfoPane" />
-                <entry key="title" value="Info" />
-                <entry key="path" value="/" />
-              </map>
-            </node>
-            <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="filter" value="irc.freenode.net" />
               </map>
             </node>
+            <node name="2">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="debug" />
+                <entry key="filter" value="debug" />
+              </map>
+            </node>
             <node name="3">
               <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc" />
-                <entry key="filter" value="#geoirc" />
+                <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="title" value="Info" />
+                <entry key="path" value="/" />
               </map>
-            </node>
-            <node name="4">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geocards" />
-                <entry key="filter" value="#geocards" />
-              </map>
-            </node>
-            <node name="5">
-              <map />
             </node>
           </node>
           <node name="windows">
             <map />
             <node name="0">
               <map>
-                <entry key="title" value="debug" />
+                <entry key="title" value="#geoirc" />
                 <entry key="x" value="0" />
-                <entry key="y" value="464" />
-                <entry key="height" value="464" />
-                <entry key="width" value="633" />
+                <entry key="y" value="399" />
+                <entry key="height" value="399" />
+                <entry key="width" value="1091" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="title" value="Info" />
+                <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="464" />
-                <entry key="width" value="633" />
+                <entry key="height" value="399" />
+                <entry key="width" value="1091" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
               </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="title" value="irc.freenode.net" />
-                <entry key="x" value="633" />
-                <entry key="y" value="0" />
-                <entry key="height" value="309" />
-                <entry key="width" value="633" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="2" />
-              </map>
-            </node>
-            <node name="3">
-              <map>
-                <entry key="title" value="#geoirc" />
-                <entry key="x" value="633" />
-                <entry key="y" value="309" />
-                <entry key="height" value="309" />
-                <entry key="width" value="633" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="3" />
-              </map>
-            </node>
-            <node name="4">
-              <map>
-                <entry key="title" value="#geocards" />
-                <entry key="x" value="633" />
-                <entry key="y" value="618" />
-                <entry key="height" value="309" />
-                <entry key="width" value="633" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="4" />
-              </map>
-            </node>
-            <node name="5">
-              <map />
             </node>
           </node>
         </node>
@@ -230,14 +196,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="filter" value="not from=$self" />
+                <entry key="filter" value="not from=%self" />
                 <entry key="regexp" value=".*[Pp]istos.*" />
                 <entry key="format" value="bg0000ff" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="filter" value="from=$self" />
+                <entry key="filter" value="from=%self" />
                 <entry key="regexp" value=".*" />
                 <entry key="format" value="fgff9933" />
               </map>
@@ -250,6 +216,13 @@
               </map>
             </node>
             <node name="3">
+              <map>
+                <entry key="filter" value="" />
+                <entry key="regexp" value="-(.+?)- .*" />
+                <entry key="format" value="fgffffff" />
+              </map>
+            </node>
+            <node name="4">
               <map />
             </node>
           </node>
@@ -268,6 +241,7 @@
           <entry key="|F2" value="nick Pistos|GeoIRC" />
           <entry key="|F3" value="nick GeoIRC_User" />
           <entry key="|F9" value="nick Pistos" />
+          <entry key="|F12" value="openlasturl" />
           <entry key="Ctrl|1" value="switchwindow .*geoshell.*" />
           <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
@@ -280,6 +254,7 @@
         <map>
           <entry key="nick completion suffix" value=": " />
           <entry key="nick completion prefix" value="" />
+          <entry key="url regexp" value="(http://\S+)" />
         </map>
       </node>
       <node name="personal">
@@ -314,14 +289,14 @@
           </node>
           <node name="1">
             <map>
-              <entry key="filter" value="not ( $join or $part or $quit )" />
+              <entry key="filter" value="not ( %join or %part or %quit )" />
               <entry key="regexp" value=".*" />
               <entry key="filename" value="./blip.wav" />
             </map>
           </node>
           <node name="2">
             <map>
-              <entry key="filter" value="$join or $part or $quit" />
+              <entry key="filter" value="%join or %part or %quit" />
               <entry key="regexp" value=".*" />
               <entry key="filename" value="./motion.wav" />
             </map>
