@@ -93,6 +93,24 @@ public interface GeoIRCConstants
         "unloadallpy",
         "hidequalities"
     };
+    
+    public static final String[] IRC_CMDS =
+    {
+        "chanserv",
+        "join",
+        "listchannels",        
+        "me",
+        "memoserv",        
+        "msg",        
+        "nick",
+        "nickserv",        
+        "part",      
+        "privmsg",
+        "seenserv",        
+        "set",        
+        "topic"
+    };
+    
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACCEPT_DCC_CHAT = 59;
     public static final int CMD_ACTION = 3;
