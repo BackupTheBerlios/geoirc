@@ -16,6 +16,7 @@ import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.Trigger;
 import geoirc.util.JBoolRegExTextField;
 import geoirc.util.JRegExTextField;
+import geoirc.util.JValidatingTextField;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -73,10 +74,14 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         patternField.setToolTipText("any regular expression");
         table.setValidatingCellEditor(patternField, 1);
 
+        final JValidatingTextField commandField = new JValidatingTextField( null );
+        patternField.setToolTipText("any available command");
+        table.setValidatingCellEditor(commandField, 2);
+
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
-        table.getColumnModel().getColumn(0).setPreferredWidth(140);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
-        table.getColumnModel().getColumn(2).setPreferredWidth(90);
+        table.getColumnModel().getColumn(0).setPreferredWidth(175);
+        table.getColumnModel().getColumn(1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setPreferredWidth(175);
 
         JScrollPane scroller = new JScrollPane(table);
         addComponent(scroller, 0, 1, 4, 1, 0, 0);
@@ -99,7 +104,7 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                ltm.addRow(new Trigger("", ".+", ""));
+                ltm.addRow(new Trigger("", ".*", ""));
             }
         });
 
