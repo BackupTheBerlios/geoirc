@@ -15,3 +15,6 @@ Pistos 2003-09-19
 
 Fixed resetscriptenvironment command.
 Pistos 2003-09-19
+
+Fixed the bug where MDI child window buttons were no longer operating.
+Pistos 2003-09-19
