@@ -72,7 +72,6 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
     public void initialize()
     {
-
         addComponent(new TitlePane("Highlighting"), 0, 0, 3, 1, 0, 0);
 
         table = new JValidatingTable(ltm, validation_listener);
