@@ -48,7 +48,6 @@ public class ValueVerifier
 	 */
 	public static boolean checkPattern(Object value, String regex)
 	{
-		Pattern myPattern = Pattern.compile(regex);
 		return Pattern.matches(regex, value.toString());
 	}
 }
