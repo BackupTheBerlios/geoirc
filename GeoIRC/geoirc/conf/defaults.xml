@@ -39,17 +39,17 @@
 		</rule>
 		<rule name="KDERC">
 			<default></default>
-            <pattern>.++</pattern>
+            <pattern>.+</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>										
 		<rule name="GTKRC">
 			<default></default>
-            <pattern>.++</pattern>
+            <pattern>.+</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>												
 		<rule name="FONT">
 			<default>Dialog</default>
-            <pattern>.{1,}+</pattern>
+            <pattern>.+</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>														
 		<rule name="FONT_SIZE">
@@ -74,8 +74,18 @@
 		</rule>
 		<rule name="DIRECTORY">
 			<default>./</default>
-            <pattern>.++</pattern>
+            <pattern>.+</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>														
+		<rule name="NICK_WIDTH">
+			<default>20</default>
+            <pattern>\d+</pattern>
+            <javaType>java.lang.Integer</javaType>
+		</rule>
+		<rule name="TIMESTAMP">
+			<default>HH:mm:ss</default>
+            <pattern>.+</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>
 	</defaults>
 </geoirc>
