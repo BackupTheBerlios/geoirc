@@ -35,9 +35,6 @@
     <fileobject name="StyleManager.java">
         <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="StyleManager"/>
     </fileobject>
-    <fileobject name="GIInfoWindow.java">
-        <attr name="class_dependency_geoirc.GIWindow" stringvalue="GIInfoWindow"/>
-    </fileobject>
     <fileobject name="DisplayManager.java">
         <attr name="class_dependency_java.awt.event.ComponentListener" stringvalue="DisplayManager"/>
         <attr name="class_dependency_java.awt.event.KeyListener" stringvalue="DisplayManager"/>
@@ -52,10 +49,6 @@
     <fileobject name="SettingsManager.java">
         <attr name="class_dependency_java.util.prefs.NodeChangeListener" stringvalue="SettingsManager"/>
         <attr name="class_dependency_java.util.prefs.PreferenceChangeListener" stringvalue="SettingsManager"/>
-    </fileobject>
-    <fileobject name="GITextWindow.java">
-        <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="GITextWindow"/>
-        <attr name="class_dependency_geoirc.GIWindow" stringvalue="GITextWindow"/>
     </fileobject>
     <fileobject name="AndTerm.java">
         <attr name="class_dependency_geoirc.FilterTerm" stringvalue="AndTerm"/>

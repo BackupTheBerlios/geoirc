@@ -46,11 +46,14 @@ public class InputStreamReaderThread extends Thread
                 {
                     if( executor != null )
                     {
-                        if( line.charAt( 0 ) == '/' )
+                        if( line.length() > 0 )
                         {
-                            line = line.substring( 1 );
+                            if( line.charAt( 0 ) == '/' )
+                            {
+                                line = line.substring( 1 );
+                            }
+                            executor.execute( line );
                         }
-                        executor.execute( line );
                     }
                     else
                     {

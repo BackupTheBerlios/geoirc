@@ -347,7 +347,7 @@
           </node>
           <node name="1">
             <map>
-              <entry key="filter" value="" />
+              <entry key="filter" value="%privmsg" />
               <entry key="regexp" value="^(.*)$" />
               <entry key="name" value="lastline" />
             </map>

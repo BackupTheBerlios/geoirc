@@ -737,6 +737,8 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String text = Util.stringArrayToString( tokens, 3 );
                     text = text.substring( 1 );  // Remove leading colon.
+                    qualities += " " + FILTER_SPECIAL_CHAR + "privmsg";
+                    
                     User user = getUserByNick( nick );
                     if( user != null )
                     {

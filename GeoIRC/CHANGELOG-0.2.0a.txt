@@ -34,3 +34,6 @@ Pistos 2003-08-06
 
 Generalized the %lasturl variable into user-definable capture variables.
 Pistos 2003-08-06
+
+Added the %privmsg quality.
+Pistos 2003-08-06
