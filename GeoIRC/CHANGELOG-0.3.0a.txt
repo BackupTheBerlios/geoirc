@@ -21,3 +21,7 @@ Pistos 2003-08-12
 
 Fixed parenthesis parsing error in the boolean expression evaluator.
 Pistos 2003-08-13
+
+Automatic closure of channel windows under optimal conditions when parting
+channels.
+Pistos 2003-08-13

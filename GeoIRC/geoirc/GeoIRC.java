@@ -204,6 +204,7 @@ public class GeoIRC
         // Setup GUI.
 
         initComponents();
+        
         restoreMainFrameState();
         setFocusable( false );
         

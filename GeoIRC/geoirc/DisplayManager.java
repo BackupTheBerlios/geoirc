@@ -245,6 +245,40 @@ public class DisplayManager
         }
     }
     
+    /**
+     * Closes all windows whose filter matches the given filter.
+     */
+    public void closeWindows( String filter )
+    {
+        if( windows != null )
+        {
+            GIWindow giw;
+            for( int i = 0, n = windows.size(); i < n; i++ )
+            {
+                giw = (GIWindow) windows.elementAt( i );
+                if( giw.getPaneType() == TEXT_PANE )
+                {
+                    GITextPane gip = (GITextPane) giw.getPane();
+                    if( gip.getFilter().equals( filter ) )
+                    {
+                        try
+                        {
+                            giw.setClosed( true );
+                        }
+                        catch( java.beans.PropertyVetoException e )
+                        {
+                            Util.printException(
+                                this, e,
+                                "Failed to close window '"
+                                + giw.getTitle() + "'"
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     public void printlnDebug( String line )
     {
         println( line, FILTER_SPECIAL_CHAR + "debug" );

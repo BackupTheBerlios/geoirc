@@ -7,6 +7,7 @@
 package geoirc;
 
 import java.awt.event.InputEvent;
+import java.awt.Dimension;
 
 /**
  *
@@ -236,7 +237,8 @@ public interface GeoIRCConstants
     static final int GI_NORMAL = 0;
     static final int GI_MAXIMIZED = 1;
     static final int GI_MINIMIZED = 2;
-    static final java.awt.Dimension GI_WINDOW_MINIMUM_SIZE = new java.awt.Dimension( 30, 30 );
+    static final Dimension GI_WINDOW_MINIMUM_SIZE = new Dimension( 30, 30 );
+    static final Dimension DEFAULT_DESKTOP_PANE_SIZE = new Dimension( 500, 300 );
     
     static final String STYLE_ESCAPE_SEQUENCE = Character.toString( (char) 255 );
     static final String STYLE_TERMINATION_SEQUENCE = ";";

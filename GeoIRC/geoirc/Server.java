@@ -769,6 +769,7 @@ public class Server
                     if( nick.equals( current_nick ) )
                     {
                         removeChannel( channel );
+                        display_manager.closeWindows( Server.this.toString() + " and " + channel );
                     }
                     else
                     {
