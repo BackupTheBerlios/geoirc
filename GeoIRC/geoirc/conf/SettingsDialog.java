@@ -234,16 +234,9 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private void addToolBarButtons( JToolBar bar )
     {
         JButton rexpdlg_button = new JButton( "Regular Expression Tester" );
-        rexpdlg_button.addActionListener( new ActionListener()
-        {
-            public void actionPerformed(ActionEvent arg0)
-            {
-                final RegularExpressionTester tester = new RegularExpressionTester();
-                tester.setVisible( true );
-                
-            }
-        });
         
+        
+        rexpdlg_button.addActionListener( new RegexTesterActionAdapter( this ));      
         bar.add( rexpdlg_button );
     }
     
@@ -617,5 +610,21 @@ class SettingsDialog_Ok_actionAdapter implements java.awt.event.ActionListener
     public void actionPerformed(ActionEvent e)
     {
         adaptee.Ok_actionPerformed(e);
+    }
+}
+
+class RegexTesterActionAdapter implements java.awt.event.ActionListener
+{
+    SettingsDialog adaptee;
+
+    RegexTesterActionAdapter(SettingsDialog adaptee)
+    {
+        this.adaptee = adaptee;
+    }
+    public void actionPerformed(ActionEvent e)
+    {
+        final RegularExpressionTester tester = new RegularExpressionTester( adaptee );
+       tester.setVisible( true );
+
     }
 }

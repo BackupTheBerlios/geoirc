@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
@@ -30,6 +31,10 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
 
     public static final int PREFERED_WIDTH = 300;
     public static final int PREFERED_HEIGHT = 80;
+    private static final Border normalBorder = BorderFactory.createLineBorder(Color.BLACK);
+    private static final Border errorBorder = BorderFactory.createLineBorder(Color.RED);
+
+    private boolean use_error_border = false;
 
     /**
      * 
@@ -67,13 +72,19 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
         this(regex, value, listener);
         setPreferredSize(new Dimension(width, PREFERED_HEIGHT));
     }
+    
+    public void setUseErrorBorder( boolean use )
+    {
+        use_error_border = use;
+        validateText();
+    }
 
     /**
      * 
      */
     protected void init()
     {
-        this.setBorder( BorderFactory.createLineBorder(Color.BLACK) );
+        this.setBorder( normalBorder );
         
         if (pattern == null || pattern.pattern() == null)
         {
@@ -121,8 +132,11 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
     public void setPattern(String regex)
     {
         if (regex == null)
+        {
             regex = new String(".*");
+        }            
         pattern = Pattern.compile(regex, Pattern.DOTALL);
+        
         validateText();
     }
 
@@ -137,7 +151,7 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
         //boolean valid = (t.length() >= pos && pattern.matcher(t).matches()) || isEnabled() == false;
         boolean valid = pattern.matcher(t).matches() || isEnabled() == false;
         
-        setTextValid(valid);
+        setTextValid( valid );
     }
 
     /**
@@ -173,9 +187,15 @@ public class JValidatingTextPane extends JEditorPane implements DocumentListener
         {
             firePropertyChange(ValidationListener.VALIDATION_RESULT, textValid, valid);
             textValid = valid;                        
+
+            setForeground(valid ? Color.BLACK : Color.RED);
+            setCaretColor(valid ? Color.BLACK : Color.RED);
+            
+            if( use_error_border )
+            {
+                setBorder(valid ? normalBorder : errorBorder);
+            }
         }
-        setForeground(valid ? Color.BLACK : Color.RED);
-        setCaretColor(valid ? Color.BLACK : Color.RED);        
     }
 
     /* (non-Javadoc)

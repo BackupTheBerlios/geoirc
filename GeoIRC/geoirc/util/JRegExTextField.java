@@ -23,7 +23,7 @@ public class JRegExTextField extends JValidatingTextField
      */
     public JRegExTextField(ValidationListener validation_listener)
     {
-        super(validation_listener);
+        super( validation_listener );
     }
 
     /**
@@ -52,14 +52,14 @@ public class JRegExTextField extends JValidatingTextField
 
         try
         {
-            Pattern.compile(t);
+            Pattern.compile( t );
         }
         catch (PatternSyntaxException e)
         {
             valid = false;
         }
 
-        setTextValid(valid);
+        setTextValid( valid );
     }
 
     public void setPattern(String regex)
