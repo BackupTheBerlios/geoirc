@@ -47,6 +47,10 @@ netseeker 2003-09-17
 Adjusted tab completion for commands to complete until ambiguity.
 Pistos 2003-09-17
 
+Added switch "/format/complete join message" which indicates
+if dns username and host should be displayed in join messages
+netseeker 2003-09-17
+
 Adjusted input field focus so that it always maintains focus (and, hence, the
 cursor).  Adjusted text pane highlighting so that text is copied immediately
 upon release of the mouse drag (so that focus returns to the input field).
