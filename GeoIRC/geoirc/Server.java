@@ -572,6 +572,18 @@ public class Server
             {
                 irc_code = tokens[ 1 ];
             }
+            
+            String code_string;
+
+            try
+            {
+                Integer.parseInt( irc_code );
+                code_string = " ncode=" + irc_code;
+            }
+            catch( NumberFormatException e )
+            {
+                code_string = " acode=" + irc_code;
+            }
 
             if( irc_code.equals( IRCMSGS[ IRCMSG_ERR_NICKNAMEINUSE ] ) )
             {
@@ -1889,18 +1901,6 @@ public class Server
             {
                 // This IRC message is not [yet] handled by GeoIRC.
                 
-                String code_string;
-                
-                try
-                {
-                    Integer.parseInt( irc_code );
-                    code_string = " ncode=";
-                }
-                catch( NumberFormatException e )
-                {
-                    code_string = " acode=";
-                }
-                
                 transformed_message = geoirc.onRaw(
                     transformed_message[ MSG_TEXT ],
                     transformed_message[ MSG_QUALITIES ]
@@ -1918,6 +1918,7 @@ public class Server
                         transformed_message_[ MSG_TEXT ],
                         Server.this.toString() + " "
                             + FILTER_SPECIAL_CHAR + "raw"
+                            + code_string
                             + (
                                 ( windows_printed_to > 0 )
                                 ? ( " " + FILTER_SPECIAL_CHAR + "printed" )
