@@ -249,7 +249,7 @@ public class GeoIRC
         
         // Final miscellaneous initialization
         
-        settings_manager.listenToPreferences();
+        //settings_manager.listenToPreferences();
         listening_to_connections = true;
         processes = new Hashtable();
         dcc_requests = new Vector();
@@ -2216,7 +2216,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_LIST_WINDOWS:
-                display_manager.listWindows();
+                //display_manager.listWindows();
                 break;
             case CMD_LOAD_PY:
                 if( python_script_interface != null )
@@ -2980,7 +2980,7 @@ public class GeoIRC
                 break;
             case CMD_TEST:
                 // For testing/debugging purposes.
-                pack();
+                display_manager.listPanes( false );
                 break;
             case CMD_TOPIC:
                 {

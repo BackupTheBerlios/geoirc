@@ -8,7 +8,6 @@ package geoirc;
 
 /**
  *
- * @author  livesNbox
  * @author  Pistos
  * @author  netseeker
  */
@@ -24,17 +23,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.NodeChangeEvent;
-import java.util.prefs.NodeChangeListener;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
     
 public class SettingsManager
-    implements PreferenceChangeListener, NodeChangeListener, XmlProcessable
+    implements XmlProcessable
 {
     
-    private static Preferences root = Preferences.userNodeForPackage( GeoIRC.class );
+    protected Document document;
+    protected Element root;
+    protected XMLOutputter xml_out;
+    protected SAXBuilder xml_in;
+    
     protected String filepath;
     protected DisplayManager displayMgr = null;
     protected boolean any_load_failure;
@@ -47,6 +52,8 @@ public class SettingsManager
         displayMgr = newDisplayMgr;
         this.filepath = filepath;
         any_load_failure = false;
+        xml_out = new XMLOutputter( "  ", true );
+        xml_in = new SAXBuilder();
     }
     
     protected void printlnDebug( String s )
@@ -61,58 +68,35 @@ public class SettingsManager
         }
     }
     
-    public void listenToPreferences()
-    {
-        listenToPreference( root );
-    }
-    
-    protected void listenToPreference( Preferences p )
-    {
-        p.addNodeChangeListener( this );
-        p.addPreferenceChangeListener( this );
-        
-        String [] children;
-        try
-        {
-            children = p.childrenNames();
-            for( int i = 0; i < children.length; i++ )
-            {
-                listenToPreference( p.node( children[ i ] ) );
-            }
-        }
-        catch( BackingStoreException e )
-        {
-            printlnDebug( e.getMessage() );
-        }
-    }
     
     public boolean loadSettingsFromXML()
     {
         return loadSettingsFromXML( filepath );
     }
     
-    public boolean loadSettingsFromXML(String filepath)
+    public boolean loadSettingsFromXML( String filepath )
     {
         InputStream is = null;
         boolean success = false;
-        try {
-            is = new BufferedInputStream(new FileInputStream( filepath ));
-            root.removeNode();
-            root = Preferences.userNodeForPackage( GeoIRC.class );
-            root.importPreferences( is );
+        try
+        {
+            is = new BufferedInputStream( new FileInputStream( filepath ) );
+            document = xml_in.build( is );
+            root = document.getRootElement();
             is.close();
             success = true;
         }
-        catch( BackingStoreException e )
+        catch( JDOMException e )
         {
-            printlnDebug( e.getMessage() );
+            e.printStackTrace();
         }
-        catch (FileNotFoundException e) {
+        catch( FileNotFoundException e )
+        {
             printlnDebug( "File not found: '" + filepath + "'." );
-        } catch (InvalidPreferencesFormatException e) {
-            printlnDebug( "Invalid format in '" + filepath + "'; cannot import settings." );
-        } catch (IOException e) {
-            printlnDebug("I/O problem while trying to load settings from '" + filepath + "'.");
+        }
+        catch( IOException e )
+        {
+            printlnDebug( "I/O problem while trying to load settings from '" + filepath + "'." );
         }
         
         if( success == false )
@@ -128,22 +112,25 @@ public class SettingsManager
         return saveSettingsToXML( filepath );
     }
 
-    public boolean saveSettingsToXML(String filepath)
+    public boolean saveSettingsToXML( String filepath )
     {
         boolean success = false;
         
         if( ! any_load_failure )
         {
             try {
-                root.flush();
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream( filepath )); 
-                root.exportSubtree( out );
+                xml_out.output( document, out );
                 out.close();
                 success = true;
-            } catch (IOException e) {
-                printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
-            } catch (BackingStoreException e) {
-                printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
+            }
+            catch( IOException e )
+            {
+                printlnDebug( "I/O problem while trying to save settings to '" + filepath + "'." );
+            }
+            catch (BackingStoreException e)
+            {
+                printlnDebug( "Backing Store problem while trying to save settings to '" + filepath + "'." );
             }
         }
         else
@@ -181,6 +168,32 @@ public class SettingsManager
         return key;
     }
     
+    protected String getValue( Element node, String relative_path, String default_ )
+    {
+        if(
+            ( node == null )
+            || relative_path.endsWith( "/" )
+            || relative_path.startsWith( "/" )
+        )
+        {
+            return null;
+        }
+        
+        int index = relative_path.indexOf( "/" );
+        if( index == -1 )
+        {
+            // We have the attribute name.
+            return node.getAttributeValue( relative_path, default_ );
+        }
+        
+        // Recurse down to the next child node.
+        return getValue(
+            node.getChild( relative_path.substring( 0, index ) ),
+            relative_path.substring( index + 1 ),
+            default_
+        );
+    }
+    
     /* For all the following get methods,
      * the path is specified as a node path, ending with the key desired.
      *
@@ -190,17 +203,31 @@ public class SettingsManager
      */
     
     public String get( String path, String default_ ) { return getString( path, default_ ); }
-    public String getString( String path, String default_ )
+    public String getString( String path_, String default_ )
     {
-        return root.node( getNodePath( path ) ).get( getKey( path ), default_ );
+        String path = path_;
+        if( path.startsWith( "/" ) )
+        {
+            path.substring( 1 );
+        }
+        return getValue( root, path, default_ );
     }
     public int getInt( String path, int default_ )
     {
-        return root.node( getNodePath( path ) ).getInt( getKey( path ), default_ );
+        String value = getString( path, Integer.toString( default_ ) );
+        int retval = default_;
+        try
+        {
+            retval = Integer.parseInt( value );
+        } catch( NumberFormatException e ) { }
+        
+        return retval;
     }
     public boolean getBoolean( String path, boolean default_ )
     {
-        return root.node( getNodePath( path ) ).getBoolean( getKey( path ), default_ );
+        String value = getString( path, Boolean.toString( default_ ) );
+        Boolean bool = Boolean.valueOf( value );
+        return bool.booleanValue();
     }
     
     public void set( String path, String value ) { putString( path, value ); }
@@ -212,14 +239,17 @@ public class SettingsManager
     {
         String val = ( value == null ) ? "" : value;
         root.node( getNodePath( path ) ).put( getKey( path ), val );
+        saveSettingsToXML();
     }
     public void putInt( String path, int value )
     {
         root.node( getNodePath( path ) ).putInt( getKey( path ), value );
+        saveSettingsToXML();
     }
     public void putBoolean( String path, boolean value )
     {
         root.node( getNodePath( path ) ).putBoolean( getKey( path ), value );
+        saveSettingsToXML();
     }
     
     /* Call this method with a path that ends in a slash,
@@ -243,6 +273,7 @@ public class SettingsManager
         return success;
     }
 
+    /*
     public void childAdded( NodeChangeEvent evt )
     {
         Preferences p = evt.getChild();
@@ -265,7 +296,9 @@ public class SettingsManager
     {
         saveSettingsToXML();
     }
+     */
     
+    /*
     public void printSettings( Preferences p_, int level )
     {
         Preferences p = root;
@@ -303,6 +336,7 @@ public class SettingsManager
             printlnDebug( e.getMessage() );
         }
     }
+     */
 
 	/* (non-Javadoc)
 	 * @see geoirc.XmlProcessable#getBuffer()

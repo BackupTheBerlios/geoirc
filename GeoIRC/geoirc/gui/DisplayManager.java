@@ -114,7 +114,7 @@ public class DisplayManager
 
         inactive_info_panes = new Vector();
         active_info_panes = new Vector();
-        panes = new PaneVector( pane_bar );
+        panes = new PaneVector( this, pane_bar );
         frames = new Vector();
 
         GIPaneWrapper gipw = new GIPaneWrapper(
@@ -1305,6 +1305,7 @@ public class DisplayManager
     }
     public void componentResized(java.awt.event.ComponentEvent e)
     {
+        /*
         if( ! restoring )
         {
             if( e.getComponent() instanceof GIPane )
@@ -1312,6 +1313,7 @@ public class DisplayManager
                 recordDesktopState();
             }
         }
+         */
     }
 
     public void keyPressed( KeyEvent e )
@@ -1669,7 +1671,7 @@ public class DisplayManager
                     case CHILD_CONTENT_PANE:
                     {
                         GIWindow giw = (GIWindow) parent_gipw.getFrame().getFrame();
-                        giw.getContentPane().add( gipw.getPane() );
+                        giw.addPane( gipw.getPane() );
                         gipw.setParent( parent_gipw );
                         break;
                     }
@@ -1687,20 +1689,6 @@ public class DisplayManager
         
         restoring = false;
     }    
-    
-    public void listWindows()
-    {
-        /*
-        GIWindow giw;
-        for( int i = 0, n = windows.size(); i < n; i++ )
-        {
-            giw = (GIWindow) windows.elementAt( i );
-            printlnDebug( Integer.toString( i ) + ": " + giw.getTitle() );
-        }
-         */
-        
-        // TODO: listPanes()
-    }
     
     public boolean isUserPane( int index, boolean include_split_panes )
     {

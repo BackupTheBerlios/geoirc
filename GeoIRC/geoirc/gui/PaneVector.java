@@ -15,12 +15,14 @@ import org.jscroll.components.ResizableToolBar;
 public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstants
 {
     protected ResizableToolBar pane_bar;
+    protected DisplayManager display_manager;
     
     private PaneVector() { }
     
-    public PaneVector( ResizableToolBar pane_bar )
+    public PaneVector( DisplayManager display_manager, ResizableToolBar pane_bar )
     {
         this.pane_bar = pane_bar;
+        this.display_manager = display_manager;
     }
     
     public boolean add( GIPaneWrapper gipw )
@@ -35,6 +37,7 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
                 break;
             }
         }
+        //display_manager.printlnDebug( "+1 pane" );
         return super.add( gipw );
     }
     
@@ -50,6 +53,7 @@ public class PaneVector extends java.util.Vector implements geoirc.GeoIRCConstan
                 break;
             }
         }
+        //display_manager.printlnDebug( "-1 pane" );
         return super.remove( gipw );
     }
 }

@@ -13,7 +13,7 @@ public interface XmlProcessable
 	//public void setFilePath(String path);
 	public boolean loadSettingsFromXML();
 	public boolean saveSettingsToXML();
-	public void listenToPreferences();
+	//public void listenToPreferences();
 	public String get( String path, String default_ );
 	public String getString( String path, String default_ );
 	public int getInt( String path, int default_ );

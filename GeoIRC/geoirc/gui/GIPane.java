@@ -40,8 +40,6 @@ public class GIPane extends JScrollPane implements java.awt.event.MouseListener
         this.title = title;
         gipw = null;
         setToolTipText( title );
-        
-        addComponentListener( display_manager );
     }
     
     public String getTitle()

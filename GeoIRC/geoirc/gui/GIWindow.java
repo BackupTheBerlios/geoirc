@@ -59,6 +59,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     {
         getContentPane().add( pane );
         this.pane = pane;
+        pane.addComponentListener( display_manager );
     }
     
     /*

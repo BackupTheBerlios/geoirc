@@ -3,3 +3,6 @@ Changelog for GeoIRC 0.3.5a
 
 Began making frame-pane system changes.
 Pistos 2003-10-23
+
+Begin changing underlying XML processing code for settings.
+Pistos 2003-10-27
