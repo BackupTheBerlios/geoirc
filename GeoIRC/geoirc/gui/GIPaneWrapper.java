@@ -145,9 +145,15 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     public void setTitle( String new_title )
     {
         title = new_title;
-        if( ( type == CHILD_CONTENT_PANE ) && ( frame != null ) )
+        if( frame != null )
         {
-            frame.setTitle( new_title );
+            switch( type )
+            {
+                case CHILD_CONTENT_PANE:
+                case EXTERNAL_CONTENT_PANE:
+                    frame.setTitle( new_title );
+                    break;
+            }
         }
     }
     

@@ -15,13 +15,14 @@ import javax.swing.JFrame;
  *
  * @author  Pistos
  */
-public class GIExternalWindow extends JFrame
+public class GIExternalWindow extends JFrame implements geoirc.GeoIRCConstants
 {
     
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected Container pane;
     protected GIPaneWrapper pane_wrapper;
+    protected GIFrameWrapper gifw;
     
     // No default constructor
     private GIExternalWindow() { }
@@ -29,12 +30,15 @@ public class GIExternalWindow extends JFrame
     public GIExternalWindow(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        String title
+        String title,
+        PaneVector panes,
+        java.util.Vector frames
     )
     {
         super();
         setResizable( true );
         setTitle( title );
+        setDefaultCloseOperation( javax.swing.WindowConstants.DISPOSE_ON_CLOSE );
         
         addWindowListener( display_manager );
         addComponentListener( display_manager );
@@ -43,7 +47,22 @@ public class GIExternalWindow extends JFrame
         this.settings_manager = settings_manager;
 
         pane = null;
-        pane_wrapper = null;
+        
+        pane_wrapper = new GIPaneWrapper(
+            settings_manager,
+            display_manager,
+            getContentPane(),
+            "External Content Pane",
+            EXTERNAL_CONTENT_PANE
+        );
+        
+        panes.add( pane_wrapper );
+        
+        gifw = new GIFrameWrapper( this );
+        frames.add( gifw );
+        pane_wrapper.setFrame( gifw );
+        
+        selectFrame();
     }
     
     public void addPane( Container pane )
@@ -73,6 +92,16 @@ public class GIExternalWindow extends JFrame
     public void setPaneWrapper( GIPaneWrapper pane_wrapper )
     {
         this.pane_wrapper = pane_wrapper;
+    }
+    
+    public void setFrameWrapper( GIFrameWrapper gipw )
+    {
+        this.gifw = gifw;
+    }
+    
+    public GIFrameWrapper getFrameWrapper()
+    {
+        return gifw;
     }
     
     public void selectFrame()

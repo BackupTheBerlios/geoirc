@@ -1189,19 +1189,22 @@ public class GeoIRC
             }
             else
             {
-                boolean is_in_settings = false;
+                boolean steal_back = true;
                 Component c = thief;
                 while( c != null )
                 {
-                    if( c instanceof SettingsDialog )
+                    if( 
+                        ( c instanceof SettingsDialog )
+                        || ( c instanceof GIExternalWindow )
+                    )
                     {
-                        is_in_settings = true;
+                        steal_back = false;
                         break;
                     }
                     c = c.getParent();
                 }
                 
-                if( ! is_in_settings )
+                if( steal_back )
                 {
                     input_field.grabFocus();
                 }
@@ -2066,7 +2069,7 @@ public class GeoIRC
                     if( current_rm instanceof Server )
                     {
                         Server s = (Server) current_rm;
-                        GIWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
+                        GIFrameWrapper window = display_manager.addChannelWindow( s, args[ 0 ] );
                         if( window != null )
                         {
                             execute( CMDS[ CMD_SEND_RAW ] + " " + command );
@@ -2390,7 +2393,16 @@ public class GeoIRC
                 }
                 break;
             case CMD_NEW_EXTERNAL_WINDOW:
-                
+                if( args != null )
+                {
+                    display_manager.addTextWindow( arg_string, arg_string, EXTERNAL_WINDOW );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_NEW_EXTERNAL_WINDOW ] + " <filter>"
+                    );
+                }
                 break;
             case CMD_NEW_INFO_WINDOW:
                 {

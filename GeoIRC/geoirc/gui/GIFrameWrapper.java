@@ -71,7 +71,7 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         return retval;
     }
     
-    public void add( Container c )
+    public void addPane( Container c )
     {
         switch( type )
         {
@@ -157,6 +157,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
             case GIWINDOW_FRAME:
                 ((GIWindow) frame).setMaximum( true );
                 break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setExtendedState( java.awt.Frame.MAXIMIZED_BOTH );
+                break;
         }
     }
     
@@ -166,6 +169,29 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         {
             case GIWINDOW_FRAME:
                 ((GIWindow) frame).setIcon( true );
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setExtendedState( java.awt.Frame.ICONIFIED );
+                break;
+        }
+    }
+    
+    public void restore() throws PropertyVetoException
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                if( isMaximized() )
+                {
+                    ((GIWindow) frame).setMaximum( false );
+                }
+                else if( isMinimized() )
+                {
+                    ((GIWindow) frame).setIcon( false );
+                }
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setExtendedState( java.awt.Frame.NORMAL );
                 break;
         }
     }
@@ -177,6 +203,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
             case GIWINDOW_FRAME:
                 ((GIWindow) frame).setSize( width, height );
                 break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setSize( width, height );
+                break;
         }
     }
     
@@ -186,6 +215,22 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         {
             case GIWINDOW_FRAME:
                 ((GIWindow) frame).setSize( x, y );
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setLocation( x, y );
+                break;
+        }
+    }
+    
+    public void setBounds( int x, int y, int width, int height ) throws PropertyVetoException
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).setBounds( x, y, width, height );
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                ((GIExternalWindow) frame).setBounds( x, y, width, height );
                 break;
         }
     }
@@ -198,6 +243,9 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
             case GIWINDOW_FRAME:
                 retval = ((GIWindow) frame).isIcon();
                 break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = (((GIExternalWindow) frame).getExtendedState() & java.awt.Frame.ICONIFIED) > 0;
+                break;
         }
         return retval;
     }
@@ -209,6 +257,90 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         {
             case GIWINDOW_FRAME:
                 retval = ((GIWindow) frame).isMaximum();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = (((GIExternalWindow) frame).getExtendedState() & java.awt.Frame.MAXIMIZED_BOTH) > 0;
+                break;
+        }
+        return retval;
+    }
+    
+    /**
+     * @return -1 on error.
+     */
+    public int getX()
+    {
+        int retval = -1;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).getX();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = ((GIExternalWindow) frame).getX();
+                break;
+        }
+        return retval;
+    }
+    /**
+     * @return -1 on error.
+     */
+    public int getY()
+    {
+        int retval = -1;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).getY();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = ((GIExternalWindow) frame).getY();
+                break;
+        }
+        return retval;
+    }
+    /**
+     * @return -1 on error.
+     */
+    public int getHeight()
+    {
+        int retval = -1;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).getHeight();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = ((GIExternalWindow) frame).getHeight();
+                break;
+        }
+        return retval;
+    }
+    /**
+     * @return -1 on error.
+     */
+    public int getWidth()
+    {
+        int retval = -1;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).getWidth();
+                break;
+            case GIEXTERNALWINDOW_FRAME:
+                retval = ((GIExternalWindow) frame).getWidth();
+                break;
+        }
+        return retval;
+    }
+    
+    public boolean isSelected()
+    {
+        boolean retval = false;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).isSelected();
                 break;
         }
         return retval;

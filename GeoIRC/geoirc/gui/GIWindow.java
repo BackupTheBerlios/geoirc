@@ -33,7 +33,9 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     public GIWindow(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        String title
+        String title,
+        PaneVector panes,
+        java.util.Vector frames
     )
     {
         super();
@@ -50,8 +52,19 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
         this.settings_manager = settings_manager;
 
         pane = null;
-        pane_wrapper = null;
-        gifw = null;
+        gifw = new GIFrameWrapper( this );
+        
+        pane_wrapper = new GIPaneWrapper(
+            settings_manager,
+            display_manager,
+            getContentPane(),
+            "Content Pane",
+            CHILD_CONTENT_PANE
+        );
+        pane_wrapper.setFrame( gifw );
+        
+        frames.add( gifw );
+        panes.add( pane_wrapper );
         
         selectFrame();
     }

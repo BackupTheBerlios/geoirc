@@ -261,7 +261,7 @@ public class DisplayManager
             case INTERNAL_WINDOW:
             {
                 GIWindow text_window = new GIWindow(
-                    this, settings_manager, actual_title
+                    this, settings_manager, actual_title, panes, frames
                 );
                 text_window.addPane( gipw.getPane() );
                 gipw.setParent( text_window.getPaneWrapper() );
@@ -273,7 +273,7 @@ public class DisplayManager
             case EXTERNAL_WINDOW:
             {
                 GIExternalWindow text_window = new GIExternalWindow(
-                    this, settings_manager, actual_title
+                    this, settings_manager, actual_title, panes, frames
                 );
                 text_window.addPane( gipw.getPane() );
                 gipw.setParent( text_window.getPaneWrapper() );
@@ -318,7 +318,7 @@ public class DisplayManager
             case INTERNAL_WINDOW:
             {
                 GIWindow info_window = new GIWindow(
-                    this, settings_manager, actual_title
+                    this, settings_manager, actual_title, panes, frames
                 );
                 info_window.addPane( gipw.getPane() );
                 gipw.setParent( info_window.getPaneWrapper() );
@@ -330,7 +330,7 @@ public class DisplayManager
             case EXTERNAL_WINDOW:
             {
                 GIExternalWindow info_window = new GIExternalWindow(
-                    this, settings_manager, actual_title
+                    this, settings_manager, actual_title, panes, frames
                 );
                 info_window.addPane( gipw.getPane() );
                 gipw.setParent( info_window.getPaneWrapper() );
@@ -462,11 +462,29 @@ public class DisplayManager
                 if( pane_container_gipw != null )
                 {
                     pane_container_gipw.getPane().remove( pane );
-                    if( pane_container_gipw.getType() == CHILD_CONTENT_PANE )
+                    switch( pane_container_gipw.getType() )
                     {
-                        // We just removed the only content of a GIWindow.
-                        // So, we should delete the window, too!
-                        pane_container_gipw.getFrame().close();
+                        case CHILD_CONTENT_PANE:
+                        case EXTERNAL_CONTENT_PANE:
+                        {
+                            // We just removed the only content of a window.
+                            // So, we should delete the window, too!
+                            GIFrameWrapper gifw = pane_container_gipw.getFrame();
+                            try
+                            {
+                                gifw.close();
+                            }
+                            catch( PropertyVetoException e )
+                            {
+                                Util.printException(
+                                    this, e,
+                                    i18n_manager.getString(
+                                        "window closure failure 1", new Object [] { gifw.getTitle() }
+                                    )
+                                );
+                            }
+                            break;
+                        }
                     }
                 }
 
@@ -549,7 +567,7 @@ public class DisplayManager
                 }
                 else
                 {
-                    frame.add( split_pane );
+                    frame.addPane( split_pane );
                     split_gipw.setParent( partner_gipw );
                 }
                 panes.add( split_gipw );
@@ -644,7 +662,7 @@ public class DisplayManager
         GIPaneWrapper spp_gipw = getPaneWrapperByPane( split_pane_parent );
         partner_gipw.setParent( spp_gipw );
         
-        GIWindow window = new GIWindow( this, settings_manager, gipw.getTitle() );
+        GIWindow window = new GIWindow( this, settings_manager, gipw.getTitle(), panes, frames );
         window.addPane( pane );
         gipw.setParent( window.getPaneWrapper() );
         addNewWindow( window );
@@ -835,14 +853,7 @@ public class DisplayManager
         {
             try
             {
-                if( gifw.isMaximized() )
-                {
-                    gifw.maximize();
-                }
-                else if( gifw.isMinimized() )
-                {
-                    gifw.minimize();
-                }
+                gifw.restore();
             }
             catch( PropertyVetoException e )
             {
@@ -867,7 +878,7 @@ public class DisplayManager
             int height = Util.fitInt( height_, WINDOW_MINIMUM_HEIGHT, WINDOW_MAXIMUM_HEIGHT );
             try
             {
-                restoreWindow( index );
+                gifw.restore();
                 gifw.setSize( width, height );
             }
             catch( PropertyVetoException e )
@@ -893,7 +904,7 @@ public class DisplayManager
             int y = Util.fitInt( y_, -1000, 5000 );
             try
             {
-                restoreWindow( index );
+                gifw.restore();
                 gifw.setLocation( x, y );
             }
             catch( PropertyVetoException e )
@@ -1264,8 +1275,9 @@ public class DisplayManager
     public void internalFrameClosed( InternalFrameEvent e )
     {
         GIWindow window = (GIWindow) e.getSource();
+        GIFrameWrapper gifw = window.getFrameWrapper();
 
-        if( last_activated_frame == window.getFrameWrapper() )
+        if( last_activated_frame == gifw )
         {
             last_activated_frame = null;
         }
@@ -1284,7 +1296,7 @@ public class DisplayManager
             }
         }
         
-        frames.remove( window );
+        frames.remove( gifw );
         
         if( ! restoring )
         {
@@ -1297,19 +1309,6 @@ public class DisplayManager
     public void internalFrameIconified(InternalFrameEvent e) {    }
     public void internalFrameOpened(InternalFrameEvent e)
     {
-        GIWindow giw = (GIWindow) e.getSource();
-        frames.add( giw );
-        GIPaneWrapper gipw = new GIPaneWrapper(
-            settings_manager,
-            this,
-            giw.getContentPane(),
-            "Content Pane",
-            CHILD_CONTENT_PANE
-        );
-        gipw.setFrame( new GIFrameWrapper( giw ) );
-        giw.setPaneWrapper( gipw );
-        panes.add( gipw );
-        
         if( ! restoring )
         {
             recordDesktopState();
@@ -1368,8 +1367,9 @@ public class DisplayManager
     public void windowClosed( WindowEvent e )
     {
         GIExternalWindow window = (GIExternalWindow) e.getSource();
+        GIFrameWrapper gifw = window.getFrameWrapper();
 
-        if( last_activated_frame == window )
+        if( last_activated_frame == gifw )
         {
             last_activated_frame = null;
         }
@@ -1388,7 +1388,7 @@ public class DisplayManager
             }
         }
         
-        frames.remove( window );
+        frames.remove( gifw);
         
         if( ! restoring )
         {
@@ -1396,33 +1396,12 @@ public class DisplayManager
         }
     }
     
-    public void windowClosing(WindowEvent e) {
-    }
-    
-    public void windowDeactivated(WindowEvent e) {
-    }
-    
-    public void windowDeiconified(WindowEvent e) {
-    }
-    
-    public void windowIconified(WindowEvent e) {
-    }
-    
+    public void windowClosing(WindowEvent e) { }
+    public void windowDeactivated(WindowEvent e) { }
+    public void windowDeiconified(WindowEvent e) { }
+    public void windowIconified(WindowEvent e) { }
     public void windowOpened( WindowEvent e )
     {
-        GIExternalWindow giew = (GIExternalWindow) e.getSource();
-        frames.add( giew );
-        GIPaneWrapper gipw = new GIPaneWrapper(
-            settings_manager,
-            this,
-            giew.getContentPane(),
-            "External Content Pane",
-            CHILD_CONTENT_PANE
-        );
-        gipw.setFrame( new GIFrameWrapper( giew ) );
-        giew.setPaneWrapper( gipw );
-        panes.add( gipw );
-        
         if( ! restoring )
         {
             recordDesktopState();
@@ -1487,35 +1466,36 @@ public class DisplayManager
                     break;
                 
                 case CHILD_CONTENT_PANE:
+                case EXTERNAL_CONTENT_PANE:
                 {
                     /* Store the settings for the window associated with this
                      * content pane.
                      */
                     
-                    GIWindow giw = (GIWindow) pane.getFrame().getFrame();
+                    GIFrameWrapper gifw = (GIFrameWrapper) pane.getFrame();
                     settings_manager.putInt(
                         setting_path + "/x",
-                        giw.getX()
+                        gifw.getX()
                     );
                     settings_manager.putInt(
                         setting_path + "/y",
-                        giw.getY()
+                        gifw.getY()
                     );
                     settings_manager.putInt(
                         setting_path + "/height",
-                        giw.getHeight()
+                        gifw.getHeight()
                     );
                     settings_manager.putInt(
                         setting_path + "/width",
-                        giw.getWidth()
+                        gifw.getWidth()
                     );
 
                     int state = GI_NORMAL;
-                    if( giw.isMaximum() )
+                    if( gifw.isMaximized() )
                     {
                         state = GI_MAXIMIZED;
                     }
-                    else if( giw.isIcon() )
+                    else if( gifw.isMinimized() )
                     {
                         state = GI_MINIMIZED;
                     }
@@ -1526,7 +1506,7 @@ public class DisplayManager
 
                     settings_manager.putBoolean(
                         setting_path + "/selected",
-                        giw.isSelected()
+                        gifw.isSelected()
                     );
                     
                     break;
@@ -1598,6 +1578,7 @@ public class DisplayManager
             switch( type )
             {
                 case CHILD_CONTENT_PANE:
+                case EXTERNAL_CONTENT_PANE:
                 {
                     x = settings_manager.getInt(
                         setting_path + "/x",
@@ -1624,31 +1605,47 @@ public class DisplayManager
                         false
                     );
                     
-                    GIWindow giw = new GIWindow( this, settings_manager, title );
-                    desktop_pane.add( giw, x, y );
-                    giw.setBounds( x, y, width, height );
+                    GIFrameWrapper gifw = null;
+                    switch( type )
+                    {
+                        case CHILD_CONTENT_PANE:
+                        {
+                            GIWindow giw = new GIWindow( this, settings_manager, title, panes, frames );
+                            desktop_pane.add( giw, x, y );
+                            gifw = new GIFrameWrapper( giw );
+                            break;
+                        }
+                        case EXTERNAL_CONTENT_PANE:
+                        {
+                            GIExternalWindow giew = new GIExternalWindow( this, settings_manager, title, panes, frames );
+                            gifw = new GIFrameWrapper( giew );
+                            break;
+                        }
+                    }
+                    
                     try
                     {
+                        gifw.setBounds( x, y, width, height );
                         switch( state )
                         {
                             case GI_MAXIMIZED:
-                                giw.setMaximum( true );
+                                gifw.maximize();
                                 break;
                             case GI_MINIMIZED:
-                                giw.setIcon( true );
+                                gifw.minimize();
                                 break;
                             case GI_NORMAL:
                             default:
-                                giw.setMaximum( false );
+                                gifw.restore();
                                 break;
                         }
-                        giw.setSelected( is_selected );
+                        //gifw.activate();
                     }
                     catch( java.beans.PropertyVetoException e )
                     {
                         // Do nothing about this error.
                     }
-                    
+
                     break;
                 }
                 case SPLIT_PANE:
@@ -1757,9 +1754,10 @@ public class DisplayManager
                         gipw.setParent( parent_gipw );
                         break;
                     case CHILD_CONTENT_PANE:
+                    case EXTERNAL_CONTENT_PANE:
                     {
-                        GIWindow giw = (GIWindow) parent_gipw.getFrame().getFrame();
-                        giw.addPane( gipw.getPane() );
+                        GIFrameWrapper gifw = (GIFrameWrapper) parent_gipw.getFrame();
+                        gifw.addPane( gipw.getPane() );
                         gipw.setParent( parent_gipw );
                         break;
                     }

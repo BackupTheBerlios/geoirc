@@ -406,6 +406,7 @@ public interface GeoIRCConstants
     static final int TEXT_PANE = 3;
     static final int INFO_PANE = 4;
     static final int SPLIT_PANE = 5;
+    static final int EXTERNAL_CONTENT_PANE = 6;
     
     static final boolean INCLUDE_SPLIT_PANES = true;
     static final boolean EXCLUDE_SPLIT_PANES = false;
