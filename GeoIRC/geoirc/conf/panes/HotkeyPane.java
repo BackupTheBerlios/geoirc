@@ -180,7 +180,8 @@ public class HotkeyPane
     }
 
     /**
-     * @return
+     * Converts the "/keyboard" node from Preferences to an JDOM Element
+     * TODO: FIXME, converting is very slow, we have to find a better way
      */
     private Element getKeyboardNode() {
         try {
