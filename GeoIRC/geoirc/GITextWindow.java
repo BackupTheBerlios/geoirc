@@ -136,8 +136,16 @@ public class GITextWindow extends JScrollInternalFrame
         {
             e.printStackTrace();
         }
-        
-        scrollbar.setValue( scrollbar.getMaximum() );
+
+        SwingUtilities.invokeLater(
+            new Runnable()
+            {
+                public void run()
+                {   
+                    scrollbar.setValue( scrollbar.getMaximum() );                   
+                }
+            }
+        );
         
     }
     

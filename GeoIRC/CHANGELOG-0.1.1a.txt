@@ -4,3 +4,5 @@ Changelog for GeoIRC 0.1.1a
 Added text to the main GeoIRC frame's title bar.
 Pistos 2003-07-04
 
+Fixed scrolling problem by using SwingUtilities.invokeLater.
+Pistos 2003-07-04
