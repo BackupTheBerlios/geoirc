@@ -113,7 +113,7 @@
               <map>
                 <entry key="pane" value="3" />
                 <entry key="location" value="1" />
-                <entry key="divider location" value="1056" />
+                <entry key="divider location" value="1053" />
               </map>
             </node>
           </node>
@@ -156,9 +156,9 @@
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
                 <entry key="height" value="718" />
-                <entry key="width" value="1037" />
+                <entry key="width" value="1034" />
                 <entry key="state" value="1" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -168,7 +168,7 @@
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
                 <entry key="height" value="718" />
-                <entry key="width" value="1037" />
+                <entry key="width" value="1034" />
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
@@ -256,8 +256,8 @@
           <entry key="Ctrl|1" value="switchwindow .*geoshell.*" />
           <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
-          <entry key="Ctrl|4" value="switchwindow .*christian.*" />
-          <entry key="Ctrl|3" value="switchwindow .*statfreak.*" />
+          <entry key="Ctrl|4" value="switchwindow .*statfreak.*" />
+          <entry key="Ctrl|5" value="switchwindow .*christian.*" />
           <entry key="Ctrl|9" value="switchwindow Pistos" />
           <entry key="Ctrl|0" value="switchwindow .*%raw.*" />
           <entry key="|Tab" value="completenick" />
@@ -367,7 +367,7 @@
             <map />
           </node>
         </node>
-        <node name="constants"> 
+        <node name="constants">
           <map />
           <node name="0">
             <map />

@@ -74,3 +74,6 @@ Pistos 2003-08-29
 Fixed bug where the server itself (i.e. not a user with a nick) issues a MODE
 message.
 Pistos 2003-09-01
+
+Fixed multiple info-panes bug.
+Pistos 2003-09-05

@@ -80,7 +80,9 @@ public class StyleManager
 
     public void initializeTextPane( JTextPane text_pane )
     {
+        text_pane.removeStyle( "normal" );
         Style normal = text_pane.addStyle( "normal", base_style );
+        text_pane.removeStyle( "alternate" );
         Style alternate = text_pane.addStyle( "alternate", normal );
         
         int [] rgb = new int[ 3 ];
@@ -111,6 +113,7 @@ public class StyleManager
             boolean valid_format = true;
             
             // Duplicate the base style, and adjust the new copy to create the new style.
+            text_pane.removeStyle( format );
             Style style = text_pane.addStyle( format, normal );
             for( int c = 0; c < len; )
             {

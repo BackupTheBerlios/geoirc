@@ -32,14 +32,12 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     public GITextPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        StyleManager style_manager,
         String title
     )
     {
         this(
             display_manager,
             settings_manager,
-            style_manager,
             title,
             (String) null
         );
@@ -48,7 +46,6 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     public GITextPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        StyleManager style_manager,
         String title,
         String filter
     )
@@ -64,6 +61,26 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         text_pane.setEditable( false );
         text_pane.addKeyListener( display_manager );
         
+        document = text_pane.getStyledDocument();
+
+        setViewportView( text_pane );
+        setVerticalScrollBarPolicy(
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+        );
+        scrollbar = getVerticalScrollBar();
+        
+        applySettings();
+        
+        colour_toggle = false;
+    }
+    
+    public int appendLine( String text )
+    {
+        return append( text + "\n" );
+    }
+    
+    public void applySettings()
+    {
         String rgb_str = settings_manager.getString(
             "/gui/text windows/default foreground colour",
             "cccccc"
@@ -84,23 +101,8 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             rgb = Util.getRGB( rgb_str );
         } catch( NumberFormatException e ) { /* accept defaults */ }
         text_pane.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
-
-        document = text_pane.getStyledDocument();
-
-        setViewportView( text_pane );
-        setVerticalScrollBarPolicy(
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
-        );
-        scrollbar = getVerticalScrollBar();
         
-        style_manager.initializeTextPane( text_pane );
-        
-        colour_toggle = false;
-    }
-    
-    public int appendLine( String text )
-    {
-        return append( text + "\n" );
+        display_manager.getStyleManager().initializeTextPane( text_pane );
     }
     
     /**

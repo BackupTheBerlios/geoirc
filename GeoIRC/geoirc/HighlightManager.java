@@ -66,22 +66,6 @@ public class HighlightManager implements GeoIRCConstants
         }
     }
     
-    /*
-    public String highlight( String line, String qualities )
-    {
-        int n = triggers.size();
-        HighlightTrigger ht;
-        String highlighted_line = line;
-        for( int i = 0; i < n; i++ )
-        {
-            ht = (HighlightTrigger) triggers.elementAt( i );
-            highlighted_line = ht.highlight( highlighted_line, qualities );
-        }
-        
-        return highlighted_line;
-    }
-     */
-    
     public void highlight(
         GITextPane text_pane,
         int offset,

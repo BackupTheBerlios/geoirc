@@ -95,6 +95,8 @@ public class GeoIRC
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
     protected LogManager log_manager;
+    protected StyleManager style_manager;
+    protected HighlightManager highlight_manager;
     protected ScriptInterface script_interface;
     
     protected Hashtable python_methods;
@@ -155,6 +157,111 @@ public class GeoIRC
         
         variable_manager = new VariableManager();
         
+        // Setup GUI.
+
+        initComponents();
+        
+        restoreMainFrameState();
+        setFocusable( false );
+        
+        this.setTitle( BASE_GEOIRC_TITLE );
+        
+        addComponentListener( this );
+        addWindowListener( this );
+
+        input_field.grabFocus();
+        input_field.addActionListener( this );
+        input_field.addFocusListener( this );
+        
+        // Un-map the Tab-related default mappings which have to do with focus traversal.
+        input_field.setFocusTraversalKeysEnabled( false );
+        
+        input_map = input_field.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
+        action_map = input_field.getActionMap();
+        
+        input_history = new LinkedList();
+        input_history_pointer = MOST_RECENT_ENTRY;
+        input_saved = false;
+
+        display_manager = new DisplayManager(
+            this, menu_bar, settings_manager, variable_manager, input_field
+        );
+
+        applySettings();
+        
+        display_manager.restoreDesktopState();
+        
+        info_manager = new InfoManager( settings_manager, display_manager );
+        
+        display_manager.printlnDebug(
+            "GeoIRC " + GEOIRC_VERSION
+        );
+        display_manager.printlnDebug(
+            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
+        );
+        display_manager.printlnDebug(
+            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+        );
+        display_manager.printlnDebug(
+            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+        );
+        display_manager.printlnDebug(
+            "----------------------\n"
+        );
+        
+        // Scripting.
+        
+//        bsf_manager = new BSFManager();
+        
+        /*
+        try
+        {
+            bsf_manager.declareBean( "display_manager", display_manager, DisplayManager.class);
+        }
+        catch( BSFException e )
+        {
+            Util.printException( display_manager, e, "Script error: " );
+        }
+        */
+        
+        python_methods = new Hashtable();
+        initializeJython();
+        
+        // Ident server.
+        
+        ident_server = new IdentServer( settings_manager, display_manager );
+        ident_server.start();
+                
+        // Restore connections, if any.
+        
+        conversation_words = java.util.Collections.synchronizedSet( new java.util.HashSet() );
+        current_rm = null;
+        remote_machines = new Vector();
+        restoreConnections();
+        
+        // Final miscellaneous initialization
+        
+        settings_manager.listenToPreferences();
+        display_manager.beginListening();
+        listening_to_connections = true;
+        processes = new Hashtable();
+        dcc_chat_requests = new Vector();       
+        audio_clips = new Hashtable();
+        
+        // Open the curtains!
+
+        show();
+    }
+    
+    /**
+     * This method is used to apply the settings of the SettingsManager at
+     * startup, as well as to apply them after the user has changed them via
+     * the settings GUI.
+     *
+     * @return a string describing any errors that occurred when trying to apply the specified skin(s)
+     */
+    public void applySettings()
+    {
         // Apply skin, if any specified.
         
         String skin1 = settings_manager.getString( "/gui/skin1", null );
@@ -201,21 +308,11 @@ public class GeoIRC
             if( skin2 != null ) { skin_errors += "(" + skin2 + ")\n"; }
             skin_errors += e.getMessage() + "\n";
         }
-
-        // Setup GUI.
-
-        initComponents();
         
-        restoreMainFrameState();
-        setFocusable( false );
-        
-        this.setTitle( BASE_GEOIRC_TITLE );
-        
-        addComponentListener( this );
-        addWindowListener( this );
+        display_manager.printlnDebug( skin_errors );
 
-        input_field.grabFocus();
-        input_field.addActionListener( this );
+        // GUI
+        
         input_field.setFont( new Font(
             settings_manager.getString( "/gui/input field/font face", "Lucida Console" ),
             Font.PLAIN,
@@ -225,62 +322,8 @@ public class GeoIRC
         input_field.setForeground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
         rgb = Util.getRGB( settings_manager.getString( "/gui/input field/background colour", DEFAULT_INPUT_FIELD_BACKGROUND ) );
         input_field.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
-        input_field.addFocusListener( this );
         
-        // Un-map the Tab-related default mappings which have to do with focus traversal.
-        input_field.setFocusTraversalKeysEnabled( false );
-        
-        input_map = input_field.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
-        action_map = input_field.getActionMap();
-        
-        input_history = new LinkedList();
-        input_history_pointer = MOST_RECENT_ENTRY;
-        input_saved = false;
-        
-        display_manager = new DisplayManager(
-            this, menu_bar, settings_manager, variable_manager, input_field
-        );
-        display_manager.printlnDebug( skin_errors );
-
-        log_manager = new LogManager( settings_manager, display_manager );
-        display_manager.setLogManager( log_manager );
-        info_manager = new InfoManager( settings_manager, display_manager );
-        
-        display_manager.printlnDebug(
-            "GeoIRC " + GEOIRC_VERSION
-        );
-        display_manager.printlnDebug(
-            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
-        );
-        display_manager.printlnDebug(
-            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-        );
-        display_manager.printlnDebug(
-            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-        );
-        display_manager.printlnDebug(
-            "----------------------\n"
-        );
-        
-        // Scripting.
-        
-//        bsf_manager = new BSFManager();
-        
-        /*
-        try
-        {
-            bsf_manager.declareBean( "display_manager", display_manager, DisplayManager.class);
-        }
-        catch( BSFException e )
-        {
-            Util.printException( display_manager, e, "Script error: " );
-        }
-        */
-        
-        python_methods = new Hashtable();
-        initializeJython();
-        
-        // Read settings.
+        // Misc settings
         
         preferred_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
         
@@ -346,39 +389,17 @@ public class GeoIRC
         setupFullKeyMapping( KeyEvent.VK_8 );
         setupFullKeyMapping( KeyEvent.VK_9 );
         setupFullKeyMapping( KeyEvent.VK_0 );
+
+        // Managers
         
-        // Triggers
-        
-        audio_clips = new Hashtable();
+        style_manager = new StyleManager( settings_manager, display_manager );
+        highlight_manager = new HighlightManager( settings_manager, display_manager );
+        log_manager = new LogManager( settings_manager, display_manager );
+        display_manager.setLogManager( log_manager );
         trigger_manager = new TriggerManager( this, settings_manager, display_manager );
-        
-        // Command aliases.
-        
         alias_manager = new AliasManager( settings_manager, display_manager, variable_manager );
         
-        // Ident server.
-        
-        ident_server = new IdentServer( settings_manager, display_manager );
-        ident_server.start();
-                
-        // Restore connections, if any.
-        
-        conversation_words = java.util.Collections.synchronizedSet( new java.util.HashSet() );
-        current_rm = null;
-        remote_machines = new Vector();
-        restoreConnections();
-        
-        // Final miscellaneous initialization
-        
-        settings_manager.listenToPreferences();
-        display_manager.beginListening();
-        listening_to_connections = true;
-        processes = new Hashtable();
-        dcc_chat_requests = new Vector();       
-        
-        // Open the curtains!
-
-        show();
+        display_manager.applySettings();
     }
     
     protected void initializeJython()
@@ -429,8 +450,6 @@ public class GeoIRC
             InputEvent.getModifiersExText( java_modifiers ) + "|"
             + KeyEvent.getKeyText( keycode );
         
-        //display_manager.printlnDebug( stroke_text );
-        
         input_map.put(
             KeyStroke.getKeyStroke( keycode, java_modifiers ),
             stroke_text
@@ -452,6 +471,16 @@ public class GeoIRC
         setupKeyMapping( ALT+SHIFT, keycode );
         setupKeyMapping( CTRL+SHIFT, keycode );
         setupKeyMapping( CTRL+ALT+SHIFT, keycode );
+    }
+    
+    public StyleManager getStyleManager()
+    {
+        return style_manager;
+    }
+    
+    public HighlightManager getHighlightManager()
+    {
+        return highlight_manager;
     }
     
     // Returns the Server created.

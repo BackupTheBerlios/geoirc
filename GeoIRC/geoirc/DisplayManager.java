@@ -48,8 +48,6 @@ public class DisplayManager
         KeyListener
 {
     protected SettingsManager settings_manager;
-    protected StyleManager style_manager;
-    protected HighlightManager highlight_manager;
     protected VariableManager variable_manager;
     protected LogManager log_manager;
     protected GeoIRC geoirc;
@@ -89,8 +87,6 @@ public class DisplayManager
         this.settings_manager = settings_manager;
         this.variable_manager = variable_manager;
         log_manager = null;
-        style_manager = new StyleManager( settings_manager, this );
-        highlight_manager = new HighlightManager( settings_manager, this );
 
         windows = new Vector();
         inactive_info_panes = new Vector();
@@ -107,8 +103,6 @@ public class DisplayManager
         geoirc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
         
-        restoreDesktopState();
-        
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
@@ -119,6 +113,24 @@ public class DisplayManager
     public void beginListening()
     {
         listening = true;
+    }
+    
+    public void applySettings()
+    {
+        GIPane gip = null;
+        for( int i = 0, n = panes.size(); i < n; i++ )
+        {
+            gip = (GIPane) panes.elementAt( i );
+            if( gip instanceof GITextPane )
+            {
+                ((GITextPane) gip).applySettings();
+            }
+        }
+    }
+    
+    public StyleManager getStyleManager()
+    {
+        return geoirc.getStyleManager();
     }
     
     public void setShowQualities( boolean setting )
@@ -166,7 +178,7 @@ public class DisplayManager
     protected GITextPane addTextPane( String title, String filter )
     {
         GITextPane gitp = new GITextPane(
-            this, settings_manager, style_manager, title, filter
+            this, settings_manager, title, filter
         );
         panes.add( gitp );
         return gitp;
@@ -232,15 +244,15 @@ public class DisplayManager
     
     public void activateInfoPanes( String path, TreeModel model )
     {
-        int n = inactive_info_panes.size();
         GIInfoPane giip;
-        for( int i = 0; i < n; i++ )
+        for( int i = 0; i < inactive_info_panes.size(); i++ )
         {
             giip = (GIInfoPane) inactive_info_panes.elementAt( i );
             if( giip.getPath().equals( path ) )
             {
                 giip.activate( model );
                 inactive_info_panes.remove( i );
+                i--;
                 active_info_panes.add( giip );
             }
         }
@@ -332,7 +344,7 @@ public class DisplayManager
                 if( text_pane.accepts( qualities ) )
                 {
                     int offset = text_pane.appendLine( line );
-                    highlight_manager.highlight(
+                    geoirc.getHighlightManager().highlight(
                         text_pane, 
                         offset, 
                         line.length(),
@@ -948,7 +960,7 @@ public class DisplayManager
         }
     }
 
-    protected void restoreDesktopState()
+    public void restoreDesktopState()
     {
         int i;
         String i_str;
