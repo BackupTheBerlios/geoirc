@@ -233,32 +233,35 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     protected GIPaneWrapper getFirstTextPaneWrapper( Component component )
     {
         GIPaneWrapper retval = null;
-        if( component instanceof JSplitPane )
+        if( component != null )
         {
-            JSplitPane split_pane = (JSplitPane) component;
-            retval = getFirstTextPaneWrapper( split_pane.getTopComponent() );
-            if( retval == null )
+            if( component instanceof JSplitPane )
             {
-                retval = getFirstTextPaneWrapper( split_pane.getBottomComponent() );
+                JSplitPane split_pane = (JSplitPane) component;
+                retval = getFirstTextPaneWrapper( split_pane.getTopComponent() );
+                if( retval == null )
+                {
+                    retval = getFirstTextPaneWrapper( split_pane.getBottomComponent() );
+                }
             }
-        }
-        else if( component instanceof GITextPane )
-        {
-            retval = ((GITextPane) component).getPaneWrapper();
-        }
-        else if(
-            ( component instanceof GIInfoPane )
-            || ( component instanceof org.jscroll.JScrollDesktopPane )
-        )
-        {
-            // Ignore
-        }
-        else // content pane
-        {
-            Container container = (Container) component;
-            if( container.getComponentCount() > 0 )
+            else if( component instanceof GITextPane )
             {
-                retval = getFirstTextPaneWrapper( container.getComponent( 0 ) );
+                retval = ((GITextPane) component).getPaneWrapper();
+            }
+            else if(
+                ( component instanceof GIInfoPane )
+                || ( component instanceof org.jscroll.JScrollDesktopPane )
+            )
+            {
+                // Ignore
+            }
+            else // content pane
+            {
+                Container container = (Container) component;
+                if( container.getComponentCount() > 0 )
+                {
+                    retval = getFirstTextPaneWrapper( container.getComponent( 0 ) );
+                }
             }
         }
         

@@ -778,28 +778,25 @@ public class DisplayManager
         // TODO: closePanes( String filter )
     }
     
-    public void closeFrame( int index )
+    public void closeWindow( int index )
     {
         GIFrameWrapper gifw = getFrameByIndex( index );
         if( gifw != null )
         {
-            if( gifw.getType() == GIEXTERNALWINDOW_FRAME )
+            try
             {
-                try
-                {
-                    gifw.close();
-                }
-                catch( PropertyVetoException e )
-                {
-                    Util.printException(
-                        this,
-                        e,
-                        i18n_manager.getString(
-                            "window closure failure 2",
-                            new Object [] { new Integer( index ) }
-                        )
-                    );
-                }
+                gifw.close();
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException(
+                    this,
+                    e,
+                    i18n_manager.getString(
+                        "window closure failure 2",
+                        new Object [] { new Integer( index ) }
+                    )
+                );
             }
         }
     }
@@ -1713,6 +1710,7 @@ public class DisplayManager
                         JSplitPane split_pane = new JSplitPane( orientation );
                         split_pane.setDividerLocation( divider_location );
                         GIPaneWrapper split_gipw = new GIPaneWrapper( settings_manager, this, split_pane, title, type );
+                        split_gipw.setSplitRank( split_rank );
                         panes.add( split_gipw );
                     }
                     else
@@ -1917,6 +1915,16 @@ public class DisplayManager
                 gipw = (GIPaneWrapper) panes.elementAt( i );
                 printlnDebug( Integer.toString( i ) + ": " + gipw.toString() );
             }
+        }
+    }
+    
+    public void listWindows()
+    {
+        GIFrameWrapper gifw;
+        for( int i = 0, n = frames.size(); i < n; i++ )
+        {
+            gifw = (GIFrameWrapper) frames.elementAt( i );
+            printlnDebug( Integer.toString( i ) + ": " + gifw.toString() );
         }
     }
     

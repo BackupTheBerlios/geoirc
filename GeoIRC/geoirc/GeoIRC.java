@@ -1431,7 +1431,7 @@ public class GeoIRC
                 input_history = new LinkedList();
                 input_history_pointer = MOST_RECENT_ENTRY;
                 break;
-            case CMD_CLEAR_WINDOW:
+            case CMD_CLEAR_PANE:
                 if( arg_string != null )
                 {
                     try
@@ -1441,11 +1441,11 @@ public class GeoIRC
                     }
                     catch( NumberFormatException e )
                     {
-                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_PANES ] );
                         display_manager.printlnDebug(
                             "/"
-                            + CMDS[ CMD_CLEAR_WINDOW ]
-                            + " [window id number]" );
+                            + CMDS[ CMD_CLEAR_PANE ]
+                            + " [pane id number]" );
                     }
                 }
                 else
@@ -1454,7 +1454,6 @@ public class GeoIRC
                 }
                 break;
             case CMD_CLOSE_WINDOW:
-                /*
                 if( arg_string != null )
                 {
                     try
@@ -1475,7 +1474,6 @@ public class GeoIRC
                 {
                     display_manager.closeWindow( -1 );
                 }
-                 */
                 break;
             case CMD_COMPLETE_NICK:
                 {
@@ -2239,7 +2237,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_LIST_WINDOWS:
-                //display_manager.listWindows();
+                display_manager.listWindows();
                 break;
             case CMD_LOAD_PY:
                 if( python_script_interface != null )

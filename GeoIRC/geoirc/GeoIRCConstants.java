@@ -108,7 +108,7 @@ public interface GeoIRCConstants
         "exectcl",
         "printactive",
         "clearinputfield",
-        "clearwindow",
+        "clearpane",
         "quit",
         "closewindow",
         "maximizewindow",
@@ -158,7 +158,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHAR_NORMAL = 67;
     public static final int CMD_CLEAR_INPUT_FIELD = 76;
     public static final int CMD_CLEAR_INPUT_HISTORY = 86;
-    public static final int CMD_CLEAR_WINDOW = 77;
+    public static final int CMD_CLEAR_PANE = 77;
     public static final int CMD_CLOSE_WINDOW = 79;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
@@ -186,11 +186,11 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_DCC_REQUESTS = 58;
     public static final int CMD_LIST_DCC_OFFERS = 70;
     public static final int CMD_LIST_FONTS = 4;
+    public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_LIST_LOGS = 50;
     public static final int CMD_LIST_MEMBERS = 41;
     public static final int CMD_LIST_PANES = 88;
     public static final int CMD_LIST_PROCESSES = 54;
-    public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_LOAD_PY = 52;
     public static final int CMD_LOAD_TCL = 73;
     public static final int CMD_LOG = 48;

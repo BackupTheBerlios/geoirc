@@ -1,109 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <geoirc>
-    <command_aliases>
-      <_0 alias="ns" expansion="sendraw PRIVMSG NickServ :&amp;1" />
-      <_1 alias="cs" expansion="sendraw PRIVMSG ChanServ :&amp;1" />
-      <_2 alias="ms" expansion="sendraw PRIVMSG MemoServ :&amp;1" />
-      <_3 alias="ss" expansion="sendraw PRIVMSG SeenServ :&amp;1" />
-      <_4 alias="id" expansion="sendraw PRIVMSG NickServ :IDENTIFY &amp;1" />
-      <_5 alias="openurl" expansion="exec C:\Program Files\Opera7\opera.exe &amp;1" />
-      <_6 alias="openlasturl" expansion="exec C:\Program Files\Opera7\opera.exe %lasturl" />
-      <_7 alias="" />
-    </command_aliases>
-    
-    <dcc lowest_port="2000" highest_port="5000">
-      <file_transfers confirm_receive="true" download_directory="./downloads/" maximum_received_file_size="20480000" packet_size="8192" />
-    </dcc>
-    <gui skin1="themes/whistler/gtk/gtkrc" skin2="themes/whistler/kde/kde.themerc" windowbar_position="top" nudge_amount="28" normal_button_colour="000000" new_content_button_colour="ff0000" main_frame_x="0" main_frame_y="0" main_frame_width="1280" main_frame_height="1024" main_frame_state="6" notices_in_active_window="true">
-      
-      <format timestamp="HH:mm:ss" maximum_nick_width="20" complete_join_message="true">
-        <mirc_colours _0="ffffff" _1="000000" _2="00007d" _3="007d00" _4="ff0000" _5="7d0000" _6="7d007d" _7="ff7d00" _8="ffff00" _9="00ff00" _10="007d7d" _11="00ffff" _12="0000ff" _13="ff00ff" _14="7d7d7d" _15="c8c8c8" />
-      </format>
-      <info_windows sort_order="1" show_root_node="true" />
-      <input_field font_face="Lucida Console" font_size="14" foreground_colour="000000" background_colour="ffffff" />
-      <text_windows font_face="Lucida Console" font_size="14" default_foreground_colour="cccccc" default_background_colour="000000" alternate_background_colour="000000">
-        <highlighting>
-          <_0 filter="not from=%self" regexp=".*GeoIRC_User.*" format="bg0000ff" />
-          <_1 filter="from=%self" regexp=".*" format="fgff9933" />
-          <_2 regexp="&lt;(.+?)&gt; .*" format="fgffffff" filter="" />
-          <_3 regexp="^-(.+?)- .*" format="fgffffff" filter="" />
-          <_4 format="" />
-        </highlighting>
-      </text_windows>
-    
-    <desktop><panes><_0 type="0" title="GeoIRC" parent="-1" split_rank="-1" /><_1 type="1" title="GeoIRC Desktop Pane" parent="11" split_rank="1" /><_2 type="3" title="%debug" parent="11" split_rank="0" filter="%debug" /><_3 type="4" title="Info" parent="10" split_rank="1" path="/" /><_4 type="2" title="irc.freenode.net and %raw and not %printed" parent="-1" split_rank="-1" x="160" y="44" height="500" width="700" state="0" selected="false" /><_5 type="3" title="irc.freenode.net and %raw and not %printed" parent="4" split_rank="-1" filter="irc.freenode.net and %raw and not %printed" /><_6 type="2" title="from=NickServ and %self or NickServ and from=%self" parent="-1" split_rank="-1" x="430" y="158" height="500" width="700" state="0" selected="false" /><_7 type="3" title="from=NickServ and %self or NickServ and from=%self" parent="6" split_rank="-1" filter="from=NickServ and %self or NickServ and from=%self" /><_8 type="2" title="#geoirc on irc.freenode.net" parent="-1" split_rank="-1" x="90" y="34" height="680" width="881" state="0" selected="false" /><_9 type="3" title="#geoirc on irc.freenode.net" parent="10" split_rank="0" filter="irc.freenode.net and #geoirc" /><_10 type="5" title="Split Pane" parent="8" split_rank="-1" orientation="1" divider_location="660" /><_11 type="5" title="(4) GeoIRC" parent="0" split_rank="-1" orientation="0" divider_location="134" /><_12 type="3" title="#geoirc" parent="13" split_rank="-1" filter="#geoirc" /><_13 type="6" title="#geoirc" parent="-1" split_rank="-1" x="339" y="451" height="310" width="423" state="0" selected="false" /></panes></desktop></gui>
-    <keyboard>
-      <keymap keystroke="alt LEFT" command="previouspane" />
-      <keymap keystroke="alt RIGHT" command="nextpane" />
-      <keymap keystroke="DOWN" command="next_history_entry" />
-      <keymap keystroke="UP" command="previous_history_entry" />
-      <keymap keystroke="ctrl UP" command="nudgeup" />
-      <keymap keystroke="ctrl DOWN" command="nudgedown" />
-      <keymap keystroke="PAGE_UP" command="pageup" />
-      <keymap keystroke="PAGE_DOWN" command="pagedown" />
-      <keymap keystroke="F2" command="nick Pistos|afk" />
-      <keymap keystroke="F3" command="nick GeoIRC_User" />
-      <keymap keystroke="F9" command="nick Pistos" />
-      <keymap keystroke="F12" command="openlasturl" />
-      <keymap keystroke="ctrl F4" command="closewindow" />
-      <keymap keystroke="ctrl F5" command="restorewindow" />
-      <keymap keystroke="ctrl F9" command="minimizewindow" />
-      <keymap keystroke="ctrl F10" command="maximizewindow" />
-      <keymap keystroke="ctrl 1" command="activatepane .*geoshell.*" />
-      <keymap keystroke="ctrl 2" command="activatepane .*geoirc.*" />
-      <keymap keystroke="ctrl 3" command="activatepane .*geocards.*" />
-      <keymap keystroke="ctrl 4" command="activatepane .*statfreak.*" />
-      <keymap keystroke="ctrl 5" command="activatepane .*christian.*" />
-      <keymap keystroke="ctrl 0" command="activatepane .*%raw.*" />
-      <keymap keystroke="alt 1" command="activatepanebyindex 1" />
-      <keymap keystroke="alt 2" command="activatepanebyindex 2" />
-      <keymap keystroke="alt 3" command="activatepanebyindex 3" />
-      <keymap keystroke="alt 4" command="activatepanebyindex 4" />
-      <keymap keystroke="alt 5" command="activatepanebyindex 5" />
-      <keymap keystroke="alt 6" command="activatepanebyindex 6" />
-      <keymap keystroke="alt 7" command="activatepanebyindex 7" />
-      <keymap keystroke="alt 8" command="activatepanebyindex 8" />
-      <keymap keystroke="alt 9" command="activatepanebyindex 9" />
-      <keymap keystroke="alt 0" command="activatepanebyindex 10" />
-      <keymap keystroke="ctrl B" command="charbold" />
-      <keymap keystroke="ctrl N" command="charitalic" />
-      <keymap keystroke="ctrl U" command="clearinputfield" />
-      <keymap keystroke="ctrl O" command="charnormal" />
-      <keymap keystroke="ctrl K" command="charcolour" />
-      <keymap keystroke="ctrl V" command="extendedpaste" />
-      <keymap keystroke="ctrl W" command="closewindow" />
-      <keymap keystroke="TAB" command="completenick" />
-      <keymap keystroke="shift TAB" command="focus_on_input_field" />
-    </keyboard>
-    <logs default_log_path="./logs/" log_start_message="'**** Logging begun at 'yyyy-MM-dd HH:mm:ss' ****'">
-      <_0 filter="#geoirc and irc.freenode.net" regexp=".*" file="./logs/#geoirc.log" />
-      <_1 filter="%debug" regexp=".*" file="./logs/debug.log" />
-      <_2 file="" />
-    </logs>
-    <misc nick_completion_suffix=": " quit_message="http://purepistos.net/geoirc/" server_timeout="60000" global_pre-filter="">
-      <paste_flood allowance="4" delay="1000" />
-      <word_memory minimum_word_length="4" />
-    </misc>
-    <personal nick1="GeoIRC_User" nick2="GeoIRC|User" nick3="GeoIRCUser" language="en" country="CA">
-      <ctcp userinfo="http://purepistos.net/geoirc/" />
-      <ident username="geoircuser" os="Unknown OS" />
-    </personal>
-    <triggers>
-      <_0 regexp=".*GeoIRC.?User.*" command="play sounds/bloop.wav" filter="" />
-      <_1 filter="not ( %join or %part or %quit or %pong )" regexp=".*" command="play sounds/blip.wav" />
-      <_2 filter="%join or %part or %quit" regexp=".*" command="play sounds/motion.wav" />
-      <_3 filter="%page" regexp=".*" command="play sounds/page.wav" />
-      <_4 filter="%notice" regexp=".*" command="play sounds/notice.wav" />
-      <_5 command="" />
-    </triggers>
-    <variables>
-      <captured>
-        <_0 regexp="((?:http://\S+)|(?:www\.\S+))" name="lasturl" filter="" />
-        <_1 filter="%privmsg" regexp="^(.*)$" name="lastline" />
-        <_2 name="" />
-      </captured>
-      <constants>
-        <_0 />
-      </constants>
-    </variables>
-  <connections><_0 type="class geoirc.Server" hostname="irc.freenode.net" port="6667"><channels><_0 name="#geoirc" /></channels></_0><_1 type="" /></connections></geoirc>
+  <command_aliases>
+    <_0 alias="ns" expansion="sendraw PRIVMSG NickServ :&amp;1" />
+    <_1 alias="cs" expansion="sendraw PRIVMSG ChanServ :&amp;1" />
+    <_2 alias="ms" expansion="sendraw PRIVMSG MemoServ :&amp;1" />
+    <_3 alias="ss" expansion="sendraw PRIVMSG SeenServ :&amp;1" />
+    <_4 alias="id" expansion="sendraw PRIVMSG NickServ :IDENTIFY &amp;1" />
+    <_5 alias="openurl" expansion="exec C:\Program Files\Opera7\opera.exe &amp;1" />
+    <_6 alias="openlasturl" expansion="exec C:\Program Files\Opera7\opera.exe %lasturl" />
+    <_7 alias="" />
+  </command_aliases>
+  <dcc lowest_port="2000" highest_port="5000">
+    <file_transfers confirm_receive="true" download_directory="./downloads/" maximum_received_file_size="20480000" packet_size="8192" />
+  </dcc>
+  <gui skin1="themes/whistler/gtk/gtkrc" skin2="themes/whistler/kde/kde.themerc" windowbar_position="top" nudge_amount="28" normal_button_colour="000000" new_content_button_colour="ff0000" main_frame_x="0" main_frame_y="0" main_frame_width="1280" main_frame_height="1024" main_frame_state="6" notices_in_active_window="true">
+    <format timestamp="HH:mm:ss" maximum_nick_width="20" complete_join_message="true">
+      <mirc_colours _0="ffffff" _1="000000" _2="00007d" _3="007d00" _4="ff0000" _5="7d0000" _6="7d007d" _7="ff7d00" _8="ffff00" _9="00ff00" _10="007d7d" _11="00ffff" _12="0000ff" _13="ff00ff" _14="7d7d7d" _15="c8c8c8" />
+    </format>
+    <info_windows sort_order="1" show_root_node="true" />
+    <input_field font_face="Lucida Console" font_size="14" foreground_colour="000000" background_colour="ffffff" />
+    <text_windows font_face="Lucida Console" font_size="14" default_foreground_colour="cccccc" default_background_colour="000000" alternate_background_colour="000000">
+      <highlighting>
+        <_0 filter="not from=%self" regexp=".*GeoIRC_User.*" format="bg0000ff" />
+        <_1 filter="from=%self" regexp=".*" format="fgff9933" />
+        <_2 regexp="&lt;(.+?)&gt; .*" format="fgffffff" filter="" />
+        <_3 regexp="^-(.+?)- .*" format="fgffffff" filter="" />
+        <_4 format="" />
+      </highlighting>
+    </text_windows>
+    <desktop>
+      <panes>
+        <_0 type="0" title="GeoIRC" parent="-1" split_rank="-1" />
+        <_1 type="1" title="GeoIRC Desktop Pane" parent="11" split_rank="1" />
+        <_2 type="3" title="%debug" parent="11" split_rank="0" filter="%debug" />
+        <_3 type="4" title="Info" parent="10" split_rank="1" path="/" />
+        <_4 type="2" title="irc.freenode.net and %raw and not %printed" parent="-1" split_rank="-1" x="160" y="44" height="500" width="700" state="0" selected="false" />
+        <_5 type="3" title="irc.freenode.net and %raw and not %printed" parent="4" split_rank="-1" filter="irc.freenode.net and %raw and not %printed" />
+        <_6 type="2" title="from=NickServ and %self or NickServ and from=%self" parent="-1" split_rank="-1" x="430" y="158" height="500" width="700" state="0" selected="false" />
+        <_7 type="3" title="from=NickServ and %self or NickServ and from=%self" parent="6" split_rank="-1" filter="from=NickServ and %self or NickServ and from=%self" />
+        <_8 type="2" title="#geoirc on irc.freenode.net" parent="-1" split_rank="-1" x="90" y="34" height="680" width="881" state="0" selected="true" />
+        <_9 type="3" title="#geoirc on irc.freenode.net" parent="10" split_rank="0" filter="irc.freenode.net and #geoirc" />
+        <_10 type="5" title="Split Pane" parent="8" split_rank="-1" orientation="1" divider_location="660" />
+        <_11 type="5" title="(4) GeoIRC" parent="0" split_rank="-1" orientation="0" divider_location="134" />
+      </panes>
+    </desktop>
+  </gui>
+  <keyboard>
+    <keymap keystroke="alt LEFT" command="previouspane" />
+    <keymap keystroke="alt RIGHT" command="nextpane" />
+    <keymap keystroke="DOWN" command="next_history_entry" />
+    <keymap keystroke="UP" command="previous_history_entry" />
+    <keymap keystroke="ctrl UP" command="nudgeup" />
+    <keymap keystroke="ctrl DOWN" command="nudgedown" />
+    <keymap keystroke="PAGE_UP" command="pageup" />
+    <keymap keystroke="PAGE_DOWN" command="pagedown" />
+    <keymap keystroke="F2" command="nick Pistos|afk" />
+    <keymap keystroke="F3" command="nick GeoIRC_User" />
+    <keymap keystroke="F9" command="nick Pistos" />
+    <keymap keystroke="F12" command="openlasturl" />
+    <keymap keystroke="ctrl F4" command="closewindow" />
+    <keymap keystroke="ctrl F5" command="restorewindow" />
+    <keymap keystroke="ctrl F9" command="minimizewindow" />
+    <keymap keystroke="ctrl F10" command="maximizewindow" />
+    <keymap keystroke="ctrl 1" command="activatepane .*geoshell.*" />
+    <keymap keystroke="ctrl 2" command="activatepane .*geoirc.*" />
+    <keymap keystroke="ctrl 3" command="activatepane .*geocards.*" />
+    <keymap keystroke="ctrl 4" command="activatepane .*statfreak.*" />
+    <keymap keystroke="ctrl 5" command="activatepane .*christian.*" />
+    <keymap keystroke="ctrl 0" command="activatepane .*%raw.*" />
+    <keymap keystroke="alt 1" command="activatepanebyindex 1" />
+    <keymap keystroke="alt 2" command="activatepanebyindex 2" />
+    <keymap keystroke="alt 3" command="activatepanebyindex 3" />
+    <keymap keystroke="alt 4" command="activatepanebyindex 4" />
+    <keymap keystroke="alt 5" command="activatepanebyindex 5" />
+    <keymap keystroke="alt 6" command="activatepanebyindex 6" />
+    <keymap keystroke="alt 7" command="activatepanebyindex 7" />
+    <keymap keystroke="alt 8" command="activatepanebyindex 8" />
+    <keymap keystroke="alt 9" command="activatepanebyindex 9" />
+    <keymap keystroke="alt 0" command="activatepanebyindex 10" />
+    <keymap keystroke="ctrl B" command="charbold" />
+    <keymap keystroke="ctrl N" command="charitalic" />
+    <keymap keystroke="ctrl U" command="clearinputfield" />
+    <keymap keystroke="ctrl O" command="charnormal" />
+    <keymap keystroke="ctrl K" command="charcolour" />
+    <keymap keystroke="ctrl V" command="extendedpaste" />
+    <keymap keystroke="ctrl W" command="closewindow" />
+    <keymap keystroke="TAB" command="completenick" />
+    <keymap keystroke="shift TAB" command="focus_on_input_field" />
+  </keyboard>
+  <logs default_log_path="./logs/" log_start_message="'**** Logging begun at 'yyyy-MM-dd HH:mm:ss' ****'">
+    <_0 filter="#geoirc and irc.freenode.net" regexp=".*" file="./logs/#geoirc.log" />
+    <_1 filter="%debug" regexp=".*" file="./logs/debug.log" />
+    <_2 file="" />
+  </logs>
+  <misc nick_completion_suffix=": " quit_message="http://purepistos.net/geoirc/" server_timeout="60000" global_pre-filter="">
+    <paste_flood allowance="4" delay="1000" />
+    <word_memory minimum_word_length="4" />
+  </misc>
+  <personal nick1="GeoIRC_User" nick2="GeoIRC|User" nick3="GeoIRCUser" language="en" country="CA">
+    <ctcp userinfo="http://purepistos.net/geoirc/" />
+    <ident username="geoircuser" os="Unknown OS" />
+  </personal>
+  <triggers>
+    <_0 regexp=".*GeoIRC.?User.*" command="play sounds/bloop.wav" filter="" />
+    <_1 filter="not ( %join or %part or %quit or %pong )" regexp=".*" command="play sounds/blip.wav" />
+    <_2 filter="%join or %part or %quit" regexp=".*" command="play sounds/motion.wav" />
+    <_3 filter="%page" regexp=".*" command="play sounds/page.wav" />
+    <_4 filter="%notice" regexp=".*" command="play sounds/notice.wav" />
+    <_5 command="" />
+  </triggers>
+  <variables>
+    <captured>
+      <_0 regexp="((?:http://\S+)|(?:www\.\S+))" name="lasturl" filter="" />
+      <_1 filter="%privmsg" regexp="^(.*)$" name="lastline" />
+      <_2 name="" />
+    </captured>
+    <constants>
+      <_0 />
+    </constants>
+  </variables>
+  <connections>
+    <_0 type="class geoirc.Server" hostname="irc.freenode.net" port="6667">
+      <channels>
+        <_0 name="#geoirc" />
+      </channels>
+    </_0>
+    <_1 type="" />
+  </connections>
+</geoirc>
+
