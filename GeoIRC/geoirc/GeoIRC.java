@@ -110,8 +110,10 @@ public class GeoIRC
         action_map.put( "UP", new GIAction( "previous_history_entry", this ) );
         input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "DOWN" );
         action_map.put( "DOWN", new GIAction( "next_history_entry", this ) );
-        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK ), "CTRL|TAB" );
-        action_map.put( "CTRL|TAB", new GIAction( "nextwindow", this ) );
+        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, InputEvent.ALT_DOWN_MASK ), "ALT|RIGHT" );
+        action_map.put( "ALT|RIGHT", new GIAction( "nextwindow", this ) );
+        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK ), "ALT|LEFT" );
+        action_map.put( "ALT|LEFT", new GIAction( "previouswindow", this ) );
     }
             
     // Returns the Server created.
@@ -431,14 +433,13 @@ public class GeoIRC
      */
     public static void main( String args[] )
     {
-        
         Skin skin = null;
         
         if( args.length > 0 )
         {
             try
             {
-                skin = SkinLookAndFeel.loadSkin( "themes\\aqua\\gtk\\gtkrc" );
+                skin = SkinLookAndFeel.loadSkin( args[ 0 ] );
                 SkinLookAndFeel.setSkin( skin );
                 UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
                 UIManager.setLookAndFeel( new SkinLookAndFeel() );
@@ -448,7 +449,6 @@ public class GeoIRC
                 e.printStackTrace();
             }
         }
-         
         
         GeoIRC geoirc = new GeoIRC();
         geoirc.setExtendedState( MAXIMIZED_BOTH );
