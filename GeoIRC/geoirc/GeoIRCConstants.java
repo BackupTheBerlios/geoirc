@@ -342,9 +342,11 @@ public interface GeoIRCConstants
     
     static final char NAMLIST_OP_CHAR = '@';
     static final char NAMLIST_VOICE_CHAR = '+';
+    static final char NAMLIST_HALFOP_CHAR = '%';
     
     static final String MODE_OP = "o";
     static final String MODE_VOICE = "v";
+    static final String MODE_HALFOP = "h";
     
     static final int MAX_NEW_WINDOW_X = 500;
     static final int MAX_NEW_WINDOW_Y = 400;

@@ -46,19 +46,24 @@ public class User
         String nick_without_chars = nick_with_chars;
         do
         {
-            mode_char_found = false;
+            mode_char_found = true;
             
             switch( nick_without_chars.charAt( 0 ) )
             {
                 case NAMLIST_OP_CHAR:
                     addModeFlag( channel, MODE_OP );
                     nick_without_chars = nick_without_chars.substring( 1 );
-                    mode_char_found = true;
+                    break;
+                case NAMLIST_HALFOP_CHAR:
+                    addModeFlag( channel, MODE_HALFOP );
+                    nick_without_chars = nick_without_chars.substring( 1 );
                     break;
                 case NAMLIST_VOICE_CHAR:
                     addModeFlag( channel, MODE_VOICE );
                     nick_without_chars = nick_without_chars.substring( 1 );
-                    mode_char_found = true;
+                    break;
+                default:
+                    mode_char_found = false;
                     break;
             }
         } while( mode_char_found );

@@ -555,7 +555,12 @@ public class Server
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
+                    String channel = tokens[ 2 ];
+                    if( channel.charAt( 0 ) == ':' )
+                    {
+                        // Remove leading colon.
+                        channel = channel.substring( 1 );
+                    }
                     String text = getPadded( nick );                                        
                     //show dns username and host?
                     if( settings_manager.getBoolean("/gui/format/complete join message", false) == true )
@@ -702,6 +707,31 @@ public class Server
                                         c.acknowledgeUserChange( user );
                                         c.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has taken channel operator privileges for "
+                                            + channel + " from " + arg + ".";
+                                    }
+
+                                    qualities += " recipient=" + nick;
+                                }
+                            }
+                            else if( mode.equals( MODE_HALFOP ) )
+                            {
+                                User recipient_user = getUserByNick( arg );
+                                if( recipient_user != null )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        recipient_user.addModeFlag( c, MODE_HALFOP );
+                                        c.acknowledgeUserChange( user );
+                                        c.acknowledgeUserChange( recipient_user );
+                                        text = getPadded( nick ) + " has given half operator privileges for "
+                                            + channel + " to " + arg + ".";
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        recipient_user.removeModeFlag( c, MODE_HALFOP );
+                                        c.acknowledgeUserChange( user );
+                                        c.acknowledgeUserChange( recipient_user );
+                                        text = getPadded( nick ) + " has taken half operator privileges for "
                                             + channel + " from " + arg + ".";
                                     }
 

@@ -7,3 +7,7 @@ Pistos 2003-09-26
 Added a safety so that failure to load settings trips a flag that prevents
 settings from getting saved.
 Pistos 2003-09-26
+
+Fixed parsing bug which assumed JOIN messages always have a colon before the
+channel name.
+Pistos 2003-09-26

@@ -24,6 +24,7 @@ public class GITreeCellRenderer
 {
     ImageIcon regular_icon;
     ImageIcon voiced_icon;
+    ImageIcon halfop_icon;
     ImageIcon op_icon;
     
     public GITreeCellRenderer() throws FileNotFoundException
@@ -35,6 +36,10 @@ public class GITreeCellRenderer
         if( ( voiced_icon = loadIcon( "voiced_icon.png" ) ) == null )
         {
             throw new FileNotFoundException( "voiced_icon.png" );
+        }
+        if( ( halfop_icon = loadIcon( "halfop_icon.png" ) ) == null )
+        {
+            throw new FileNotFoundException( "halfop_icon.png" );
         }
         if( ( op_icon = loadIcon( "op_icon.png" ) ) == null )
         {
@@ -84,6 +89,10 @@ public class GITreeCellRenderer
                     if( user.hasModeFlag( channel, MODE_VOICE ) )
                     {
                         setIcon( voiced_icon );
+                    }
+                    if( user.hasModeFlag( channel, MODE_HALFOP ) )
+                    {
+                        setIcon( halfop_icon );
                     }
                     if( user.hasModeFlag( channel, MODE_OP ) )
                     {
