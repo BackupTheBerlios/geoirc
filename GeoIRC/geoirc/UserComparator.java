@@ -13,6 +13,7 @@ import geoirc.util.Util;
  * consistent with equals.
  *
  * @author  Pistos
+ * @author  netseeker
  */
 public class UserComparator
     implements java.util.Comparator, GeoIRCConstants

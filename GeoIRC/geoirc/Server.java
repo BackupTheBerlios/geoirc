@@ -689,6 +689,7 @@ public class Server
                                     {
                                         recipient_user.addModeFlag( c, MODE_OP );
                                         c.acknowledgeUserChange( user );
+                                        c.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has given channel operator privileges for "
                                             + channel + " to " + arg + ".";
                                     }
@@ -696,6 +697,7 @@ public class Server
                                     {
                                         recipient_user.removeModeFlag( c, MODE_OP );
                                         c.acknowledgeUserChange( user );
+                                        c.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has taken channel operator privileges for "
                                             + channel + " from " + arg + ".";
                                     }
@@ -803,6 +805,7 @@ public class Server
                                     {
                                         recipient_user.addModeFlag( c, MODE_VOICE );
                                         c.acknowledgeUserChange( user );
+                                        c.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has given voice in "
                                             + channel + " to " + arg + ".";
                                     }
@@ -810,6 +813,7 @@ public class Server
                                     {
                                         recipient_user.removeModeFlag( c, MODE_VOICE );
                                         c.acknowledgeUserChange( user );
+                                        c.acknowledgeUserChange( recipient_user );
                                         text = getPadded( nick ) + " has taken voice in "
                                             + channel + " from " + arg + ".";
                                     }
