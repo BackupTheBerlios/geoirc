@@ -23,5 +23,6 @@ public interface XmlProcessable
 	public void setInt( String path, int value );
 	public void setBoolean( String path, boolean value );
 	public boolean removeNode( String path );
+	public boolean nodeExists( String path );
 	public Object getBuffer();	
 }
