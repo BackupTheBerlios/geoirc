@@ -59,6 +59,8 @@ public class GITextWindow extends JScrollInternalFrame
         setResizable( true );
         setTitle( title );
         
+        addInternalFrameListener( display_manager );
+        
         this.display_manager = display_manager;
         this.filter = filter;
         this.associated_machine = associated_machine;

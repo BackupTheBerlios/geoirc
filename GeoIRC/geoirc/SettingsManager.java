@@ -77,22 +77,24 @@ public class SettingsManager
     public boolean loadSettingsFromXML()
     {
         InputStream is = null;
-        boolean success = true;
+        boolean success = false;
         try {
             is = new BufferedInputStream(new FileInputStream( filepath ));
-        } catch (FileNotFoundException e) {
-            printlnDebug( "File not found: '" + filepath + "'." );
-            success = false;
+            root.removeNode();
+            root = Preferences.userNodeForPackage( GeoIRC.class );
+            root.importPreferences( is );
+            success = true;
         }
-        
-        try {
-            root.importPreferences(is);
+        catch( BackingStoreException e )
+        {
+            printlnDebug( e.getMessage() );
+        }
+        catch (FileNotFoundException e) {
+            printlnDebug( "File not found: '" + filepath + "'." );
         } catch (InvalidPreferencesFormatException e) {
             printlnDebug( "Invalid format in '" + filepath + "'; cannot import settings." );
-            success = false;
         } catch (IOException e) {
             printlnDebug("I/O problem while trying to load settings from '" + filepath + "'.");
-            success = false;
         }
         
         return success;
@@ -194,6 +196,7 @@ public class SettingsManager
         try
         {
             root.node( getNodePath( path ) ).removeNode();
+            saveSettingsToXML();
         }
         catch( BackingStoreException e )
         {

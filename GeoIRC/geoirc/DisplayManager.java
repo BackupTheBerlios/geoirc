@@ -259,6 +259,12 @@ public class DisplayManager
         return last_activated_frame;
     }
     
+    protected void addWindowToVector( JInternalFrame jif )
+    {
+        windows.add( jif );
+        jif.addComponentListener( this );
+    }
+    
     /* ************************************************************
      * Listener Implementations
      */
@@ -270,9 +276,9 @@ public class DisplayManager
     
     public void internalFrameClosed(InternalFrameEvent e)
     {
+        windows.remove( e.getSource() );
         if( listening )
         {
-            windows.remove( e.getSource() );
             recordDesktopState();
         }
     }
@@ -282,11 +288,11 @@ public class DisplayManager
     public void internalFrameIconified(InternalFrameEvent e) {    }
     public void internalFrameOpened(InternalFrameEvent e)
     {
+        JInternalFrame jif = (JInternalFrame) e.getSource();
+        jif.addComponentListener( this );
+        windows.add( jif );
         if( listening )
         {
-            JInternalFrame jif = (JInternalFrame) e.getSource();
-            windows.add( jif );
-            jif.addComponentListener( this );
             recordDesktopState();
         }
     }
