@@ -26,6 +26,8 @@ public class JKeyRecordField
             new Dimension(
                 JValidatingTextField.PREFERED_WIDTH,
                 JValidatingTextField.PREFERED_HEIGHT));
+        
+        removeKeyListener(this);        
         addKeyListener(this);
     }
     /**
@@ -52,45 +54,57 @@ public class JKeyRecordField
     /* (non-Javadoc)
      * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
      */
-    public void keyPressed(KeyEvent evt) {        
-
+    public void keyPressed(KeyEvent evt) {
+        //System.out.println(evt);
         StringBuffer str = new StringBuffer();
 
-        if (evt.isActionKey())
-        {
-            System.out.println("keyPressed " + evt);
-            str.append("|");
+        str.append(getModifiers(evt));
+        str.append("|");
+
+        if (evt.isActionKey()) {
             str.append(KeyEvent.getKeyText(evt.getKeyCode()));
-            setText(str.toString());
         }
+        else {
+            char c = evt.getKeyChar();
+
+            if (!Character.isISOControl(c)) {
+                str.append(Character.toString(c));
+            }
+            else {
+                int code = evt.getKeyCode();
+                str.append(KeyEvent.getKeyText(code));
+            }
+        }
+        
+        evt.consume();
+        setText(str.toString());
     }
 
-    private String getModifiers(KeyEvent evt) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(KeyEvent.getKeyModifiersText(evt.getModifiers()));
-        return sb.toString();//.replaceAll("\\p{Punct}", "|");
+    private String getModifiers(KeyEvent evt) {         
+        int modifiers = evt.getModifiers();
+        if(modifiers != 0)
+        {
+            String sb = KeyEvent.getKeyModifiersText(modifiers);
+            return sb.replaceAll("\\+", "|");
+        }
+        
+        return "";            
     }
 
     /* (non-Javadoc)
      * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
      */
     public void keyTyped(KeyEvent evt) {
-        StringBuffer str = new StringBuffer();
-        char c = evt.getKeyChar();
-        int modifiers = evt.getModifiers();
-                
-        str.append(KeyEvent.getKeyModifiersText(modifiers));
-        str.append("|");
-        
-        if (!Character.isISOControl(c)) {
-            str.append(Character.toString(c));
-        }
-
-        setText(str.toString());
-        System.out.println(evt);
+        evt.consume();
     }
+
     /* (non-Javadoc)
      * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
      */
-    public void keyReleased(KeyEvent arg0) {}
+    public void keyReleased(KeyEvent evt) {
+        evt.consume();
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+     */
 }
