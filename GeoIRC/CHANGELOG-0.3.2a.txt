@@ -72,3 +72,6 @@ Pistos 2003-09-24
 Added buttons to change order of highlightings in the
 highlighting settings
 netseeker 2003-09-24
+
+Added log configuration to settings gui
+netseeker 2003-09-25

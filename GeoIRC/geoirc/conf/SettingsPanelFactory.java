@@ -12,6 +12,8 @@ import geoirc.conf.panes.DCCPane;
 import geoirc.conf.panes.GeneralPane;
 import geoirc.conf.panes.HighlightingPane;
 import geoirc.conf.panes.HotkeyPane;
+import geoirc.conf.panes.LogFilesPane;
+import geoirc.conf.panes.LogPane;
 import geoirc.conf.panes.RootPane;
 import geoirc.conf.panes.TriggerPane;
 import geoirc.conf.panes.VisualPane;
@@ -59,12 +61,6 @@ public class SettingsPanelFactory
 
         panels.add(genPane);
 
-        //Connection Settings
-        BaseSettingsPanel conPane = new DCCPane(settings_manager, valueRules, "DCC Settings");
-        conPane.addValidationListener(validation_listener);
-        //conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
-        panels.add(conPane);
-
         //Visual Settings
         BaseSettingsPanel visPane = new VisualPane(settings_manager, valueRules, "Visual Settings");
         visPane.addValidationListener(validation_listener);
@@ -73,6 +69,22 @@ public class SettingsPanelFactory
         hlPane.addValidationListener(validation_listener);
         visPane.addChild(hlPane);
         panels.add(visPane);
+        
+        //Connection Settings
+        BaseSettingsPanel conPane = new DCCPane(settings_manager, valueRules, "DCC Settings");
+        conPane.addValidationListener(validation_listener);
+        //conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
+        panels.add(conPane);
+
+        //Log Settings        
+        BaseSettingsPanel logPane = new LogPane(settings_manager, valueRules, "Log Settings");
+        logPane.addValidationListener(validation_listener);
+        BaseSettingsPanel logFilePane = new LogFilesPane(settings_manager, valueRules, "Logfiles");
+        logFilePane.addValidationListener(validation_listener);
+        logPane.addChild(logFilePane);
+        
+        //conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
+        panels.add(logPane);
 
         return panels;
     }
