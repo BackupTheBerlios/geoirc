@@ -103,8 +103,8 @@ public interface GeoIRCConstants
     static final int GI_MAXIMIZED = 1;
     static final int GI_MINIMIZED = 2;
     
-    static final char STYLE_ESCAPE_CHAR = (char) 255;
-    static final String STYLE_TERMINATOR_CHAR = ";";
+    static final String STYLE_ESCAPE_SEQUENCE = Character.toString( (char) 255 );
+    static final String STYLE_TERMINATION_SEQUENCE = ";";
     static final String STYLE_FOREGROUND = "fg";
     static final String STYLE_BACKGROUND = "bg";
     static final String STYLE_BOLD = "bo";

@@ -147,7 +147,8 @@ public class GeoIRC
         );
         display_manager.printlnDebug( skin_errors );
         display_manager.println(
-            "normal text, " + (char) STYLE_ESCAPE_CHAR + "b01;blue text", "debug"
+            "normal text, " + STYLE_ESCAPE_SEQUENCE + "f00ff00b0000ff"
+            + STYLE_TERMINATION_SEQUENCE + "blue text", "debug"
         );
         
         // Read settings.

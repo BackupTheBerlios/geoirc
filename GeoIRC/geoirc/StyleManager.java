@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import java.awt.Color;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -28,6 +29,9 @@ public class StyleManager
         DisplayManager display_manager
     )
     {
+        styles = new StyleContext();
+        style_names = new String[ 0 ];
+        
         Style base_style = StyleContext.getDefaultStyleContext().getStyle(
             StyleContext.DEFAULT_STYLE
         );
@@ -87,21 +91,67 @@ public class StyleManager
                             valid_format = false;
                             break;
                         }
+                        
                         arg = format.substring( c, 6 );
                         c += 6;
+                        int red = 0xff;
+                        int green = 0xff;
+                        int blue = 0xff;
+                        try
+                        {
+                            red = Integer.parseInt( arg.substring( 0, 2 ), 16 );
+                            green = Integer.parseInt( arg.substring( 2, 2 ), 16 );
+                            blue = Integer.parseInt( arg.substring( 4, 2 ), 16 );
+                        }
+                        catch( NumberFormatException e )
+                        {
+                            valid_format = false;
+                            break;
+                        }
+                        
+                        StyleConstants.setForeground( style, new Color( red, green, blue ) );
                     }
                     else if( code.equals( STYLE_BACKGROUND ) )
                     {
+                        if( c > len - 6 )
+                        {
+                            valid_format = false;
+                            break;
+                        }
+                        
+                        arg = format.substring( c, 6 );
+                        c += 6;
+                        int red = 0xff;
+                        int green = 0xff;
+                        int blue = 0xff;
+                        try
+                        {
+                            red = Integer.parseInt( arg.substring( 0, 2 ), 16 );
+                            green = Integer.parseInt( arg.substring( 2, 2 ), 16 );
+                            blue = Integer.parseInt( arg.substring( 4, 2 ), 16 );
+                        }
+                        catch( NumberFormatException e )
+                        {
+                            valid_format = false;
+                            break;
+                        }
+                        
+                        StyleConstants.setBackground( style, new Color( red, green, blue ) );
                     }
                     else if( code.equals( STYLE_BOLD ) )
                     {
+                        StyleConstants.setBold( style, true );
                     }
                     else if( code.equals( STYLE_ITALIC ) )
                     {
+                        StyleConstants.setItalic( style, true );
                     }
                     else if( code.equals( STYLE_UNDERLINE ) )
                     {
+                        StyleConstants.setUnderline( style, true );
                     }
+                    
+                    v.add( format );
                 }
             }
             
@@ -111,10 +161,7 @@ public class StyleManager
             }
         }
         
-        /*
-        s = text_pane.addStyle( "blue", style_normal );
-        StyleConstants.setBackground( s, new Color( 0, 0, 255 ) );
-         */
+        style_names = (String []) v.toArray( style_names );
     }
 
     public void initializeTextPane( JTextPane text_pane )

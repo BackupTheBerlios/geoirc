@@ -113,9 +113,46 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
     
     synchronized public void append( String text )
     {
+        // Tokenize this string into styled fragments.
+        
+        String [] fragments = text.split( STYLE_ESCAPE_SEQUENCE );
+        String [] fragment_parts;
+        boolean first_is_styled = ( text.indexOf( STYLE_ESCAPE_SEQUENCE ) == 0 );
         try
         {
-            document.insertString( document.getLength(), text, style );
+            int index;
+            for( int i = 0; i < fragments.length; i++ )
+            {
+                if( ( ! first_is_styled ) && ( i == 0 ) )
+                {
+                    document.insertString(
+                        document.getLength(),
+                        fragments[ i ],
+                        text_pane.getStyle( "normal" )
+                    );
+                }
+                else
+                {
+                    index = fragments[ i ].indexOf( STYLE_TERMINATION_SEQUENCE );
+                    if( ( index > -1 ) && ( index < fragments[ i ].length() ) )
+                    {
+                        fragment_parts = fragments[ i ].split( STYLE_TERMINATION_SEQUENCE, 2 );
+                        document.insertString(
+                            document.getLength(),
+                            fragment_parts[ 1 ],
+                            text_pane.getStyle( fragment_parts[ 0 ] )
+                        );
+                    }
+                    else
+                    {
+                        document.insertString(
+                            document.getLength(),
+                            fragments[ i ],
+                            text_pane.getStyle( "normal" )
+                        );
+                    }
+                }
+            }
         }
         catch( BadLocationException e )
         {
