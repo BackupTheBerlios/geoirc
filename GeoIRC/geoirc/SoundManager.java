@@ -83,6 +83,7 @@ public class SoundManager implements GeoIRCConstants
         try
         {
             st = new SoundTrigger( display_manager, filter, regexp, sound_file );
+            triggers.add( st );
         }
         catch( java.util.regex.PatternSyntaxException e )
         {

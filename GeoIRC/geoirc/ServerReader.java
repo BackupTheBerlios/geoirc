@@ -96,28 +96,32 @@ public class ServerReader
                 String timestamp = GeoIRC.getATimeStamp(
                     settings_manager.getString( "/gui/format/timestamp", "" )
                 );
+                String qualities = server.toString()
+                    + " " + tokens[ 2 ]
+                    + " from=" + nick;
 
                 display_manager.println(
                     timestamp + text,
-                    server.toString()
-                    + " " + tokens[ 2 ]
-                    + " from=" + nick
+                    qualities
                 );
+                sound_manager.check( text, qualities );
             }
             else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
             {
                 String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
                 String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
                 String text = nick + " joined " + channel + ".";
+                String qualities = server.toString()
+                    + " " + channel
+                    + " from=" + nick
+                    + " join";
                 display_manager.println(
                     GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     ) + text,
-                    server.toString()
-                    + " " + channel
-                    + " from=" + nick
-                    + " join"
+                    qualities
                 );
+                sound_manager.check( text, qualities );
             }
             else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
             {
@@ -125,29 +129,33 @@ public class ServerReader
                 String channel = tokens[ 2 ];
                 String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
                 String text = nick + " left " + channel + " (" + message + ").";
+                String qualities = server.toString()
+                    + " " + channel
+                    + " from=" + nick
+                    + " part";
                 display_manager.println(
                     GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     ) + text,
-                    server.toString()
-                    + " " + channel
-                    + " from=" + nick
-                    + " part"
+                    qualities
                 );
+                sound_manager.check( text, qualities );
             }
             else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
             {
                 String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
                 String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
                 String text = nick + " has quit (" + message + ").";
+                String qualities = server.toString()
+                    + " from=" + nick
+                    + " quit";
                 display_manager.println(
                     GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     ) + text,
-                    server.toString()
-                    + " from=" + nick
-                    + " quit"
+                    qualities
                 );
+                sound_manager.check( text, qualities );
             }
 
         }

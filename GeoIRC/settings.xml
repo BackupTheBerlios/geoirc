@@ -147,7 +147,7 @@
             <map>
               <entry key="filter" value="from=Pistos" />
               <entry key="regexp" value=".*" />
-              <entry key="filename" value="D:\\GeoIRC\\package\\bloop.wav" />
+              <entry key="filename" value="./bloop.wav" />
             </map>
           </node>
           <node name="1">

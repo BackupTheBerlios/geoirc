@@ -157,6 +157,10 @@ public class GeoIRC
         setupKeyMapping( ALT, KeyEvent.VK_RIGHT );
         setupKeyMapping( ALT, KeyEvent.VK_LEFT );
         
+        // Sound
+        
+        sound_manager = new SoundManager( settings_manager, display_manager );
+        
         // Restore connections, if any.
         
         current_remote_machine = null;
@@ -166,10 +170,6 @@ public class GeoIRC
         {
             current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
         }
-        
-        // Sound
-        
-        sound_manager = new SoundManager( settings_manager, display_manager );
         
         // Final miscellaneous initialization
         
