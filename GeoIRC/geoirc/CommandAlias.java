@@ -37,6 +37,7 @@ public class CommandAlias implements GeoIRCConstants
         String [] args = Util.tokensToArray( arg_string );
         String token;
         String token_remainder;
+        int index;
         
         for( int i = 0; i < expansion_array.length; i++ )
         {
@@ -47,12 +48,27 @@ public class CommandAlias implements GeoIRCConstants
                 case ALIAS_ARG_CHAR:
                     try
                     {
+                        index = Integer.parseInt( token_remainder );
+                        expansion_array[ i ] = args[ index ];
                     }
-                    catch( NumberFormatException e ) { }
+                    catch( NumberFormatException e )
+                    {
+                        // Treat literally.
+                    }
                     break;
                 case ALIAS_ARG_REST_CHAR:
+                    try
+                    {
+                        index = Integer.parseInt( token_remainder );
+                        expansion_array[ i ] = Util.stringArrayToString( args, index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        // Treat literally.
+                    }
                     break;
                 default:
+                    // Treat literally.
                     break;
             }
         }

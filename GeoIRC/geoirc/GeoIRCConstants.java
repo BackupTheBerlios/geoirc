@@ -114,4 +114,7 @@ public interface GeoIRCConstants
     static final String STYLE_BOLD = "bo";
     static final String STYLE_ITALIC = "it";
     static final String STYLE_UNDERLINE = "un";
+    
+    static final char ALIAS_ARG_CHAR = '$';
+    static final char ALIAS_ARG_REST_CHAR = '%';
 }
