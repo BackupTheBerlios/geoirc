@@ -93,7 +93,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         table.setValidatingCellEditor(valueField, 0);
 
         JRegExTextField patternField = new JRegExTextField(null);
-        table.setValidatingCellEditor(patternField, 1);
+        table.setRegExpTestingCellEditor(patternField, 1);
 
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(140);

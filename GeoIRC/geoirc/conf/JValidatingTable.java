@@ -119,6 +119,23 @@ public class JValidatingTable extends JTable
         cmdColumn.setCellEditor( new DefaultCellEditor(editor) );
         editor.addValidationListener( source_listener );        
     }
+
+    public void setRegExpTestingCellEditor( JValidatingTextField editor, int column )
+    {
+        TableColumn cmdColumn = getColumnModel().getColumn( column );
+        
+        PropertyChangeListener[] tmp_listeners = editor.getValidationListeners();
+        
+        for( int i = 0; i < tmp_listeners.length; i++ )
+        {
+            target_listeners.add( tmp_listeners[i] );
+            editor.removeValidationListener( (ValidationListener)tmp_listeners[i] );
+        }
+        
+        cmdColumn.setCellEditor( new RegExpTesterInputFieldEditor( editor ) );
+        editor.addValidationListener( source_listener );        
+    }
+
     
     /**
      * @param source

@@ -21,6 +21,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +32,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -49,9 +51,16 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
     private JValidatingTextPane input_field = new JValidatingTextPane(null);
     private JEditorPane output_field = new JEditorPane();
     private JButton apply_button = new JButton("Apply");
-    private JButton close_button = new JButton("Close");
+    private JButton close_button = new JButton("Close");    
+    private GridBagLayout layout = new GridBagLayout();    
+    private List close_listeners = new ArrayList();
     
-    private GridBagLayout layout = new GridBagLayout();
+    public static final String APPLY_OPTION = "apply";
+    public static final String CANCEL_OPTION = "cancel";
+    
+    public static final int SHOW_CANCEL_OPTION = 0;
+    public static final int SHOW_APPLY_CANCEL_OPTION = 1;
+    public static final int SHOW_APPLY_OPTION = 2;
 
     /**
      * @throws java.awt.HeadlessException
@@ -120,7 +129,8 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
                 regexp_field.setText("");
                 input_field.setText("");
                 output_field.setText("");
-                setVisible ( false );               
+                setVisible ( false );   
+                notifyCloseListeners(CANCEL_OPTION);                
             }
         });
 
@@ -129,18 +139,24 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
             public void actionPerformed(ActionEvent arg0)
             {
                 output_field.setText("");
-                setVisible ( false );               
+                setVisible ( false );
+                notifyCloseListeners(APPLY_OPTION);               
             }
         });
 
         switch ( options )
         {
-            case JOptionPane.DEFAULT_OPTION:
+            case SHOW_CANCEL_OPTION:
                 showButton( content_pane, 0, 1, 1);
                 break;
-            default:
-                showButton( content_pane, 0, 0, 1);
-                showButton( content_pane, 1, 1, 0);
+            case SHOW_APPLY_CANCEL_OPTION:
+                showButton( content_pane, 0, 1, 1);
+                showButton( content_pane, 1, 0, 0);
+            case SHOW_APPLY_OPTION:
+                showButton( content_pane, 1, 1, 1);
+                break;
+           default:
+                showButton( content_pane, 0, 1, 1);           
         }
         
         this.pack();
@@ -155,8 +171,9 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
         ActionListener escape_listener = new ActionListener()
         {
             public void actionPerformed(ActionEvent actionEvent)
-            {
-                hide();
+            {                
+                setVisible(false);
+                notifyCloseListeners(CANCEL_OPTION);           
             }
         };
 
@@ -172,6 +189,11 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
     public void setRegExp(String regexp)
     {
         this.regexp_field.setText(regexp);
+    }
+    
+    public String getRegExp()
+    {
+        return this.regexp_field.getText();
     }
 
     /**
@@ -243,7 +265,7 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
                     start = matcher.start();
                     end = matcher.end();
 
-                    if (start == 0 && end + 1 == text.length())
+                    if (start == 0 && end == text.length())
                     {
                         sb.append("the complete string does match");
                         break;
@@ -338,18 +360,39 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
         }
     }
 
-    public void addApplyListener(ActionListener listener)
-    {
-        apply_button.addActionListener(listener);
+    public void addCloseListener(ActionListener listener)
+    {        
+        close_listeners.add(listener);
     }
     
-    public void removeApplyListener(ActionListener listener)
+    public void removeCloseListener(ActionListener listener)
     {
-        apply_button.removeActionListener(listener);
+        close_listeners.remove(listener);
     }
     
-    public ActionListener[] getApplyListeners()
+    public ActionListener[] getCloseListeners()
     {
-        return apply_button.getActionListeners();
+        return (ActionListener[])close_listeners.toArray();
+    }
+    
+    private void notifyCloseListeners(String option)
+    {
+        ActionEvent evt = new ActionEvent(this, 0, option);
+        
+        for(Iterator it = close_listeners.iterator(); it.hasNext(); )
+        {
+            ActionListener listener = (ActionListener)it.next();            
+            listener.actionPerformed(evt);
+        }
+    }
+    
+    public void setVisible( boolean visible )
+    {
+        if( visible == true && (this.getRegExp() != null && this.getRegExp().length() > 0))
+        {
+            this.input_field.requestFocusInWindow();
+        }
+        
+        super.setVisible(visible);
     }
 }
