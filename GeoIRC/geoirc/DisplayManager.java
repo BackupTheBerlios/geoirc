@@ -646,6 +646,12 @@ public class DisplayManager
             );
             
         }
+        
+        n = docked_panes.size();
+        for( int i = 0; i < n; i++ )
+        {
+            pane = (GIPane) docked_panes.elementAt( i );
+        }
     }
 
     protected void restoreDesktopState()
