@@ -71,11 +71,12 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
      */
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
-        super(display_manager.getGeoIRCInstance(), title, false);
+        super( display_manager.getGeoIRCInstance(), title, true );
+        
         this.parent = display_manager.getGeoIRCInstance();
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        this.valueRules = new GeoIRCDefaults(display_manager);
+        this.valueRules = new GeoIRCDefaults( display_manager );
         this.validation_listener = new ValidationListener()
         {
             void validationPerformed(Object source, boolean isvalid)
@@ -107,9 +108,9 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         
         try
         {
-            setResizable(true);
+            setResizable( true );
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            addWindowListener(this);
+            addWindowListener( this );
             initComponents();
             //pack();
         }
@@ -169,9 +170,9 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         Cancel.setMaximumSize(new Dimension(80, 25));
         Cancel.setMinimumSize(new Dimension(80, 25));
         Cancel.setPreferredSize(new Dimension(80, 25));
-        Cancel.setToolTipText("Cancel without saving");
+        Cancel.setToolTipText("Close without saving");
         Cancel.setActionCommand("onCancel");
-        Cancel.setText("Cancel");
+        Cancel.setText("Close");
         Cancel.addActionListener(new SettingsDialog_Cancel_actionAdapter(this));
         ButtonPanel.setLayout(flowLayout1);
 
