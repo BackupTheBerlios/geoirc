@@ -510,7 +510,7 @@ public class Server
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
-                    String text = nick + " joined " + channel + ".";
+                    String text = nick + " has joined " + channel + ".";
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "join";
@@ -748,7 +748,7 @@ public class Server
                         user.noteActivity();
                     }
                     
-                    String text = nick + " left " + channel + " (" + message + ").";
+                    String text = nick + " has left " + channel + " (" + message + ").";
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "part";
@@ -999,6 +999,22 @@ public class Server
                         channel.setChannelMembership( v );
                     }
                 }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) )
+                {
+                    String channel = tokens[ 3 ];
+                    
+                    qualities += " " + FILTER_SPECIAL_CHAR + "topic"
+                        + " " + channel;
+                    String text = channel + " has no topic set.";
+                    
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    trigger_manager.check( text, qualities );
+                }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
                 {
                     String channel = tokens[ 3 ];
@@ -1006,7 +1022,7 @@ public class Server
                     
                     qualities += " " + FILTER_SPECIAL_CHAR + "topic"
                         + " " + channel;
-                    String text = "The topic for " + channel + " is: " + topic;
+                    String text = "The topic of " + channel + " is: " + topic;
                     
                     extractVariables( topic, qualities );
                     display_manager.println(
@@ -1037,6 +1053,26 @@ public class Server
                         + " " + channel;
                     String text = "The topic for " + channel + " was set by "
                         + setter + " on " + time;
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    trigger_manager.check( text, qualities );
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_TOPIC ] ) )
+                {
+                    String nick = getNick( tokens[ 0 ] );
+                    String channel = tokens[ 2 ];
+                    String topic = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
+                    
+                    qualities += " " + FILTER_SPECIAL_CHAR + "topic"
+                        + " " + channel
+                        + " from=" + nick;
+                    String text = nick + " has changed the topic for " + channel + " to: " + topic;
+                    
+                    extractVariables( topic, qualities );
                     display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )

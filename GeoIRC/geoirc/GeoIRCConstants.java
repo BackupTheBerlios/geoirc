@@ -164,7 +164,9 @@ public interface GeoIRCConstants
         "318",
         "319",
         "001",
-        "KICK"
+        "KICK",
+        "331",
+        "TOPIC"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -184,6 +186,8 @@ public interface GeoIRCConstants
     static final int IRCMSG_RPL_WHOISCHANNELS = 15;
     static final int IRCMSG_WELCOME = 16;
     static final int IRCMSG_KICK = 17;
+    static final int IRCMSG_RPL_NOTOPIC = 18;
+    static final int IRCMSG_TOPIC = 19;
     
     static final String [] CTCP_CMDS =
     {
