@@ -757,16 +757,20 @@ public class GeoIRC
     {
         RemoteMachine rm;
         boolean was_set = false;
-        Iterator it = remote_machines.iterator();
         
-        while( it.hasNext() )
+        if( remote_machines != null )
         {
-            rm = (RemoteMachine) it.next();
-            if( rm.getHostname().equals( rm_name ) )
+            Iterator it = remote_machines.iterator();
+
+            while( it.hasNext() )
             {
-                current_rm = rm;
-                was_set = true;
-                break;
+                rm = (RemoteMachine) it.next();
+                if( rm.getHostname().equals( rm_name ) )
+                {
+                    current_rm = rm;
+                    was_set = true;
+                    break;
+                }
             }
         }
         

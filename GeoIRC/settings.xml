@@ -57,9 +57,6 @@
       </node>
       <node name="connections">
         <map />
-        <node name="0">
-          <map />
-        </node>
       </node>
       <node name="dcc">
         <map>
@@ -104,55 +101,9 @@
             <node name="1">
               <map>
                 <entry key="type" value="1" />
-                <entry key="title" value="(4) GeoIRC" />
+                <entry key="title" value="GeoIRC Desktop Pane" />
                 <entry key="parent" value="0" />
                 <entry key="split rank" value="-1" />
-              </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="type" value="2" />
-                <entry key="title" value="x" />
-                <entry key="parent" value="-1" />
-                <entry key="split rank" value="-1" />
-                <entry key="x" value="20" />
-                <entry key="y" value="20" />
-                <entry key="height" value="500" />
-                <entry key="width" value="700" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-              </map>
-            </node>
-            <node name="3">
-              <map>
-                <entry key="type" value="3" />
-                <entry key="title" value="x" />
-                <entry key="parent" value="2" />
-                <entry key="split rank" value="-1" />
-                <entry key="filter" value="x" />
-              </map>
-            </node>
-            <node name="4">
-              <map>
-                <entry key="type" value="2" />
-                <entry key="title" value="y" />
-                <entry key="parent" value="-1" />
-                <entry key="split rank" value="-1" />
-                <entry key="x" value="20" />
-                <entry key="y" value="20" />
-                <entry key="height" value="500" />
-                <entry key="width" value="700" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-              </map>
-            </node>
-            <node name="5">
-              <map>
-                <entry key="type" value="3" />
-                <entry key="title" value="y" />
-                <entry key="parent" value="4" />
-                <entry key="split rank" value="-1" />
-                <entry key="filter" value="y" />
               </map>
             </node>
           </node>

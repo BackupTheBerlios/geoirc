@@ -44,6 +44,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
         setTitle( title );
         
         addInternalFrameListener( display_manager );
+        addComponentListener( display_manager );
         
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;

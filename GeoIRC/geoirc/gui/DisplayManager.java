@@ -1271,6 +1271,11 @@ public class DisplayManager
         gipw.setFrame( new GIFrameWrapper( giw ) );
         giw.setPaneWrapper( gipw );
         panes.add( gipw );
+        
+        if( ! restoring )
+        {
+            recordDesktopState();
+        }
     }
 
     public void componentHidden(java.awt.event.ComponentEvent e) { }
@@ -1286,7 +1291,10 @@ public class DisplayManager
     {
         if( ! restoring )
         {
-            recordDesktopState();
+            if( e.getComponent() instanceof GIPane )
+            {
+                recordDesktopState();
+            }
         }
     }
 
