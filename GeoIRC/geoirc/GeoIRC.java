@@ -26,7 +26,6 @@ public class GeoIRC
     implements
         GeoIRCConstants,
         ActionListener,
-        KeyListener,
         CommandExecutor
 {
     public static final String [] CMDS =
@@ -39,7 +38,9 @@ public class GeoIRC
         "newserver",
         "nick",
         "nextwindow",
-        "previouswindow"
+        "previouswindow",
+        "next_history_entry",
+        "previous_history_entry"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -47,9 +48,11 @@ public class GeoIRC
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_NEW_SERVER = 5;
     public static final int CMD_NEW_TEXT_WINDOW = 1;
+    public static final int CMD_NEXT_HISTORY_ENTRY = 9;
     public static final int CMD_NEXT_WINDOW = 7;
     public static final int CMD_NICK = 6;
     public static final int CMD_PREVIOUS_WINDOW = 8;
+    public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_SEND_RAW = 0;
     
     protected static final int MAX_HISTORY_SIZE = 30;
@@ -61,6 +64,9 @@ public class GeoIRC
     protected int input_history_pointer;
     protected boolean input_saved;
     
+    protected InputMap input_map;
+    protected ActionMap action_map;
+    
     // SETMGR
     protected String current_nick;
     
@@ -70,9 +76,10 @@ public class GeoIRC
         initComponents();
 
         input_field.addActionListener( this );
-        input_field.addKeyListener( this );
         input_field.grabFocus();
         input_field.setFont( new Font( "Lucida Console",  Font.PLAIN, 14 ) );
+        input_map = input_field.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
+        action_map = input_field.getActionMap();
         
         servers = new Vector();
         input_history = new LinkedList();
@@ -80,8 +87,20 @@ public class GeoIRC
         input_saved = false;
         
         display_manager = new DisplayManager( getContentPane(), menu_bar );
+        setFocusable( false );
         
         current_nick = "Pistos|GeoIRC";
+
+        // Load settings.
+        
+        // Map input (keystrokes, mouseclicks, etc.)
+        
+        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_UP, 0 ), "UP" );
+        action_map.put( "UP", new GIAction( "previous_history_entry", this ) );
+        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "DOWN" );
+        action_map.put( "DOWN", new GIAction( "next_history_entry", this ) );
+        input_map.put( KeyStroke.getKeyStroke( KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK ), "CTRL|TAB" );
+        action_map.put( "CTRL|TAB", new GIAction( "nextwindow", this ) );
     }
             
     // Returns the Server created.
@@ -93,37 +112,7 @@ public class GeoIRC
         
         return s;
     }
-    
-    /* Returns the RemoteMachine associated with the currently active window.
-     * Returns null if the currently active window is not associated with
-     * any remote machine.
-     **/
-    /*
-    protected RemoteMachine getCurrentRemoteMachine()
-    {
-        JInternalFrame active_frame = display_manager.getSelectedFrame();
         
-        if( active_frame == null )
-        {
-            return null;
-        }
-        
-        
-        
-        GITextWindow tw;
-        try
-        {
-            tw = (GITextWindow) active_frame;
-        }
-        catch( ClassCastException e )
-        {
-            return null;
-        }
-        
-        return tw.getAssociatedMachine();
-    }
-     */
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -217,42 +206,13 @@ public class GeoIRC
         
     }    
     
-    public void keyPressed(KeyEvent e) { }
-    public void keyTyped( KeyEvent e ) { }
-    public void keyReleased( KeyEvent e )
-    {
-        switch( e.getKeyCode() )
-        {
-            case KeyEvent.VK_UP:
-                if( input_history_pointer < input_history.size() - 1 )
-                {
-                    String input_text = input_field.getText();
-                    if( input_saved )
-                    {
-                        if( input_history_pointer == MOST_RECENT_ENTRY )
-                        {
-                            input_history.set( input_history_pointer, input_text );
-                        }
-                    }
-                    else
-                    {
-                        addToInputHistory( input_text );
-                        input_saved = true;
-                    }
-                    input_history_pointer++;
-                    input_field.setText( (String) input_history.get( input_history_pointer ) );
-                }
-                break;
-            case KeyEvent.VK_DOWN:
-                if( input_history_pointer > MOST_RECENT_ENTRY )
-                {
-                    String input_text = input_field.getText();
-                    input_history_pointer--;
-                    input_field.setText( (String) input_history.get( input_history_pointer ) );
-                }
-                break;
-        }
-    }
+    /* ********************************************************
+     *
+     * @param command   the command to execute
+     *
+     * @return a result code.  @see geoirc.CommandExecutor
+     *
+     */
     
     public int execute( String command )
     {
@@ -362,6 +322,14 @@ public class GeoIRC
                 }
 
                 break;
+            case CMD_NEXT_HISTORY_ENTRY:
+                if( input_history_pointer > MOST_RECENT_ENTRY )
+                {
+                    String input_text = input_field.getText();
+                    input_history_pointer--;
+                    input_field.setText( (String) input_history.get( input_history_pointer ) );
+                }
+                break;
             case CMD_NEXT_WINDOW:
                 display_manager.switchToNextWindow( NEXT_WINDOW );
                 break;
@@ -380,6 +348,26 @@ public class GeoIRC
                 {
                     display_manager.printlnDebug( "Current nick: " + current_nick );
                     display_manager.printlnDebug( "/nick <new nickname>" );
+                }
+                break;
+            case CMD_PREVIOUS_HISTORY_ENTRY:
+                if( input_history_pointer < input_history.size() - 1 )
+                {
+                    String input_text = input_field.getText();
+                    if( input_saved )
+                    {
+                        if( input_history_pointer == MOST_RECENT_ENTRY )
+                        {
+                            input_history.set( input_history_pointer, input_text );
+                        }
+                    }
+                    else
+                    {
+                        addToInputHistory( input_text );
+                        input_saved = true;
+                    }
+                    input_history_pointer++;
+                    input_field.setText( (String) input_history.get( input_history_pointer ) );
                 }
                 break;
             case CMD_PREVIOUS_WINDOW:
@@ -432,11 +420,6 @@ public class GeoIRC
      */
     public static void main( String args[] )
     {
-        /*
-        System.setProperty( "proxyHost", "10.128.67.50" );
-        System.setProperty( "proxyPort", "8000" );        
-         */
-        
         Skin skin = null;
         
         if( args.length > 0 )

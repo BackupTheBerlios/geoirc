@@ -65,6 +65,9 @@ public class DesktopResizableToolBar extends ResizableToolBar
     public RootToggleButton add(String title) {
         RootToggleButton toolButton = new RootToggleButton(" " + title + " ");
         toolButton.addActionListener(this);
+        
+        // Pistos 2003 07 02
+        toolButton.setFocusable( false );
 
         super.add(toolButton);
 
