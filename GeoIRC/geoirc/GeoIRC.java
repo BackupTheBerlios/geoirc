@@ -218,6 +218,18 @@ public class GeoIRC
         input_field.setText( "" );
         
     }    
+
+    public void childAdded( NodeChangeEvent evt )
+    {
+    }    
+    
+    public void childRemoved( NodeChangeEvent evt )
+    {
+    }
+    
+    public void preferenceChange( PreferenceChangeEvent evt )
+    {
+    }
     
     /* ********************************************************
      *
@@ -439,7 +451,18 @@ public class GeoIRC
         {
             try
             {
-                skin = SkinLookAndFeel.loadSkin( args[ 0 ] );
+                if( args.length > 1 )
+                {
+                    
+                    skin = new CompoundSkin(
+                        SkinLookAndFeel.loadSkin( args[ 0 ] ),
+                        SkinLookAndFeel.loadSkin( args[ 1 ] )
+                    );
+                }
+                else
+                {
+                    skin = SkinLookAndFeel.loadSkin( args[ 0 ] );
+                }
                 SkinLookAndFeel.setSkin( skin );
                 UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
                 UIManager.setLookAndFeel( new SkinLookAndFeel() );
@@ -456,19 +479,7 @@ public class GeoIRC
         geoirc.execute( "newserver irc.freenode.net 6667" );
         geoirc.show();
     }
-    
-    public void childAdded( NodeChangeEvent evt )
-    {
-    }    
-    
-    public void childRemoved( NodeChangeEvent evt )
-    {
-    }
-    
-    public void preferenceChange( PreferenceChangeEvent evt )
-    {
-    }
-    
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu file_menu;
     private javax.swing.JTextField input_field;
