@@ -89,6 +89,7 @@ public class IdentServer extends Thread implements GeoIRCConstants
                             + " : " + user_id
                             + "\r\n"
                         );
+                        display_manager.printlnDebug( "Sent ident response." );
                         // Now according to the protocol, this is all the Ident server really needs to send unless you're using a different
                         // operating system other then specified on RFC 931. I don't think anyone will not specify UNIX or WINDOWS anyways.
                         // By the way, this sends ident response.

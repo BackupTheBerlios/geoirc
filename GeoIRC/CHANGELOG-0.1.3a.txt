@@ -34,5 +34,5 @@ serve Ident requests.
 Pistos 2003-07-11
 
 Reworked the input field focus issue... still not a satisfactory solution, but
-better.
+better.  At least it lets you select text in the windows again.
 Pistos 2003-07-11
