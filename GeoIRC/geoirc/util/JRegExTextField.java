@@ -13,7 +13,6 @@ import java.util.regex.PatternSyntaxException;
  * Common usage:
  * 
  * @author netseeker aka Michael Manske
- * TODO Add source documentation
  */
 public class JRegExTextField extends JValidatingTextField
 {

@@ -11,7 +11,6 @@ package geoirc.util;
  * Common usage:
  * 
  * @author netseeker aka Michael Manske
- * TODO Add source documentation
  */
 public class JBoolRegExTextField extends JValidatingTextField {
 

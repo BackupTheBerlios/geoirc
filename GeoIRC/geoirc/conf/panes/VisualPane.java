@@ -29,7 +29,8 @@ import javax.swing.JLabel;
 /**
  * @author netseeker aka Michael Manske
  */
-public class VisualPane extends BaseSettingsPanel implements Storable {
+public class VisualPane extends BaseSettingsPanel implements Storable
+{
     private SettingsSaveHandler save_handler;
     private JValidatingTextField kderc;
     private JValidatingTextField gtkrc;
@@ -37,9 +38,9 @@ public class VisualPane extends BaseSettingsPanel implements Storable {
     private JValidatingTextField bgColor1;
     private JValidatingTextField fgColor2;
     private JValidatingTextField bgColor2;
-    private JValidatingTextField alternate_bgcolor;    
+    private JValidatingTextField alternate_bgcolor;
     private JValidatingTextField nick_width;
-    private JValidatingTextField timestamp;    
+    private JValidatingTextField timestamp;
     private JComboBox fontFace1;
     private JComboBox fontSize1;
     private JComboBox fontFace2;
@@ -61,12 +62,14 @@ public class VisualPane extends BaseSettingsPanel implements Storable {
      * @param valueRules
      * @param name
      */
-    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name) {
+    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    {
         super(settings, valueRules, name);
         save_handler = new SettingsSaveHandler(settings);
     }
 
-    public void initialize() {        
+    public void initialize()
+    {
         //PRELOAD VALUE RULES
         kdercRule = rules.getValueRule("KDERC");
         gtkrcRule = rules.getValueRule("GTKRC");
@@ -169,32 +172,29 @@ public class VisualPane extends BaseSettingsPanel implements Storable {
             path + "alternate background colour");
         JButton chooseColor5 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(alternate_bgcolor, this));
         addComponent(chooseColor5, 2, 11, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
-        
+
         //FORMAT
         addComponent(new TitlePane("Format"), 0, 12, 5, 1, 0, 0);
         path = "/gui/format/";
         //nick width
         value = settings_manager.getString(path + "nick width", nickWidthRule.getValue().toString());
-        addComponent(new JLabel("Nick width"), 0, 13, 1, 1, 0, 0);        
+        addComponent(new JLabel("Nick width"), 0, 13, 1, 1, 0, 0);
         nick_width = new JValidatingTextField(nickWidthRule.getPattern(), value, 40);
-        save_handler.register(
-            addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
-            path + "nick width");        
+        save_handler.register(addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "nick width");
         //timestamp
         value = settings_manager.getString(path + "timestamp", timestampRule.getValue().toString());
-        addComponent(new JLabel("Timestamp"), 0, 14, 1, 1, 0, 0);        
+        addComponent(new JLabel("Timestamp"), 0, 14, 1, 1, 0, 0);
         timestamp = new JValidatingTextField(timestampRule.getPattern(), value);
-        save_handler.register(
-            addComponent(timestamp, 1, 14, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
-            path + "timestamp");        
-                
+        save_handler.register(addComponent(timestamp, 1, 14, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
+
         addLayoutStopper(0, 15);
     }
 
     /* (non-Javadoc)
      * @see geoirc.conf.Storable#saveData()
      */
-    public boolean saveData() {
+    public boolean saveData()
+    {
         save_handler.save();
         return true;
     }
@@ -202,14 +202,17 @@ public class VisualPane extends BaseSettingsPanel implements Storable {
     /* (non-Javadoc)
      * @see geoirc.conf.Storable#hasErrors()
      */
-    public boolean hasErrors() {
+    public boolean hasErrors()
+    {
         Map components = save_handler.getRegisteredComponents();
         Iterator it = components.values().iterator();
 
-        while (it.hasNext()) {
+        while (it.hasNext())
+        {
             Component comp = (Component)it.next();
 
-            if (comp instanceof JValidatingTextField) {
+            if (comp instanceof JValidatingTextField)
+            {
                 if (((JValidatingTextField)comp).isValid() == false)
                     return true;
             }

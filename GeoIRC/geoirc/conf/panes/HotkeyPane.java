@@ -47,9 +47,8 @@ import org.jdom.input.SAXBuilder;
 /**
  * @author netseeker aka Michael Manske
  */
-public class HotkeyPane
-    extends BaseSettingsPanel
-    implements Storable, DocumentListener {
+public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentListener
+{
 
     private JTable table;
     private ActionMap action_map;
@@ -68,11 +67,8 @@ public class HotkeyPane
      * @param valueRules
      * @param name
      */
-    public HotkeyPane(
-        XmlProcessable settings,
-        GeoIRCDefaults valueRules,
-        String name,
-        ActionMap action_map) {
+    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name, ActionMap action_map)
+    {
         super(settings, valueRules, name);
         this.action_map = action_map;
     }
@@ -80,7 +76,8 @@ public class HotkeyPane
     /**
      * 
      */
-    public void initialize() {
+    public void initialize()
+    {
         addComponent(new TitlePane("Hotkey Settings"), 0, 0, 10, 1, 0, 0);
 
         table = new JTable(ltm);
@@ -91,12 +88,10 @@ public class HotkeyPane
 
         Element root = getKeyboardNode();
 
-        for (Iterator it = root.getChildren().iterator(); it.hasNext();) {
+        for (Iterator it = root.getChildren().iterator(); it.hasNext();)
+        {
             Element elem = (Element)it.next();
-            Object[] obj =
-                {
-                    elem.getAttributeValue("key"),
-                    elem.getAttributeValue("value")};
+            Object[] obj = { elem.getAttributeValue("key"), elem.getAttributeValue("value")};
             ltm.addRow(obj);
         }
 
@@ -108,15 +103,7 @@ public class HotkeyPane
 
         addComponent(new JLabel("Hotkey: "), 0, 2, 1, 1, 0, 0);
         addComponent(hotkey_field, 1, 2, 1, 1, 0, 0);
-        addComponent(
-            new JLabel("Command: "),
-            0,
-            3,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.WEST);
+        addComponent(new JLabel("Command: "), 0, 3, 1, 1, 0, 0, GridBagConstraints.WEST);
         command_field.setPreferredSize(new Dimension(250, 20));
         addComponent(command_field, 1, 3, 1, 1, 0, 0, GridBagConstraints.WEST);
 
@@ -128,34 +115,41 @@ public class HotkeyPane
         addHorizontalLayoutStopper(5, 3);
         addLayoutStopper(0, 4);
 
-        newButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-               
+        newButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
+
                 ListSelectionModel rowSM = table.getSelectionModel();
                 rowSM.clearSelection();
                 hotkey_field.setEnabled(true);
-                command_field.setEnabled(true);                
+                command_field.setEnabled(true);
                 hotkey_field.requestFocus();
             }
         });
 
-        delButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
+        delButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
                 int pos = table.getSelectedRow();
                 ltm.delRow(pos);
             }
         });
 
         ListSelectionModel rowSM = table.getSelectionModel();
-        rowSM.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
+        rowSM.addListSelectionListener(new ListSelectionListener()
+        {
+            public void valueChanged(ListSelectionEvent e)
+            {
                 //Ignore extra messages.
                 if (e.getValueIsAdjusting())
                     return;
 
                 ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 
-                if (!lsm.isSelectionEmpty()) {
+                if (!lsm.isSelectionEmpty())
+                {
                     int pos = table.getSelectedRow();
                     Object[] row = ltm.getRow(pos);
                     hotkey_field.setEnabled(true);
@@ -164,7 +158,8 @@ public class HotkeyPane
                     command_field.setText((String)row[1]);
                     setButtonsState(0);
                 }
-                else {
+                else
+                {
                     hotkey_field.setEnabled(false);
                     command_field.setEnabled(false);
                     hotkey_field.setText("");
@@ -182,34 +177,37 @@ public class HotkeyPane
      * Converts the "/keyboard" node from Preferences to an JDOM Element
      * TODO: FIXME, converting is very slow, we have to find a better way
      */
-    private Element getKeyboardNode() {
-        try {
+    private Element getKeyboardNode()
+    {
+        try
+        {
             Preferences node = (Preferences)settings_manager.getBuffer();
 
             OutputStream os = new ByteArrayOutputStream();
             node.exportSubtree(os);
             StringReader in = new StringReader(os.toString());
             Document doc = new SAXBuilder().build(in);
-            
+
             //using jdom's build in XPath support would cause dependencies to jaxen and saxpath          
             StringTokenizer tokenizer = new StringTokenizer("root,node", ",");
             Element root = doc.getRootElement();
-            while( tokenizer.hasMoreTokens() )
+            while (tokenizer.hasMoreTokens())
             {
-                root = root.getChild( tokenizer.nextToken() );
+                root = root.getChild(tokenizer.nextToken());
             }
-                       
-            for (Iterator it = root.getChildren("node").iterator();
-                it.hasNext();
-                ) {
+
+            for (Iterator it = root.getChildren("node").iterator(); it.hasNext();)
+            {
                 Element elem = (Element)it.next();
                 String name = elem.getAttributeValue("name");
-                if (name != null && name.equalsIgnoreCase("keyboard")) {
+                if (name != null && name.equalsIgnoreCase("keyboard"))
+                {
                     return elem.getChild("map");
                 }
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             e.printStackTrace();
             errorState = true;
         }
@@ -220,13 +218,15 @@ public class HotkeyPane
     /**
      * @return
      */
-    private Object[] getCommandAliases() {
+    private Object[] getCommandAliases()
+    {
         List aliases = new ArrayList();
         String path = "/command aliases/";
         int i = 0;
         String nodePath = path + String.valueOf(i) + "/";
 
-        while (settings_manager.nodeExists(nodePath)) {
+        while (settings_manager.nodeExists(nodePath))
+        {
             String alias = settings_manager.getString(nodePath + "alias", "");
             if (alias.length() > 0)
                 aliases.add(alias);
@@ -241,13 +241,15 @@ public class HotkeyPane
     /**
      * @param state
      */
-    private void setButtonsState(int state) {
+    private void setButtonsState(int state)
+    {
         if (state != 0)
             addButton.setText("add");
         else
-            addButton.setText("set");            
+            addButton.setText("set");
 
-        switch (state) {
+        switch (state)
+        {
             case -1 :
                 addButton.setEnabled(false);
                 delButton.setEnabled(false);
@@ -269,7 +271,8 @@ public class HotkeyPane
         }
     }
 
-    private void checkInputState() {
+    private void checkInputState()
+    {
         if (hotkey_field.isValid() && command_field.isValid())
         {
             if (table.getSelectedRow() == -1)
@@ -283,23 +286,25 @@ public class HotkeyPane
     /* (non-Javadoc)
      * @see geoirc.conf.Storable#saveData()
      */
-    public boolean saveData() {
-        
+    public boolean saveData()
+    {
+
         SettingsManager mgr = (SettingsManager)settings_manager;
         mgr.removeNode("/keyboard/");
-        for( Iterator it = ltm.getData().iterator(); it.hasNext(); )
+        for (Iterator it = ltm.getData().iterator(); it.hasNext();)
         {
             Object[] data = (Object[])it.next();
-            mgr.put( "/keyboard/" + (String)data[0], (String)data[1] );
-        }                        
-        
+            mgr.put("/keyboard/" + (String)data[0], (String)data[1]);
+        }
+
         return true;
     }
 
     /* (non-Javadoc)
      * @see geoirc.conf.Storable#hasErrors()
      */
-    public boolean hasErrors() {
+    public boolean hasErrors()
+    {
 
         return errorState;
     }
@@ -307,54 +312,63 @@ public class HotkeyPane
     /**
      * 
      */
-    class LittleTableModel extends AbstractTableModel {
+    class LittleTableModel extends AbstractTableModel
+    {
         final String[] columnNames = { "Hotkey", "Command Alias" };
         Vector data = new Vector();
 
         /* (non-Javadoc)
          * @see javax.swing.table.TableModel#getRowCount()
          */
-        public int getRowCount() {
+        public int getRowCount()
+        {
             return data.size();
         }
 
         /* (non-Javadoc)
          * @see javax.swing.table.TableModel#getColumnCount()
          */
-        public int getColumnCount() {
+        public int getColumnCount()
+        {
             return columnNames.length;
         }
 
-        public Class getColumnClass(int c) {
+        public Class getColumnClass(int c)
+        {
             return String.class;
         }
 
-        public String getColumnName(int col) {
+        public String getColumnName(int col)
+        {
             return columnNames[col];
         }
 
         /* (non-Javadoc)
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
-        public Object getValueAt(int row, int col) {
+        public Object getValueAt(int row, int col)
+        {
             Object[] rowdata = (Object[])data.get(row);
             return rowdata[col];
         }
 
-        public boolean isCellEditable(int row, int col) {
+        public boolean isCellEditable(int row, int col)
+        {
             return false;
         }
 
         /* (non-Javadoc)
          * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
          */
-        public void setValueAt(Object value, int row, int col) {
+        public void setValueAt(Object value, int row, int col)
+        {
             Object[] rowdata = (Object[])data.get(row);
             rowdata[col] = value;
             fireTableDataChanged();
         }
 
-        public void addRow(Object[] row) {
+        public void addRow(Object[] row)
+        {
             data.add(row);
             fireTableDataChanged();
         }
@@ -364,21 +378,25 @@ public class HotkeyPane
             data.set(pos, row);
             fireTableDataChanged();
         }
-        
-        public void delRow(int row) {
+
+        public void delRow(int row)
+        {
             data.remove(row);
             fireTableDataChanged();
         }
-        public void setData(Vector data) {
+        public void setData(Vector data)
+        {
             this.data = data;
             fireTableDataChanged();
         }
 
-        public Vector getData() {
+        public Vector getData()
+        {
             return this.data;
         }
 
-        public Object[] getRow(int row) {
+        public Object[] getRow(int row)
+        {
             return (Object[])data.get(row);
         }
     }
@@ -386,49 +404,53 @@ public class HotkeyPane
     /**
      * 
      */
-    class AddActionListener implements ActionListener {
+    class AddActionListener implements ActionListener
+    {
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
-        public void actionPerformed(ActionEvent arg0) {
-            ltm.addRow(
-                new Object[] {
-                    hotkey_field.getText(),
-                    command_field.getText()});
+        public void actionPerformed(ActionEvent arg0)
+        {
+            ltm.addRow(new Object[] { hotkey_field.getText(), command_field.getText()});
         }
     }
 
     /**
      * 
      */
-    class SetActionListener implements ActionListener {
+    class SetActionListener implements ActionListener
+    {
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
-        public void actionPerformed(ActionEvent arg0) {
+        public void actionPerformed(ActionEvent arg0)
+        {
             int pos = table.getSelectedRow();
-            ltm.setRow(new Object[] { hotkey_field.getText(), command_field.getText() }, pos);
+            ltm.setRow(new Object[] { hotkey_field.getText(), command_field.getText()}, pos);
         }
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
      */
-    public void insertUpdate(DocumentEvent arg0) {
+    public void insertUpdate(DocumentEvent arg0)
+    {
         checkInputState();
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
      */
-    public void removeUpdate(DocumentEvent arg0) {
+    public void removeUpdate(DocumentEvent arg0)
+    {
         checkInputState();
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
      */
-    public void changedUpdate(DocumentEvent arg0) {
+    public void changedUpdate(DocumentEvent arg0)
+    {
         checkInputState();
     }
 

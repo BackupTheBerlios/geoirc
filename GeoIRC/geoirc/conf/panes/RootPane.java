@@ -5,20 +5,19 @@
  */
 package geoirc.conf.panes;
 
-import java.awt.Insets;
-
-import javax.swing.JLabel;
-
-import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.TitlePane;
 
+import java.awt.Insets;
+
+import javax.swing.JLabel;
+
 /**
  * @author netseeker aka Michael Manske
  */
-public class RootPane extends BaseSettingsPanel implements GeoIRCConstants
+public class RootPane extends BaseSettingsPanel
 {
 
 	/**
@@ -43,5 +42,5 @@ public class RootPane extends BaseSettingsPanel implements GeoIRCConstants
 		addComponent(new JLabel("netseeker"), 0, 7, 1, 1, 1, 0, new Insets(2, 5, 20, 5));
 		
 		addLayoutStopper(0,8);
-	}
+	}    
 }

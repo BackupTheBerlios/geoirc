@@ -5,6 +5,7 @@
  */
 package geoirc.conf;
 
+import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.util.JValidatingTextField;
 
@@ -23,7 +24,7 @@ import javax.swing.JPanel;
 /**
  * @author netseeker aka Michael Manske
  */
-public abstract class BaseSettingsPanel extends JPanel
+public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstants
 {
 	protected XmlProcessable settings_manager = null;
 	protected GeoIRCDefaults rules = null;
@@ -219,9 +220,7 @@ public abstract class BaseSettingsPanel extends JPanel
 		//label.setVisible(false);
 		addComponent(label, x, y, 1, 1, 1, 0, GridBagConstraints.NORTHWEST);		
 	}
-    
-    public abstract void initialize();
-    
+       
     public void setVisible(boolean visible)
     {
         if(visible == true && isInitialized == false)
@@ -237,4 +236,7 @@ public abstract class BaseSettingsPanel extends JPanel
     {
         return isInitialized;
     }
+
+    //ABSTRACT METHODS
+    public abstract void initialize();    
 }
