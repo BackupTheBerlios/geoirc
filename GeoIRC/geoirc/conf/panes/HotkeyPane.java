@@ -81,6 +81,7 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
         hotkey_field.setEnabled(false);
+        hotkey_field.setFocusTraversalKeysEnabled( false );
         command_field.setEnabled(false);
 
         Element root = getKeyboardNode();
