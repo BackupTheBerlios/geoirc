@@ -117,5 +117,15 @@
             <pattern>\d{1,5}+</pattern>
             <javaType>java.lang.Integer</javaType>
 		</rule>						
+		<rule name="LOG_START_MESSAGE">
+			<default>&apos;**** Logging begun at &apos;yyyy-MM-dd HH:mm:ss&apos; ****&apos;</default>
+            <pattern>.{1,}</pattern>
+            <javaType>java.lang.String</javaType>					
+		</rule>		
+		<rule name="LOG_FILE">
+			<default>#.log</default>
+            <pattern>.{1,}</pattern>
+            <javaType>java.lang.String</javaType>					
+		</rule>				
 	</defaults>
 </geoirc>
