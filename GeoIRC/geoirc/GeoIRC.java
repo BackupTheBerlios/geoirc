@@ -257,6 +257,7 @@ public class GeoIRC
         conversation_words = java.util.Collections.synchronizedSet( new java.util.HashSet() );
         current_rm = null;
         remote_machines = new LinkedHashSet();
+        System.out.println( "Restoring connections..." );
         restoreConnections();
         
         // Final miscellaneous initialization

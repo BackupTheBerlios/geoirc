@@ -56,10 +56,6 @@ public class MenuManager
     
     public void showPopup( MouseEvent event, Object param1, Object param2 )
     {
-        if( popup_menu != null )
-        {
-            popup_menu.setVisible( false );
-        }
         popup_menu = new JPopupMenu();
         
         if( event.getSource() instanceof javax.swing.JTextPane )
@@ -76,61 +72,97 @@ public class MenuManager
                 index_str = "";
             }
             
-            String [] args = new String [] { index_str };
+            String [] args = new String [] {
+                index_str,
+                gipw.getTitle()
+            };
 
-            /*
-            JMenu submenu = new JMenu( "Dock" );
-            popup_menu.add( submenu );
-
-            item = new JMenuItem( "Top" );
-            item.setActionCommand( "dockpane " + index_str + " t" );
-            item.addActionListener( this );
-            submenu.add( item );
-            item = new JMenuItem( "Left" );
-            item.setActionCommand( "dockpane " + index_str + " l" );
-            item.addActionListener( this );
-            submenu.add( item );
-            item = new JMenuItem( "Right" );
-            item.setActionCommand( "dockpane " + index_str + " r" );
-            item.addActionListener( this );
-            submenu.add( item );
-            item = new JMenuItem( "Bottom" );
-            item.setActionCommand( "dockpane " + index_str + " b" );
-            item.addActionListener( this );
-            submenu.add( item );
-             */
+            buildMenu(
+                popup_menu,
+                settings_manager.getChildren(
+                    "/menu/context/text_pane/",
+                    DONT_CREATE_NODES
+                ),
+                args
+            );
             
-            buildMenu( popup_menu, "/popup_menu/context/text_pane/", args );
-            
-            popup_menu.show( event.getComponent(), event.getX(), event.getY() );
+            if( popup_menu.getComponentCount() > 0 )
+            {
+                popup_menu.show( event.getComponent(), event.getX(), event.getY() );
+            }
         }
     }
     
-    protected void buildMenu( javax.swing.JComponent menu, String path, String [] args )
+    protected void buildMenu( javax.swing.JComponent menu, List menu_items, String [] args )
     {
-        List menu_items = settings_manager.getChildren(
-            path, DONT_CREATE_NODES
-        );
+        if( menu_items == null )
+        {
+            return;
+        }
+        
         Iterator it = menu_items.iterator();
         Element element;
         String menu_text;
         String command;
+        String node_type;
         JMenuItem item;
-        String is_submenu = "false";
         while( it.hasNext() )
         {
             element = (Element) it.next();
+            node_type = element.getName();
             menu_text = element.getAttributeValue( "text" );
-            is_submenu = element.getAttributeValue( "submenu" );
-            if( ( is_submenu != null ) && is_submenu.equals( "true" ) )
+            for( int i = 0; i < args.length; i++ )
             {
+                menu_text = menu_text.replaceAll( "%" + Integer.toString( i ), args[ i ] );
             }
-            else
+            
+            if( node_type.equals( SUBMENU_NODE ) )
+            {
+                JMenu submenu = new JMenu( menu_text );
+                List children = element.getChildren();
+                buildMenu( submenu, children, args );
+                if( menu instanceof JPopupMenu )
+                {
+                    ((JPopupMenu) menu).add( submenu );
+                }
+                else if( menu instanceof JMenu )
+                {
+                    ((JMenu) menu).add( submenu );
+                }
+            }
+            else if( node_type.equals( PANE_LIST_NODE ) )
             {
                 command = element.getAttributeValue( "command" );
                 for( int i = 0; i < args.length; i++ )
                 {
-                    menu_text = menu_text.replaceAll( "%" + Integer.toString( i ), args[ i ] );
+                    command = command.replaceAll( "%" + Integer.toString( i ), args[ i ] );
+                }
+                String [] pane_titles = display_manager.getPaneTitles();
+                String subcommand;
+                String subtext;
+                for( int i = 0; i < pane_titles.length; i++ )
+                {
+                    subcommand = command.replaceAll( "%i", Integer.toString( i + 1 ) );
+                    subtext = menu_text.replaceAll( "%i", Integer.toString( i + 1 ) );
+                    subtext = subtext.replaceAll( "%t", pane_titles[ i ] );
+                    item = new JMenuItem( subtext );
+                    item.setActionCommand( subcommand );
+                    item.addActionListener( this );
+                    if( menu instanceof JPopupMenu )
+                    {
+                        ((JPopupMenu) menu).add( item );
+                    }
+                    else if( menu instanceof JMenu )
+                    {
+                        ((JMenu) menu).add( item );
+                    }
+                }
+            }
+            else if( node_type.equals( ITEM_NODE ) )
+            {
+                command = element.getAttributeValue( "command" );
+                for( int i = 0; i < args.length; i++ )
+                {
                     command = command.replaceAll( "%" + Integer.toString( i ), args[ i ] );
                 }
                 item = new JMenuItem( menu_text );

@@ -778,6 +778,26 @@ public class DisplayManager
     }
     
     /**
+     * @return an array of Strings containing the titles of the user panes.
+     */
+    public String [] getPaneTitles()
+    {
+        GIPaneWrapper gipw;
+        Vector titles = new Vector();
+        String [] retval = new String[ 0 ];
+        for( int i = 0, n = panes.size(); i < n; i++ )
+        {
+            gipw = (GIPaneWrapper) panes.elementAt( i );
+            if( isUserPane( i, EXCLUDE_SPLIT_PANES ) )
+            {
+                titles.add( gipw.getTitle() );
+            }
+        }
+        retval = (String []) titles.toArray( retval );
+        return retval;
+    }
+    
+    /**
      * Closes all windows whose filter matches the given filter.
      */
     public void closeWindows( String filter )
@@ -1071,11 +1091,25 @@ public class DisplayManager
     {
         boolean success = false;
         
-        if( regexp != null )
+        int n = panes.size();
+        if( ( regexp != null ) && ( n > 0 ) )
         {
             GIPaneWrapper gipw;
-            for( int i = 2, n = panes.size(); i < n; i++ )
+            int i = getPaneIndexByPaneWrapper( last_activated_pane );
+            int end = i;
+            
+            while( GOD_IS_GOOD )
             {
+                i++;
+                if( i == n )
+                {
+                    i = 0;
+                }
+                if( i == end )
+                {
+                    break;
+                }
+                
                 gipw = (GIPaneWrapper) panes.elementAt( i );
                 switch( gipw.getType() )
                 {
@@ -1088,8 +1122,10 @@ public class DisplayManager
                         }
                         break;
                 }
-                if( success ) { break; }
-                
+                if( success )
+                {
+                    break;
+                }
             }
         }
         

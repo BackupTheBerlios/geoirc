@@ -10,3 +10,6 @@ Pistos 2003-11-05
 Fixed parsing bug where some servers prepend a colon to the name of the channel
 being parted, joined, etc.
 Pistos 2003-11-06
+
+activatepane now cycles through all matching panes.
+Pistos 2003-11-07

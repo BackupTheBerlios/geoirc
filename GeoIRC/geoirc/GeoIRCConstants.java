@@ -519,4 +519,8 @@ public interface GeoIRCConstants
     static final int MENU_PANE = 0;
     static final int MENU_TEXT_PANE = 1;
     static final int MENU_INFO_PANE = 2;
+    
+    static final String SUBMENU_NODE = "submenu";
+    static final String ITEM_NODE = "item";
+    static final String PANE_LIST_NODE = "pane_list";
 }
