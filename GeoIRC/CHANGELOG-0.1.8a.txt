@@ -8,3 +8,7 @@ Pistos 2003-07-23
 If GeoIRC is not the active window, the number of unread lines appears in
 GeoIRC's title.
 Pistos 2003-07-23
+
+Added a %lines_unread variable, and reworked variables internally into a
+VariableManager class.
+Pistos 2003-07-23
