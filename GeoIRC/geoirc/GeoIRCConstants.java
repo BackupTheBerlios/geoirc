@@ -390,11 +390,12 @@ public interface GeoIRCConstants
     static final int UNKNOWN_ORIENTATION = -1;
     
     static final int NO_PANE_TYPE = -1;
-    static final int MAIN_CONTENT_PANE = 0;
-    static final int CHILD_CONTENT_PANE = 1;
-    static final int TEXT_PANE = 2;
-    static final int INFO_PANE = 3;
-    static final int SPLIT_PANE = 4;
+    static final int GEOIRC_CONTENT_PANE = 0;
+    static final int DESKTOP_PANE = 1;
+    static final int CHILD_CONTENT_PANE = 2;
+    static final int TEXT_PANE = 3;
+    static final int INFO_PANE = 4;
+    static final int SPLIT_PANE = 5;
     
     static final int UNKNOWN_FRAME_TYPE = -1;
     static final int GEOIRC_FRAME = 0;
@@ -471,7 +472,7 @@ public interface GeoIRCConstants
     
     static final int DEFAULT_SERVER_TIMEOUT = 60 * 1000; // milliseconds
     
-    static final int DESKTOP_PANE = 0;
+    static final int DESKTOP_PANE_INDEX = 1;
     
     static final String ICON_PATH = "icons" + java.io.File.separator;
 }

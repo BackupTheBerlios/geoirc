@@ -82,10 +82,13 @@ public class DisplayManager
     protected Vector frames;
     
     protected GIPaneWrapper last_activated_pane;
+    protected GIFrameWrapper geoirc_gifw;
     
     protected boolean show_qualities;  // for debugging purposes
     
     protected DefaultTreeCellRenderer cell_renderer;
+    
+    protected JMenuBar menu_bar;
     
     // No default constructor
     private DisplayManager() { }
@@ -105,26 +108,27 @@ public class DisplayManager
         this.settings_manager = settings_manager;
         this.variable_manager = variable_manager;
         this.i18n_manager = i18n_manager;
+        this.menu_bar = menu_bar;
         log_manager = null;
 
         inactive_info_panes = new Vector();
         active_info_panes = new Vector();
         panes = new Vector();
         frames = new Vector();
+
         GIPaneWrapper gipw = new GIPaneWrapper(
             geo_irc.getContentPane(),
-            "GeoIRC Main Pane",
-            MAIN_CONTENT_PANE
+            "GeoIRC Content Pane",
+            GEOIRC_CONTENT_PANE
         );
-        gipw.setFrame( new GIFrameWrapper( geo_irc ) );
+        geoirc_gifw = new GIFrameWrapper( geo_irc );
+        gipw.setFrame( geoirc_gifw );
         panes.add( gipw );
         
-        desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
-		JMenu settings_menu = JMenuHelper.addMenuBarItem(menu_bar, "_Settings");
-		ActionListener actionProcCmd = new OpenSettingsDialogListener(settings_manager, this);
-		JMenuHelper.addMenuItem(settings_menu, "_Options", actionProcCmd);
+        JMenu settings_menu = JMenuHelper.addMenuBarItem(menu_bar, "_Settings");
+        ActionListener actionProcCmd = new OpenSettingsDialogListener(settings_manager, this);
+        JMenuHelper.addMenuItem(settings_menu, "_Options", actionProcCmd);
         
-        geo_irc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
         
         try
@@ -437,6 +441,18 @@ public class DisplayManager
                 frame = partner_gipw.getFrame();
             }
             
+            GIPaneWrapper pane_container_gipw = gipw.getParent();
+            if( pane_container_gipw != null )
+            {
+                pane_container_gipw.getPane().remove( pane );
+                if( pane_container_gipw.getType() == CHILD_CONTENT_PANE )
+                {
+                    // We just removed the only content of a GIWindow.
+                    // So, we should delete the window, too!
+                    pane_container_gipw.getFrame().close();
+                }
+            }
+            
             // Create a new split pane.
             
             switch( location )
@@ -493,38 +509,35 @@ public class DisplayManager
                     break;
             }
 
-            if( split_pane != null )
+            GIPaneWrapper split_gipw = new GIPaneWrapper( split_pane, "Split Pane", SPLIT_PANE );
+            if( partner_container_gipw != null )
             {
-                GIPaneWrapper split_gipw = new GIPaneWrapper( split_pane, "Split Pane", SPLIT_PANE );
-                if( partner_container_gipw != null )
+                split_gipw.setParent( partner_container_gipw );
+                if( partner_container instanceof JSplitPane )
                 {
-                    split_gipw.setParent( partner_container_gipw );
-                    if( partner_container instanceof JSplitPane )
+                    JSplitPane sp = (JSplitPane) partner_container;
+                    if( was_primary )
                     {
-                        JSplitPane sp = (JSplitPane) partner_container;
-                        if( was_primary )
-                        {
-                            sp.setTopComponent( split_pane );
-                        }
-                        else
-                        {
-                            sp.setBottomComponent( split_pane );
-                        }
+                        sp.setTopComponent( split_pane );
                     }
                     else
                     {
-                        partner_container.add( split_pane );
+                        sp.setBottomComponent( split_pane );
                     }
                 }
                 else
                 {
-                    frame.add( split_pane );
-                    split_gipw.setParent( partner_gipw );
+                    partner_container.add( split_pane );
                 }
-                panes.add( split_gipw );
-                gipw.setParent( split_gipw );
-                partner_gipw.setParent( split_gipw );
             }
+            else
+            {
+                frame.add( split_pane );
+                split_gipw.setParent( partner_gipw );
+            }
+            panes.add( split_gipw );
+            gipw.setParent( split_gipw );
+            partner_gipw.setParent( split_gipw );
 
             success = true;
         }
@@ -1461,7 +1474,6 @@ public class DisplayManager
                         // Do nothing about this error.
                     }
                     
-                    
                     break;
                 }
                 case SPLIT_PANE:
@@ -1479,7 +1491,8 @@ public class DisplayManager
                     {
                         JSplitPane split_pane = new JSplitPane( orientation );
                         split_pane.setDividerLocation( divider_location );
-                        panes.add( new GIPaneWrapper( split_pane, title, type ) );
+                        GIPaneWrapper split_gipw = new GIPaneWrapper( split_pane, title, type );
+                        panes.add( split_gipw );
                     }
                     else
                     {
@@ -1510,6 +1523,14 @@ public class DisplayManager
                         gipw.setSplitRank( split_rank );
                     }
                     break;
+                case DESKTOP_PANE:
+                {
+                    desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
+                    GIPaneWrapper dgipw = new GIPaneWrapper( desktop_pane, "GeoIRC Desktop Pane", DESKTOP_PANE );
+                    dgipw.setSplitRank( split_rank );
+                    panes.add( dgipw );
+                    break;
+                }
             }
             
             i++;
@@ -1554,9 +1575,9 @@ public class DisplayManager
                         gipw.setParent( parent_gipw );
                         break;
                     }
-                    case MAIN_CONTENT_PANE:
+                    case GEOIRC_CONTENT_PANE:
                         geo_irc.getContentPane().add( gipw.getPane() );
-                        gipw.setFrame( new GIFrameWrapper( geo_irc ) );
+                        gipw.setFrame( geoirc_gifw );
                         gipw.setParent( parent_gipw );
                         break;
                     case CHILD_CONTENT_PANE:

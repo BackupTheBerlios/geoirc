@@ -104,4 +104,22 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
                 break;
         }
     }
+    
+    public boolean close()
+    {
+        boolean success = false;
+        
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                try
+                {
+                    ((GIWindow) frame).setClosed( true );
+                    success = true;
+                } catch( java.beans.PropertyVetoException e ) { }
+                break;
+        }
+        
+        return success;
+    }
 }
