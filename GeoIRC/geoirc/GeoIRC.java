@@ -232,7 +232,7 @@ public class GeoIRC
         // Ident server.
         
         ident_server = new IdentServer( settings_manager, display_manager );
-        ident_server.run();
+        ident_server.start();
         
         // Restore connections, if any.
         

@@ -70,7 +70,7 @@ public class Server
                 out.println(
                     "USER "
                     + settings_manager.getString( "/personal/ident/username", "Pistos" )
-                    + "x x :Pi Gi" );
+                    + " x x :Pi Gi" );
             }
         }
         catch( UnknownHostException e )

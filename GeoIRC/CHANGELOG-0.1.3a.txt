@@ -13,5 +13,5 @@ Pistos 2003-07-09 and 2003-07-10
 Added changewindow and switchwindow commands.
 Pistos 2003-07-10
 
-Added an Ident response thread.
+Added an Ident response thread.  USER command also uses the defined ident username.
 Sunfire, Pistos 2003-07-10
