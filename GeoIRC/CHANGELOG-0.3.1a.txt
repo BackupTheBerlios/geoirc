@@ -10,3 +10,7 @@ Pistos 2003-09-16
 
 Added Hotkey configuration pane.
 netseeker 2003-09-16
+
+Added nick width, alternate background color and timestamp format to
+visual settings pane
+netseeker 2003-09-17
