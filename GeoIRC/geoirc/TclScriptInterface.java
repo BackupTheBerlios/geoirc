@@ -118,9 +118,13 @@ public class TclScriptInterface
                         qualities = (TclList.index( tcl_interpreter, transformed_message, 1 )).toString();
                     }
                 }
-                catch( Exception e )
+                catch( TclException e )
                 {
-                    Util.printException( display_manager, e, "Exception when executing Tcl raw parser." );
+                    display_manager.printlnDebug( "Exception when executing Tcl raw parser." );
+                    if( e.getCompletionCode() == TCL.ERROR )
+                    {
+                        display_manager.printlnDebug( tcl_interpreter.getResult().toString() );
+                    }
                 }
             }
         }
@@ -153,9 +157,13 @@ public class TclScriptInterface
                         line = transformed_line.toString();
                     }
                 }
-                catch( Exception e )
+                catch( TclException e )
                 {
-                    Util.printException( display_manager, e, "Exception when executing Tcl input parser." );
+                    display_manager.printlnDebug( "Exception when executing Tcl input parser." );
+                    if( e.getCompletionCode() == TCL.ERROR )
+                    {
+                        display_manager.printlnDebug( tcl_interpreter.getResult().toString() );
+                    }
                 }
             }
         }

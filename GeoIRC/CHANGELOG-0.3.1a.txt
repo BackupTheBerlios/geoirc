@@ -62,3 +62,7 @@ Pistos 2003-09-18
 
 Middle mouse button now pastes to input field.
 Pistos 2003-09-18
+
+Adjusted Tcl script error reporting such that the stack is no longer reported,
+and more information is given.
+Pistos 2003-09-18
