@@ -1310,6 +1310,21 @@ public class GeoIRC
                                 // Command completion.
                                 
                                 String completion = Util.completeFrom( word.substring( 1 ), CMDS );
+                                int error = Util.getLastErrorCode();
+                                switch( error )
+                                {
+                                    case COMPLETE_NONE_FOUND:
+                                        display_manager.printlnDebug(
+                                            "No command found starting with " + word + "."
+                                        );
+                                        break;
+                                    case COMPLETE_ONE_FOUND:
+                                        replacement_text = completion + " ";
+                                        break;
+                                    case COMPLETE_MORE_THAN_ONE_FOUND:
+                                        display_manager.printlnDebug( completion );
+                                        break;
+                                }
                             }
                             else if( current_rm instanceof Server )
                             {
@@ -1977,7 +1992,7 @@ public class GeoIRC
                 {
                     display_manager.printlnDebug(
                         "/" + CMDS[ CMD_LOG ] +
-                        " <filename>;[filter];[regexp]"
+                        " <filename>[;filter[;regexp]]"
                     );
                 }
                 break;

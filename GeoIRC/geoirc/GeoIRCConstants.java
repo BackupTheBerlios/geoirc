@@ -402,4 +402,9 @@ public interface GeoIRCConstants
     
     static final int DEFAULT_LOWEST_DCC_PORT = 35000;
     static final int DEFAULT_HIGHEST_DCC_PORT = 35999;
+    
+    static final int COMPLETE_NONE_FOUND = 0;
+    static final int COMPLETE_ONE_FOUND = 1;
+    static final int COMPLETE_MORE_THAN_ONE_FOUND = 2;
+    
 }

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
  */
 public class Util implements GeoIRCConstants
 {
+    protected static int last_error_code;
     
     // No default constructor
     private Util() { }
@@ -232,13 +233,20 @@ public class Util implements GeoIRCConstants
             + Long.toString( ip & 0x000000FF );
     }
     
+    public static int getLastErrorCode()
+    {
+        return last_error_code;
+    }
+    
     /**
      * @return a String containing a space-separated list of possible matches,
-     * or null if no matches are found.
+     * or the empty string if no words from among possible_words are a
+     * completion for word.  Util.getLastErrorCode() gives ...
      */
     public static String completeFrom( String word, String [] possible_words )
     {
         Vector words_found = new Vector();
+        String retval = "";
 
         for( int i = 0, n = possible_words.length; i < n; i++ )
         {
@@ -250,50 +258,54 @@ public class Util implements GeoIRCConstants
 
         if( words_found.size() == 0 )
         {
-            display_manager.printlnDebug(
-                "No command found starting with " + word + "."
-            );
+            last_error_code = COMPLETE_NONE_FOUND;
         }
         else if( words_found.size() == 1 )
         {
-            replacement_text = "/" + (String) words_found.elementAt( 0 ) + " ";
+            last_error_code = COMPLETE_ONE_FOUND;
+            retval = (String) words_found.elementAt( 0 );
         }
         else
         {
-
-        }
-        
-        int word_len = word.length();
-        int matches_up_to = ((String) possible_words.elementAt( 0 )).length();
-        String cmd;
-        String prev_cmd;
-        String available_commands = "";
-        for( int i = 0, n = possible_words.size(); i < n; i++ )
-        {
-            cmd = (String) possible_words.elementAt( i );
-            if( i > 0 )
+            int word_len = word.length();
+            int matches_up_to = possible_words[ 0 ].length();
+            String wrd;
+            String prev_wrd;
+            String multiple_matches = "";
+            
+            for( int i = 0, n = possible_words.length; i < n; i++ )
             {
-                prev_cmd = (String) possible_words.elementAt( i - 1 );
-                for( int j = matches_up_to; j >= word_len; j-- )
+                wrd = possible_words[ i ];
+                if( i > 0 )
                 {
-                    if( j > prev_cmd.length() )
+                    prev_wrd = possible_words[ i - 1 ];
+                    for( int j = matches_up_to; j >= word_len; j-- )
                     {
-                        j = prev_cmd.length();
-                    }
-                    if( j > cmd.length() )
-                    {
-                        j = cmd.length();
-                    }
-                    if( cmd.substring( 0, j ).equals( prev_cmd.substring( 0, j ) ) )
-                    {
-                        matches_up_to = j;
-                        break;
+                        if( j > prev_wrd.length() )
+                        {
+                            j = prev_wrd.length();
+                        }
+                        if( j > wrd.length() )
+                        {
+                            j = wrd.length();
+                        }
+                        if( wrd.substring( 0, j ).equals( prev_wrd.substring( 0, j ) ) )
+                        {
+                            matches_up_to = j;
+                            break;
+                        }
                     }
                 }
+                multiple_matches += "/" + wrd + " ";
             }
-            available_commands += "/" + cmd + " ";
+
+            if( multiple_matches != "" )
+            {
+                retval = multiple_matches;
+                last_error_code = COMPLETE_MORE_THAN_ONE_FOUND;
+            }
         }
 
-        return ((String) possible_words.elementAt( 0 )).substring( 0, matches_up_to );
+        return retval;
     }
 }
