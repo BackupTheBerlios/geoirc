@@ -286,29 +286,30 @@ public class GeoIRC
 
         try
         {
-            Class.forName("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-            SkinManager skin_manager = new SkinManager();
-            skin_manager.applySkin(skin1, skin2, i18n_manager);
-            display_manager.printlnDebug( skin_manager.getSkinMessages() );
-            use_skinning = true;
-            /*
-            UIManager.setLookAndFeel(
-                UIManager.getSystemLookAndFeelClassName()
-            );
-             */
+            if( settings_manager.getBoolean( "/gui/use_system_lnf", false ) )
+            {
+                UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName()
+                );
+            }
+            else
+            {
+                Class.forName("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+                SkinManager skin_manager = new SkinManager();
+                skin_manager.applySkin(skin1, skin2, i18n_manager);
+                display_manager.printlnDebug( skin_manager.getSkinMessages() );
+                use_skinning = true;
+            }
         }
         catch (ClassNotFoundException e)
         {
             display_manager.printlnDebug( "SkinLF library not found. If you want to use skins install SkinLF from http://www.l2fprod.com." );
             use_skinning = false;
         }
-        /*
         catch( Exception e )
         {
-            System.err.println( "Urg." );
-            e.printStackTrace();
+            display_manager.printlnDebug( "Failed to load system L&F." );
         }
-         */
 
         // GUI
         
@@ -468,6 +469,10 @@ public class GeoIRC
 
             display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
         }
+        catch( ClassNotFoundException e )
+        {
+            // Ignore.
+        }
         catch( Exception e )
         {
             Util.printException( display_manager, e, i18n_manager.getString( "python init error" ) );
@@ -497,6 +502,14 @@ public class GeoIRC
             );
             tcl_procs = new Vector();
             display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
+        }
+        catch( NoClassDefFoundError e )
+        {
+            // Ignore.
+        }
+        catch( ClassNotFoundException e )
+        {
+            // Ignore.
         }
         catch( Exception e )
         {

@@ -109,6 +109,7 @@ public class Util implements GeoIRCConstants
             display_manager.printlnDebug( user_message );
         }
         
+        display_manager.printlnDebug( t.getClass().getName() );
         display_manager.printlnDebug( t.getMessage() );
         
         StackTraceElement [] stes = t.getStackTrace();
