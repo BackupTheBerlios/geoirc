@@ -79,7 +79,9 @@ public interface GeoIRCConstants
         "listlogs",
         "test",
         "loadpy",
-        "execpymethod"
+        "execpymethod",
+        "listprocesses",
+        "killprocess"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -96,12 +98,14 @@ public interface GeoIRCConstants
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
+    public static final int CMD_KILL_PROCESS = 55;
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_CONNECTIONS = 13;
     public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_LOGS = 50;
     public static final int CMD_LIST_MEMBERS = 41;
+    public static final int CMD_LIST_PROCESSES = 54;
     public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_LOAD_PY = 52;
     public static final int CMD_LOG = 48;
@@ -250,6 +254,15 @@ public interface GeoIRCConstants
     static final String MODE_OP = "o";
     static final String MODE_VOICE = "v";
     
+    static final int MAX_NEW_WINDOW_X = 500;
+    static final int MAX_NEW_WINDOW_Y = 400;
+    static final int MIN_NEW_WINDOW_X = 10;
+    static final int MIN_NEW_WINDOW_Y = 10;
+    static final int NEW_WINDOW_X_INCREMENT = 20;
+    static final int NEW_WINDOW_Y_INCREMENT = 20;
+    static final int DEFAULT_WINDOW_WIDTH = 700;
+    static final int DEFAULT_WINDOW_HEIGHT = 500;
+    
     static final int DOCK_NOWHERE = -1;
     static final int DOCK_TOP = 0;
     static final int DOCK_RIGHT = 1;
@@ -264,7 +277,10 @@ public interface GeoIRCConstants
     static final int TEXT_PANE = 1;
 
     static final int DEFAULT_NUDGE_AMOUNT = 20;
-    
+
+    static final int MAX_HISTORY_SIZE = 30;
+    static final int MOST_RECENT_ENTRY = 0;
+
     static final int DELAY_FOR_SERVER_READER_DEATH = 100;  // milliseconds
     
     static final String [] VARS =
@@ -288,4 +304,6 @@ public interface GeoIRCConstants
     static final int SORT_ALPHABETICAL_ASCENDING = 0;
     static final int SORT_TIME_SINCE_LAST_ASCENDING = 1;
     static final int DEFAULT_SORT_ORDER = SORT_ALPHABETICAL_ASCENDING;
+    
+    static final int PROCESS_WATCH_INTERVAL = 1000;  // millseconds
 }

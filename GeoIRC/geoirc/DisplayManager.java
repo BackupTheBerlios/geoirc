@@ -57,15 +57,6 @@ public class DisplayManager
     protected Vector undocked_panes;
     protected Vector panes;
     
-    protected static final int MAX_NEW_WINDOW_X = 500;
-    protected static final int MAX_NEW_WINDOW_Y = 400;
-    protected static final int MIN_NEW_WINDOW_X = 10;
-    protected static final int MIN_NEW_WINDOW_Y = 10;
-    protected static final int NEW_WINDOW_X_INCREMENT = 20;
-    protected static final int NEW_WINDOW_Y_INCREMENT = 20;
-    protected static final int DEFAULT_WINDOW_WIDTH = 700;
-    protected static final int DEFAULT_WINDOW_HEIGHT = 500;
-    
     protected boolean show_qualities;  // for debugging purposes
     
     // No default constructor
@@ -313,8 +304,18 @@ public class DisplayManager
     {
         return (GIWindow) desktop_pane.getSelectedFrame();
     }
-    
+
     public String getSelectedChannel()
+    {
+        return getSelectedByPrefix( "#" );
+    }
+    
+    public String getSelectedProcess()
+    {
+        return getSelectedByPrefix( "process=" );
+    }
+    
+    public String getSelectedByPrefix( String prefix )
     {
         GIPane pane;
         String retval = null;
@@ -333,17 +334,17 @@ public class DisplayManager
                 if( filter != null )
                 {
                     // Search for a channel in this filter.
-                    int pound_index = filter.indexOf( "#" );
-                    if( pound_index > -1 )
+                    int prefix_index = filter.indexOf( prefix );
+                    if( prefix_index > -1 )
                     {
-                        int space_index = filter.indexOf( " ", pound_index );
+                        int space_index = filter.indexOf( " ", prefix_index );
                         if( space_index > -1 )
                         {
-                            retval = filter.substring( pound_index, space_index );
+                            retval = filter.substring( prefix_index, space_index );
                         }
                         else
                         {
-                            retval = filter.substring( pound_index );
+                            retval = filter.substring( prefix_index );
                         }
                     }
                 }

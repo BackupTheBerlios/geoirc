@@ -58,9 +58,6 @@ public class GeoIRC
         ComponentListener,
         WindowListener
 {
-    protected static final int MAX_HISTORY_SIZE = 30;
-    protected static final int MOST_RECENT_ENTRY = 0;
-    
     protected Vector remote_machines;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
@@ -72,9 +69,10 @@ public class GeoIRC
     protected ScriptInterface script_interface;
     
     protected Hashtable python_methods;
-    
     protected BSFManager bsf_manager;
     protected PythonInterpreter python_interpreter;
+    
+    protected Hashtable processes;
     
     protected Hashtable audio_clips;
     
@@ -331,6 +329,7 @@ public class GeoIRC
         settings_manager.listenToPreferences();
         display_manager.beginListening();
         listening_to_connections = true;
+        processes = new Hashtable();
         
         display_manager.printlnDebug(
             "GeoIRC " + GEOIRC_VERSION
@@ -706,7 +705,8 @@ public class GeoIRC
          * If the text starts with a slash, we must interpret it as a command
          * alias.
          *
-         * All other text is sent to the current channel or chat, if any.
+         * All other text is sent to the current channel, chat, or process,
+         * if any.
          */
         
         if( text.charAt( 0 ) == '\\' )
@@ -730,6 +730,27 @@ public class GeoIRC
                     + channel + " :"
                     + text
                 );
+            }
+            else
+            {
+                String process_id = display_manager.getSelectedProcess();
+                if( process_id != null )
+                {
+                    process_id = process_id.substring( process_id.indexOf( "=" ) + 1 );
+                    Integer pid;
+                    try
+                    {
+                        pid = new Integer( Integer.parseInt( process_id ) );
+                        GIProcess gip = (GIProcess) processes.get( pid );
+                        gip.println( text );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug(
+                            "Invalid process id found: " + process_id
+                        );
+                    }
+                }
             }
         }
         
@@ -1027,27 +1048,11 @@ public class GeoIRC
             case CMD_EXEC2:
                 if( arg_string != null )
                 {
-                    Runtime rt = Runtime.getRuntime();
+                    
                     try
                     {
-                        Process p = rt.exec( arg_string );
-                        InputStream stdout = p.getInputStream();
-                        InputStream stderr = p.getErrorStream();
-                        OutputStream stdin = p.getOutputStream();
-                        
-                        final BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
-                        final BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
-                        
-                        new InputStreamReaderThread(
-                            (command_id == CMD_EXEC) ? null : this,
-                            display_manager,
-                            out
-                        ).start();
-                        new InputStreamReaderThread(
-                            (command_id == CMD_EXEC) ? null : this,
-                            display_manager,
-                            err
-                        ).start();
+                        CommandExecutor executor = (command_id == CMD_EXEC) ? null : this;
+                        GIProcess gip = new GIProcess( display_manager, processes, arg_string, executor );
                     }
                     catch( IOException e )
                     {
@@ -1212,6 +1217,20 @@ public class GeoIRC
                     }
                 }
                 
+                break;
+            case CMD_LIST_PROCESSES:
+                {
+                    GIProcess gip;
+                    Integer pid;
+                    for( Enumeration keys = processes.keys(); keys.hasMoreElements(); )
+                    {
+                        pid = (Integer) keys.nextElement();
+                        gip = (GIProcess) processes.get( pid );
+                        display_manager.printlnDebug(
+                            gip.toString()
+                        );
+                    }
+                }
                 break;
             case CMD_LIST_WINDOWS:
                 display_manager.listWindows();

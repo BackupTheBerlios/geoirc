@@ -18,6 +18,7 @@ public class InputStreamReaderThread extends Thread
     protected BufferedReader reader;
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
+    protected GIProcess parent;
     
     private InputStreamReaderThread() { }
     
@@ -27,12 +28,14 @@ public class InputStreamReaderThread extends Thread
     public InputStreamReaderThread(
         CommandExecutor executor,
         DisplayManager display_manager,
-        BufferedReader reader
+        BufferedReader reader,
+        GIProcess parent
     )
     {
         this.reader = reader;
         this.executor = executor;
         this.display_manager = display_manager;
+        this.parent = parent;
     }
 
     public void run()
@@ -40,6 +43,7 @@ public class InputStreamReaderThread extends Thread
         if( reader != null )
         {
             String line = null;
+            String qualities = "";
             try
             {
                 while( ( line = reader.readLine() ) != null )
@@ -57,7 +61,10 @@ public class InputStreamReaderThread extends Thread
                     }
                     else
                     {
-                        display_manager.printlnDebug( line );
+                        display_manager.println(
+                            line,
+                            "process=" + parent.getPIDString()
+                        );
                     }
                 }
             }
