@@ -40,11 +40,11 @@ public class SoundManager implements GeoIRCConstants
         {
             i_str = Integer.toString( i );
             
-            filter = settings_manager.getString(
-                "/sound/triggers/" + i_str + "/filter",
+            filename = settings_manager.getString(
+                "/sound/triggers/" + i_str + "/filename",
                 ""
             );
-            if( filter.equals( "" ) )
+            if( filename.equals( "" ) )
             {
                 // No more triggers stored in the settings.
                 break;
@@ -54,8 +54,8 @@ public class SoundManager implements GeoIRCConstants
                 "/sound/triggers/" + i_str + "/regexp",
                 ""
             );
-            filename = settings_manager.getString(
-                "/sound/triggers/" + i_str + "/filename",
+            filter = settings_manager.getString(
+                "/sound/triggers/" + i_str + "/filter",
                 ""
             );
             

@@ -18,8 +18,8 @@ import javax.swing.text.*;
 public class StyleManager
     implements GeoIRCConstants
 {
-    protected StyleContext styles;
     protected String [] style_names;
+    protected Style base_style;
     
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
@@ -37,10 +37,9 @@ public class StyleManager
         
         Vector v = new Vector();
         
-        styles = new StyleContext();
         style_names = new String[ 0 ];
         
-        Style base_style = StyleContext.getDefaultStyleContext().getStyle(
+        base_style = StyleContext.getDefaultStyleContext().getStyle(
             StyleContext.DEFAULT_STYLE
         );
         StyleConstants.setFontFamily(
@@ -51,9 +50,6 @@ public class StyleManager
             base_style,
             settings_manager.getInt( "/gui/text windows/font size", 14 )
         );
-        
-        styles.addStyle( "normal", base_style );
-        v.add( "normal" );
         
         // Read in more styles based on highlight settings.
         
@@ -73,10 +69,27 @@ public class StyleManager
                 break;
             }
             
+            v.add( format );
+            
+            i++;
+        }
+        
+        style_names = (String []) v.toArray( style_names );
+    }
+
+    public void initializeTextPane( JTextPane text_pane )
+    {
+        Style normal = text_pane.addStyle( "normal", base_style );
+        
+        String format;
+        for( int i = 0; i < style_names.length; i++ )
+        {
+            format = style_names[ i ];
             int len = format.length();
             boolean valid_format = true;
+            
             // Duplicate the base style, and adjust the new copy to create the new style.
-            Style style = styles.addStyle( format, base_style );
+            Style style = text_pane.addStyle( format, normal );
             for( int c = 0; c < len; )
             {
                 if( c > len - 2 )
@@ -159,26 +172,10 @@ public class StyleManager
                 }
             }
             
-            if( valid_format )
+            if( ! valid_format )
             {
-                v.add( format );
+                System.err.println( "Bad style format definition: '" + style_names[ i ] + "'" );
             }
-            else
-            {
-                System.err.println( "Invalid style format string: " + format );
-            }
-            
-            i++;
-        }
-        
-        style_names = (String []) v.toArray( style_names );
-    }
-
-    public void initializeTextPane( JTextPane text_pane )
-    {
-        for( int i = 0; i < style_names.length; i++ )
-        {
-            text_pane.addStyle( style_names[ i ], styles.getStyle( style_names[ i ] ) );
         }
     }
     

@@ -15,3 +15,9 @@ Pistos 2003-07-07
 
 Began adding styling and highlighting features.
 Pistos 2003-07-07
+
+Changed the boolean expression evaluator so that empty expressions always
+evaluate to true instead of false.  The reasoning here is that the expression
+is a definition of requirements--ergo, an empty expression means there are no
+requirements; meaning to say, an empty filter allows everything through.
+Pistos 2003-07-09

@@ -33,14 +33,14 @@ public class BoolExpEvaluator
      * That is, the term "A" in expression resolves to true if flag_set
      * contains "A", and resolves to false otherwise.
      *
-     * As a rule, empty expressions always evaluate to false.
+     * As a rule, empty expressions always evaluate to true.
      */
     public static boolean evaluate( String expression, String flag_set )
         throws BadExpressionException
     {
         if( ( expression == null ) || ( expression.equals( "" ) ) )
         {
-            return false;
+            return true;
         }
         
         String expr = expression.toLowerCase();

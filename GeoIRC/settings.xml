@@ -114,8 +114,9 @@
             <map />
             <node name="0">
               <map>
+                <entry key="filter" value="" />
                 <entry key="regexp" value="Pistos" />
-                <entry key="format" value="fg00ff00bg0000ff" />
+                <entry key="format" value="bg0000ff" />
               </map>
             </node>
             <node name="1">
@@ -149,7 +150,7 @@
           <node name="0">
             <map>
               <entry key="filter" value="" />
-              <entry key="regexp" value="[Gg]eo[Ii][Rr][Cc]" />
+              <entry key="regexp" value=".*geoirc.*" />
               <entry key="filename" value="./bloop.wav" />
             </map>
           </node>

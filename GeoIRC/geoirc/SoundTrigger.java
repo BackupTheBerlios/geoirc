@@ -6,7 +6,6 @@
 
 package geoirc;
 
-//import com.antelmann.sound.*;
 import geoirc.util.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -22,7 +21,6 @@ import java.util.regex.*;
 public class SoundTrigger
 {
     String filter;
-    //SoundPlayer player;
     DisplayManager display_manager;
     Pattern regexp;
     AudioClip clip;
@@ -72,17 +70,6 @@ public class SoundTrigger
             display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
         }
         
-        /*
-        try
-        {
-            player = new SoundPlayer( new File( sound_file ) );
-        }
-        catch( SoundException e )
-        {
-            display_manager.printlnDebug( e.getMessage() );
-            display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
-        }
-         */
     }
     
     /* Check against a message which has certain qualities.
@@ -105,7 +92,6 @@ public class SoundTrigger
         
         if( passed )
         {
-            //player.play();
             clip.play();
         }
         
