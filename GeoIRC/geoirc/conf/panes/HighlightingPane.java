@@ -9,9 +9,11 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TableCellColorRenderer;
 import geoirc.conf.TitlePane;
+import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.Highlighting;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JBoolRegExTextField;
@@ -53,7 +55,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
     private LittleTableModel ltm = new LittleTableModel();
     private ValueRule colorRule;
 
-    private JTable table;
+    private JValidatingTable table;
     private JButton delButton;
 
     /**
@@ -61,9 +63,9 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
      * @param valueRules
      * @param name
      */
-    public HighlightingPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    public HighlightingPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
+        super(settings, valueRules, validationListener, name);
     }
 
     public void initialize()
@@ -71,7 +73,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
         addComponent(new TitlePane("Highlighting"), 0, 0, 3, 1, 0, 0);
 
-        table = new JTable(ltm);
+        table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
         colorRule = rules.getValueRule("COLOR");
@@ -83,11 +85,11 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         comboBox.addItem(STYLE_FOREGROUND);
         sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
-        final JBoolRegExTextField valueField = new JBoolRegExTextField();
-        table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(valueField));
+        JBoolRegExTextField valueField = new JBoolRegExTextField( null );
+        table.setValidatingCellEditor( valueField, 0);
 
-        final JRegExTextField patternField = new JRegExTextField();
-        table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(patternField));
+        JRegExTextField patternField = new JRegExTextField( null );
+        table.setValidatingCellEditor( patternField, 1);
 
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(140);
@@ -102,7 +104,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         table.setDefaultRenderer(Color.class, new TableCellColorRenderer(true));
         setUpColorEditor(table);
 
-        delButton = new JButton("Delete");
+        delButton = new JButton("delete");
         delButton.setEnabled(false);
         delButton.addActionListener(new ActionListener()
         {
@@ -113,12 +115,12 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             }
         });
 
-        JButton button = new JButton("Add new");
+        JButton button = new JButton("new");
         button.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                ltm.addRow(new Highlighting("", ".+", colorRule.getValue().toString()));
+                ltm.addRow(new Highlighting("", ".*", colorRule.getValue().toString()));
             }
         });
 

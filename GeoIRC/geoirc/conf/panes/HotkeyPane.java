@@ -11,6 +11,7 @@ import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.conf.ValidationListener;
 import geoirc.util.JKeyRecordField;
 import geoirc.util.JValidatingTextField;
 
@@ -28,7 +29,6 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 
-import javax.swing.ActionMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -51,10 +51,9 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
 {
 
     private JTable table;
-    private ActionMap action_map;
     LittleTableModel ltm = new LittleTableModel();
-    JValidatingTextField command_field = new JValidatingTextField();
-    JKeyRecordField hotkey_field = new JKeyRecordField();
+    JValidatingTextField command_field;
+    JKeyRecordField hotkey_field;
     JButton newButton = new JButton("new");
     JButton addButton = new JButton("add");
     JButton delButton = new JButton("delete");
@@ -67,10 +66,11 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
      * @param valueRules
      * @param name
      */
-    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name, ActionMap action_map)
+    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
-        this.action_map = action_map;
+        super(settings, valueRules, validationListener, name);
+        command_field = new JValidatingTextField( validationListener );
+        hotkey_field = new JKeyRecordField( validation_listener );
     }
 
     /**

@@ -16,8 +16,10 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -49,6 +51,8 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private DisplayManager display_manager;
     private List panels;
     private Frame parent;
+    private ValidationListener validation_listener;
+    private Set invalid_input_components = new HashSet();
 
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
@@ -57,7 +61,33 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         this.valueRules = new GeoIRCDefaults(display_manager);
-        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules);
+        this.validation_listener = new ValidationListener()
+        {
+            void validationPerformed(Object source, boolean isvalid)
+            {
+                if ( !isvalid )
+                {
+                    if( invalid_input_components.isEmpty() )
+                    {
+                        Apply.setEnabled( false );
+                        Ok.setEnabled( false );
+                    }                    
+
+                    invalid_input_components.add( source );
+                }
+                else
+                {
+                    invalid_input_components.remove( source );
+                    
+                    if( invalid_input_components.isEmpty() )
+                    {
+                        Apply.setEnabled( true );
+                        Ok.setEnabled( true );                        
+                    }
+                }
+            }
+        };
+        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
 
         try
         {
@@ -146,7 +176,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
             root.add(buildSubTree(panel));
         }
 
-        JTree categoryTree = new JTree(root);       
+        JTree categoryTree = new JTree(root);
         categoryTree.setMinimumSize(new Dimension());
         categoryTree.setPreferredSize(new Dimension(100, 64));
         categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -170,12 +200,13 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             node.add(buildSubTree((BaseSettingsPanel)it.next()));
         }
-        
+
         return node;
     }
 
     void Apply_actionPerformed(ActionEvent e)
     {
+        this.hide();
         saveAllPanelData();
         if (parent instanceof GeoIRC)
              ((GeoIRC)parent).applySettings();
@@ -189,6 +220,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
 
     void Ok_actionPerformed(ActionEvent e)
     {
+        this.hide();
         saveAllPanelData();
         close();
         if (parent instanceof GeoIRC)

@@ -10,6 +10,7 @@ import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.Channel;
 import geoirc.conf.beans.IRCServer;
 import geoirc.conf.beans.ValueRule;
@@ -66,9 +67,9 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
      * @param valueRules
      * @param name
      */
-    public ChannelPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    public ChannelPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
+        super(settings, valueRules, validationListener, name);
         typeRule = rules.getValueRule("SERVER_TYPE");
         hostRule = rules.getValueRule("HOSTNAME");
         portRule = rules.getValueRule("PORT");
@@ -92,12 +93,12 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
         addComponent(serverScroller, 0, 1, 2, 5, 0, 0);
 
         addComponent(new JLabel("Hostname"), 2, 1, 2, 1, 1, 0);
-        hostName = new JValidatingTextField(hostRule.getPattern(), null, 150);
+        hostName = new JValidatingTextField(hostRule.getPattern(), null, validation_listener, 150);
         hostName.getDocument().addDocumentListener(new ServerInputHandler(this));
         addComponent(hostName, 2, 2, 2, 1, 1, 0, new Insets(2, 5, 2, 5));
 
         addComponent(new JLabel("Port"), 2, 3, 2, 1, 1, 0);
-        hostPort = new JValidatingTextField(portRule.getPattern(), null);
+        hostPort = new JValidatingTextField(portRule.getPattern(), null, validation_listener);
         hostPort.getDocument().addDocumentListener(new ServerInputHandler(this));
         addComponent(hostPort, 2, 4, 2, 1, 1, 0, new Insets(2, 5, 2, 5));
 
@@ -143,7 +144,7 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
         addComponent(channelScroller, 0, 7, 2, 4, 0, 0);
 
         addComponent(new JLabel("Channel name"), 2, 7, 2, 1, 1, 0);
-        channelName = new JValidatingTextField(channelRule.getPattern(), null, 150);
+        channelName = new JValidatingTextField(channelRule.getPattern(), null, validation_listener, 150);
         addComponent(channelName, 2, 8, 2, 1, 1, 0, new Insets(2, 5, 2, 5));
         channelName.getDocument().addDocumentListener(new ChannelInputHandler(this));
         channelJoin = new JCheckBox("autojoin");

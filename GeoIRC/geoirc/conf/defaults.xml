@@ -14,12 +14,12 @@
 		</rule>
 		<rule name="NAME">
 			<default>GeoIRCUser</default>
-            <pattern>.+</pattern>
+            <pattern>.*</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>		
 		<rule name="NICK">
 			<default>GeoIRCUser</default>
-            <pattern>.+</pattern>
+            <pattern>.+?</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>
 		<rule name="SERVER_TYPE">
@@ -29,7 +29,7 @@
 		</rule>		
 		<rule name="HOSTNAME">
 			<default>irc.freenode.net</default>
-            <pattern>.+</pattern>
+            <pattern>.+?</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>
 		<rule name="CHANNEL">
@@ -39,17 +39,17 @@
 		</rule>
 		<rule name="KDERC">
 			<default></default>
-            <pattern>.{0,}</pattern>
+            <pattern>.*</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>										
 		<rule name="GTKRC">
 			<default></default>
-            <pattern>.{0,}</pattern>
+            <pattern>.*</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>												
 		<rule name="FONT">
 			<default>Dialog</default>
-            <pattern>.+</pattern>
+            <pattern>.+?</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>														
 		<rule name="FONT_SIZE">
@@ -74,7 +74,7 @@
 		</rule>
 		<rule name="DIRECTORY">
 			<default>./</default>
-            <pattern>.+</pattern>
+            <pattern>.+?</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>														
 		<rule name="NICK_WIDTH">
@@ -84,27 +84,27 @@
 		</rule>
 		<rule name="TIMESTAMP">
 			<default>HH:mm:ss</default>
-            <pattern>.+</pattern>
+            <pattern>.+?</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>
 		<rule name="CTCP_VERSION">
 			<default></default>
-            <pattern>.{0,}</pattern>
+            <pattern>.*</pattern>
             <javaType>java.lang.String</javaType>			
 		</rule>
 		<rule name="USER_INFO">
 			<default>http://geoirc.berlios.de</default>
-            <pattern>.+</pattern>
+            <pattern>.*</pattern>
             <javaType>java.lang.String</javaType>					
 		</rule>
-		<rule name="COMAND_ALIAS_NAME">
+		<rule name="COMMAND_ALIAS_NAME">
 			<default>new alias</default>
-            <pattern>.+</pattern>
+            <pattern>.{1,}</pattern>
             <javaType>java.lang.String</javaType>					
 		</rule>		
-		<rule name="COMAND_ALIAS_COMMAND">
+		<rule name="COMMAND_ALIAS_COMMAND">
 			<default></default>
-            <pattern>.+</pattern>
+            <pattern>.{1,}</pattern>
             <javaType>java.lang.String</javaType>
 		</rule>
 		<rule name="DCC_LOWEST_PORT">

@@ -15,6 +15,7 @@ import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.SettingsSaveHandler;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
@@ -65,9 +66,9 @@ public class VisualPane extends BaseSettingsPanel implements Storable
      * @param valueRules
      * @param name
      */
-    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
+        super(settings, valueRules, validationListener, name);
         save_handler = new SettingsSaveHandler(settings);
     }
 
@@ -89,14 +90,14 @@ public class VisualPane extends BaseSettingsPanel implements Storable
 
         addComponent(new JLabel("Path to .kderc:"), 0, 1, 1, 1, 0, 0);
         String value = settings_manager.getString(path + "skin1", (String)kdercRule.getValue());
-        kderc = new JValidatingTextField(kdercRule.getPattern(), value, 250);
+        kderc = new JValidatingTextField(kdercRule.getPattern(), value, validation_listener, 250);
         save_handler.register(addComponent(kderc, 1, 1, 3, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "skin1");
         chooseKderc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(kderc, this, value));
         addComponent(chooseKderc, 4, 1, 1, 1, 1, 0, new Insets(5, 0, 5, 5));
 
         addComponent(new JLabel("Path to .gtkrc:"), 0, 2, 1, 1, 0, 0);
         value = settings_manager.getString(path + "skin2", (String)gtkrcRule.getValue());
-        gtkrc = new JValidatingTextField(gtkrcRule.getPattern(), value, 250);
+        gtkrc = new JValidatingTextField(gtkrcRule.getPattern(), value, validation_listener, 250);
         save_handler.register(addComponent(gtkrc, 1, 2, 3, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "skin2");
         chooseGtkrc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(gtkrc, this, value));
         addComponent(chooseGtkrc, 4, 2, 1, 1, 1, 0, new Insets(5, 0, 5, 5));
@@ -118,7 +119,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //foreground colour
         addComponent(new JLabel("Foreground color"), 0, 5, 1, 1, 0, 0);
         value = settings_manager.getString(path + "foreground colour", fgColorRule.getValue().toString());
-        fgColor1 = new JValidatingTextField(fgColorRule.getPattern(), value);
+        fgColor1 = new JValidatingTextField(fgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(fgColor1, 1, 5, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "foreground colour");
@@ -127,7 +128,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //background color
         addComponent(new JLabel("Backgound color"), 0, 6, 1, 1, 0, 0);
         value = settings_manager.getString(path + "background colour", bgColorRule.getValue().toString());
-        bgColor1 = new JValidatingTextField(bgColorRule.getPattern(), value);
+        bgColor1 = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(bgColor1, 1, 6, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "background colour");
@@ -151,7 +152,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //foreground colour
         addComponent(new JLabel("Foreground color"), 0, 9, 1, 1, 0, 0);
         value = settings_manager.getString(path + "default foreground colour", fgColorRule.getValue().toString());
-        fgColor2 = new JValidatingTextField(fgColorRule.getPattern(), value);
+        fgColor2 = new JValidatingTextField(fgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(fgColor2, 1, 9, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "default foreground colour");
@@ -160,7 +161,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //background color
         addComponent(new JLabel("Backgound color"), 0, 10, 1, 1, 0, 0);
         value = settings_manager.getString(path + "default background colour", bgColorRule.getValue().toString());
-        bgColor2 = new JValidatingTextField(bgColorRule.getPattern(), value);
+        bgColor2 = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(bgColor2, 1, 10, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "default background colour");
@@ -169,7 +170,7 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //alternate background color
         addComponent(new JLabel("Alternate backgound color"), 0, 11, 1, 1, 0, 0);
         value = settings_manager.getString(path + "alternate background colour", bgColorRule.getValue().toString());
-        alternate_bgcolor = new JValidatingTextField(bgColorRule.getPattern(), value);
+        alternate_bgcolor = new JValidatingTextField(bgColorRule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(alternate_bgcolor, 1, 11, 1, 1, 0, 0, new Insets(5, 5, 5, 2)),
             path + "alternate background colour");
@@ -180,12 +181,12 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //timestamp
         value = settings_manager.getString(path + "timestamp", timestampRule.getValue().toString());
         addComponent(new JLabel("Timestamp"), 0, 12, 1, 1, 0, 0);
-        timestamp = new JValidatingTextField(timestampRule.getPattern(), value);
+        timestamp = new JValidatingTextField(timestampRule.getPattern(), value, validation_listener);
         save_handler.register(addComponent(timestamp, 1, 12, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
         //nick width        
         value = settings_manager.getString(path + "maximum nick width", nickWidthRule.getValue().toString());
         addComponent(new JLabel("max. nick width"), 0, 13, 1, 1, 0, 0);
-        nick_width = new JValidatingTextField(nickWidthRule.getPattern(), value, 40);
+        nick_width = new JValidatingTextField(nickWidthRule.getPattern(), value, validation_listener, 40);
         save_handler.register(addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "maximum nick width");
         //INFO WINDOWS
         addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 14, 5, 1, 0, 0);

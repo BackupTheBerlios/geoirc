@@ -5,6 +5,7 @@
  */
 package geoirc.util;
 
+import geoirc.conf.ValidationListener;
 
 /**
  * Class providing ...
@@ -12,43 +13,49 @@ package geoirc.util;
  * 
  * @author netseeker aka Michael Manske
  */
-public class JBoolRegExTextField extends JValidatingTextField {
+public class JBoolRegExTextField extends JValidatingTextField
+{
 
     /**
      * 
      */
-    public JBoolRegExTextField() {
-        super();
+    public JBoolRegExTextField(ValidationListener validation_listener)
+    {
+        super(validation_listener);
     }
 
     /**
      * @param value
      */
-    public JBoolRegExTextField(String value) {
-        super(".+", value);
+    public JBoolRegExTextField(String value, ValidationListener validation_listener)
+    {
+        super(".*", value, validation_listener);
     }
 
     /**
      * @param value
      * @param width
      */
-    public JBoolRegExTextField(String value, int width) {
-        super(".+", value, width);
+    public JBoolRegExTextField(String value, ValidationListener validation_listener, int width)
+    {
+        super(".*", value, validation_listener, width);
     }
 
-    protected void validateText() {
+    protected void validateText()
+    {
         String t = getText();
         boolean valid = false;
 
-        if (!isEmpty()) {
-            try {
-                BoolExpEvaluator.evaluate(t, pattern.pattern());
-                valid = true;
-            }
-            catch (BadExpressionException e) {
-                valid = false;
-            }
+        try
+        {
+            BoolExpEvaluator.evaluate(t, pattern.pattern());
+            valid = true;
         }
+        catch (BadExpressionException e)
+        {
+            valid = false;
+        }
+
         setTextValid(valid);
     }
 }

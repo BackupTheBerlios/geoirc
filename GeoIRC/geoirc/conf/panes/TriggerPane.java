@@ -9,9 +9,10 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.beans.Highlighting;
+import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.Trigger;
 import geoirc.util.JBoolRegExTextField;
 import geoirc.util.JRegExTextField;
@@ -26,10 +27,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -42,7 +41,7 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
 {
     private LittleTableModel ltm = new LittleTableModel();
 
-    private JTable table;
+    private JValidatingTable table;
     private JButton addButton;
     private JButton delButton;
 
@@ -51,9 +50,9 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
      * @param valueRules
      * @param name
      */
-    public TriggerPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    public TriggerPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
+        super(settings, valueRules, validationListener, name);
     }
 
     public void initialize()
@@ -61,16 +60,18 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
 
         addComponent(new TitlePane("Trigger Settings"), 0, 0, 3, 1, 0, 0);
 
-        table = new JTable(ltm);
+        table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
         ltm.setData(getTriggers());
 
-        final JBoolRegExTextField valueField = new JBoolRegExTextField();
-        table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(valueField));
+        final JBoolRegExTextField valueField = new JBoolRegExTextField( null );
+        valueField.setToolTipText("boolean regular expression");
+        table.setValidatingCellEditor(valueField, 0);
 
-        final JRegExTextField patternField = new JRegExTextField();
-        table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(patternField));
+        final JRegExTextField patternField = new JRegExTextField( null );
+        patternField.setToolTipText("any regular expression");
+        table.setValidatingCellEditor(patternField, 1);
 
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(140);
@@ -81,6 +82,7 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         addComponent(scroller, 0, 1, 4, 1, 0, 0);
 
         delButton = new JButton("delete");
+        delButton.setToolTipText("Deletes the selected trigger");
         delButton.setEnabled(false);
         delButton.addActionListener(new ActionListener()
         {
@@ -92,6 +94,7 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         });
 
         addButton = new JButton("add");
+        addButton.setToolTipText("Add a new trigger");
         addButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent arg0)
@@ -182,10 +185,10 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
 
         while (it.hasNext())
         {
-            Highlighting hl = (Highlighting)it.next();
+            Trigger trigger = (Trigger)it.next();
             try
             {
-                Pattern.compile(hl.getRegexp());
+                Pattern.compile(trigger.getRegexp());
             }
             catch (PatternSyntaxException e)
             {

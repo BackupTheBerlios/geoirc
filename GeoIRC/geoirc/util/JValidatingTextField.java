@@ -5,10 +5,14 @@
  */
 package geoirc.util;
 
+import geoirc.conf.ValidationListener;
+
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -24,21 +28,27 @@ import javax.swing.text.Document;
  * border will be drawn around the input field.
  * @author netseeker aka Michael Manske
  */
-public class JValidatingTextField extends JTextField implements DocumentListener {
-    protected static final Border normalBorder = BorderFactory.createLineBorder(Color.BLACK);
-    protected static final Border errorBorder = BorderFactory.createLineBorder(Color.RED);
+public class JValidatingTextField extends JTextField implements DocumentListener
+{
+    private static final Border normalBorder = BorderFactory.createLineBorder(Color.BLACK);
+    private static final Border errorBorder = BorderFactory.createLineBorder(Color.RED);
     public static final int PREFERED_WIDTH = 100;
     public static final int PREFERED_HEIGHT = 18;
 
     protected boolean textValid = true;
     protected Pattern pattern;
+    
+    private Component listener_source;
+    private static int validation_source_count = 0;
 
     /**
-     * Creates a new instance
+     * Creates a new instance and adds a ValidationListener
      */
-    public JValidatingTextField() {
+    public JValidatingTextField(ValidationListener listener)
+    {
         super();
         this.setPreferredSize(new Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
+        addValidationListener(listener);
         init();
     }
 
@@ -47,32 +57,49 @@ public class JValidatingTextField extends JTextField implements DocumentListener
      * @param regex regular expression to use for validating input
      * @param value value to be inserted in the text field
      */
-    public JValidatingTextField(String regex, String value) {
-        this();
+    public JValidatingTextField(String regex, String value, ValidationListener listener)
+    {
+        this(listener);
         setPattern(regex);
         if (value != null)
             this.setText(value);
     }
 
-    public JValidatingTextField(String regex, String value, int width) {
-        this(regex, value);
+    /**
+     * @param regex
+     * @param value
+     * @param listener
+     * @param width
+     */
+    public JValidatingTextField(String regex, String value, ValidationListener listener, int width)
+    {
+        this(regex, value, listener);
         this.setPreferredSize(new Dimension(width, PREFERED_HEIGHT));
     }
 
-    protected void init() {
-        //setIgnoreRepaint(true);
+    /**
+     * 
+     */
+    protected void init()
+    {
+        setIgnoreRepaint(true);
+        setOpaque(true);
 
-        if (pattern == null || pattern.pattern() == null) {
-            pattern = Pattern.compile(".+");
+        if (pattern == null || pattern.pattern() == null)
+        {
+            pattern = Pattern.compile(".*");
         }
 
         setVerifyInputWhenFocusTarget(true);
-        this.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent arg0) {
+        this.addFocusListener(new FocusListener()
+        {
+            public void focusGained(FocusEvent arg0)
+            {
                 validateText();
             }
 
-            public void focusLost(FocusEvent arg0) {
+            public void focusLost(FocusEvent arg0)
+            {
                 validateText();
             }
         });
@@ -84,12 +111,15 @@ public class JValidatingTextField extends JTextField implements DocumentListener
     /* (non-Javadoc)
      * @see javax.swing.text.JTextComponent#setDocument(javax.swing.text.Document)
      */
-    public void setDocument(Document doc) {
-        if (getDocument() != null) {
+    public void setDocument(Document doc)
+    {
+        if (getDocument() != null)
+        {
             getDocument().removeDocumentListener(this);
         }
         super.setDocument(doc);
-        if (getDocument() != null) {
+        if (getDocument() != null)
+        {
             getDocument().addDocumentListener(this);
         }
     }
@@ -98,19 +128,25 @@ public class JValidatingTextField extends JTextField implements DocumentListener
      * sets a new regular expression used for validating
      * @param regex regular expression to use for validating input
      */
-    public void setPattern(String regex) {
+    public void setPattern(String regex)
+    {
         if (regex == null)
-            regex = new String(".+");
+            regex = new String(".*");
         pattern = Pattern.compile(regex);
         validateText();
     }
 
-    protected void validateText() {
+    /**
+     * 
+     */
+    protected void validateText()
+    {
         String t = getText();
-        int pos = (pattern.pattern().indexOf("+") != -1) ? 1 : 0;
+        //int pos = (pattern.pattern().indexOf("+") != -1) ? 1 : 0;
 
-        boolean valid = ( t.length() >= pos && pattern.matcher(t).matches() ) || isEnabled() == false;
-
+        //boolean valid = (t.length() >= pos && pattern.matcher(t).matches()) || isEnabled() == false;
+        boolean valid = pattern.matcher(t).matches() || isEnabled() == false;
+        
         setTextValid(valid);
     }
 
@@ -119,11 +155,16 @@ public class JValidatingTextField extends JTextField implements DocumentListener
      * @return true if the inserted value validates
      * otherwise false
      */
-    public boolean isValid() {
+    public boolean isValid()
+    {
         return textValid;
     }
 
-    public boolean isEmpty() {
+    /**
+     * @return
+     */
+    public boolean isEmpty()
+    {
         String str = getText();
         if (str == null)
             return true;
@@ -133,40 +174,78 @@ public class JValidatingTextField extends JTextField implements DocumentListener
         return false;
     }
 
-    protected void setTextValid(boolean valid) {
-        textValid = valid;
-        firePropertyChange("textValid", !valid, valid);
+    /**
+     * @param valid
+     */
+    protected void setTextValid(boolean valid)
+    {
+        if( textValid != valid )
+        {
+            firePropertyChange(ValidationListener.VALIDATION_RESULT, textValid, valid);
+            textValid = valid;                        
+        }
         setBorder(valid ? normalBorder : errorBorder);        
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
      */
-    public void insertUpdate(DocumentEvent arg0) {
+    public void insertUpdate(DocumentEvent arg0)
+    {
         validateText();
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
      */
-    public void removeUpdate(DocumentEvent arg0) {
+    public void removeUpdate(DocumentEvent arg0)
+    {
         validateText();
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
      */
-    public void changedUpdate(DocumentEvent arg0) {
+    public void changedUpdate(DocumentEvent arg0)
+    {
         validateText();
     }
 
-    public boolean isOpaque() {
+    /* (non-Javadoc)
+     * @see java.awt.Component#isOpaque()
+     */
+    public boolean isOpaque()
+    {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.Component#setEnabled(boolean)
+     */
     public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
         validateText();
+    }
+
+    /**
+     * @param listener
+     */
+    public void addValidationListener(ValidationListener listener)
+    {
+        addPropertyChangeListener(ValidationListener.VALIDATION_RESULT, listener);
+    }
+
+    public PropertyChangeListener[] getValidationListeners()
+    {
+        return getPropertyChangeListeners(ValidationListener.VALIDATION_RESULT);
+    }
+
+    /**
+     * @param listener
+     */
+    public void removeValidationListener(ValidationListener listener)
+    {
+        removePropertyChangeListener(listener);
     }    
 }

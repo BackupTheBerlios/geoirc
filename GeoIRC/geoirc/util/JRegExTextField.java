@@ -5,6 +5,8 @@
  */
 package geoirc.util;
 
+import geoirc.conf.ValidationListener;
+
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -16,58 +18,53 @@ import java.util.regex.PatternSyntaxException;
  */
 public class JRegExTextField extends JValidatingTextField
 {
-	/**
-	 * 
-	 */
-	public JRegExTextField()
-	{
-		super();
-	}
+    /**
+     * 
+     */
+    public JRegExTextField(ValidationListener validation_listener)
+    {
+        super(validation_listener);
+    }
 
-	/**
-	 * @param regex
-	 * @param value
-	 */
-	public JRegExTextField(String regex)
-	{
-		super(".+", regex);
-	}
+    /**
+     * @param regex
+     * @param value
+     */
+    public JRegExTextField(String regex, ValidationListener validation_listener)
+    {
+        super(".*", regex, validation_listener);
+    }
 
-	/**
-	 * @param regex
-	 * @param value
-	 * @param width
-	 */
-	public JRegExTextField(String regex, int width)
-	{
-		super(".+", regex, width);		
-	}
+    /**
+     * @param regex
+     * @param value
+     * @param width
+     */
+    public JRegExTextField(String regex, ValidationListener validation_listener, int width)
+    {
+        super(".*", regex, validation_listener, width);
+    }
 
-	protected void validateText()
-	{
-		String t = getText();
-		boolean valid = true;
-		
-		if(isEmpty())
-			valid = false;
-		else
-		{
-			try
-			{
-				Pattern.compile(t);
-			}
-			catch( PatternSyntaxException e )
-			{
-				valid = false;
-			}
-		}		
-		setTextValid(valid);
-	}
-	
-	public void setPattern(String regex)
-	{
-		setText(regex);
-	}
-	
+    protected void validateText()
+    {
+        String t = getText();
+        boolean valid = true;
+
+        try
+        {
+            Pattern.compile(t);
+        }
+        catch (PatternSyntaxException e)
+        {
+            valid = false;
+        }
+
+        setTextValid(valid);
+    }
+
+    public void setPattern(String regex)
+    {
+        setText(regex);
+    }
 
 }

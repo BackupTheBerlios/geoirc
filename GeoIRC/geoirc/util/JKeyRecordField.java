@@ -6,6 +6,7 @@
 package geoirc.util;
 
 import geoirc.GeoIRCConstants;
+import geoirc.conf.ValidationListener;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -17,8 +18,8 @@ import java.awt.event.KeyListener;
 public class JKeyRecordField
     extends JValidatingTextField
     implements KeyListener, GeoIRCConstants {
-    public JKeyRecordField() {
-        super();
+    public JKeyRecordField( ValidationListener validation_listener ) {
+        super( validation_listener );
        
         removeKeyListener(this);        
         addKeyListener(this);
@@ -29,8 +30,8 @@ public class JKeyRecordField
      * @param arg1
      * @param arg2
      */
-    public JKeyRecordField(int width, int height) {
-        this();
+    public JKeyRecordField(int width, int height, ValidationListener validation_listener) {
+        this(validation_listener);
         setPreferredSize(new Dimension(width, height));
     }
 

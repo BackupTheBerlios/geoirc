@@ -10,8 +10,10 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 import geoirc.util.Util;
@@ -24,15 +26,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 
 /**
  * @author netseeker aka Michael Manske
@@ -40,7 +39,7 @@ import javax.swing.table.TableColumn;
 public class CommandAliasesPane extends BaseSettingsPanel implements Storable, GeoIRCConstants
 {
     private LittleTableModel ltm = new LittleTableModel();
-    private JTable table;
+    private JValidatingTable table;
     private JButton delButton = new JButton("delete");
     private JButton addButton = new JButton("new");
     private JButton addCustomButton = new JButton("add");
@@ -50,31 +49,30 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
      * @param valueRules
      * @param name
      */
-    public CommandAliasesPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    public CommandAliasesPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
+        super(settings, valueRules, validationListener, name);
     }
 
     public void initialize()
     {
-        table = new JTable(ltm);
+        table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);        
         table.setToolTipText("Click into a cell to edit values");
         
         //setting up table cell for alias name
-        ValueRule rule = rules.getValueRule("COMAND_ALIAS_NAME");
-        final JValidatingTextField alias_field = new JValidatingTextField(rule.getPattern(), rule.getName());
+        ValueRule rule = rules.getValueRule("COMMAND_ALIAS_NAME");
+        final JValidatingTextField alias_field = new JValidatingTextField(rule.getPattern(), rule.getName(), null);
         alias_field.setToolTipText("click to edit, hit return to apply your change");
-        TableColumn cmdColumn = table.getColumnModel().getColumn(1);
-        cmdColumn.setCellEditor(new DefaultCellEditor(alias_field));
-
+        table.setValidatingCellEditor(alias_field, 0);
+        
         //setting up table cell for commands
-        rule = rules.getValueRule("COMAND_ALIAS_COMMAND");
-        final JValidatingTextField command_field = new JValidatingTextField(rule.getPattern(), rule.getName());
-        cmdColumn = table.getColumnModel().getColumn(1);
-        cmdColumn.setCellEditor(new DefaultCellEditor(command_field));
-
+        rule = rules.getValueRule("COMMAND_ALIAS_COMMAND");
+        final JValidatingTextField command_field = new JValidatingTextField(rule.getPattern(), rule.getName(), null);
+        command_field.setToolTipText("click to edit, hit return to apply your change");
+        table.setValidatingCellEditor(command_field, 1);
+        
         addComponent(new TitlePane("Command Aliases"), 0, 0, 5, 1, 0, 0);
         String path = "/command aliases/";
         int i = 0;
@@ -256,6 +254,7 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
                     ca.setExpansion((String)value);
                     break;
             }
+            
             fireTableDataChanged();
         }
 

@@ -29,21 +29,29 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
 	protected GridBagLayout layout = new GridBagLayout();
 	protected String name = null;
 	protected List childs = new ArrayList();
+    protected ValidationListener validation_listener;
     protected boolean isInitialized = false;
 
-	/**
+	private BaseSettingsPanel()
+    {
+	}
+    
+    /**
 	 * @param settings
 	 */
 	public BaseSettingsPanel(
 		XmlProcessable settings,
 		GeoIRCDefaults valueRules,
+        ValidationListener validationListener,
 		String name)
 	{
 		super();
 		setVisible(false);
 		this.settings_manager = settings;
 		this.rules = valueRules;
-		this.name = name;
+		this.validation_listener = validationListener;
+        this.name = name;
+        
 		setMinimumSize(new Dimension());
 		setLayout(layout);
 	}
@@ -143,6 +151,7 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
 		gbc.weighty = weighty;
 		gbc.anchor = align;
 		gbc.insets = insets;
+        
 		layout.setConstraints(c, gbc);
         
 		return add(c);

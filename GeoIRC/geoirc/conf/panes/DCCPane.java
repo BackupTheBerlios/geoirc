@@ -5,8 +5,6 @@
  */
 package geoirc.conf.panes;
 
-import java.awt.Insets;
-
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.ComponentFactory;
@@ -15,8 +13,11 @@ import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.SettingsSaveHandler;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
+
+import java.awt.Insets;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -33,9 +34,9 @@ public class DCCPane extends BaseSettingsPanel implements Storable
      * @param valueRules
      * @param name
      */
-    public DCCPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
+    public DCCPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
     {
-        super(settings, valueRules, name);
+        super(settings, valueRules, validationListener, name);
         save_handler = new SettingsSaveHandler(settings);
     }
 
@@ -49,7 +50,7 @@ public class DCCPane extends BaseSettingsPanel implements Storable
         addComponent(new JLabel("Default download directory"), 0, 2, 1, 1, 0, 0);
         ValueRule rule = rules.getValueRule("DIRECTORY");
         String value = settings_manager.getString(path + "default download directory", (String)rule.getValue());
-        JValidatingTextField dirField = new JValidatingTextField(rule.getPattern(), value, 200);
+        JValidatingTextField dirField = new JValidatingTextField(rule.getPattern(), value, validation_listener, 200);
         save_handler.register(
             addComponent(dirField, 1, 2, 2, 1, 0, 0, new Insets(2, 5, 5, 2)),
             path + "Download directory");
@@ -68,7 +69,7 @@ public class DCCPane extends BaseSettingsPanel implements Storable
         addComponent(new JLabel("Lowest allowed port"), 0, 3, 1, 1, 0, 0);
         rule = rules.getValueRule("DCC_LOWEST_PORT");
         value = settings_manager.getString(path + "lowest port", rule.getValue().toString());
-        JValidatingTextField low_port_field = new JValidatingTextField(rule.getPattern(), value);
+        JValidatingTextField low_port_field = new JValidatingTextField(rule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(low_port_field, 1, 3, 1, 1, 0, 0),
             path + "lowest port");
@@ -76,7 +77,7 @@ public class DCCPane extends BaseSettingsPanel implements Storable
         addComponent(new JLabel("Highest allowed port"), 0, 4, 1, 1, 0, 0);
         rule = rules.getValueRule("DCC_HIGHEST_PORT");
         value = settings_manager.getString(path + "highest port", rule.getValue().toString());
-        JValidatingTextField high_port_field = new JValidatingTextField(rule.getPattern(), value);
+        JValidatingTextField high_port_field = new JValidatingTextField(rule.getPattern(), value, validation_listener);
         save_handler.register(
             addComponent(high_port_field, 1, 4, 1, 1, 0, 0),
             path + "lowhighestest port");
