@@ -8,7 +8,6 @@ package geoirc.util;
 import geoirc.conf.ValidationListener;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -38,9 +37,6 @@ public class JValidatingTextField extends JTextField implements DocumentListener
     protected boolean textValid = true;
     protected Pattern pattern;
     
-    private Component listener_source;
-    private static int validation_source_count = 0;
-
     /**
      * Creates a new instance and adds a ValidationListener
      */

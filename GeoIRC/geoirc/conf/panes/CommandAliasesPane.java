@@ -40,7 +40,6 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
     private JValidatingTable table;
     private JButton delButton = new JButton("delete");
     private JButton addButton = new JButton("new");
-    private JButton addCustomButton = new JButton("add");
 
     /**
      * @param settings
