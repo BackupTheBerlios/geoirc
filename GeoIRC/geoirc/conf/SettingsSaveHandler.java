@@ -13,13 +13,14 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.text.JTextComponent;
 
 /**
  * A basic handler for saving user input of different types of JComponent
  * to the application preferences (settings.xml)
- * NOTE: At the moment only values of instances of JTextField and JList will get saved!
+ * NOTE: At the moment only values of instances of JTextField, JList and JComboBox will get saved!
  * 
  * @author netseeker aka Michael Manske
  */
@@ -133,20 +134,20 @@ public class SettingsSaveHandler
 			JList list = (JList)component;
 			Object values[] = list.getSelectedValues();
 			
-			/*
-			int i = 0;
-			while(settings_manager.getString(path + String.valueOf(i), null) != null)
-			{
-				settings_manager.removeNode(path + String.valueOf(i));
-				i++;
-			}
-			*/
 			settings_manager.removeNode(path);
 			
 			for(int i = 0; i < values.length; i++)
 			{
 				settings_manager.setString(path + String.valueOf(i), values[i].toString());				
 			}
+		}
+		else if(component instanceof JComboBox)
+		{
+			JComboBox box = (JComboBox)component;
+			Object value = box.getSelectedItem();
+			
+			if (value != null)
+				settings_manager.set(path, value.toString());			
 		}
 	}
 }
