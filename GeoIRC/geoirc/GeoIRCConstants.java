@@ -358,4 +358,13 @@ public interface GeoIRCConstants
     static final int DEFAULT_MAXIMUM_NICK_WIDTH = 20;
     
     static final int DEFAULT_MINIMUM_WORD_LENGTH = 4;
+    
+    static final char MIRC_COLOUR_CONTROL_CHAR = '\003';
+    static final String DEFAULT_MIRC_FOREGROUND_COLOUR = "808080";
+    static final String DEFAULT_MIRC_BACKGROUND_COLOUR = "c0c0c0";
+    static final char MIRC_BOLD_CONTROL_CHAR = '\002';
+    static final char MIRC_ITALIC_CONTROL_CHAR = '\035';  // 35 octal == 29 decimal
+    static final char MIRC_UNDERLINE_CONTROL_CHAR = '\037';  // 37 octal == 31 decimal
+    static final char MIRC_NORMAL_CONTROL_CHAR = '\017';  // 17 octal == 15 decimal
+
 }

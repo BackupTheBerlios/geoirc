@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.regex.*;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -28,6 +29,8 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     protected String filter;
     protected JScrollBar scrollbar;
     protected boolean colour_toggle;
+    protected Color foreground_colour;
+    protected Color background_colour;
     
     public GITextPane(
         DisplayManager display_manager,
@@ -74,7 +77,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         colour_toggle = false;
     }
     
-    public int appendLine( String text )
+    public String appendLine( String text )
     {
         return append( text + "\n" );
     }
@@ -90,7 +93,8 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         try {
             rgb = Util.getRGB( rgb_str );
         } catch( NumberFormatException e ) { /* accept defaults */ }
-        text_pane.setForeground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
+        foreground_colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
+        text_pane.setForeground( foreground_colour );
         
         rgb_str = settings_manager.getString(
             "/gui/text windows/default background colour",
@@ -100,25 +104,219 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         try {
             rgb = Util.getRGB( rgb_str );
         } catch( NumberFormatException e ) { /* accept defaults */ }
-        text_pane.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
+        background_colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
+        text_pane.setBackground( background_colour );
         
         display_manager.getStyleManager().initializeTextPane( text_pane );
     }
     
     /**
-     * @return the document offset of the appended text.
+     * @return the text in modified form (control codes stripped, etc.)
      */
-    synchronized public int append( String text )
+    synchronized public String append( String text_ )
     {
         int offset = document.getLength();
+        
+        String text = text_;
+        
+        // Search for mIRC format codes, and paint the text accordingly.
+        
+        // Colours
+        
+        int mirc_char_index = text.indexOf( MIRC_COLOUR_CONTROL_CHAR );
+        String remainder;
+        Matcher m;
+        String format;
+        Vector formats = new Vector();
+        Vector indices = new Vector();
+        
+        while( mirc_char_index > -1 )
+        {
+            // Get the number(s) following the control code.
+            
+            remainder = text.substring( mirc_char_index + 1 );
+            m = Pattern.compile( "^(\\d{1,2}(?:,\\d{1,2})?).*" ).matcher( remainder );
+            format = "";
+            SimpleAttributeSet formatting = new SimpleAttributeSet();
+            
+            if( m.find() )
+            {
+                format = m.group( 1 );
+                
+                String [] fg_bg = format.split( "," );
+                int [] rgb = new int[ 3 ];
+                rgb = Util.getRGB(
+                    settings_manager.getString(
+                        "/gui/format/mirc colours/" + fg_bg[ 0 ],
+                        DEFAULT_MIRC_FOREGROUND_COLOUR
+                    )
+                );
+                StyleConstants.setForeground(
+                    formatting,
+                    new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                );
+                
+                if( fg_bg.length > 1 )
+                {
+                    rgb = Util.getRGB(
+                        settings_manager.getString(
+                            "/gui/format/mirc colours/" + fg_bg[ 1 ],
+                            DEFAULT_MIRC_BACKGROUND_COLOUR
+                        )
+                    );
+                    StyleConstants.setBackground(
+                        formatting,
+                        new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                    );
+                }
+
+                formats.add( formatting );
+            }
+            else
+            {
+                StyleConstants.setForeground( formatting, foreground_colour );
+                StyleConstants.setBackground( formatting, background_colour );
+                formats.add( formatting );
+            }
+            indices.add( new Integer( mirc_char_index ) );
+            
+            // Remove the parsed format code string.
+            text =
+                text.substring( 0, mirc_char_index )
+                + text.substring( mirc_char_index + format.length() + 1 );
+            
+            mirc_char_index = text.indexOf( MIRC_COLOUR_CONTROL_CHAR, mirc_char_index );
+        }
+        
+        // Bold
+        
+        mirc_char_index = text.indexOf( MIRC_BOLD_CONTROL_CHAR );
+        boolean bold = false;
+        while( mirc_char_index > -1 )
+        {
+            bold = ! bold;
+            SimpleAttributeSet formatting = new SimpleAttributeSet();
+            StyleConstants.setBold(
+                formatting,
+                bold
+            );
+            
+            formats.add( formatting );
+            indices.add( new Integer( mirc_char_index ) );
+            
+            // Remove the parsed format code string.
+            text =
+                text.substring( 0, mirc_char_index )
+                + text.substring( mirc_char_index + 1 );
+            
+            mirc_char_index = text.indexOf( MIRC_BOLD_CONTROL_CHAR, mirc_char_index );
+        }
+        
+        // Italics
+        
+        mirc_char_index = text.indexOf( MIRC_ITALIC_CONTROL_CHAR );
+        boolean italic = false;
+        while( mirc_char_index > -1 )
+        {
+            italic = ! italic;
+            SimpleAttributeSet formatting = new SimpleAttributeSet();
+            StyleConstants.setItalic(
+                formatting,
+                italic
+            );
+            
+            formats.add( formatting );
+            indices.add( new Integer( mirc_char_index ) );
+            
+            // Remove the parsed format code string.
+            text =
+                text.substring( 0, mirc_char_index )
+                + text.substring( mirc_char_index + 1 );
+            
+            mirc_char_index = text.indexOf( MIRC_ITALIC_CONTROL_CHAR, mirc_char_index );
+        }
+        
+        // Underline
+        
+        mirc_char_index = text.indexOf( MIRC_UNDERLINE_CONTROL_CHAR );
+        boolean underline = false;
+        while( mirc_char_index > -1 )
+        {
+            underline = ! underline;
+            SimpleAttributeSet formatting = new SimpleAttributeSet();
+            StyleConstants.setUnderline(
+                formatting,
+                underline
+            );
+            
+            formats.add( formatting );
+            indices.add( new Integer( mirc_char_index ) );
+            
+            // Remove the parsed format code string.
+            text =
+                text.substring( 0, mirc_char_index )
+                + text.substring( mirc_char_index + 1 );
+            
+            mirc_char_index = text.indexOf( MIRC_UNDERLINE_CONTROL_CHAR, mirc_char_index );
+        }
+        
+        // Normal
+        
+        mirc_char_index = text.indexOf( MIRC_NORMAL_CONTROL_CHAR );
+        while( mirc_char_index > -1 )
+        {
+            formats.add( null );
+            indices.add( new Integer( mirc_char_index ) );
+            
+            // Remove the parsed format code string.
+            text =
+                text.substring( 0, mirc_char_index )
+                + text.substring( mirc_char_index + 1 );
+            
+            mirc_char_index = text.indexOf( MIRC_NORMAL_CONTROL_CHAR, mirc_char_index );
+        }
         
         try
         {
             document.insertString(
-                offset, text, text_pane.getStyle(
+                offset,
+                text,
+                text_pane.getStyle(
                     colour_toggle ? "normal" : "alternate"
                 )
             );
+            
+            // Apply mIRC formatting.
+                    
+            int index;
+            SimpleAttributeSet sas;
+            
+            for( int i = 0, n = formats.size(); i < n; i++ )
+            {
+                index = ((Integer) indices.elementAt( i )).intValue();
+                sas = (SimpleAttributeSet) formats.elementAt( i );
+                if( sas != null )
+                {
+                    document.setCharacterAttributes(
+                        offset + index,
+                        text.length() - index,
+                        sas,
+                        false
+                    );
+                }
+                else
+                {
+                    document.setCharacterAttributes(
+                        offset + index,
+                        text.length() - index,
+                        text_pane.getStyle(
+                            colour_toggle ? "normal" : "alternate"
+                        ),
+                        true
+                    );
+                }
+            }
+            
             colour_toggle = ! colour_toggle;
         }
         catch( BadLocationException e )
@@ -156,7 +354,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             );
         }
         
-        return offset;
+        return text;
     }
     
     public void applyStyle( int offset, int length, String style_name )
@@ -252,4 +450,8 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         scrollbar.setValue( value );
     }
     
+    public int getDocumentLength()
+    {
+        return document.getLength();
+    }
 }

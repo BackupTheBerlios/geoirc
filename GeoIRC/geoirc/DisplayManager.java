@@ -343,11 +343,12 @@ public class DisplayManager
                 text_pane = (GITextPane) pane;
                 if( text_pane.accepts( qualities ) )
                 {
-                    int offset = text_pane.appendLine( line );
+                    int offset = text_pane.getDocumentLength();
+                    int len = text_pane.appendLine( line ).length();
                     geoirc.getHighlightManager().highlight(
                         text_pane, 
                         offset, 
-                        line.length(),
+                        len,
                         qualities
                     );
                     windows_printed_to++;

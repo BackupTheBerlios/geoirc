@@ -75,11 +75,6 @@
                 <entry key="name" value="#geoshell" />
               </map>
             </node>
-            <node name="2">
-              <map>
-                <entry key="name" value="#christian" />
-              </map>
-            </node>
           </node>
         </node>
         <node name="1">
@@ -114,23 +109,16 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="4" />
+                <entry key="pane" value="3" />
                 <entry key="location" value="2" />
                 <entry key="divider location" value="764" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="5" />
+                <entry key="pane" value="4" />
                 <entry key="location" value="1" />
-                <entry key="divider location" value="1099" />
-              </map>
-            </node>
-            <node name="2">
-              <map>
-                <entry key="pane" value="6" />
-                <entry key="location" value="1" />
-                <entry key="divider location" value="918" />
+                <entry key="divider location" value="1060" />
               </map>
             </node>
           </node>
@@ -160,29 +148,15 @@
             <node name="3">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#christian on irc.freenode.net" />
-                <entry key="filter" value="irc.freenode.net and #christian" />
-              </map>
-            </node>
-            <node name="4">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="%debug" />
                 <entry key="filter" value="%debug" />
               </map>
             </node>
-            <node name="5">
+            <node name="4">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
                 <entry key="path" value="/" />
-              </map>
-            </node>
-            <node name="6">
-              <map>
-                <entry key="type" value="class geoirc.GIInfoPane" />
-                <entry key="title" value="Info" />
-                <entry key="path" value="/irc.freenode.net/#geoshell" />
               </map>
             </node>
           </node>
@@ -193,8 +167,8 @@
                 <entry key="title" value="#geoirc and irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="716" />
-                <entry key="width" value="899" />
+                <entry key="height" value="718" />
+                <entry key="width" value="1041" />
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
@@ -205,8 +179,8 @@
                 <entry key="title" value="irc.freenode.net and %raw and not %printed" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="716" />
-                <entry key="width" value="899" />
+                <entry key="height" value="718" />
+                <entry key="width" value="1041" />
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
@@ -217,23 +191,11 @@
                 <entry key="title" value="#geoshell on irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="716" />
-                <entry key="width" value="899" />
+                <entry key="height" value="718" />
+                <entry key="width" value="1041" />
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="2" />
-              </map>
-            </node>
-            <node name="3">
-              <map>
-                <entry key="title" value="#christian on irc.freenode.net" />
-                <entry key="x" value="0" />
-                <entry key="y" value="0" />
-                <entry key="height" value="716" />
-                <entry key="width" value="899" />
-                <entry key="state" value="1" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="3" />
               </map>
             </node>
           </node>
@@ -243,6 +205,26 @@
             <entry key="timestamp" value="HH:mm:ss" />
             <entry key="maximum nick width" value="20" />
           </map>
+          <node name="mirc colours">
+            <map>
+              <entry key="0" value="ffffff" />
+              <entry key="1" value="000000" />
+              <entry key="2" value="00007d" />
+              <entry key="3" value="007d00" />
+              <entry key="4" value="ff0000" />
+              <entry key="5" value="7d0000" />
+              <entry key="6" value="7d007d" />
+              <entry key="7" value="ff7d00" />
+              <entry key="8" value="ffff00" />
+              <entry key="9" value="00ff00" />
+              <entry key="10" value="007d7d" />
+              <entry key="11" value="00ffff" />
+              <entry key="12" value="0000ff" />
+              <entry key="13" value="ff00ff" />
+              <entry key="14" value="7d7d7d" />
+              <entry key="15" value="c8c8c8" />
+            </map>
+          </node>
         </node>
         <node name="info windows">
           <map>

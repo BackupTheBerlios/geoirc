@@ -103,7 +103,10 @@ public class HighlightTrigger implements GeoIRCConstants
         }
         catch( BadLocationException e )
         {
-            display_manager.printlnDebug( "highlight called on invalid location" );
+            display_manager.printlnDebug(
+                "Highlight called on invalid location ("
+                + e.offsetRequested() + ")."
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
     }
