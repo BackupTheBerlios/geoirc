@@ -14,6 +14,7 @@ import geoirc.conf.TableCellColorRenderer;
 import geoirc.conf.TitlePane;
 import geoirc.conf.beans.Highlighting;
 import geoirc.conf.beans.ValueRule;
+import geoirc.util.JBoolRegExTextField;
 import geoirc.util.JRegExTextField;
 import geoirc.util.Util;
 
@@ -39,390 +40,384 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
 /**
  * @author netseeker aka Michael Manske
- * TODO: Pistos please add correct handling of /gui/text windows/highlighting/format<br>
- * i don't know exactly how to handle that... 
  */
 public class HighlightingPane
-	extends BaseSettingsPanel
-	implements Storable, GeoIRCConstants
-{
-	private LittleTableModel ltm = new LittleTableModel();
-	private ValueRule colorRule;
+    extends BaseSettingsPanel
+    implements Storable, GeoIRCConstants {
+    private LittleTableModel ltm = new LittleTableModel();
+    private ValueRule colorRule;
 
-	private JTable table;
+    private JTable table;
+    private JButton delButton;
 
-	/**
-	 * @param settings
-	 * @param valueRules
-	 * @param name
-	 */
-	public HighlightingPane(
-		XmlProcessable settings,
-		GeoIRCDefaults valueRules,
-		String name)
-	{
-		super(settings, valueRules, name);
-		colorRule = rules.getValueRule("COLOR");
-		ltm.setData(getHighlightings());
-		initComponents();
-	}
+    /**
+     * @param settings
+     * @param valueRules
+     * @param name
+     */
+    public HighlightingPane(
+        XmlProcessable settings,
+        GeoIRCDefaults valueRules,
+        String name) {
+        super(settings, valueRules, name);
+        colorRule = rules.getValueRule("COLOR");
+        ltm.setData(getHighlightings());
+        initComponents();
+    }
 
-	private void initComponents()
-	{
-		addComponent(new TitlePane("Highlightning"), 0, 0, 10, 1, 0, 0);
+    private void initComponents() {
+        addComponent(new TitlePane("Highlightning"), 0, 0, 3, 1, 0, 0);
 
-		table = new JTable(ltm);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table = new JTable(ltm);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		TableColumn sportColumn = table.getColumnModel().getColumn(3);
-		JComboBox comboBox = new JComboBox();
-		comboBox.addItem(STYLE_BACKGROUND);
-		comboBox.addItem(STYLE_FOREGROUND);
-		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
+        TableColumn sportColumn = table.getColumnModel().getColumn(3);
+        JComboBox comboBox = new JComboBox();
+        comboBox.addItem(STYLE_BACKGROUND);
+        comboBox.addItem(STYLE_FOREGROUND);
+        sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
-		
-		final JRegExTextField patternField = new JRegExTextField();
-		table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(patternField));
-		
-		table.setPreferredScrollableViewportSize(new Dimension(500, 200));
-		table.getColumnModel().getColumn(0).setPreferredWidth(140);
-		table.getColumnModel().getColumn(1).setPreferredWidth(200);
-		table.getColumnModel().getColumn(2).setPreferredWidth(90);
-		table.getColumnModel().getColumn(3).setPreferredWidth(70);
-		
-		JScrollPane scroller = new JScrollPane(table);
-		addComponent(scroller, 0, 1, 5, 1, 0, 0);
-		
-		//Set up renderer and editor for the color column.
-		setUpColorRenderer(table);
-		setUpColorEditor(table);
-		
-		JButton button = new JButton("Add new");
-		button.addActionListener(
-		new ActionListener()
-		{
-			public void actionPerformed(ActionEvent arg0)
-			{
-				ltm.addRow(new Highlighting("new highlighting", ".+", colorRule.getValue().toString()));				
-			}			
-		});
-		
-		addComponent(button, 4, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
-		
-		addHorizontalLayoutStopper(5,2);
-		addLayoutStopper(0,3);		
-	}
+        final JBoolRegExTextField valueField = new JBoolRegExTextField();
+        table.getColumnModel().getColumn(0).setCellEditor(
+            new DefaultCellEditor(valueField));
 
-	private List getHighlightings()
-	{
-		String path = "/gui/text windows/highlighting/";
-		int i = 0;
-		String node = path + String.valueOf(i) + "/";
-		List data = new ArrayList();
+        final JRegExTextField patternField = new JRegExTextField();
+        table.getColumnModel().getColumn(1).setCellEditor(
+            new DefaultCellEditor(patternField));
 
-		while (settings_manager.nodeExists(node) == true)
-		{
-			String filter = settings_manager.getString(node + "filter", "");
-			String regexp = settings_manager.getString(node + "regexp", "");
-			String format =
-				settings_manager.getString(
-					node + "format",
-					colorRule.getValue().toString());
-			data.add(new Highlighting(filter, regexp, format));
+        table.setPreferredScrollableViewportSize(new Dimension(500, 200));
+        table.getColumnModel().getColumn(0).setPreferredWidth(140);
+        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        table.getColumnModel().getColumn(2).setPreferredWidth(90);
+        table.getColumnModel().getColumn(3).setPreferredWidth(70);
 
-			i++;
-			node = path + String.valueOf(i) + "/";
-		}
+        JScrollPane scroller = new JScrollPane(table);
+        addComponent(scroller, 0, 1, 4, 1, 0, 0);
 
-		return data;
-	}
+        //Set up renderer and editor for the color column.
+        table.setDefaultRenderer(Color.class, new TableCellColorRenderer(true));
+        setUpColorEditor(table);
 
-	/* (non-Javadoc)
-	 * @see geoirc.conf.Storable#saveData()
-	 */
-	public boolean saveData()
-	{
-		List list = ltm.getData();
-		String path = "/gui/text windows/highlighting/";
-		String node;
-		
-		for(int i = 0; i < list.size(); i++)
-		{
-			node = path + String.valueOf(i) + "/";
-			Highlighting hl = (Highlighting)list.get(i);
-			settings_manager.setString(node + "filter", hl.getFilter());
-			settings_manager.setString(node + "regexp", hl.getRegexp());
-			settings_manager.setString(node + "format", hl.getFormat());
-		}
-		
-		return true;
-	}
+        delButton = new JButton("Delete");
+        delButton.setEnabled(false);
+        delButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                int pos = table.getSelectedRow();
+                ltm.delRow(pos);
+            }
+        });
 
-	/* (non-Javadoc)
-	 * @see geoirc.conf.Storable#hasErrors()
-	 */
-	public boolean hasErrors()
-	{
-		Iterator it = ltm.getData().iterator();
-		
-		while( it.hasNext() )
-		{
-			Highlighting hl = (Highlighting)it.next();
-			try
-			{
-				Pattern.compile(hl.getRegexp());
-			}
-			catch(PatternSyntaxException e)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
+        JButton button = new JButton("Add new");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                ltm.addRow(
+                    new Highlighting(
+                        "new highlighting",
+                        ".+",
+                        colorRule.getValue().toString()));
+            }
+        });
 
-	/**
-	 * Set up the editor for the Color cells.<br>
-	 * source based on TableDialogEditDemo by Sun Microsystems
-	 * @param table
-	 */
-	private void setUpColorEditor(JTable table)
-	{
-		//First, set up the button that brings up the dialog.
-		final JButton button = new JButton("")
-		{
-			public void setText(String s)
-			{
-					//Button never shows text -- only color.
-	}
-		};
-		button.setBackground(Color.white);
-		button.setBorderPainted(false);
-		button.setMargin(new Insets(0, 0, 0, 0));
+        addComponent(delButton, 0, 2, 1, 1, 0, 0);
+        addComponent(button, 3, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
+        addHorizontalLayoutStopper(4, 2);
+        addLayoutStopper(0, 3);
+        
+        ListSelectionModel rowSM = table.getSelectionModel();
+        rowSM.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                //Ignore extra messages.
+                if (e.getValueIsAdjusting()) return;
+        
+                ListSelectionModel lsm =
+                    (ListSelectionModel)e.getSource();
+                delButton.setEnabled(!lsm.isSelectionEmpty());
+            }
+        });
+        
+    }
 
-		//Now create an editor to encapsulate the button, and
-		//set it up as the editor for all Color cells.
-		final ColorEditor colorEditor = new ColorEditor(button);
-		table.setDefaultEditor(Color.class, colorEditor);
+    private List getHighlightings() {
+        String path = "/gui/text windows/highlighting/";
+        int i = 0;
+        String node = path + String.valueOf(i) + "/";
+        List data = new ArrayList();
 
-		//Set up the dialog that the button brings up.
-		final JColorChooser colorChooser = new JColorChooser();
-		ActionListener okListener = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				colorEditor.currentColor = colorChooser.getColor();
-			}
-		};
-		final JDialog dialog =
-			JColorChooser.createDialog(
-				button,
-				"Pick a Color",
-				true,
-				colorChooser,
-				okListener,
-				null);
+        while (settings_manager.nodeExists(node) == true) {
+            String filter = settings_manager.getString(node + "filter", "");
+            String regexp = settings_manager.getString(node + "regexp", "");
+            String format =
+                settings_manager.getString(
+                    node + "format",
+                    colorRule.getValue().toString());
+            if (filter.length() > 0 || regexp.length() > 0)
+                data.add(new Highlighting(filter, regexp, format));
 
-		//Here's the code that brings up the dialog.
-		button.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				button.setBackground(colorEditor.currentColor);
-				colorChooser.setColor(colorEditor.currentColor);
-				//Without the following line, the dialog comes up
-				//in the middle of the screen.
-				//dialog.setLocationRelativeTo(button);
-				dialog.show();
-			}
-		});
-	}
+            i++;
+            node = path + String.valueOf(i) + "/";
+        }
 
-	class LittleTableModel extends AbstractTableModel
-	{
-		final String[] columnNames =
-			{ "Filter", "Regular Expression", "Color", "Color Type" };
-		List data = new ArrayList();
+        return data;
+    }
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableModel#getRowCount()
-		 */
-		public int getRowCount()
-		{
-			return data.size();
-		}
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#saveData()
+     */
+    public boolean saveData() {
+        List list = ltm.getData();
+        String path = "/gui/text windows/highlighting/";
+        String node;
+        settings_manager.removeNode(path);
+        int a = 0;
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableModel#getColumnCount()
-		 */
-		public int getColumnCount()
-		{
-			return columnNames.length;
-		}
+        for (int i = 0; i < list.size(); i++) {
+            node = path + String.valueOf(a) + "/";
+            Highlighting hl = (Highlighting)list.get(i);
+            if(hl.getFilter().length() > 0 && hl.getFormat().length() > 0)
+            {
+                settings_manager.setString(node + "filter", hl.getFilter());
+                settings_manager.setString(node + "regexp", hl.getRegexp());
+                settings_manager.setString(node + "format", hl.getFormat());
+                a++;
+            }
+        }
 
-		public Class getColumnClass(int c)
-		{
-			if(c != 2)
-				return getValueAt(0, c).getClass();
-			else return Color.class;
-		}
+        return true;
+    }
 
-		public String getColumnName(int col) {
-			 return columnNames[col];
-		 }
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasErrors()
+     */
+    public boolean hasErrors() {
+        Iterator it = ltm.getData().iterator();
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableModel#getValueAt(int, int)
-		 */
-		public Object getValueAt(int row, int col)
-		{
-			return getListValue(row, col);
-		}
+        while (it.hasNext()) {
+            Highlighting hl = (Highlighting)it.next();
+            try {
+                Pattern.compile(hl.getRegexp());
+            }
+            catch (PatternSyntaxException e) {
+                return true;
+            }
+        }
 
-		public boolean isCellEditable(int row, int col)
-		{
-			return true;
-		}
+        return false;
+    }
 
-		public void setValueAt(Object value, int row, int col)
-		{
-			setListValue(value, row, col);
-			fireTableCellUpdated(row, col);
-		}
+    /**
+     * Set up the editor for the Color cells.<br>
+     * source based on TableDialogEditDemo by Sun Microsystems
+     * @param table
+     */
+    private void setUpColorEditor(JTable table) {
+        //First, set up the button that brings up the dialog.
+        final JButton button = new JButton("") {
+            public void setText(String s) {
+                    //Button never shows text -- only color.
+    }
+        };
+        button.setBackground(Color.white);
+        button.setBorderPainted(false);
+        button.setMargin(new Insets(0, 0, 0, 0));
 
-		private void setListValue(Object value, int row, int col)
-		{
-			Highlighting hl = (Highlighting) data.get(row);
-			switch (col)
-			{
-				case 0 :
-					hl.setFilter((String) value);
-					break;
-				case 1 :
-					hl.setRegexp((String) value);
-					break;
-				case 2 :
-					Color color = (Color)value;					
-					hl.setColorString(Util.colorToHexString(color));
-					break;
-				case 3 :
-					hl.setColorPrefix((String) value);
-					break;
-			}
-		}
+        //Now create an editor to encapsulate the button, and
+        //set it up as the editor for all Color cells.
+        final ColorEditor colorEditor = new ColorEditor(button);
+        table.setDefaultEditor(Color.class, colorEditor);
 
-		private Object getListValue(int row, int col)
-		{
-			Highlighting hl = (Highlighting) data.get(row);
-			Object result = null;
+        //Set up the dialog that the button brings up.
+        final JColorChooser colorChooser = new JColorChooser();
+        ActionListener okListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                colorEditor.currentColor = colorChooser.getColor();
+            }
+        };
+        final JDialog dialog =
+            JColorChooser.createDialog(
+                button,
+                "Pick a Color",
+                true,
+                colorChooser,
+                okListener,
+                null);
 
-			switch (col)
-			{
-				case 0 :
-					result = hl.getFilter();
-					break;
-				case 1 :
-					result = hl.getRegexp();
-					break;
-				case 2 :
-					String str = hl.getColorString();
-					if(str != null)
-					{
-						if(str.length() == 6)
-						{
-							int[] rgb = Util.getRGB(str);
-							Color color = new Color(rgb[0], rgb[1], rgb[2]);
-							result = color;
-						}
-					}					
-					break;
-				case 3 :
-					result = hl.getColorPrefix();
-					break;
-			}
+        //Here's the code that brings up the dialog.
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                button.setBackground(colorEditor.currentColor);
+                colorChooser.setColor(colorEditor.currentColor);
+                //Without the following line, the dialog comes up
+                //in the middle of the screen.
+                //dialog.setLocationRelativeTo(button);
+                dialog.show();
+            }
+        });
+    }
 
-			return result;
-		}
+    class LittleTableModel extends AbstractTableModel {
+        final String[] columnNames =
+            { "Filter", "Regular Expression", "Color", "Color Type" };
+        List data = new ArrayList();
 
-		public void setData(List data)
-		{
-			this.data = data;
-			fireTableDataChanged();
-		}
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#getRowCount()
+         */
+        public int getRowCount() {
+            return data.size();
+        }
 
-		public List getData()
-		{
-			return this.data;
-		}
-		
-		public void addRow(Object row)
-		{
-			data.add(row);
-			fireTableDataChanged();
-		}
-	}
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#getColumnCount()
+         */
+        public int getColumnCount() {
+            return columnNames.length;
+        }
 
-	/*
-	 * The editor button that brings up the dialog.
-	 * We extend DefaultCellEditor for convenience,
-	 * even though it mean we have to create a dummy
-	 * check box.  Another approach would be to copy
-	 * the implementation of TableCellEditor methods
-	 * from the source code for DefaultCellEditor.
-	 */
-	class ColorEditor extends DefaultCellEditor
-	{
-		Color currentColor = null;
+        public Class getColumnClass(int c) {
+            if (c != 2)
+                return getValueAt(0, c).getClass();
+            else
+                return Color.class;
+        }
 
-		public ColorEditor(JButton b)
-		{
-			super(new JCheckBox()); //Unfortunately, the constructor
-			//expects a check box, combo box,
-			//or text field.
-			editorComponent = b;
-			setClickCountToStart(1); //This is usually 1 or 2.
+        public String getColumnName(int col) {
+            return columnNames[col];
+        }
 
-			//Must do this so that editing stops when appropriate.
-			b.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					fireEditingStopped();
-				}
-			});
-		}
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#getValueAt(int, int)
+         */
+        public Object getValueAt(int row, int col) {
+            return getListValue(row, col);
+        }
 
-		protected void fireEditingStopped()
-		{
-			super.fireEditingStopped();
-		}
+        public boolean isCellEditable(int row, int col) {
+            return true;
+        }
 
-		public Object getCellEditorValue()
-		{
-			return currentColor;
-		}
+        public void setValueAt(Object value, int row, int col) {
+            setListValue(value, row, col);
+            fireTableCellUpdated(row, col);
+        }
 
-		public Component getTableCellEditorComponent(
-			JTable table,
-			Object value,
-			boolean isSelected,
-			int row,
-			int column)
-		{
-			((JButton) editorComponent).setText(value.toString());
-			currentColor = (Color) value;
-			return editorComponent;
-		}
-	}
+        private void setListValue(Object value, int row, int col) {
+            Highlighting hl = (Highlighting)data.get(row);
+            switch (col) {
+                case 0 :
+                    hl.setFilter((String)value);
+                    break;
+                case 1 :
+                    hl.setRegexp((String)value);
+                    break;
+                case 2 :
+                    Color color = (Color)value;
+                    hl.setColorString(Util.colorToHexString(color));
+                    break;
+                case 3 :
+                    hl.setColorPrefix((String)value);
+                    break;
+            }
+        }
 
-	private void setUpColorRenderer(JTable table)
-	{
-		table.setDefaultRenderer(Color.class, new TableCellColorRenderer(true));
-	}
+        private Object getListValue(int row, int col) {
+            Highlighting hl = (Highlighting)data.get(row);
+            Object result = null;
 
+            switch (col) {
+                case 0 :
+                    result = hl.getFilter();
+                    break;
+                case 1 :
+                    result = hl.getRegexp();
+                    break;
+                case 2 :
+                    String str = hl.getColorString();
+                    if (str != null) {
+                        if (str.length() == 6) {
+                            int[] rgb = Util.getRGB(str);
+                            Color color = new Color(rgb[0], rgb[1], rgb[2]);
+                            result = color;
+                        }
+                    }
+                    break;
+                case 3 :
+                    result = hl.getColorPrefix();
+                    break;
+            }
+
+            return result;
+        }
+
+        public void setData(List data) {
+            this.data = data;
+            fireTableDataChanged();
+        }
+
+        public List getData() {
+            return this.data;
+        }
+
+        public void addRow(Object row) {
+            data.add(row);
+            fireTableDataChanged();
+        }
+
+        public void delRow(int row) {
+            data.remove(row);
+            fireTableDataChanged();
+        }
+    }
+
+    /*
+     * The editor button that brings up the dialog.
+     * We extend DefaultCellEditor for convenience,
+     * even though it mean we have to create a dummy
+     * check box.  Another approach would be to copy
+     * the implementation of TableCellEditor methods
+     * from the source code for DefaultCellEditor.
+     */
+    class ColorEditor extends DefaultCellEditor {
+        Color currentColor = null;
+
+        public ColorEditor(JButton b) {
+            super(new JCheckBox()); //Unfortunately, the constructor
+            //expects a check box, combo box,
+            //or text field.
+            editorComponent = b;
+            setClickCountToStart(1); //This is usually 1 or 2.
+
+            //Must do this so that editing stops when appropriate.
+            b.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                }
+            });
+        }
+
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+
+        public Object getCellEditorValue() {
+            return currentColor;
+        }
+
+        public Component getTableCellEditorComponent(
+            JTable table,
+            Object value,
+            boolean isSelected,
+            int row,
+            int column) {
+            ((JButton)editorComponent).setText(value.toString());
+            currentColor = (Color)value;
+            return editorComponent;
+        }
+    }
 }
