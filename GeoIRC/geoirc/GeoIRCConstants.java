@@ -332,4 +332,6 @@ public interface GeoIRCConstants
     static final int DCC_NOT_YET_SET = -1;
     static final int DCC_CHAT = 0;
     static final int DCC_SEND = 1;
+    
+    static final int DEFAULT_MAXIMUM_NICK_WIDTH = 20;
 }

@@ -200,6 +200,7 @@
         <node name="format">
           <map>
             <entry key="timestamp" value="HH:mm:ss" />
+            <entry key="maximum nick width" value="20" />
           </map>
         </node>
         <node name="info windows">
@@ -221,6 +222,7 @@
             <entry key="font size" value="14" />
             <entry key="default foreground colour" value="cccccc" />
             <entry key="default background colour" value="000000" />
+            <entry key="alternate background colour" value="000000" />
           </map>
           <node name="highlighting">
             <map />

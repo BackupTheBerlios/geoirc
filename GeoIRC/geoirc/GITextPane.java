@@ -27,6 +27,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     protected StyledDocument document;
     protected String filter;
     protected JScrollBar scrollbar;
+    protected boolean colour_toggle;
     
     public GITextPane(
         DisplayManager display_manager,
@@ -93,6 +94,8 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         scrollbar = getVerticalScrollBar();
         
         style_manager.initializeTextPane( text_pane );
+        
+        colour_toggle = false;
     }
     
     public int appendLine( String text )
@@ -109,7 +112,12 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         
         try
         {
-            document.insertString( offset, text, text_pane.getStyle( "normal" ) );
+            document.insertString(
+                offset, text, text_pane.getStyle(
+                    colour_toggle ? "normal" : "alternate"
+                )
+            );
+            colour_toggle = ! colour_toggle;
         }
         catch( BadLocationException e )
         {

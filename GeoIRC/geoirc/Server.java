@@ -29,12 +29,14 @@ public class Server
     implements GeoIRCConstants
 {
     protected Vector channels;
-    protected boolean listening_to_channels;
-    protected String current_nick;
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
     protected ScriptInterface script_interface;
     protected HashSet users;
+    
+    protected int current_nick_width;
+    protected boolean listening_to_channels;
+    protected String current_nick;
     
     public Server(
         GeoIRC parent,
@@ -57,6 +59,7 @@ public class Server
         this.info_manager = info_manager;
         this.variable_manager = variable_manager;
         this.script_interface = script_interface;
+        current_nick_width = 0;
     }
     
     // Returns whether a connection has been established.
@@ -987,13 +990,15 @@ public class Server
 
                     if( text.length() > 0 )
                     {
-
                         if(
                             ( text.charAt( 0 ) == (char) 1 )
                             && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                         )
                         {
-                            text = "* " + nick + text.substring( 7, text.length() - 1 );
+                            text =
+                                Util.getPadding( " ", current_nick_width )
+                                + "* " + nick
+                                + text.substring( 7, text.length() - 1 );
                             qualities += " " + FILTER_SPECIAL_CHAR + "action";
                         }
                         else if( text.charAt( 0 ) == CTCP_MARKER )
@@ -1108,7 +1113,22 @@ public class Server
                         }
                         else
                         {
-                            text = "<" + nick + "> " + text;
+                            current_nick_width = (
+                                ( current_nick_width < nick.length() + 3 )
+                                ? nick.length() + 3
+                                : current_nick_width
+                            );
+                            
+                            int max_nick_width = settings_manager.getInt(
+                                "/gui/format/maximum nick width",
+                                DEFAULT_MAXIMUM_NICK_WIDTH
+                            );
+                            if( current_nick_width > max_nick_width )
+                            {
+                                current_nick_width = max_nick_width;
+                            }
+                            text = Util.getPadding( " ", current_nick_width - ( nick.length() + 3 ) )
+                                + "<" + nick + "> " + text;
                         }
                     }
                     else

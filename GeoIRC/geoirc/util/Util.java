@@ -125,4 +125,16 @@ public class Util implements GeoIRCConstants
         
         return is_valid;
     }
+    
+    public static String getPadding( String character, int reps )
+    {
+        String retval = "";
+        
+        for( int i = 0; i < reps; i++ )
+        {
+            retval += character;
+        }
+        
+        return retval;
+    }
 }

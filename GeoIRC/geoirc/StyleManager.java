@@ -81,6 +81,27 @@ public class StyleManager
     public void initializeTextPane( JTextPane text_pane )
     {
         Style normal = text_pane.addStyle( "normal", base_style );
+        Style alternate = text_pane.addStyle( "alternate", normal );
+        
+        int [] rgb = new int[ 3 ];
+        try
+        {
+            String rgb_str = settings_manager.getString(
+                "/gui/text windows/alternate background colour", 
+                ""
+            );
+
+            if( rgb_str != "" )
+            {
+                rgb = Util.getRGB( rgb_str );
+                StyleConstants.setBackground( alternate,
+                    new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                );
+            }
+        }
+        catch( NumberFormatException e )
+        {
+        }
         
         String format;
         for( int i = 0; i < style_names.length; i++ )
@@ -114,7 +135,6 @@ public class StyleManager
                         
                         arg = format.substring( c, c + 6 );
                         c += 6;
-                        int [] rgb = new int [ 3 ];
                         rgb[ 0 ] = 0xff;
                         rgb[ 1 ] = 0xff;
                         rgb[ 2 ] = 0xff;
@@ -142,7 +162,6 @@ public class StyleManager
                         
                         arg = format.substring( c, c + 6 );
                         c += 6;
-                        int [] rgb = new int [ 3 ];
                         rgb[ 0 ] = 0;
                         rgb[ 1 ] = 0;
                         rgb[ 2 ] = 0;
