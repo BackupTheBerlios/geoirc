@@ -38,7 +38,7 @@ public class MultilinePaster extends Thread implements GeoIRCConstants
     {
         String one_line;
         int index = text.indexOf( '\n' );
-        int caret_pos;
+        int caret_pos = input_field.getCaretPosition();
         String field_text = input_field.getText();
         boolean used = false;
         int lines_pasted = 0;
@@ -54,7 +54,6 @@ public class MultilinePaster extends Thread implements GeoIRCConstants
         while( index > -1 )
         {
             one_line = text.substring( 0, index );
-            caret_pos = input_field.getCaretPosition();
             if( ! used )
             {
                 input_field.setText(
@@ -83,5 +82,14 @@ public class MultilinePaster extends Thread implements GeoIRCConstants
             text = text.substring( index + 1 );
             index = text.indexOf( '\n' );
         }
+        
+        caret_pos = input_field.getCaretPosition();
+        field_text = input_field.getText();
+        input_field.setText(
+            field_text.substring( 0, caret_pos )
+            + text
+            + field_text.substring( caret_pos )
+        );
+        input_field.setCaretPosition( caret_pos + text.length() );
     }
 }
