@@ -133,6 +133,11 @@ public class DisplayManager
         return geoirc.getStyleManager();
     }
     
+    public GeoIRC getGeoIRCInstance()
+    {
+        return this.geoirc;
+    }
+    
     public void setShowQualities( boolean setting )
     {
         show_qualities = setting;
