@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./makeself.sh --bzip2 ../image geoirc-install.run GeoIRC './setup.sh'
