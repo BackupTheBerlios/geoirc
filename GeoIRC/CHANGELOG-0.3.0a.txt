@@ -91,4 +91,4 @@ Pistos 2003-09-10 and 2003-09-11
 
 Added DCC chat offers.  Added commands "dccchat" and "list_dcc_chat_offers".
 Added "/dcc/lowest port" and "/dcc/highest port" settings.
-Pistos 2003-09-11
+Pistos 2003-09-11 and 2003-09-12
