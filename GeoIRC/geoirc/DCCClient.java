@@ -22,6 +22,8 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
 {
     protected int dcc_type;
     protected ScriptInterface script_interface;
+    protected String user_nick;
+    protected String remote_nick;
     
     public DCCClient(
         GeoIRC parent,
@@ -30,16 +32,21 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         TriggerManager trigger_manager,
         ScriptInterface script_interface,
         String host_ip,
-        String port
+        String port,
+        int dcc_type,
+        String user_nick,
+        String remote_nick
     )
     {
         super( parent, display_manager, settings_manager, trigger_manager, host_ip, port );
-        dcc_type = DCC_NOT_YET_SET;
         this.script_interface = script_interface;
+        this.dcc_type = dcc_type;
+        this.remote_nick = remote_nick;
+        this.user_nick = user_nick;
     }
     
     // Returns whether a connection has been established.
-    public boolean connect( int dcc_type )
+    public boolean connect()
     {
         try
         {
@@ -64,7 +71,6 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                 switch( dcc_type )
                 {
                     case DCC_CHAT:
-                        this.dcc_type = dcc_type;
                         reader = new DCCChatReader( 
                             new BufferedReader(
                                 new InputStreamReader(
@@ -74,12 +80,20 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                         );
                         break;
                     case DCC_SEND:
-                        this.dcc_type = dcc_type;
                         break;
                 }
                 out = new PrintWriter( socket.getOutputStream(), true );
                 
-                reader.start();
+                if( reader != null )
+                {
+                    reader.start();
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "Failed to create DCCChatReader."
+                    );
+                }
             }
         }
         catch( UnknownHostException e )
@@ -93,6 +107,11 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         }
         
         return isConnected();
+    }
+    
+    public String getUserNick()
+    {
+        return user_nick;
     }
     
     protected class DCCChatReader
@@ -169,7 +188,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                 if( ! closed )
                 {
                     display_manager.printlnDebug( "Attempting to reconnect..." );
-                    connect( dcc_type );
+                    connect();
                 }
             }
         }
@@ -182,7 +201,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
             display_manager.println(
                 GeoIRC.getATimeStamp(
                     settings_manager.getString( "/gui/format/timestamp", "" )
-                ) + line,
+                ) + "<" + remote_nick + "> " + line,
                 qualities
             );
             trigger_manager.check( line, qualities );
