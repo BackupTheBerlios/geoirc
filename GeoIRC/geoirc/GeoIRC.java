@@ -1779,6 +1779,30 @@ public class GeoIRC
                     python_interpreter.execfile( "ooga.py" );
                 }
                 break;
+            case CMD_TOPIC:
+                {
+                    String channel = display_manager.getSelectedChannel();
+                    if( channel != null )
+                    {
+                        execute(
+                            CMDS[ CMD_SEND_RAW ]
+                            + " TOPIC "
+                            + channel
+                            + (
+                                ( arg_string != null )
+                                ? " :" + arg_string
+                                : ""
+                            )
+                        );
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug(
+                            "First select a window associated with a channel."
+                        );
+                    }
+                }
+                break;
             case CMD_UNDOCK_WINDOW:
             case CMD_FLOAT_WINDOW:
                 {

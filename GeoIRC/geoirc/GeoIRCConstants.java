@@ -14,7 +14,7 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.2.1a";
+    static final String GEOIRC_VERSION = "0.3.0a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
     static final String DEFAULT_NEW_CONTENT_TITLE_PREFIX = "*";
@@ -82,7 +82,8 @@ public interface GeoIRCConstants
         "execpymethod",
         "listprocesses",
         "killprocess",
-        "execwithwindow"
+        "execwithwindow",
+        "topic"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -141,6 +142,7 @@ public interface GeoIRCConstants
     public static final int CMD_SHOW_QUALITIES = 42;
     public static final int CMD_SWITCH_WINDOW = 21;
     public static final int CMD_TEST = 51;
+    public static final int CMD_TOPIC = 57;
     public static final int CMD_UNDOCK_WINDOW = 34;
     
     static final String [] IRCMSGS =
