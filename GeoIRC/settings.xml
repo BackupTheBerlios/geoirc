@@ -257,19 +257,23 @@
           <node name="0">
             <map>
               <entry key="filter" value="" />
-              <entry key="regexp" value=".*Pistos.*" />
+              <entry key="regexp" value=".*[Pp]istos.*" />
               <entry key="filename" value="./bloop.wav" />
             </map>
           </node>
           <node name="1">
             <map>
-              <entry key="filter" value="" />
+              <entry key="filter" value="not ( $join or $part or $quit )" />
               <entry key="regexp" value=".*" />
               <entry key="filename" value="./blip.wav" />
             </map>
           </node>
           <node name="2">
-            <map />
+            <map>
+              <entry key="filter" value="$join or $part or $quit" />
+              <entry key="regexp" value=".*" />
+              <entry key="filename" value="./motion.wav" />
+            </map>
           </node>
         </node>
       </node>

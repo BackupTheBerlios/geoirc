@@ -634,4 +634,13 @@ public class DisplayManager
         }
     }    
     
+    public void listWindows()
+    {
+        GIWindow giw;
+        for( int i = 0, n = windows.size(); i < n; i++ )
+        {
+            giw = (GIWindow) windows.elementAt( i );
+            printlnDebug( Integer.toString( i ) + ": " + giw.getTitle() );
+        }
+    }
 }

@@ -864,6 +864,9 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_LIST_WINDOWS:
+                display_manager.listWindows();
+                break;
             case CMD_NEW_SERVER:
             case CMD_SERVER:
                 if( args != null )

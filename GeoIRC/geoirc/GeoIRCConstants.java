@@ -14,7 +14,7 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.1.4a";
+    static final String GEOIRC_VERSION = "0.1.5a";
     
     static final boolean GOD_IS_GOOD = true;
     
@@ -48,19 +48,23 @@ public interface GeoIRCConstants
         "help",
         "completenick",
         "print",
-        "focus_on_input_field"
+        "focus_on_input_field",
+        "listwindows",
+        "dockwindow"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_SERVER = 12;
     public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_COMPLETE_NICK = 24;
+    public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_SERVERS = 13;
+    public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_MSG = 20;
     public static final int CMD_NEW_SERVER = 5;
     public static final int CMD_NEW_TEXT_WINDOW = 1;
