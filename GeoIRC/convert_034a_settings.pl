@@ -146,7 +146,12 @@ while( <$in> )
     elsif( $line =~ m/\s\S\Sdesktop/ )
     {
 	$ignoring = 0;
-	print( OUT "      <desktop />\n" );
+	print( OUT "      <desktop>\n" );
+	print( OUT "        <panes>\n" );
+	print( OUT "          <_0 type=\"0\" title=\"GeoIRC\" parent=\"-1\" split_rank=\"-1\" />\n" );
+	print( OUT "          <_1 type=\"1\" title=\"GeoIRC Desktop Pane\" parent=\"0\" split_rank=\"1\" />\n" );
+	print( OUT "        </panes>\n" );
+	print( OUT "      </desktop>\n" );
     }
     else
     {
