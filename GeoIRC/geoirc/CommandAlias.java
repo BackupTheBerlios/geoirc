@@ -77,9 +77,19 @@ public class CommandAlias implements GeoIRCConstants
         return alias;
     }
     
+    public void setAlias(String alias)
+    {
+        this.alias = alias;
+    }
+    
     public String getExpansion()
     {
         return expansion;
+    }
+    
+    public void setExpansion(String expansion)
+    {
+        this.expansion = expansion;
     }
     
     /**
@@ -90,7 +100,7 @@ public class CommandAlias implements GeoIRCConstants
     {
     	for ( int i = 0; i < CMDS.length; i++ )
     	{
-    		if( expansion.startsWith(CMDS[i]) == true)
+    		if( expansion.startsWith(CMDS[i] + " ") == true)
     		{
     			return CMDS[i];
     		}
@@ -99,30 +109,68 @@ public class CommandAlias implements GeoIRCConstants
     	return null;
     }
     
+    public void setCommand(String command)
+    {
+        int pos = 0;
+        
+        for ( int i = 0; i < CMDS.length; i++ )
+        {
+            if( expansion.startsWith(CMDS[i] + " ") == true)
+            {
+                pos = CMDS[i].length() + 1;
+                break;
+            }
+        }
+        
+        StringBuffer sb = new StringBuffer();
+        sb.append(command);
+        sb.append(" ");
+        sb.append(expansion.substring(pos));
+        
+        expansion = sb.toString();
+    }
+    
 	/**
 	 * Tries to identify the used parameter list within expansion
 	 * @return the used parameter list as string
 	 */
     public String getParamString()
     {
-		String buffer = expansion;
+        String str = expansion;
 		
 		for ( int i = 0; i < CMDS.length; i++ )
 		{
-			if( buffer.startsWith(CMDS[i] + " ") == true)
+			if( expansion.startsWith(CMDS[i] + " ") == true)
 			{
-				buffer = buffer.substring(CMDS[i].length());
+                str = expansion.substring(CMDS[i].length() + 1);
+                break;
 			}
 		}
-		for ( int i = 0; i < IRCMSGS.length; i++ )
+		for ( int i = 0; i < IRC_CMDS.length; i++ )
 		{
-			if( buffer.indexOf(" " +  IRCMSGS[i] + " ") != -1)
-			{
-				buffer = buffer.substring(IRCMSGS[i].length() + 2);
+			int pos = str.indexOf(IRC_CMDS[i] + " "); 
+            if( pos != -1)
+			{				
+                str = str.substring(pos + IRC_CMDS[i].length());
+                break;
 			}
-		}		
-	
-		return buffer;
+		}
+        
+        if(str.startsWith(" "))
+            str = str.substring(1);		
+	            
+		return str;
+    }
+    
+    public void setParamString(String params)
+    {
+        String str = getParamString();
+        int pos = expansion.indexOf(str);
+        StringBuffer sb = new StringBuffer();
+        sb.append(expansion.substring(0, pos));
+        sb.append(params);
+        
+        expansion = sb.toString();
     }
     
     /**
@@ -131,15 +179,41 @@ public class CommandAlias implements GeoIRCConstants
 	 */
 	public String getIRCCommand()    
     {    	
-    	for ( int i = 0; i < IRCMSGS.length; i++ )
+    	for ( int i = 0; i < IRC_CMDS.length; i++ )
     	{
-    		if( expansion.indexOf(" " +  IRCMSGS[i] + " ") != -1)
+    		if(expansion.indexOf(IRC_CMDS[i] + " ") != -1)
     		{
-    			return IRCMSGS[i];
+    			return IRC_CMDS[i];
     		}
     	}
     	
     	return null;
+    }
+    
+    public void setIRCCommand(String command)
+    {
+        StringBuffer sb = new StringBuffer();
+        String str = getIRCCommand();
+        
+        if(str != null)
+        {
+            sb.append(expansion.substring(0, expansion.lastIndexOf(str)));
+            sb.append(" ");
+        }
+        else
+        {
+            str = getCommand();
+            if(str != null)
+            {
+                sb.append(str);
+                sb.append(" ");                 
+            }
+        }        
+        
+        sb.append(command);
+        sb.append(" ");
+        sb.append(getParamString());
+        expansion = sb.toString();        
     }
         
     
