@@ -360,6 +360,12 @@ public class HotkeyPane
             fireTableDataChanged();
         }
 
+        public void setRow(Object[] row, int pos)
+        {
+            data.set(pos, row);
+            fireTableDataChanged();
+        }
+        
         public void delRow(int row) {
             data.remove(row);
             fireTableDataChanged();
@@ -402,8 +408,7 @@ public class HotkeyPane
          */
         public void actionPerformed(ActionEvent arg0) {
             int pos = table.getSelectedRow();
-            ltm.setValueAt(hotkey_field.getText(), pos, 0);
-            ltm.setValueAt(command_field.getText(), pos, 1);
+            ltm.setRow(new Object[] { hotkey_field.getText(), command_field.getText() }, pos);
         }
     }
 
