@@ -90,7 +90,27 @@ public class Channel implements GeoIRCConstants
 
     public void addToChannelMembership( Vector new_member_list )
     {
-        members.addAll( new_member_list );
+        //members.addAll( new_member_list );
+        User user;
+        boolean found;
+        for( int i = 0, n = new_member_list.size(); i < n; i++ )
+        {
+            user = (User) new_member_list.elementAt( i );
+            found = false;
+            for( int j = 0, m = members.size(); j < m; j++ )
+            {
+                if( ((User) members.elementAt( j )).equals( user ) )
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if( ! found )
+            {
+                members.add( user );
+            }
+        }
+        
         for( int i = 0, n = members.size(); i < n; i++ )
         {
             ( (User) members.elementAt( i ) ).lock( this );
@@ -103,7 +123,7 @@ public class Channel implements GeoIRCConstants
             ( (User) members.elementAt( i ) ).unlock( this );
         }
         
-        info_manager.addMembers( this, members );
+        info_manager.setMembers( this, members );
     }
     
     public void sortMembers()

@@ -45,3 +45,11 @@ Pistos 2003-10-02
 
 Alternate nicks are actually used now.
 Pistos 2003-10-02
+
+Reworked the processing pipeline so that scripts have access to message
+qualities.
+Pistos 2003-10-03
+
+Fixed bug where receiving a RPL_NAMREPLY which had a user that we already had
+in our channel membership would cause a deadlock.
+Pistos 2003-10-03

@@ -122,7 +122,7 @@ public class InfoManager
         tree.reload( node );
     }
     
-    public synchronized void addMembers( Channel c, java.util.Vector members )
+    public synchronized void setMembers( Channel c, java.util.Vector members )
     {
         DefaultMutableTreeNode channel_node
             = (DefaultMutableTreeNode) tree_inverse.get( c );
@@ -131,6 +131,9 @@ public class InfoManager
         DefaultMutableTreeNode user_node;
         String path;
         DefaultTreeModel model;
+        
+        channel_node.removeAllChildren();
+        
         for( int i = 0, n = members.size(); i < n; i++ )
         {
             u = (User) members.elementAt( i );
