@@ -151,6 +151,9 @@
               <entry key="filter" value="irc.freenode.net AND #geoirc" />
             </map>
           </node>
+          <node name="5">
+            <map />
+          </node>
         </node>
         <node name="format">
           <map>

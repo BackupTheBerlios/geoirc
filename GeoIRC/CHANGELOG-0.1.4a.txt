@@ -12,4 +12,6 @@ GITextWindow and GIInfoWindow.
 Pistos 2003-07-12, -13
 
 Channels are not added internally until an actual JOIN message is received.
+Servers are not added to the info_manager unless the connect method returns
+success.
 Pistos 2003-07-13

@@ -46,7 +46,7 @@ public class Channel
 
     public String toString()
     {
-        return server.toString() + "/" + name;
+        return /*server.toString() + "/" + */name;
     }
 }
 

@@ -374,7 +374,6 @@ public class GeoIRC
     {
         Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, hostname, port );
         remote_machines.add( s );
-        info_manager.addRemoteMachine( s );
         if( listening_to_servers )
         {
             recordConnections();
@@ -464,7 +463,10 @@ public class GeoIRC
             if( type.equals( "Server") )
             {
                 Server s = addServer( hostname, Integer.toString( port ) );
-                s.connect( preferred_nick );
+                if( s.connect( preferred_nick ) )
+                {
+                    info_manager.addRemoteMachine( s );
+                }
             }
             else
             {
@@ -763,8 +765,6 @@ public class GeoIRC
                             if( window != null )
                             {
                                 execute( CMDS[ CMD_SEND_RAW ] + " " + command );
-                                // TODO: Check if the channel was actually joined...
-                                s.addChannel( args[ 0 ] );
                                 result = CommandExecutor.EXEC_SUCCESS;
                             }
                         }
@@ -828,14 +828,16 @@ public class GeoIRC
                     }
                     Server s = addServer( host, port );
                     display_manager.addTextWindow( s.toString(), s.toString() );
-                    s.connect( preferred_nick );
+                    if( s.connect( preferred_nick ) )
+                    {
+                        info_manager.addRemoteMachine( s );
+                    }
                 }
                 else
                 {
                     display_manager.printlnDebug( "/newserver <host> [port]" );
                 }
                 break;
-                
             case CMD_NEW_TEXT_WINDOW:
                 if( args != null )
                 {
