@@ -132,7 +132,8 @@ public class JValidatingTable extends JTable
             editor.removeValidationListener( (ValidationListener)tmp_listeners[i] );
         }
         
-        cmdColumn.setCellEditor( new RegExpTesterInputFieldEditor( editor ) );
+        RegExpTesterInputFieldEditor reg_editor_cell = new RegExpTesterInputFieldEditor( editor ); 
+        cmdColumn.setCellEditor( reg_editor_cell );
         editor.addValidationListener( source_listener );        
     }
 

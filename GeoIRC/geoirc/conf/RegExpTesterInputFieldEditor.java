@@ -29,7 +29,8 @@ public class RegExpTesterInputFieldEditor extends AbstractCellEditor implements 
 {
     private JTextField input;
     private JPanel panel;
-    private final RegularExpressionTester tester = new RegularExpressionTester(RegularExpressionTester.SHOW_APPLY_CANCEL_OPTION);
+    private final RegularExpressionTester tester =
+        new RegularExpressionTester(RegularExpressionTester.SHOW_APPLY_CANCEL_OPTION);
 
     public static final int INPUT_DEFAULT_TEXTFIELD = 0;
     public static final int INPUT_VALIDATING_TEXTFIELD = 1;
@@ -58,11 +59,11 @@ public class RegExpTesterInputFieldEditor extends AbstractCellEditor implements 
 
         initComponents();
     }
-    
+
     public RegExpTesterInputFieldEditor(JValidatingTextField input_field)
     {
         this.input = input_field;
-        initComponents();        
+        initComponents();
     }
 
     private void initComponents()
@@ -87,11 +88,11 @@ public class RegExpTesterInputFieldEditor extends AbstractCellEditor implements 
                 {
                     public void actionPerformed(ActionEvent evt)
                     {
-                        if(evt.getActionCommand().equals(RegularExpressionTester.APPLY_OPTION))
+                        if (evt.getActionCommand().equals(RegularExpressionTester.APPLY_OPTION))
                         {
-                            input.setText( tester.getRegExp() );
-                        }                            
-                        fireEditingStopped();                        
+                            input.setText(tester.getRegExp());
+                        }
+                        fireEditingStopped();
                     }
                 });
 
@@ -101,7 +102,7 @@ public class RegExpTesterInputFieldEditor extends AbstractCellEditor implements 
 
         this.input.setEditable(true);
         this.panel.add(this.input);
-        this.panel.add(button);                
+        this.panel.add(button);
     }
 
     /* (non-Javadoc)
