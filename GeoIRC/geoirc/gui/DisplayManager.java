@@ -236,7 +236,7 @@ public class DisplayManager
         return gipw;
     }
 
-    public GIFrameWrapper addConsoleWindow( String title )
+    public GIPaneWrapper addConsoleWindow( String title )
     {
         String actual_title = title;
         if( actual_title == null )
@@ -254,7 +254,7 @@ public class DisplayManager
         gifw = new GIFrameWrapper( text_window );
         text_window.setFrameWrapper( gifw );
         
-        return gifw;
+        return gipw;
     }
 
     protected GIFrameWrapper addTextWindow( String title )
@@ -1391,7 +1391,32 @@ public class DisplayManager
     
     public String getSelectedProcess()
     {
-        return getSelectedByPrefix( "process=" );
+        String retval = null;
+        
+        GIPaneWrapper gipw = last_activated_pane;
+        if( gipw != null )
+        {
+            if( gipw.getType() == CONSOLE_PANE )
+            {
+                String title = gipw.getTitle();
+                int prefix_index = title.indexOf( PID_PREFIX );
+                if( prefix_index > -1 )
+                {
+                    int pid_start = prefix_index + PID_PREFIX.length();
+                    int space_index = title.indexOf( " ", pid_start );
+                    if( space_index > -1 )
+                    {
+                        retval = title.substring( pid_start, space_index );
+                    }
+                    else
+                    {
+                        retval = title.substring( pid_start );
+                    }
+                }
+            }
+        }
+        
+        return retval;
     }
     
     public String getSelectedDCCConnection()

@@ -538,4 +538,6 @@ public interface GeoIRCConstants
     static final int DEFAULT_CONSOLE_BUFFER_SIZE = 1000;
     static final int DEFAULT_NUM_CONSOLE_COLUMNS = 80;
     static final int DEFAULT_NUM_CONSOLE_ROWS = 25;
+    
+    static final String PID_PREFIX = "Process ";
 }

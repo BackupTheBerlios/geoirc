@@ -9,6 +9,8 @@ package geoirc;
 import geoirc.GeoIRCConstants;
 import geoirc.ProcessJanitor;
 import geoirc.gui.DisplayManager;
+import geoirc.gui.GIConsolePane;
+import geoirc.gui.GIPaneWrapper;
 import geoirc.util.InputStreamReaderThread;
 import java.io.*;
 import java.util.Hashtable;
@@ -63,9 +65,15 @@ public class GIProcess implements GeoIRCConstants
         
         processes.put( new Integer( pid ), this );
         
+        GIConsolePane gicp = null;
         if( exec_type == CMD_EXEC_WITH_WINDOW )
         {
-            executor.execute( "newwindow process=" + getPIDString() );
+            //executor.execute( "newwindow process=" + getPIDString() );
+            GIPaneWrapper gipw = display_manager.addConsoleWindow( PID_PREFIX + getPIDString() );
+            if( gipw != null )
+            {
+                gicp = (GIConsolePane) gipw.getPane();
+            }
         }
         
         Runtime rt = Runtime.getRuntime();
@@ -78,16 +86,24 @@ public class GIProcess implements GeoIRCConstants
 
         BufferedReader out = new BufferedReader( new InputStreamReader( stdout ) );
         BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
+        
+        PrintStream print_stream = null;
+        if( gicp != null )
+        {
+            print_stream = gicp.getPrintStream();
+        }
 
         new InputStreamReaderThread(
             this.executor,
             display_manager,
+            print_stream,
             out,
             this
         ).start();
         new InputStreamReaderThread(
             this.executor,
             display_manager,
+            print_stream,
             err,
             this
         ).start();

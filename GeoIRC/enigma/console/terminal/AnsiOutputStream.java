@@ -6,6 +6,8 @@ import java.util.*;
 
 import enigma.console.*;
 
+import geoirc.gui.GIConsolePane;
+
 /** 
  * An <code>OutputStream</code> which interprets ANSI terminal escape sequences
  * and causes them to display properly on a <code>Console</code>.
@@ -43,6 +45,7 @@ public class AnsiOutputStream extends FilterOutputStream {
     
     /** The <code>Console</code> that this stream is managing. */
     protected Console console;
+    protected GIConsolePane gicp;
     
     /** The <code>TextWindow</code> of the <code>Console</code> that this stream is managing. */
     protected TextWindow textWindow;
@@ -74,6 +77,13 @@ public class AnsiOutputStream extends FilterOutputStream {
         this.textWindow = console.getTextWindow();
     }
     
+    public AnsiOutputStream( GIConsolePane gicp )
+    {
+        super( gicp.getPrintStream() );
+        console = null;
+        this.gicp = gicp;
+        textWindow = gicp.getEnigmaTextWindow();
+    }
     
     /** 
      * Processes a partial or complete escape sequence.  The escape sequence may be processed
@@ -282,8 +292,20 @@ public class AnsiOutputStream extends FilterOutputStream {
             catch (NumberFormatException e) { return; }
             parameter = getNextParameter(-1);
         }
-        console.setTextAttributes(new TextAttributes(COLORS[foreground + (bright ? 8 : 0)],
-                                             COLORS[background]));
+        if( console != null )
+        {
+            console.setTextAttributes(new TextAttributes(COLORS[foreground + (bright ? 8 : 0)],
+                                                 COLORS[background]));
+        }
+        else // use GIConsolePane
+        {
+            gicp.setTextAttributes(
+                new TextAttributes(
+                    COLORS[ foreground + (bright ? 8 : 0) ],
+                    COLORS[ background ]
+                )
+            );
+        }
     }
     
     

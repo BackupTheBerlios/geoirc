@@ -20,6 +20,7 @@ public class InputStreamReaderThread extends Thread
     protected BufferedReader reader;
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
+    protected PrintStream out;
     protected GIProcess parent;
     
     private InputStreamReaderThread() { }
@@ -30,6 +31,7 @@ public class InputStreamReaderThread extends Thread
     public InputStreamReaderThread(
         CommandExecutor executor,
         DisplayManager display_manager,
+        PrintStream out,
         BufferedReader reader,
         GIProcess parent
     )
@@ -37,6 +39,7 @@ public class InputStreamReaderThread extends Thread
         this.reader = reader;
         this.executor = executor;
         this.display_manager = display_manager;
+        this.out = out;
         this.parent = parent;
     }
 
@@ -44,13 +47,12 @@ public class InputStreamReaderThread extends Thread
     {
         if( reader != null )
         {
-            String line = null;
-            String qualities = "";
             try
             {
-                while( ( line = reader.readLine() ) != null )
+                if( executor != null )
                 {
-                    if( executor != null )
+                    String line = null;
+                    while( ( line = reader.readLine() ) != null )
                     {
                         if( line.length() > 0 )
                         {
@@ -61,12 +63,13 @@ public class InputStreamReaderThread extends Thread
                             executor.execute( line );
                         }
                     }
-                    else
+                }
+                else if( out != null )
+                {
+                    int ch;
+                    while( ( ch = reader.read() ) != -1 )
                     {
-                        display_manager.println(
-                            line,
-                            "process=" + parent.getPIDString()
-                        );
+                        out.write( ch );
                     }
                 }
             }

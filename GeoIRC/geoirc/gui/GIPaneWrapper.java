@@ -183,6 +183,7 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
         switch( type )
         {
             case TEXT_PANE:
+            case CONSOLE_PANE:
                 ((GITextPane) pane).applySettings();
                 break;
         }

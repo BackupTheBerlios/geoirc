@@ -7,6 +7,8 @@
 package geoirc.gui;
 
 import enigma.console.java2d.Java2DTextWindow;
+import enigma.console.TextAttributes;
+import enigma.core.Enigma;
 
 import geoirc.I18nManager;
 import geoirc.SettingsManager;
@@ -15,6 +17,10 @@ import geoirc.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.*;
@@ -44,6 +50,9 @@ public class GIConsolePane
     protected I18nManager i18n_manager;
     protected int last_found_index;
     protected String last_search_text;
+    protected TextAttributes current_attributes;
+    protected PrintStream print_stream;
+    protected PrintWriter console_writer;
     
     public GIConsolePane(
         MouseListener mouse_listener,
@@ -74,6 +83,51 @@ public class GIConsolePane
             DEFAULT_CONSOLE_BUFFER_SIZE
         );
         setViewportView( console_pane );
+        
+        console_writer = new PrintWriter(
+            new Writer() {
+                public void close() { }
+                public void flush() { }
+                public void write( char c )
+                {
+                    console_pane.output( c, current_attributes );
+                }
+                public void write( char [] c, int offset, int length )
+                {
+                    console_pane.output( c, offset, length, current_attributes );
+                }
+                public void write( String str )
+                {
+                    console_pane.output( str, current_attributes );
+                }
+            }
+        );
+
+        print_stream = new PrintStream(
+            new OutputStream()
+            {
+                public void close()
+                {
+                    console_writer.close();
+                }
+                public void flush()
+                {
+                    console_writer.flush();
+                }
+                public void write( int b )
+                {
+                    console_writer.write( (char) b );
+                }
+                public void write( byte [] b, int offset, int length )
+                {
+                    console_writer.write(new String(b, offset, length));
+                }
+                public void write( byte[] b )
+                {
+                    console_writer.write( new String( b ) );
+                }
+            }
+        );
         
         setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
@@ -117,6 +171,8 @@ public class GIConsolePane
         } catch( NumberFormatException e ) { /* accept defaults */ }
         background_colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
         console_pane.setBackground( background_colour );
+        
+        current_attributes = new TextAttributes( foreground_colour, background_colour );
         
         //display_manager.getStyleManager().initializeTextPane( text_pane );
     }
@@ -353,7 +409,7 @@ public class GIConsolePane
      */
     public synchronized void print( String text )
     {
-        console_pane.output( text );
+        console_pane.output( text, current_attributes );
         
         GIPaneWrapper selected_gipw = display_manager.getSelectedPane();
         boolean highlight_button = true;
@@ -526,4 +582,18 @@ public class GIConsolePane
         return found;
     }
     
+    public enigma.console.TextWindow getEnigmaTextWindow()
+    {
+        return console_pane;
+    }
+    
+    public PrintStream getPrintStream()
+    {
+        return print_stream;
+    }
+    
+    public void setTextAttributes( TextAttributes attribs )
+    {
+        current_attributes = attribs;
+    }
 }
