@@ -66,6 +66,11 @@
 			<default>FFFFFF</default>
             <pattern>[0-9a-fA-F]{6}+</pattern>
             <javaType>java.lang.String</javaType>
-		</rule>																
+		</rule>
+		<rule name="DIRECTORY">
+			<default>./</default>
+            <pattern>.++</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>														
 	</defaults>
 </geoirc>
