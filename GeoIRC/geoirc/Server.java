@@ -521,11 +521,16 @@ public class Server
         
         protected void interpretLine( String line )
         {
-            String [] tokens = Util.tokensToArray( line );
+            String [] transformed_message =
+                script_interface.onRaw( line, Server.this.toString() );
+            
+            //String [] tokens = Util.tokensToArray( line );
+            String [] tokens = Util.tokensToArray( transformed_message[ 0 ] );
             int windows_printed_to = 0;
             if( tokens != null )
             {
-                String qualities = Server.this.toString();
+                //String qualities = Server.this.toString();
+                String qualities = transformed_message[ 1 ];
                 
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
@@ -1314,15 +1319,15 @@ public class Server
             }
 
             display_manager.println(
-                line,
-                Server.this.toString() + " " + FILTER_SPECIAL_CHAR + "raw"
-                + (
-                    ( windows_printed_to > 0 )
-                    ? ( FILTER_SPECIAL_CHAR + "printed" )
-                    : ""
-                )
+                transformed_message[ 0 ],
+                transformed_message[ 1 ] + " "
+                    + FILTER_SPECIAL_CHAR + "raw"
+                    + (
+                        ( windows_printed_to > 0 )
+                        ? ( FILTER_SPECIAL_CHAR + "printed" )
+                        : ""
+                    )
             );
-            script_interface.onRaw( line, Server.this.toString() );
         }
     }
 }

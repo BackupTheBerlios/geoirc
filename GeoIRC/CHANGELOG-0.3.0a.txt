@@ -53,3 +53,9 @@ netseeker 2003-08-21
 
 Added settings gui "geoirc.conf.*", also added a "Settings->Options" menu entry
 netseeker 2003-08-23
+
+Modified scripting so that Python objects that register themselves with
+geoirc.registerRawListener() have the ability to return a Python object with
+"text" and "qualities" attributes, to alter the raw message that the
+ServerReader handles.
+Pistos 2003-08-29

@@ -106,7 +106,7 @@ public class ScriptInterface
             {
                 try
                 {
-                    transformed_message = method.__call__( new PyString( qualities ), new PyString( line ) );
+                    transformed_message = method.__call__( new PyString( line ), new PyString( qualities ) );
                 }
                 catch( Exception e )
                 {
