@@ -12,5 +12,50 @@
             <pattern>\d{1,4}+</pattern>
             <javaType>java.lang.Integer</javaType>
 		</rule>
+		<rule name="NAME">
+			<default>GeoIRCUser</default>
+            <pattern>.++</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>		
+		<rule name="NICK">
+			<default>GeoIRCUser</default>
+            <pattern>.++</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>
+		<rule name="SERVER_TYPE">
+			<default>class geoirc.Server</default>
+            <pattern>\bclass\s(1)\w++</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>		
+		<rule name="HOSTNAME">
+			<default>irc.freenode.net</default>
+            <pattern>.++</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>
+		<rule name="CHANNEL">
+			<default></default>
+            <pattern>\b#(\w++)</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>
+		<rule name="KDERC">
+			<default></default>
+            <pattern>\w++(\bkderc)</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>										
+		<rule name="GTKRC">
+			<default></default>
+            <pattern>\w++(\bgtkrc)</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>												
+		<rule name="FONT">
+			<default>Dialog</default>
+            <pattern>.++</pattern>
+            <javaType>java.lang.String</javaType>
+		</rule>														
+		<rule name="FONT_SIZE">
+			<default>12</default>
+            <pattern>\d{1,2}+</pattern>
+            <javaType>java.lang.Integer</javaType>
+		</rule>														
 	</defaults>
 </geoirc>
