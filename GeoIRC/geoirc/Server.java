@@ -316,9 +316,9 @@ public class Server
         return retval;
     }
 
-    protected User addMember( String nick )
+    protected User addMember( Channel originating_channel, String nick )
     {
-        User user = new User( nick );
+        User user = new User( originating_channel, nick );
         User u;
         if( users.contains( user ) )
         {
@@ -329,6 +329,7 @@ public class Server
                 if( u.equals( user ) )
                 {
                     user = u;
+                    user.addModeChars( originating_channel, nick );
                     break;
                 }
             }
@@ -358,17 +359,6 @@ public class Server
             current_nick_width = max_nick_width;
         }
         return Util.getPadding( " ", current_nick_width - text.length() ) + text;
-    }
-    
-    protected void acknowledgeUserChange( User user )
-    {
-        int n = channels.size();
-        Channel c;
-        for( int i = 0; i < n; i++ )
-        {
-            c = (Channel) channels.elementAt( i );
-            c.acknowledgeUserChange( user );
-        }
     }
 
     /* ******************************************************************** */
@@ -468,7 +458,7 @@ public class Server
             return retval;
         }
         
-        public Vector handleNamesList( String namlist )
+        public Vector handleNamesList( Channel originating_channel, String namlist )
         {
             Vector list_members = new Vector();
             
@@ -476,7 +466,7 @@ public class Server
             String [] nicks = Util.tokensToArray( namlist );
             for( int i = 0; i < nicks.length; i++ )
             {
-                user = addMember( nicks[ i ] );
+                user = addMember( originating_channel, nicks[ i ] );
                 list_members.add( user );
             }
 
@@ -572,7 +562,7 @@ public class Server
                         Channel chan_obj = getChannelByName( channel );
                         if( chan_obj != null )
                         {
-                            User user = addMember( nick );
+                            User user = addMember( chan_obj, nick );
                             chan_obj.addMember( user );
                         }
                         else
@@ -662,6 +652,7 @@ public class Server
                             String polarity = tokens[ 3 ].substring( 0, 1 );
                             String mode = tokens[ 3 ].substring( 1, 2 );
                             String arg = tokens[ 4 ];
+                            Channel c = Server.this.getChannelByName( channel );
 
                             String text = null;
                             qualities += " " + channel
@@ -677,15 +668,15 @@ public class Server
                                 {
                                     if( polarity.equals( "+" ) )
                                     {
-                                        recipient_user.addModeFlag( MODE_OP );
-                                        Server.this.acknowledgeUserChange( recipient_user );
+                                        recipient_user.addModeFlag( c, MODE_OP );
+                                        c.acknowledgeUserChange( user );
                                         text = getPadded( nick ) + " has given channel operator privileges for "
                                             + channel + " to " + arg + ".";
                                     }
                                     else if( polarity.equals( "-" ) )
                                     {
-                                        recipient_user.removeModeFlag( MODE_OP );
-                                        Server.this.acknowledgeUserChange( recipient_user );
+                                        recipient_user.removeModeFlag( c, MODE_OP );
+                                        c.acknowledgeUserChange( user );
                                         text = getPadded( nick ) + " has taken channel operator privileges for "
                                             + channel + " from " + arg + ".";
                                     }
@@ -791,15 +782,15 @@ public class Server
                                 {
                                     if( polarity.equals( "+" ) )
                                     {
-                                        recipient_user.addModeFlag( MODE_VOICE );
-                                        Server.this.acknowledgeUserChange( recipient_user );
+                                        recipient_user.addModeFlag( c, MODE_VOICE );
+                                        c.acknowledgeUserChange( user );
                                         text = getPadded( nick ) + " has given voice in "
                                             + channel + " to " + arg + ".";
                                     }
                                     else if( polarity.equals( "-" ) )
                                     {
-                                        recipient_user.removeModeFlag( MODE_VOICE );
-                                        Server.this.acknowledgeUserChange( recipient_user );
+                                        recipient_user.removeModeFlag( c, MODE_VOICE );
+                                        c.acknowledgeUserChange( user );
                                         text = getPadded( nick ) + " has taken voice in "
                                             + channel + " from " + arg + ".";
                                     }
@@ -1261,7 +1252,7 @@ public class Server
                     {
                         String namlist = Util.stringArrayToString( tokens, 5 );
                         namlist = namlist.substring( 1 );  // remove leading colon
-                        Vector v = handleNamesList( namlist );
+                        Vector v = handleNamesList( channel, namlist );
                         channel.setChannelMembership( v );
                         //channel.addToChannelMembership( v );
                     }

@@ -53,13 +53,15 @@ public class GITreeCellRenderer
                 Object obj = node.getUserObject();
                 if( obj instanceof User )
                 {
+                    DefaultMutableTreeNode channel_node = (DefaultMutableTreeNode) node.getParent();
+                    Channel channel = (Channel) channel_node.getUserObject();
                     User user = (User) obj;
                     setIcon( regular_icon );
-                    if( user.hasModeFlag( MODE_VOICE ) )
+                    if( user.hasModeFlag( channel, MODE_VOICE ) )
                     {
                         setIcon( voiced_icon );
                     }
-                    if( user.hasModeFlag( MODE_OP ) )
+                    if( user.hasModeFlag( channel, MODE_OP ) )
                     {
                         setIcon( op_icon );
                     }
