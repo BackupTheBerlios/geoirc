@@ -15,3 +15,6 @@ Pistos 2003-07-10
 
 Added an Ident response thread.  USER command also uses the defined ident username.
 Sunfire, Pistos 2003-07-10
+
+Added PONG response.
+Pistos 2003-07-10

@@ -158,6 +158,10 @@ public class ServerReader
                 );
                 sound_manager.check( text, qualities );
             }
+            else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
+            {
+                server.send( "PONG GeoIRC" );
+            }
 
         }
         
