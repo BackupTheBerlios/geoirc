@@ -1050,7 +1050,17 @@ public class Server
                     for( int i = 0; i < n; i++ )
                     {
                         c = (Channel) channels.elementAt( i );
-                        if( c.nickIsPresent( new_nick ) )
+                        String nick_to_check = "";
+                        switch( stage )
+                        {
+                            case STAGE_SCRIPTING:
+                                nick_to_check = old_nick;
+                                break;
+                            case STAGE_PROCESSING:
+                                nick_to_check = new_nick;
+                                break;
+                        }
+                        if( c.nickIsPresent( nick_to_check ) )
                         {
                             switch( stage )
                             {
@@ -1875,7 +1885,7 @@ public class Server
                         break;
                 }
             }
-            else
+            else if( stage == STAGE_SCRIPTING )
             {
                 // This IRC message is not [yet] handled by GeoIRC.
                 
