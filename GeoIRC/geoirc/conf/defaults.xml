@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE preferences SYSTEM 'http://java.sun.com/dtd/preferences.dtd'>
+
+<preferences EXTERNAL_XML_VERSION="1.0">
+	<root type="user">
+	    <map />
+		<node name="geoirc">
+			<map />
+			<node name="conf">
+				<map />
+				<node name="defaults">
+					<map />
+					<node name="IDENT_PORT">
+						<map>
+							<entry key="default" value="113" />
+				            <entry key="pattern" value="\d(1,4)" />
+				            <entry key="javaType" value="java.lang.Integer" />							
+						</map>
+					</node>
+					<node name="PORT">
+						<map>
+							<entry key="default" value="6667" />
+				            <entry key="pattern" value="\d(1,4)" />
+				            <entry key="javaType" value="java.lang.Integer" />							
+						</map>
+					</node>
+				</node>
+			</node>
+		</node>
+	</root>
+</preferences>
