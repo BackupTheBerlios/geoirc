@@ -167,7 +167,7 @@ public class BaseXmlHandler implements XmlProcessable
 	 * @param key
 	 * @param value
 	 */
-	public void set(String key, String value)
+	public synchronized void set(String key, String value)
 	{
 		Element elem = getSafeElementByPath(key);
 		elem.setText(value);
@@ -238,7 +238,7 @@ public class BaseXmlHandler implements XmlProcessable
 	/**
 	 * @return
 	 */
-	public boolean loadSettingsFromXML()
+	public synchronized boolean loadSettingsFromXML()
 	{
 		SAXBuilder builder = new SAXBuilder();
 		Document doc = null;
@@ -300,7 +300,7 @@ public class BaseXmlHandler implements XmlProcessable
 	/**
 	 * @return
 	 */
-	public boolean saveSettingsToXML()
+	public synchronized boolean saveSettingsToXML()
 	{
 		XMLOutputter out = new XMLOutputter();
 		FileOutputStream outStream = null;
@@ -397,11 +397,14 @@ public class BaseXmlHandler implements XmlProcessable
 	/* (non-Javadoc)
 	 * @see geoirc.XmlProcessable#removeNode(java.lang.String)
 	 */
-	public boolean removeNode(String path)
+	public synchronized boolean removeNode(String path)
 	{
 		try
 		{
 			getElementByPath(path).getParent().removeChild(getKey(path));
+            if (autoSave == true)
+                saveSettingsToXML();
+            
 			return true;
 		}
 		catch (Exception e)
