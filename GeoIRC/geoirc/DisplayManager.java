@@ -28,6 +28,7 @@ public class DisplayManager
 {
     protected SettingsManager settings_manager;
     protected StyleManager style_manager;
+    protected HighlightManager highlight_manager;
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
     protected JInternalFrame last_activated_frame;
@@ -57,6 +58,7 @@ public class DisplayManager
         
         this.settings_manager = settings_manager;
         style_manager = new StyleManager( settings_manager, this );
+        highlight_manager = new HighlightManager( settings_manager, this );
 
         windows = new Vector();
         
@@ -197,7 +199,7 @@ public class DisplayManager
                 tw = (GITextWindow) windows.elementAt( i );
                 if( tw.accepts( qualities ) )
                 {
-                    tw.appendLine( line );
+                    tw.appendLine( highlight_manager.highlight( line, qualities ) );
                 }
             }
         }
