@@ -1054,7 +1054,7 @@ public class GeoIRC
     public void focusGained( FocusEvent e ) { }
     public void focusLost( FocusEvent e )
     {
-        if( ! mouse_button_depressed )
+        if( ! mouse_button_depressed && ! display_manager.hasActiveTopWindows() )
         {
             Component thief = e.getOppositeComponent();
             if(
@@ -1069,7 +1069,10 @@ public class GeoIRC
                             {
                                 Thread.sleep( 300 );  // milliseconds
                             } catch( InterruptedException e ) { }
-                            input_field.grabFocus();
+                            if( ! mouse_button_depressed && ! display_manager.hasActiveTopWindows() )
+                            {
+                                input_field.grabFocus();
+                            }                            
                         }
                     }
                 );

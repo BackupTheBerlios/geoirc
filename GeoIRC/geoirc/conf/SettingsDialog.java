@@ -71,12 +71,12 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
      */
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
-        super( display_manager.getGeoIRCInstance(), title, true );
-        
+        super(display_manager.getGeoIRCInstance(), title );
+
         this.parent = display_manager.getGeoIRCInstance();
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        this.valueRules = new GeoIRCDefaults( display_manager );
+        this.valueRules = new GeoIRCDefaults(display_manager);
         this.validation_listener = new ValidationListener()
         {
             void validationPerformed(Object source, boolean isvalid)
@@ -105,12 +105,12 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         };
 
         this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
-        
+
         try
         {
-            setResizable( true );
+            setResizable(true);
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            addWindowListener( this );
+            addWindowListener(this);
             initComponents();
             //pack();
         }
@@ -118,6 +118,21 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             ex.printStackTrace();
         }
+
+        /*        
+        this.addWindowFocusListener(new WindowFocusListener()
+        {
+            public void windowGainedFocus(WindowEvent arg0)
+            {
+            }
+
+            public void windowLostFocus(WindowEvent arg0)
+            {
+                requestFocus( true );
+            }
+            
+        });
+        */
     }
 
     /**
@@ -193,7 +208,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         jSplitPane1.setDividerSize(5);
         jSplitPane1.setResizeWeight(0.0);
         flowLayout1.setAlignment(FlowLayout.RIGHT);
-        getContentPane().add(mainPanel, BorderLayout.CENTER);        
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
         mainPanel.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(scrollTree, JSplitPane.LEFT);
         jSplitPane1.add(new JScrollPane(rootPane), JSplitPane.RIGHT);
@@ -527,6 +542,12 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
             }
             return this;
         }
+    }
+
+    public void setVisible( boolean visible )
+    {
+        super.setVisible( visible );
+        requestFocus( true );
     }
 }
 
