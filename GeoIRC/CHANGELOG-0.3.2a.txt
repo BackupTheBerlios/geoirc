@@ -35,3 +35,8 @@ Pistos 2003-09-22
 
 Added change/error indicators in settings gui for all dialogs
 netseeker 2003-09-22
+
+Added two new nickname sort orderings (order by channel mode and alphabetic ascending,
+order by channel mode and last activity descending) and reworked the existing
+alphabetic sort ordering to return better results
+netseeker 2003-09-24
