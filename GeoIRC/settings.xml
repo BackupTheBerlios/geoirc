@@ -25,11 +25,11 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="Debug" />
-              <entry key="x" value="0" />
-              <entry key="y" value="0" />
-              <entry key="height" value="0" />
-              <entry key="width" value="129" />
-              <entry key="filter" value="" />
+              <entry key="x" value="278" />
+              <entry key="y" value="15" />
+              <entry key="height" value="500" />
+              <entry key="width" value="700" />
+              <entry key="filter" value="debug" />
             </map>
           </node>
         </node>

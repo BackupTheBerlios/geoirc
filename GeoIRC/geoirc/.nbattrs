@@ -18,6 +18,7 @@
         <attr name="class_dependency_java.lang.Exception" stringvalue="BadExpressionException"/>
     </fileobject>
     <fileobject name="DisplayManager.java">
+        <attr name="class_dependency_java.awt.event.ComponentListener" stringvalue="DisplayManager"/>
         <attr name="class_dependency_geoirc.GeoIRCConstants" stringvalue="DisplayManager"/>
         <attr name="class_dependency_javax.swing.event.InternalFrameListener" stringvalue="DisplayManager"/>
     </fileobject>

@@ -7,6 +7,7 @@
 package geoirc;
 
 import java.awt.*;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowStateListener;
 import java.awt.event.WindowEvent;
 import java.util.Vector;
@@ -20,10 +21,12 @@ import org.jscroll.widgets.JScrollInternalFrame;
  * @author  Pistos
  */
 public class DisplayManager
-    implements InternalFrameListener, GeoIRCConstants
+    implements
+        InternalFrameListener,
+        GeoIRCConstants,
+        ComponentListener
 {
     protected SettingsManager settings_manager;
-    protected GITextWindow debug_window;
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
     protected JInternalFrame last_activated_frame;
@@ -54,25 +57,43 @@ public class DisplayManager
         desktop_pane = new JScrollDesktopPane( menu_bar );
         content_pane.add( desktop_pane );
         
-        debug_window = null;
-        
         restoreDesktopState();
         
-        ensureDebugWindowExists();
+        if( getDebugWindow() == null )
+        {
+            addTextWindow( "Debug", "debug" );
+        }
         
-        debug_window.appendLine( "GeoIRC started." );
+        printlnDebug( "GeoIRC started." );
         
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
     }
     
-    protected void ensureDebugWindowExists()
+    /* @return null if no window accepts debug quality messages
+     * otherwise returns the first GITextWindow which does.
+     */
+    protected GITextWindow getDebugWindow()
     {
-        if( debug_window == null )
+        int n = windows.size();
+        GITextWindow debug_window = null;
+        JInternalFrame jif;
+        for( int i = 0; i < n; i++ )
         {
-            debug_window = addTextWindow( "Debug" );
+            jif = (JInternalFrame) windows.elementAt( i );
+            if( jif instanceof GITextWindow )
+            {
+                GITextWindow gitw = (GITextWindow) jif;
+                if( gitw.accepts( "debug" ) )
+                {
+                    debug_window = gitw;
+                    break;
+                }
+            }
         }
+        
+        return debug_window;
     }
 
     protected GITextWindow addTextWindow( String title )
@@ -140,10 +161,7 @@ public class DisplayManager
     
     public void printlnDebug( String line )
     {
-        if( debug_window != null )
-        {
-            debug_window.appendLine( line );
-        }
+        println( line, "debug" );
     }
     
     public void println( String line, String qualities )
@@ -225,6 +243,10 @@ public class DisplayManager
         
         return retval;
     }
+
+    /* ************************************************************
+     * Listener Implementations
+     */
     
     public JInternalFrame getLastActivated()
     {
@@ -240,7 +262,6 @@ public class DisplayManager
     {
         windows.remove( e.getSource() );
         recordDesktopState();
-        printlnDebug( Integer.toString( windows.size() ) + " windows" );
     }
     public void internalFrameClosing(InternalFrameEvent e) {    }
     public void internalFrameDeactivated(InternalFrameEvent e) {    }
@@ -248,11 +269,25 @@ public class DisplayManager
     public void internalFrameIconified(InternalFrameEvent e) {    }
     public void internalFrameOpened(InternalFrameEvent e)
     {
-        windows.add( e.getSource() );
+        JInternalFrame jif = (JInternalFrame) e.getSource();
+        windows.add( jif );
+        jif.addComponentListener( this );
         recordDesktopState();
-        printlnDebug( Integer.toString( windows.size() ) + " windows" );
     }
 
+    public void componentHidden(java.awt.event.ComponentEvent e) { }
+    public void componentShown(java.awt.event.ComponentEvent e) { }
+    public void componentMoved(java.awt.event.ComponentEvent e)
+    {
+        recordDesktopState();
+    }
+    public void componentResized(java.awt.event.ComponentEvent e)
+    {
+        recordDesktopState();
+    }
+    
+    /* ************************************************************ */
+    
     public boolean switchToNextWindow( boolean previous )
     {
         if( ( windows == null ) || ( windows.size() < 2 ) )
@@ -365,7 +400,7 @@ public class DisplayManager
                 break;
             }
             
-            type = type.substring( type.lastIndexOf( "." ) );
+            type = type.substring( type.lastIndexOf( "." ) + 1 );
             
             title = settings_manager.getString(
                 "/gui/desktop/" + i_str + "/title",
@@ -406,6 +441,6 @@ public class DisplayManager
             
             i++;
         }
-    }
+    }    
     
 }
