@@ -27,12 +27,26 @@ public class FileChooserHandler implements ActionListener
 	{
 		this.field = field;
 		this.pane = parent;
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 	}
+
+    public FileChooserHandler(JTextField field, BaseSettingsPanel parent, int selection_mode)
+    {
+        this.field = field;
+        this.pane = parent;
+        chooser.setFileSelectionMode(selection_mode);
+    }
 
     public FileChooserHandler(JTextField field, BaseSettingsPanel parent, String path)
     {
         this(field, parent);
         this.path = path;
+    }
+
+    public FileChooserHandler(JTextField field, BaseSettingsPanel parent, String path, int selection_mode)
+    {
+        this(field, parent, path);
+        chooser.setFileSelectionMode(selection_mode);
     }
 
 	public void actionPerformed(ActionEvent arg0)
