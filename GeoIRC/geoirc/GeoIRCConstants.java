@@ -128,7 +128,8 @@ public interface GeoIRCConstants
         "find",
         "findagain",
         "findcasesensitive",
-        "closepane"
+        "closepane",
+        "ctcp"
     };
     
     public static final String[] IRC_CMDS =
@@ -167,6 +168,7 @@ public interface GeoIRCConstants
     public static final int CMD_CLOSE_WINDOW = 79;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
+    public static final int CMD_CTCP = 98;
     public static final int CMD_DCC_CHAT = 69;
     public static final int CMD_DCC_SEND = 87;
     public static final int CMD_DISABLE_COLOUR_CODES = 72;
@@ -525,4 +527,8 @@ public interface GeoIRCConstants
     static final String SUBMENU_NODE = "submenu";
     static final String ITEM_NODE = "item";
     static final String PANE_LIST_NODE = "pane_list";
+    
+    static final int DEFAULT_CONSOLE_BUFFER_SIZE = 1000;
+    static final int DEFAULT_NUM_CONSOLE_COLUMNS = 80;
+    static final int DEFAULT_NUM_CONSOLE_ROWS = 25;
 }

@@ -16,3 +16,6 @@ Pistos 2003-11-07
 
 Added closepane command.
 Pistos 2003-11-07
+
+Added basic CTCP functionality (outgoing).
+Pistos 2003-11-08

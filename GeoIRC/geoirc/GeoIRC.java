@@ -1765,6 +1765,27 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_CTCP:
+                if( ( args != null ) || ( args.length < 2 ) )
+                {
+                    String dest = args[ 0 ];
+                    String message = Util.stringArrayToString( args, 1 );
+                    execute(
+                        CMDS[ CMD_SEND_RAW ]
+                        + " PRIVMSG "
+                        + dest
+                        + " :"
+                        + CTCP_MARKER + message + CTCP_MARKER
+                    );
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_CTCP ]
+                        + " <nick> <ctcp command>" );
+                }
+                break;
             case CMD_DCC_CHAT:
             case CMD_DCC_SEND:
                 if( args != null )
