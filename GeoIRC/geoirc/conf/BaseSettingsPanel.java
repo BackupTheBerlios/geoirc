@@ -56,10 +56,7 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
     /**
      * @param settings
      */
-    public BaseSettingsPanel(
-        XmlProcessable settings,
-        GeoIRCDefaults valueRules,
-        String name)
+    public BaseSettingsPanel(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
     {
         this();
         this.settings_manager = settings;
@@ -69,26 +66,26 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
         {
             void validationPerformed(Object source, boolean isvalid)
             {
-                if( isvalid == false )
+                if (isvalid == false)
                 {
                     has_errors_set.add(source);
                 }
                 else
                 {
-                    if(has_errors_set.contains(source))
+                    if (has_errors_set.contains(source))
                     {
                         has_errors_set.remove(source);
-                    }                    
+                    }
                 }
 
-                for( Iterator it = target_validation_listeners.iterator(); it.hasNext(); )
+                for (Iterator it = target_validation_listeners.iterator(); it.hasNext();)
                 {
                     ValidationListener listener = (ValidationListener)it.next();
-                    listener.validationPerformed( this, isvalid );
-                }                
-            }            
+                    listener.validationPerformed(this, isvalid);
+                }
+            }
         };
-        
+
         this.change_listener = new InputChangeListener()
         {
             public void valueChanged(Object source)
@@ -96,11 +93,11 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
                 if (isVisible() == true && isInitialized() == true)
                 {
                     has_changes = true;
-                    
-                    for( Iterator it = target_change_listeners.iterator(); it.hasNext(); )
+
+                    for (Iterator it = target_change_listeners.iterator(); it.hasNext();)
                     {
                         InputChangeListener listener = (InputChangeListener)it.next();
-                        listener.valueChanged( this );
+                        listener.valueChanged(this);
                     }
                 }
             }
@@ -292,44 +289,44 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
     {
         return has_changes;
     }
-    
+
     public boolean hasChangesInChilds()
-    {        
+    {
         boolean should_save = false;
-        
-        for( Iterator cit = getChilds().iterator(); cit.hasNext(); )
+
+        for (Iterator cit = getChilds().iterator(); cit.hasNext();)
         {
-            if( ((BaseSettingsPanel)cit.next()).hasChanges() == true )
+            if (((BaseSettingsPanel)cit.next()).hasChanges() == true)
             {
-                return true; 
+                return true;
             }
-                                   
+
         }
-        
-        return should_save;        
+
+        return should_save;
     }
-    
+
     public boolean hasErrors()
     {
         return !has_errors_set.isEmpty();
     }
-    
-    public void addInputChangeListener( InputChangeListener listener )
+
+    public void addInputChangeListener(InputChangeListener listener)
     {
         target_change_listeners.add(listener);
     }
-    
-    public void removeInputChangeListener( InputChangeListener listener )
+
+    public void removeInputChangeListener(InputChangeListener listener)
     {
         target_change_listeners.remove(listener);
     }
 
-    public void addValidationListener( ValidationListener listener )
+    public void addValidationListener(ValidationListener listener)
     {
         target_validation_listeners.add(listener);
     }
-    
-    public void removeValidationListener( ValidationListener listener )
+
+    public void removeValidationListener(ValidationListener listener)
     {
         target_validation_listeners.remove(listener);
     }

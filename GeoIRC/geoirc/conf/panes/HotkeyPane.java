@@ -46,7 +46,6 @@ import org.jdom.input.SAXBuilder;
  */
 public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentListener
 {
-
     private JTable table;
     LittleTableModel ltm = new LittleTableModel();
     JValidatingTextField command_field;
@@ -66,8 +65,8 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
     public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
     {
         super(settings, valueRules, name);
-        command_field = new JValidatingTextField( validation_listener );
-        hotkey_field = new JKeyRecordField( validation_listener );
+        command_field = new JValidatingTextField(validation_listener);
+        hotkey_field = new JKeyRecordField(validation_listener);
     }
 
     /**
@@ -81,7 +80,7 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
         hotkey_field.setEnabled(false);
-        hotkey_field.setFocusTraversalKeysEnabled( false );
+        hotkey_field.setFocusTraversalKeysEnabled(false);
         command_field.setEnabled(false);
 
         Element root = getKeyboardNode();
@@ -213,7 +212,6 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         return new Element("keyboard");
     }
 
-  
     /**
      * @param state
      */
