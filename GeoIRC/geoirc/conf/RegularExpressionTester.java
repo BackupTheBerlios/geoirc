@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,6 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -54,6 +56,7 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
     private JButton close_button = new JButton("Close");    
     private GridBagLayout layout = new GridBagLayout();    
     private List close_listeners = new ArrayList();
+    private JPanel button_panel = new JPanel();    
     
     public static final String APPLY_OPTION = "apply";
     public static final String CANCEL_OPTION = "cancel";
@@ -96,6 +99,7 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
         this.getContentPane().setLayout(layout);
         this.setResizable(false);
         Container content_pane = getContentPane();
+        button_panel.setLayout( new FlowLayout());        
 
         regexp_field.setPreferredSize(new Dimension(300, JValidatingTextField.PREFERED_HEIGHT));
         regexp_field.getDocument().addDocumentListener(this);
@@ -147,17 +151,19 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
         switch ( options )
         {
             case SHOW_CANCEL_OPTION:
-                showButton( content_pane, 0, 1, 1);
+                button_panel.add(close_button, null);
                 break;
             case SHOW_APPLY_CANCEL_OPTION:
-                showButton( content_pane, 0, 1, 1);
-                showButton( content_pane, 1, 0, 0);
+                button_panel.add(close_button, null);
+                button_panel.add(apply_button, null);
             case SHOW_APPLY_OPTION:
-                showButton( content_pane, 1, 1, 1);
+                button_panel.add(apply_button, null);
                 break;
            default:
-                showButton( content_pane, 0, 1, 1);           
+                button_panel.add(close_button, null);           
         }
+        
+        content_pane.add( button_panel, new GridBagConstraints(1, 5, 1, 1, 1, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));
         
         this.pack();
     }
@@ -347,19 +353,6 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
         }
     }
     
-    private void showButton( Container content_pane, int button, int x, int fill )
-    {
-        switch( button )
-        {
-            case 0:
-                content_pane.add(close_button, new  GridBagConstraints(x, 5, 1, 1, fill, 0,  GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));
-                break;
-            case 1:
-                content_pane.add(apply_button, new  GridBagConstraints(x, 5, 1, 1, fill, 0,  GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));        
-                break;                                                    
-        }
-    }
-
     public void addCloseListener(ActionListener listener)
     {        
         close_listeners.add(listener);

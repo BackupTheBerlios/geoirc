@@ -71,8 +71,9 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         table.setValidatingCellEditor(valueField, 0);
 
         final JRegExTextField patternField = new JRegExTextField( null );
-        patternField.setToolTipText("any regular expression");
-        table.setValidatingCellEditor(patternField, 1);
+        patternField.setToolTipText("any regular expression");        
+        //table.setValidatingCellEditor(patternField, 1);
+        table.setRegExpTestingCellEditor(patternField, 1);
 
         final JValidatingTextField commandField = new JValidatingTextField( null );
         patternField.setToolTipText("any available command");

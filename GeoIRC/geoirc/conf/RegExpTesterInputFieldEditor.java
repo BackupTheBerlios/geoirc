@@ -72,7 +72,7 @@ public class RegExpTesterInputFieldEditor extends AbstractCellEditor implements 
         this.panel.setLayout(new BoxLayout(panel, 0));
 
         JButton button = new JButton("..");
-        Dimension d = new Dimension(20, 20);
+        Dimension d = new Dimension(20, 18);
         button.setPreferredSize(d);
         button.setMaximumSize(d);
 

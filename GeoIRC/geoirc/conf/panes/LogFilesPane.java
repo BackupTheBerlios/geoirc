@@ -73,9 +73,10 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
         table.setValidatingCellEditor(valueField, 0);
 
         JRegExTextField patternField = new JRegExTextField(null);
-        table.setValidatingCellEditor(patternField, 1);
+        //table.setValidatingCellEditor(patternField, 1);
+        table.setRegExpTestingCellEditor(patternField, 1);
         
-        JValidatingTextField pathField = new JValidatingTextField(log_file_rule.getPattern(), null, null);
+        JValidatingTextField pathField = new JValidatingTextField(log_file_rule.getPattern(), null, null);        
         table.setValidatingCellEditor(pathField, 2);        
         
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
