@@ -359,20 +359,29 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         ImageIcon folder_closed_error_icon;
         ImageIcon folder_open_icon;
         ImageIcon folder_closed_icon;
-        
+        boolean images_loaded = true;
 
         public TreeRenderer()
-        {            
-            leaf_icon = new ImageIcon(SettingsDialog.class.getResource("images/leaf.png"));
-            leaf_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/change.png"));
-            leaf_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/error.png"));
-            
-            folder_open_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open_change.png"));
-            folder_closed_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_change.png"));
-            folder_open_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open_error.png"));
-            folder_closed_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_error.png"));
-            folder_open_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open.png"));
-            folder_closed_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder.png"));
+        {
+            try
+            {
+                leaf_icon = new ImageIcon(SettingsDialog.class.getResource("images/leaf.png"));
+                leaf_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/change.png"));
+                leaf_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/error.png"));
+
+                folder_open_change_icon =
+                    new ImageIcon(SettingsDialog.class.getResource("images/folder_open_change.png"));
+                folder_closed_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_change.png"));
+                folder_open_error_icon =
+                    new ImageIcon(SettingsDialog.class.getResource("images/folder_open_error.png"));
+                folder_closed_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_error.png"));
+                folder_open_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open.png"));
+                folder_closed_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder.png"));
+            }
+            catch (NullPointerException e)
+            {
+                images_loaded = false;
+            }
         }
 
         public Component getTreeCellRendererComponent(
@@ -387,67 +396,69 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
 
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-            BaseSettingsPanel pane = (BaseSettingsPanel) (node.getUserObject());
-
-            if (pane.hasChanges())
+            if (images_loaded == true)
             {
-                if (pane.hasErrors())
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+                BaseSettingsPanel pane = (BaseSettingsPanel) (node.getUserObject());
+
+                if (pane.hasChanges())
                 {
-                    if ( leaf)
+                    if (pane.hasErrors())
                     {
-                        setIcon(leaf_error_icon);
-                    }
-                    else
-                    {
-                        if( expanded )
+                        if (leaf)
                         {
-                            setIcon(folder_open_error_icon);
+                            setIcon(leaf_error_icon);
                         }
                         else
                         {
-                            setIcon(folder_closed_error_icon);
+                            if (expanded)
+                            {
+                                setIcon(folder_open_error_icon);
+                            }
+                            else
+                            {
+                                setIcon(folder_closed_error_icon);
+                            }
                         }
-                    }                    
+                    }
+                    else
+                    {
+                        if (leaf)
+                        {
+                            setIcon(leaf_change_icon);
+                        }
+                        else
+                        {
+                            if (expanded)
+                            {
+                                setIcon(folder_open_change_icon);
+                            }
+                            else
+                            {
+                                setIcon(folder_closed_change_icon);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    if ( leaf)
+                    if (leaf)
                     {
-                        setIcon(leaf_change_icon);
+                        setIcon(leaf_icon);
                     }
                     else
                     {
-                        if( expanded )
+                        if (expanded)
                         {
-                            setIcon(folder_open_change_icon);
+                            setIcon(folder_open_icon);
                         }
                         else
                         {
-                            setIcon(folder_closed_change_icon);
+                            setIcon(folder_closed_icon);
                         }
                     }
                 }
             }
-            else
-            {
-                if ( leaf )
-                {
-                    setIcon(leaf_icon);                   
-                }
-                else
-                {
-                    if ( expanded )
-                    {
-                        setIcon(folder_open_icon);
-                    }
-                    else
-                    {
-                        setIcon(folder_closed_icon);
-                    }
-                }
-            }
-
             return this;
         }
     }
