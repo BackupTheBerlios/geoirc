@@ -55,7 +55,7 @@ public class SettingsManager
         displayMgr = newDisplayMgr;
         this.filepath = filepath;
         any_load_failure = false;
-        xml_out = new XMLOutputter( "  ", true );
+        xml_out = new XMLOutputter( "  " );
         xml_in = new SAXBuilder();
     }
     

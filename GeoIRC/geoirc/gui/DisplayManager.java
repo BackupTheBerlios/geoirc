@@ -570,7 +570,9 @@ public class DisplayManager
                 
                 if( partner_index == DESKTOP_PANE_INDEX )
                 {
-                    geo_irc.invalidate();
+                    geo_irc.recordMainFrameState();
+                    geo_irc.pack();
+                    geo_irc.restoreMainFrameState();
                 }
 
                 success = true;

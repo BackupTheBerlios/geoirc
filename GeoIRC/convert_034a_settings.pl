@@ -15,7 +15,7 @@ sub padding
     return $padding;
 }
 
-open my $in, "< settings.xml" or die "Failed to open settings.xml.";
+open my $in, "< oldsettings.xml" or die "Failed to open settings.xml.";
 open( OUT, "> temp.xml" ) or die "Failed to open temp.xml";
 
 my $line;
@@ -103,14 +103,28 @@ while( <$in> )
 	
 	$line =~ s/^    .keyboard //;
 	my @keymappings = split(/" /, $line);
+	pop( @keymappings );
 	my $keystroke;
+	my $key;
+	my $modifiers;
 	my $command;
 	foreach my $keymapping ( @keymappings )
 	{
 	    $keymapping =~ m/(.+)="(.+)/;
 	    $keystroke = $1;
 	    $command = $2;
-	    print( OUT "      <keymap keystroke=\"$keystroke\" command=\"$command\" />\n" );
+	    $keystroke =~ m/(.*)\|(.+)/;
+	    $modifiers = $1;
+	    $key = uc( $2 );
+	    if( $modifiers ne "" )
+	    {
+		$modifiers =~ s/Alt/alt/;
+		$modifiers =~ s/Ctrl/ctrl/;
+		$modifiers =~ s/Shift/shift/;
+		$modifiers =~ s/Meta/meta/;
+		$modifiers = "$modifiers ";
+	    }
+	    print( OUT "      <keymap keystroke=\"$modifiers$key\" command=\"$command\" />\n" );
 	}
 	
 	print( OUT "    </keyboard>\n" );

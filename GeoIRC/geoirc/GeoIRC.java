@@ -335,12 +335,7 @@ public class GeoIRC
             command = element.getAttributeValue( "command" );
             if( ! command.equals( "" ) )
             {
-                /*
-                input_map.put(
-                    KeyStroke.getKeyStroke( keycode, java_modifiers ),
-                    stroke_text
-                );
-                 */
+                input_map.put( Util.getKeyStroke( keystroke ), keystroke );
                 action_map.put( keystroke, new GIAction( command, this ) );
             }
         }
@@ -713,7 +708,7 @@ public class GeoIRC
         }
     }
     
-    protected void recordMainFrameState()
+    public void recordMainFrameState()
     {
         settings_manager.putInt(
             "/gui/main frame x",
@@ -739,7 +734,7 @@ public class GeoIRC
         );
     }
     
-    protected void restoreMainFrameState()
+    public void restoreMainFrameState()
     {
         int state = settings_manager.getInt(
             "/gui/main frame state",

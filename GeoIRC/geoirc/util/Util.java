@@ -10,8 +10,11 @@ import geoirc.gui.DisplayManager;
 import geoirc.GeoIRCConstants;
 
 import java.awt.Color;
+import java.awt.event.InputEvent;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -369,5 +372,39 @@ public class Util implements GeoIRCConstants
         retval += ((int) bytes[ 3 ]);
         
         return retval;
+    }
+    
+    public static KeyStroke getKeyStroke( String keystroke )
+    {
+        KeyStroke ks = KeyStroke.getKeyStroke( keystroke );
+        
+        if( ks != null )
+        {
+            // Convert modifier mask.
+
+            int old_mask = ks.getModifiers();
+            int new_mask = 0;
+
+            if( ( old_mask & InputEvent.ALT_MASK ) > 0 )
+            {
+                new_mask = new_mask | InputEvent.ALT_DOWN_MASK;
+            }
+            if( ( old_mask & InputEvent.CTRL_MASK ) > 0 )
+            {
+                new_mask = new_mask | InputEvent.CTRL_DOWN_MASK;
+            }
+            if( ( old_mask & InputEvent.SHIFT_MASK ) > 0 )
+            {
+                new_mask = new_mask | InputEvent.SHIFT_DOWN_MASK;
+            }
+            if( ( old_mask & InputEvent.META_MASK ) > 0 )
+            {
+                new_mask = new_mask | InputEvent.META_DOWN_MASK;
+            }
+
+            ks = KeyStroke.getKeyStroke( ks.getKeyCode(), new_mask );
+        }
+        
+        return ks;
     }
 }
