@@ -150,7 +150,7 @@ public class Channel
         return( getUserByNick( nick ) != null );
     }
     
-    public String completeNick( String incomplete_nick )
+    public String completeNick( String incomplete_nick, boolean decorated )
     {
         String completed_nick = incomplete_nick;
         
@@ -162,16 +162,23 @@ public class Channel
             nick = u.getNick();
             if( nick.toLowerCase().startsWith( incomplete_nick.toLowerCase() ) )
             {
-                completed_nick =
-                    settings_manager.getString(
-                        "/misc/nick completion prefix",
-                        ""
-                    )
-                    + nick
-                    + settings_manager.getString(
-                        "/misc/nick completion suffix",
-                        ": "
-                    );
+                if( decorated )
+                {
+                    completed_nick =
+                        settings_manager.getString(
+                            "/misc/nick completion prefix",
+                            ""
+                        )
+                        + nick
+                        + settings_manager.getString(
+                            "/misc/nick completion suffix",
+                            ": "
+                        );
+                }
+                else
+                {
+                    completed_nick = nick;
+                }
                 break;
             }
         }

@@ -36,12 +36,15 @@ public class DisplayManager
     protected HighlightManager highlight_manager;
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
-    protected JInternalFrame last_activated_frame;
+    protected GIWindow last_activated_frame;
     protected JTextField input_field;
     protected boolean listening;
-    protected Vector inactive_info_windows;
+    protected Vector inactive_info_panes;
+    protected Vector active_info_panes;
     protected Container content_pane;
     protected Vector docked_panes;
+    protected Vector undocked_panes;
+    protected Vector panes;
     
     protected int last_added_frame_x;
     protected int last_added_frame_y;
@@ -71,8 +74,10 @@ public class DisplayManager
         highlight_manager = new HighlightManager( settings_manager, this );
 
         windows = new Vector();
-        inactive_info_windows = new Vector();
+        inactive_info_panes = new Vector();
         docked_panes = new Vector();
+        undocked_panes = new Vector();
+        panes = new Vector();
         
         this.content_pane = content_pane;
         desktop_pane = new JScrollDesktopPane( menu_bar );
@@ -89,31 +94,6 @@ public class DisplayManager
     public void beginListening()
     {
         listening = true;
-    }
-    
-    /* @return null if no window accepts debug quality messages
-     * otherwise returns the first GITextWindow which does.
-     */
-    protected GITextWindow getDebugWindow()
-    {
-        int n = windows.size();
-        GITextWindow debug_window = null;
-        JInternalFrame jif;
-        for( int i = 0; i < n; i++ )
-        {
-            jif = (JInternalFrame) windows.elementAt( i );
-            if( jif instanceof GITextWindow )
-            {
-                GITextWindow gitw = (GITextWindow) jif;
-                if( gitw.accepts( "debug" ) )
-                {
-                    debug_window = gitw;
-                    break;
-                }
-            }
-        }
-        
-        return debug_window;
     }
     
     protected void addNewWindow( GIWindow window )
@@ -143,45 +123,59 @@ public class DisplayManager
         );
     }
 
-    protected GITextWindow addTextWindow( String title )
+    protected GIWindow addTextWindow( String title )
     {
         return addTextWindow( title, null );
     }
 
-    public GITextWindow addTextWindow( String title, String filter )
+    public GIWindow addTextWindow( String title, String filter )
     {
         String actual_title = title;
         if( actual_title == null )
         {
             actual_title = "";
         }
-        GITextWindow text_window = new GITextWindow(
+        GIWindow text_window = new GIWindow(
+            this, settings_manager, title
+        );
+        GITextPane gitp = new GITextPane(
             this, settings_manager, style_manager, title, filter
         );
-
+        text_window.addPane( gitp );
+        undocked_panes.add( gitp );
+        panes.add( gitp );
         addNewWindow( text_window );
         
         return text_window;
     }
     
-    public GIInfoWindow addInfoWindow( String title, String path )
+    public GIWindow addInfoWindow( String title, String path )
     {
         String actual_title = title;
         if( actual_title == null )
         {
             actual_title = "";
         }
+        GIWindow info_window = new GIWindow( this, settings_manager, actual_title );
+        GIInfoPane giip = new GIInfoPane(
+            this, settings_manager, actual_title, path
+        );
+        info_window.addPane( giip );
+        undocked_panes.add( giip );
+        panes.add( giip );
+        /*
         GIInfoWindow info_window = new GIInfoWindow(
             this, settings_manager, title, path
         );
+         */
 
         addNewWindow( info_window );
-        inactive_info_windows.add( info_window );
+        inactive_info_panes.add( giip );
         
         return info_window;
     }
     
-    public GITextWindow addChannelWindow( Server s, String channel_name )
+    public GIWindow addChannelWindow( Server s, String channel_name )
     {
         if( s == null )
         {
@@ -196,15 +190,16 @@ public class DisplayManager
     
     public void activateInfoWindows( String path, TreeModel model )
     {
-        int n = inactive_info_windows.size();
-        GIInfoWindow giiw;
+        int n = inactive_info_panes.size();
+        GIInfoPane giip;
         for( int i = 0; i < n; i++ )
         {
-            giiw = (GIInfoWindow) inactive_info_windows.elementAt( i );
-            if( giiw.getPath().equals( path ) )
+            giip = (GIInfoPane) inactive_info_panes.elementAt( i );
+            if( giip.getPath().equals( path ) )
             {
-                giiw.activate( model );
-                inactive_info_windows.remove( i );
+                giip.activate( model );
+                inactive_info_panes.remove( i );
+                active_info_panes.add( giip );
             }
         }
     }
@@ -212,18 +207,15 @@ public class DisplayManager
     public void deactivateInfoWindows( String path )
     {
         int n = windows.size();
-        GIWindow window;
+        GIInfoPane giip;
         for( int i = 0; i < n; i++ )
         {
-            window = (GIWindow) windows.elementAt( i );
-            if( window instanceof GIInfoWindow )
+            giip = (GIInfoPane) active_info_panes.elementAt( i );
+            if( giip.getPath().equals( path ) )
             {
-                GIInfoWindow giiw = (GIInfoWindow) window;
-                if( giiw.getPath().equals( path ) )
-                {
-                    giiw.deactivate();
-                    inactive_info_windows.add( giiw );
-                }
+                giip.deactivate();
+                active_info_panes.remove( i );
+                inactive_info_panes.add( giiw );
             }
         }
     }
@@ -236,41 +228,42 @@ public class DisplayManager
     public void println( String line, String qualities )
     {
         int n = windows.size();
-        GITextWindow tw;
-        Object window;
+        GITextPane text_pane;
+        GIPane pane;
         for( int i = 0; i < n; i++ )
         {
-            tw = null;
-            window = windows.elementAt( i );
-            if( window instanceof GITextWindow )
+            text_pane = null;
+            pane = (GIPane) panes.elementAt( i );
+            if( pane instanceof GITextPane )
             {
-                tw = (GITextWindow) windows.elementAt( i );
-                if( tw.accepts( qualities ) )
+                text_pane = (GITextPane) pane;
+                if( text_pane.accepts( qualities ) )
                 {
-                    tw.appendLine( highlight_manager.highlight( line, qualities ) );
+                    text_pane.appendLine( highlight_manager.highlight( line, qualities ) );
                 }
             }
         }
     }
     
-    public JInternalFrame getSelectedFrame()
+    public GIWindow getSelectedFrame()
     {
-        return desktop_pane.getSelectedFrame();
+        return (GIWindow) desktop_pane.getSelectedFrame();
     }
     
     public String getSelectedChannel()
     {
-        GITextWindow tw;
+        GIPane pane;
         String retval = null;
-        JInternalFrame jif = last_activated_frame;
-        if( jif == null )
+        GIWindow giw = last_activated_frame;
+        if( giw == null )
         {
-            jif = getSelectedFrame();
+            giw = getSelectedFrame();
         }
 
-        if( jif instanceof GITextWindow )
+        pane = giw.getPane();
+        if( pane instanceof GITextPane )
         {
-            String filter = ((GITextWindow) jif).getFilter();
+            String filter = ((GITextPane) pane).getFilter();
             if( filter != null )
             {
                 // Search for a channel in this filter.
@@ -584,6 +577,7 @@ public class DisplayManager
                     ((GIInfoWindow) frame).getPath()
                 );
             }
+            
         }
     }
 

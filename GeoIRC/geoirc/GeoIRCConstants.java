@@ -191,4 +191,8 @@ public interface GeoIRCConstants
     static final int DOCK_BOTTOM = 2;
     static final int DOCK_LEFT = 3;
     static final String [] DOCK_STR = { "t", "r", "b", "l" };
+    
+    static final int NO_PANE = -1;
+    static final int INFO_PANE = 0;
+    static final int TEXT_PANE = 1;
 }

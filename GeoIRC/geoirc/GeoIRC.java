@@ -768,7 +768,7 @@ public class GeoIRC
                         Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
                         if( channel != null )
                         {
-                            String completed_nick = channel.completeNick( word );
+                            String completed_nick = channel.completeNick( word, (left_space_pos == -1) );
                             if( right_space_pos > -1 )
                             {
                                 input_line =
