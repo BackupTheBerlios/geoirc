@@ -1,0 +1,5 @@
+Changelog for GeoIRC 0.2.1a
+---------------------------
+
+Began adding Python (Jython) scripting interface.
+Pistos 2003-08-08

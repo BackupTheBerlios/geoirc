@@ -76,7 +76,8 @@ public interface GeoIRCConstants
         "println",
         "log",
         "removelog",
-        "listlogs"
+        "listlogs",
+        "test"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -129,6 +130,7 @@ public interface GeoIRCConstants
     public static final int CMD_SET_TITLE = 18;
     public static final int CMD_SHOW_QUALITIES = 42;
     public static final int CMD_SWITCH_WINDOW = 21;
+    public static final int CMD_TEST = 51;
     public static final int CMD_UNDOCK_WINDOW = 34;
     
     static final String [] IRCMSGS =

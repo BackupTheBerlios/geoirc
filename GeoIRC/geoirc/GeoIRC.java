@@ -39,7 +39,10 @@ import java.util.*;
 import java.util.prefs.*;
 import javax.swing.*;
 import javax.swing.text.*;
+import org.apache.bsf.*;
 import org.jscroll.*;
+import org.python.core.*; 
+import org.python.util.PythonInterpreter; 
 
 /**
  *
@@ -66,6 +69,10 @@ public class GeoIRC
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
     protected LogManager log_manager;
+    protected ScriptInterface script_interface;
+    
+    protected BSFManager bsf_manager;
+    protected PythonInterpreter python_interpreter;
     
     protected Hashtable audio_clips;
     
@@ -104,7 +111,6 @@ public class GeoIRC
         System.out.println(
             "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
         );
-        
         
         listening_to_connections = false;
         
@@ -207,6 +213,26 @@ public class GeoIRC
         log_manager = new LogManager( settings_manager, display_manager );
         display_manager.setLogManager( log_manager );
         info_manager = new InfoManager( settings_manager, display_manager );
+        
+        // Scripting.
+        
+        bsf_manager = new BSFManager();
+        
+        /*
+        try
+        {
+            bsf_manager.declareBean( "display_manager", display_manager, DisplayManager.class);
+        }
+        catch( BSFException e )
+        {
+            Util.printException( display_manager, e, "Script error: " );
+        }
+        */
+        
+        script_interface = new ScriptInterface( this, settings_manager, display_manager );
+        
+        python_interpreter = new PythonInterpreter();
+        python_interpreter.set( "geoirc", new PyJavaInstance( script_interface ) );
         
         // Read settings.
         
@@ -1620,6 +1646,27 @@ public class GeoIRC
                         + " <title regexp>" );
                 }
                 break;
+            case CMD_TEST:
+                /*
+                try
+                {
+                    
+                    
+                }
+                catch( BSFException e )
+                {
+                    Util.printException( display_manager, e, "Script execution error: " );
+                }
+                 */
+                if( arg_string != null )
+                {
+                    python_interpreter.execfile( arg_string );
+                }
+                else
+                {
+                    python_interpreter.execfile( "ooga.py" );
+                }
+                break;
             case CMD_UNDOCK_WINDOW:
             case CMD_FLOAT_WINDOW:
                 {
@@ -1691,6 +1738,8 @@ public class GeoIRC
             System.out.println( "java -classpath skinlf.jar;. geoirc.GeoIRC [options]" );
             System.out.println( "\t-c, --config\t<settings filepath>" );
         }
+        
+        // Register all scripting engines.
         
         GeoIRC geoirc = new GeoIRC( settings_filepath );
     }
