@@ -12,6 +12,7 @@ import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
+import geoirc.util.JValidatingTextField;
 import geoirc.util.Util;
 
 import java.awt.Dimension;
@@ -25,6 +26,7 @@ import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -39,9 +41,13 @@ import javax.swing.table.TableColumn;
 public class CommandAliasesPane
     extends BaseSettingsPanel
     implements Storable, GeoIRCConstants {
-    LittleTableModel ltm = new LittleTableModel();
+    private LittleTableModel ltm = new LittleTableModel();
     private JTable table;
-    private JButton delButton;
+    private JButton delButton = new JButton("delete");
+    private JButton addButton = new JButton("add new");
+    private JValidatingTextField custom_alias_field = new JValidatingTextField(".+?","");
+    private JValidatingTextField custom_command_field = new JValidatingTextField(".+?","");
+    private JButton addCustomButton = new JButton("add custom");
 
     /**
      * @param settings
@@ -86,7 +92,8 @@ public class CommandAliasesPane
             String alias = settings_manager.getString(nodePath + "alias", "");
             String expansion =
                 settings_manager.getString(nodePath + "expansion", "");
-            ltm.addRow(new CommandAlias(alias, expansion));
+            if(alias.length() > 0)
+                ltm.addRow(new CommandAlias(alias, expansion));
             i++;
             nodePath = path + String.valueOf(i) + "/";
         }
@@ -98,8 +105,7 @@ public class CommandAliasesPane
         table.getColumnModel().getColumn(3).setPreferredWidth(250);
         JScrollPane scroller = new JScrollPane(table);
         addComponent(scroller, 0, 1, 4, 1, 0, 0);
-
-        delButton = new JButton("Delete");
+        
         delButton.setEnabled(false);
         delButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -108,17 +114,24 @@ public class CommandAliasesPane
             }
         });
 
-        JButton button = new JButton("Add new");
-        button.addActionListener(new ActionListener() {
+        addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 ltm.addRow(new CommandAlias("new alias", ""));
             }
         });
 
         addComponent(delButton, 0, 2, 1, 1, 0, 0);
-        addComponent(button, 3, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
-        addHorizontalLayoutStopper(4, 2);
-        addLayoutStopper(0, 3);
+        addComponent(addButton, 3, 2, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
+        
+        addComponent(new JLabel("or add/set a custom command alias"), 0, 3, 2, 1, 0, 0);
+        addComponent(new JLabel("name"), 0, 4, 1, 1, 0, 0);
+        addComponent(custom_alias_field, 1, 4, 1, 1, 0, 0);
+        addComponent(new JLabel("command"), 0, 5, 1, 1, 0, 0);
+        addComponent(custom_command_field, 1, 5, 1, 1, 0, 0);
+        addComponent(addCustomButton, 2, 5, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
+        
+        addHorizontalLayoutStopper(4, 5);
+        addLayoutStopper(0, 6);
 
         ListSelectionModel rowSM = table.getSelectionModel();
         rowSM.addListSelectionListener(new ListSelectionListener() {
