@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowStateListener;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -585,55 +586,57 @@ public class DisplayManager
         }
         
         n = windows.size();
-        JInternalFrame frame;
+        GIWindow giw;
         for( int i = 0; i < n; i++ )
         {
-            frame = (JInternalFrame) windows.elementAt( i );
+            giw = (GIWindow) windows.elementAt( i );
             i_str = Integer.toString( i );
             
-            settings_manager.putString(
-                "/gui/desktop/" + i_str + "/type", 
-                frame.getClass().toString()
-            );
+            setting_path = "/gui/desktop/windows/" + i_str;
             
             settings_manager.putString(
-                "/gui/desktop/" + i_str + "/title",
-                frame.getTitle()
+                setting_path + "/title",
+                giw.getTitle()
             );
             settings_manager.putInt(
-                "/gui/desktop/" + i_str + "/x",
-                frame.getX()
+                setting_path + "/x",
+                giw.getX()
             );
             settings_manager.putInt(
-                "/gui/desktop/" + i_str + "/y",
-                frame.getY()
+                setting_path + "/y",
+                giw.getY()
             );
             settings_manager.putInt(
-                "/gui/desktop/" + i_str + "/height",
-                frame.getHeight()
+                setting_path + "/height",
+                giw.getHeight()
             );
             settings_manager.putInt(
-                "/gui/desktop/" + i_str + "/width",
-                frame.getWidth()
+                setting_path + "/width",
+                giw.getWidth()
             );
             
             int state = GI_NORMAL;
-            if( frame.isMaximum() )
+            if( giw.isMaximum() )
             {
                 state = GI_MAXIMIZED;
             }
-            else if( frame.isIcon() )
+            else if( giw.isIcon() )
             {
                 state = GI_MINIMIZED;
             }
             settings_manager.putInt(
-                "/gui/desktop/" + i_str + "/state",
+                setting_path + "/state",
                 state
             );
             
             settings_manager.putBoolean(
-                "/gui/desktop/" + i_str + "/selected",
-                frame.isSelected()
+                setting_path + "/selected",
+                giw.isSelected()
+            );
+            
+            settings_manager.putInt(
+                setting_path + "/pane",
+                panes.indexOf( giw.getPane() )
             );
             
         }
@@ -646,28 +649,60 @@ public class DisplayManager
         
         String type;
         String title;
-        String path;
         int x;
         int y;
         int width;
         int height;
         int state;
         boolean is_selected;
+        String setting_path;
+        int pane_index;
+        int pane_type;
+        
+        Hashtable filters = new Hashtable();
+        Hashtable paths = new Hashtable();
+        Hashtable pane_types = new Hashtable();
         
         i = 0;
         while( GOD_IS_GOOD )
         {
             i_str = Integer.toString( i );
+            setting_path = "/gui/desktop/panes/" + i_str;
             
-            path = settings_manager.getString(
-                "/gui/desktop/panes/" + i_str + "/path",
+            type = settings_manager.getString(
+                setting_path + "/type",
                 ""
             );
             
-            if( path.equals( "" ) )
+            if( type.equals( "" ) )
             {
                 break;
             }
+            
+            if( type.equals( "class geoirc.GITextPane" ) )
+            {
+                paths.put(
+                    i_str,
+                    settings_manager.getString(
+                        setting_path + "/path",
+                        ""
+                    )
+                );
+                pane_types.put( i_str, new Integer( TEXT_PANE ) );
+            }
+            else if( type.equals( "class geoirc.GIInfoPane" ) )
+            {
+                filters.put(
+                    i_str,
+                    settings_manager.getString(
+                        setting_path + "/filter",
+                        ""
+                    )
+                );
+                pane_types.put( i_str, new Integer( INFO_PANE ) );
+            }
+            
+            i++;
         }
 
         i = 0;
@@ -675,102 +710,96 @@ public class DisplayManager
         {
             i_str = Integer.toString( i );
             
-            type = settings_manager.getString(
-                "/gui/desktop/" + i_str + "/type", 
+            setting_path = "/gui/desktop/windows/" + i_str;
+            
+            title = settings_manager.getString(
+                setting_path + "/title",
                 ""
             );
             
-            if( type.equals( "" ) )
+            if( title.equals( "" ) )
             {
                 // No more windows stored in the settings.
                 break;
             }
             
-            type = type.substring( type.lastIndexOf( "." ) + 1 );
-            
-            title = settings_manager.getString(
-                "/gui/desktop/" + i_str + "/title",
-                "GeoIRC"
-            );
-            
             x = settings_manager.getInt(
-                "/gui/desktop/" + i_str + "/x",
+                setting_path + "/x",
                 MIN_NEW_WINDOW_X
             );
             y = settings_manager.getInt(
-                "/gui/desktop/" + i_str + "/y",
+                setting_path + "/y",
                 MIN_NEW_WINDOW_Y
             );
             height = settings_manager.getInt(
-                "/gui/desktop/" + i_str + "/height",
+                setting_path + "/height",
                 DEFAULT_WINDOW_HEIGHT
             );
             width = settings_manager.getInt(
-                "/gui/desktop/" + i_str + "/width",
+                setting_path + "/width",
                 DEFAULT_WINDOW_WIDTH
             );
             state = settings_manager.getInt(
-                "/gui/desktop/" + i_str + "/state",
+                setting_path + "/state",
                 GI_NORMAL
             );
             is_selected = settings_manager.getBoolean(
-                "/gui/desktop/" + i_str + "/selected",
+                setting_path + "/selected",
                 false
             );
+            pane_index = settings_manager.getInt(
+                setting_path + "/pane",
+                -1
+            );
             
-            boolean type_known = true;
-            GIWindow frame = null;
-            if( type.equals( "GITextWindow" ) )
+            pane_type = (
+                (Integer) pane_types.get(
+                    Integer.toString( pane_index )
+                )
+            ).intValue();
+            
+            GIWindow giw = null;
+            if( pane_type == TEXT_PANE )
             {
-                String filter = settings_manager.getString(
-                    "/gui/desktop/" + i_str + "/filter",
-                    ""
+                giw = addTextWindow(
+                    title,
+                    (String) filters.get( new Integer( pane_index ) )
                 );
-                
-                GITextWindow gitw = addTextWindow( title, filter );
-                frame = gitw;
             }
-            else if( type.equals( "GIInfoWindow" ) )
+            else if( pane_type == INFO_PANE )
             {
-                String path = settings_manager.getString(
-                    "/gui/desktop/" + i_str + "/path",
-                    "/"
+                giw = addInfoWindow(
+                    title,
+                    (String) paths.get( new Integer( pane_index ) )
                 );
-                
-                GIInfoWindow giiw = addInfoWindow( title, path );
-                frame = giiw;
             }
             else
             {
                 // Huh?  Unknown window type.
-                type_known = false;
                 printlnDebug( "Unknown window type in settings." );
             }
             
-            if( type_known )
+            giw.setBounds( x, y, width, height );
+            try
             {
-                frame.setBounds( x, y, width, height );
-                try
+                switch( state )
                 {
-                    switch( state )
-                    {
-                        case GI_MAXIMIZED:
-                            frame.setMaximum( true );
-                            break;
-                        case GI_MINIMIZED:
-                            frame.setIcon( true );
-                            break;
-                        case GI_NORMAL:
-                        default:
-                            frame.setMaximum( false );
-                            break;
-                    }
-                    frame.setSelected( is_selected );
+                    case GI_MAXIMIZED:
+                        giw.setMaximum( true );
+                        break;
+                    case GI_MINIMIZED:
+                        giw.setIcon( true );
+                        break;
+                    case GI_NORMAL:
+                    default:
+                        giw.setMaximum( false );
+                        break;
                 }
-                catch( java.beans.PropertyVetoException e )
-                {
-                    // Do nothing about this error.
-                }
+                giw.setSelected( is_selected );
+            }
+            catch( java.beans.PropertyVetoException e )
+            {
+                // Do nothing about this error.
             }
             
             i++;

@@ -860,7 +860,7 @@ public class GeoIRC
                         Server s = (Server) current_remote_machine;
                         if( s != null )
                         {
-                            GITextWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
+                            GIWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
                             if( window != null )
                             {
                                 execute( CMDS[ CMD_SEND_RAW ] + " " + command );
@@ -943,7 +943,7 @@ public class GeoIRC
             case CMD_NEW_TEXT_WINDOW:
                 if( args != null )
                 {
-                    GITextWindow window = display_manager.addTextWindow( arg_string, arg_string );
+                    GIWindow window = display_manager.addTextWindow( arg_string, arg_string );
                     if( window != null )
                     {
                         result = CommandExecutor.EXEC_SUCCESS;

@@ -56,7 +56,7 @@ public class HighlightTrigger implements GeoIRCConstants
     {
         String highlighted_line = line;
         Matcher matcher = regexp.matcher( line );
-        String group = null;;
+        String group = null;
         
         try
         {

@@ -52,11 +52,11 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
     
     public void addPane( GIPane pane )
     {
-        if( GIPane instanceof GIInfoPane )
+        if( pane instanceof GIInfoPane )
         {
             pane_type = INFO_PANE;
         }
-        else if( GIPane instanceof GITextPane )
+        else if( pane instanceof GITextPane )
         {
             pane_type = TEXT_PANE;
         }

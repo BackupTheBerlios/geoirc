@@ -248,10 +248,17 @@ public class Server
             String line = "";
             while( line != null )
             {
-                interpretLine( line );
                 try
                 {
+                    interpretLine( line );
                     line = in.readLine();
+                }
+                catch( NullPointerException e )
+                {
+                    display_manager.printlnDebug(
+                        "NullPointerException in interpretLine."
+                    );
+                    display_manager.printlnDebug( e.getMessage() );
                 }
                 catch( IOException e )
                 {
