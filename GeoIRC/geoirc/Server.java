@@ -69,6 +69,12 @@ public class Server
                     "USER "
                     + settings_manager.getString( "/personal/ident/username", "Pistos" )
                     + " x x :Pi Gi" );
+                
+                // TODO: We'll setup some way to find out when the server
+                // acknowledges that our nick is okay to use,
+                // and when it sends us the "in use" error right away once
+                // we sign on.
+                current_nick = nick_to_use;
             }
         }
         catch( UnknownHostException e )
@@ -271,7 +277,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
                 {
-                    String nick  = getNick( tokens[ 0 ] );
+                    String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ];
                     String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
                     String text = nick + " left " + channel + " (" + message + ").";
@@ -324,7 +330,7 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
                 {
-                    String nick  = getNick( tokens[ 0 ] );
+                    String nick = getNick( tokens[ 0 ] );
                     String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
                     String text = nick + " has quit (" + message + ").";
                     String qualities = Server.this.toString()

@@ -28,3 +28,7 @@ reflected in the internal variables only when the server actually allows the
 nick change.  Other users' nick changes are also now printed.  Nicks are now on
 a per-server basis.
 Pistos 2003-07-11
+
+Whoops, forgot to put the Ident server in an infinite loop to continually
+serve Ident requests.
+Pistos 2003-07-11

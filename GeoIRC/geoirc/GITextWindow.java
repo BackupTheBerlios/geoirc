@@ -48,7 +48,7 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
             style_manager,
             title,
             (String) null
-        /*, (RemoteMachine) null */ );
+        );
     }
 
     public GITextWindow(
@@ -59,19 +59,6 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         String filter
     )
     {
-        /*
-        this( display_manager, settings_manager, title, filter, (RemoteMachine) null );
-    }
-    
-    public GITextWindow(
-        DisplayManager display_manager,
-        SettingsManager settings_manager,
-        String title,
-        String filter,
-        RemoteMachine associated_machine
-    )
-    {
-         */
         super();
         setIconifiable( true );
         setClosable( true );
