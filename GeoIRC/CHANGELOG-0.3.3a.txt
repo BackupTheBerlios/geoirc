@@ -1,2 +1,9 @@
-Changelog for GeoIRC 0.3.2a
+Changelog for GeoIRC 0.3.3a
 ---------------------------
+
+Fixed support for multiple NAMREPLY messages.
+Pistos 2003-09-26
+
+Added a safety so that failure to load settings trips a flag that prevents
+settings from getting saved.
+Pistos 2003-09-26

@@ -62,8 +62,18 @@ public class Trigger
     /* Check against a message which has certain qualities.
      * Execute the command if the check passes.
      */
-    public boolean check( String message, String qualities )
+    public boolean check( String message_, String qualities_ )
     {
+        String message = "";
+        if( message_ != null )
+        {
+            message = message_;
+        }
+        String qualities = "";
+        if( qualities_ != null )
+        {
+            qualities = qualities_;
+        }
         boolean passed = false;
         try
         {

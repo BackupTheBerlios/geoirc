@@ -34,6 +34,7 @@ public class SettingsManager
     private static Preferences root = Preferences.userNodeForPackage( GeoIRC.class );
     protected String filepath;
     protected DisplayManager displayMgr = null;
+    protected boolean any_load_failure;
 
     // No default constructor.
     private SettingsManager() { }
@@ -42,6 +43,7 @@ public class SettingsManager
     {
         displayMgr = newDisplayMgr;
         this.filepath = filepath;
+        any_load_failure = false;
     }
     
     protected void printlnDebug( String s )
@@ -108,22 +110,33 @@ public class SettingsManager
             printlnDebug("I/O problem while trying to load settings from '" + filepath + "'.");
         }
         
+        if( success == false )
+        {
+            any_load_failure = true;
+        }
+        
         return success;
     }
     
     public boolean saveSettingsToXML()
     {
-        boolean success = true;
+        boolean success = false;
         
-        try {
-            root.flush();
-            root.exportSubtree(new FileOutputStream( filepath ));
-        } catch (IOException e) {
-            printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
-            success = false;
-        } catch (BackingStoreException e) {
-            printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
-            success = false;
+        if( ! any_load_failure )
+        {
+            try {
+                root.flush();
+                root.exportSubtree(new FileOutputStream( filepath ));
+                success = true;
+            } catch (IOException e) {
+                printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
+            } catch (BackingStoreException e) {
+                printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
+            }
+        }
+        else
+        {
+            printlnDebug( "Settings not saved due to previous settings load failure." );
         }
         
         return success;

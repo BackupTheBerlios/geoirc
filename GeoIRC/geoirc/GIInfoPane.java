@@ -47,6 +47,7 @@ public class GIInfoPane extends GIPane implements GeoIRCConstants
         tree = new JTree( model );
         tree.setCellRenderer( display_manager.getCellRenderer() );
         tree.setRowHeight( INFO_WINDOW_TREE_ROW_HEIGHT );
+        tree.setLargeModel( true );
         setViewportView( tree );
         tree.addKeyListener( display_manager );
     }
