@@ -40,3 +40,6 @@ Added two new nickname sort orderings (order by channel mode and alphabetic asce
 order by channel mode and last activity descending) and reworked the existing
 alphabetic sort ordering to return better results
 netseeker 2003-09-24
+
+ESCAPE does now close the settings dialog
+netseeker 2003-09-24

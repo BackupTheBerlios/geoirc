@@ -15,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.HashSet;
@@ -24,12 +26,15 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -99,7 +104,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         };
 
         this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
-
+        
         try
         {
             setResizable(true);
@@ -122,6 +127,24 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     public SettingsDialog(XmlProcessable settings_manager, DisplayManager display_manager)
     {
         this("GeoIRC Settings", settings_manager, display_manager);
+    }
+
+    protected JRootPane createRootPane()
+    {
+        KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        ActionListener escape_listener = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                close();
+                dispose();
+            }
+        };
+
+        JRootPane rootPane = new JRootPane();
+        rootPane.registerKeyboardAction(escape_listener, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        return rootPane;
     }
 
     private void initComponents() throws Exception
@@ -169,7 +192,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         jSplitPane1.setDividerSize(5);
         jSplitPane1.setResizeWeight(0.0);
         flowLayout1.setAlignment(FlowLayout.RIGHT);
-        getContentPane().add(mainPanel, BorderLayout.CENTER);
+        getContentPane().add(mainPanel, BorderLayout.CENTER);        
         mainPanel.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(scrollTree, JSplitPane.LEFT);
         jSplitPane1.add(new JScrollPane(rootPane), JSplitPane.RIGHT);
@@ -504,7 +527,6 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
             return this;
         }
     }
-
 }
 
 class SettingsDialog_Apply_actionAdapter implements java.awt.event.ActionListener
