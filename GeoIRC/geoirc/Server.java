@@ -41,6 +41,7 @@ public class Server
     protected boolean listening_to_channels;
     protected String current_nick;
     
+    
     public Server(
         GeoIRC parent,
         DisplayManager display_manager,
@@ -461,6 +462,22 @@ public class Server
             return retval;
         }
         
+        protected String getUserNameAndHost( String nick_and_username_and_host )
+        {
+            String retval = null;
+            
+            if( nick_and_username_and_host != null )
+            {
+                int index = nick_and_username_and_host.indexOf( "!" );
+                if( index > -1 )
+                {                    
+                    retval = nick_and_username_and_host.substring( index + 1 );
+                }
+            }
+            
+            return retval;            
+        }
+        
         public Vector handleNamesList( Channel originating_channel, String namlist )
         {
             Vector list_members = new Vector();
@@ -546,7 +563,14 @@ public class Server
                 {
                     String nick = getNick( tokens[ 0 ] );
                     String channel = tokens[ 2 ].substring( 1 );  // Remove leading colon.
-                    String text = getPadded( nick ) + " has joined " + channel + ".";
+                    String text = getPadded( nick );                                        
+                    //show dns username and host?
+                    if( settings_manager.getBoolean("/gui/format/complete join message", false) == true )
+                    {                    
+                        text += " (" + getUserNameAndHost( tokens[ 0 ] ) + ")";
+                    }
+                    text += " has joined " + channel + ".";
+                    
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "join";
