@@ -623,8 +623,7 @@ class RegexTesterActionAdapter implements java.awt.event.ActionListener
     }
     public void actionPerformed(ActionEvent e)
     {
-        final RegularExpressionTester tester = new RegularExpressionTester( adaptee );
-       tester.setVisible( true );
-
+        final RegularExpressionTester tester = new RegularExpressionTester( adaptee, JOptionPane.YES_NO_OPTION );
+        tester.setVisible( true );
     }
 }

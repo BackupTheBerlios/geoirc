@@ -17,7 +17,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -48,39 +48,39 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
     private JRegExTextField regexp_field = new JRegExTextField(null);
     private JValidatingTextPane input_field = new JValidatingTextPane(null);
     private JEditorPane output_field = new JEditorPane();
-
+    private JButton apply_button = new JButton("Apply");
+    private JButton close_button = new JButton("Close");
+    
     private GridBagLayout layout = new GridBagLayout();
 
     /**
      * @throws java.awt.HeadlessException
      */
-    public RegularExpressionTester()
+    public RegularExpressionTester(int options)
     {
         super();
-        initComponents();
+        initComponents(options);
     }
 
     /**
      * @param arg0
-     * @throws java.awt.HeadlessException
      */
-    public RegularExpressionTester(Dialog arg0)
+    public RegularExpressionTester(Dialog arg0, int options)
     {
         super(arg0);
-        initComponents();
+        initComponents(options);
     }
 
     /**
      * @param arg0
-     * @throws java.awt.HeadlessException
      */
-    public RegularExpressionTester(Frame arg0) throws HeadlessException
+    public RegularExpressionTester(Frame arg0, int options)
     {
         super(arg0);
-        initComponents();
+        initComponents(options);
     }
 
-    private void initComponents()
+    private void initComponents(int options)
     {
         this.setDefaultCloseOperation(HIDE_ON_CLOSE);
         this.setTitle(title);
@@ -113,7 +113,6 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
             output_scroller,
             LayoutUtil.getGBC(0, 4, 2, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL));
         
-        JButton close_button = new JButton("Close");
         close_button.addActionListener( new ActionListener()
         {
             public void actionPerformed(ActionEvent arg0)
@@ -121,11 +120,29 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
                 regexp_field.setText("");
                 input_field.setText("");
                 output_field.setText("");
-                setVisible( false );                
+                setVisible ( false );               
             }
         });
-        content_pane.add(close_button, new  GridBagConstraints(1, 5, 1, 1, 1, 0,  GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));
 
+        apply_button.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                output_field.setText("");
+                setVisible ( false );               
+            }
+        });
+
+        switch ( options )
+        {
+            case JOptionPane.DEFAULT_OPTION:
+                showButton( content_pane, 0, 1, 1);
+                break;
+            default:
+                showButton( content_pane, 0, 0, 1);
+                showButton( content_pane, 1, 1, 0);
+        }
+        
         this.pack();
     }
 
@@ -306,5 +323,33 @@ public class RegularExpressionTester extends JDialog implements DocumentListener
                 }
             }
         }
+    }
+    
+    private void showButton( Container content_pane, int button, int x, int fill )
+    {
+        switch( button )
+        {
+            case 0:
+                content_pane.add(close_button, new  GridBagConstraints(x, 5, 1, 1, fill, 0,  GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));
+                break;
+            case 1:
+                content_pane.add(apply_button, new  GridBagConstraints(x, 5, 1, 1, fill, 0,  GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0));        
+                break;                                                    
+        }
+    }
+
+    public void addApplyListener(ActionListener listener)
+    {
+        apply_button.addActionListener(listener);
+    }
+    
+    public void removeApplyListener(ActionListener listener)
+    {
+        apply_button.removeActionListener(listener);
+    }
+    
+    public ActionListener[] getApplyListeners()
+    {
+        return apply_button.getActionListeners();
     }
 }
