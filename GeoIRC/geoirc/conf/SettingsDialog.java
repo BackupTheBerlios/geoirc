@@ -146,7 +146,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
             root.add(buildSubTree(panel));
         }
 
-        JTree categoryTree = new JTree(root);
+        JTree categoryTree = new JTree(root);       
         categoryTree.setMinimumSize(new Dimension());
         categoryTree.setPreferredSize(new Dimension(100, 64));
         categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -170,7 +170,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             node.add(buildSubTree((BaseSettingsPanel)it.next()));
         }
-
+        
         return node;
     }
 
