@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyVetoException;
 import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -330,26 +331,142 @@ public class DisplayManager
         }
     }
     
+    public GIWindow getWindowByIndex( int index )
+    {
+        GIWindow giw;
+        try
+        {
+            giw = (GIWindow) windows.elementAt( index );
+        }
+        catch( ArrayIndexOutOfBoundsException e )
+        {
+            giw = getSelectedFrame();
+        }
+        return giw;
+    }
+    
+    public void closeWindow( int index )
+    {
+        GIWindow giw = getWindowByIndex( index );
+        if( giw != null )
+        {
+            try
+            {
+                giw.setClosed( true );
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException( this, e, "Failed to close window " + Integer.toString( index ) );
+            }
+        }
+    }
+    
+    public void maximizeWindow( int index )
+    {
+        GIWindow giw = getWindowByIndex( index );
+        if( giw != null )
+        {
+            try
+            {
+                giw.setMaximum( true );
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException( this, e, "Failed to maximize window " + Integer.toString( index ) );
+            }
+        }
+    }
+    
+    public void minimizeWindow( int index )
+    {
+        GIWindow giw = getWindowByIndex( index );
+        if( giw != null )
+        {
+            try
+            {
+                giw.setIcon( true );
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException( this, e, "Failed to minimize window " + Integer.toString( index ) );
+            }
+        }
+    }
+    
+    public void restoreWindow( int index )
+    {
+        GIWindow giw = getWindowByIndex( index );
+        if( giw != null )
+        {
+            try
+            {
+                if( giw.isMaximum() )
+                {
+                    giw.setMaximum( false );
+                }
+                else if( giw.isIcon() )
+                {
+                    giw.setIcon( false );
+                }
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException( this, e, "Failed to restore window " + Integer.toString( index ) );
+            }
+        }
+    }
+    
+    public void sizeWindow( int index, int width_, int height_ )
+    {
+        GIWindow giw = getWindowByIndex( index );
+        if( giw != null )
+        {
+            int width = Util.fitInt( width_, WINDOW_MINIMUM_WIDTH, WINDOW_MAXIMUM_WIDTH );
+            int height = Util.fitInt( height_, WINDOW_MINIMUM_HEIGHT, WINDOW_MAXIMUM_HEIGHT );
+            try
+            {
+                giw.setMaximum( false );
+                giw.setIcon( false );
+                giw.setSize( width, height );
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException( this, e, "Failed to size window " + Integer.toString( index ) );
+            }
+        }
+    }
+    
+    public void positionWindow( int index, int x_, int y_ )
+    {
+        GIWindow giw = getWindowByIndex( index );
+        if( giw != null )
+        {
+            int x = Util.fitInt( x_, -1000, 5000 );
+            int y = Util.fitInt( y_, -1000, 5000 );
+            try
+            {
+                giw.setMaximum( false );
+                giw.setIcon( false );
+                giw.setLocation( x, y );
+            }
+            catch( PropertyVetoException e )
+            {
+                Util.printException( this, e, "Failed to position window " + Integer.toString( index ) );
+            }
+        }
+    }
+    
     public boolean clearTextWindow( int index )
     {
         boolean success = false;
+        GIWindow giw = getWindowByIndex( index );
         
-        try
+        if( giw != null )
         {
-            GIWindow giw = (GIWindow) windows.elementAt( index );
             if( giw.getPaneType() == TEXT_PANE )
             {
                 GITextPane gitp = (GITextPane) giw.getPane();
                 gitp.clearDocument();
-                success = true;
-            }
-        }
-        catch( ArrayIndexOutOfBoundsException e )
-        {
-            // Clear current text pane.
-            if( last_activated_text_pane != null )
-            {
-                last_activated_text_pane.clearDocument();
                 success = true;
             }
         }

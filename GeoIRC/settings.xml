@@ -150,6 +150,13 @@
                 <entry key="path" value="/" />
               </map>
             </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="x" />
+                <entry key="filter" value="x" />
+              </map>
+            </node>
           </node>
           <node name="windows">
             <map />
@@ -161,7 +168,7 @@
                 <entry key="height" value="779" />
                 <entry key="width" value="1048" />
                 <entry key="state" value="1" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -172,9 +179,21 @@
                 <entry key="y" value="0" />
                 <entry key="height" value="779" />
                 <entry key="width" value="1048" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="true" />
+                <entry key="pane" value="1" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="title" value="x" />
+                <entry key="x" value="0" />
+                <entry key="y" value="0" />
+                <entry key="height" value="779" />
+                <entry key="width" value="1048" />
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
-                <entry key="pane" value="1" />
+                <entry key="pane" value="4" />
               </map>
             </node>
           </node>
@@ -273,10 +292,14 @@
           <entry key="Ctrl|Down" value="nudgedown" />
           <entry key="|Page Up" value="pageup" />
           <entry key="|Page Down" value="pagedown" />
-          <entry key="|F2" value="nick Pistos|GeoIRC" />
+          <entry key="|F2" value="nick Pistos|afk" />
           <entry key="|F3" value="nick GeoIRC_User" />
           <entry key="|F9" value="nick Pistos" />
           <entry key="|F12" value="openlasturl" />
+          <entry key="Ctrl|F4" value="closewindow" />
+          <entry key="Ctrl|F5" value="restorewindow" />
+          <entry key="Ctrl|F9" value="minimizewindow" />
+          <entry key="Ctrl|F10" value="maximizewindow" />
           <entry key="Ctrl|1" value="switchwindow .*geoshell.*" />
           <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
@@ -290,6 +313,7 @@
           <entry key="Ctrl|O" value="charnormal" />
           <entry key="Ctrl|K" value="charcolour" />
           <entry key="Ctrl|V" value="extendedpaste" />
+          <entry key="Ctrl|W" value="closewindow" />
           <entry key="|Tab" value="completenick" />
           <entry key="Shift|Tab" value="focus_on_input_field" />
         </map>

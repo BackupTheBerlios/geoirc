@@ -1271,6 +1271,28 @@ public class GeoIRC
                     display_manager.clearTextWindow( -1 );
                 }
                 break;
+            case CMD_CLOSE_WINDOW:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.closeWindow( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_CLOSE_WINDOW ]
+                            + " [window id number]" );
+                    }
+                }
+                else
+                {
+                    display_manager.closeWindow( -1 );
+                }
+                break;
             case CMD_COMPLETE_NICK:
                 {
                     String input_line = input_field.getText();
@@ -1576,6 +1598,10 @@ public class GeoIRC
                     {
                         rm.close();
                         removeRemoteMachine( rm );
+                        if( rm instanceof Server )
+                        {
+                            display_manager.closeWindows( rm.toString() + " and %raw and not %printed" );
+                        }
                     }
                 }
                 break;
@@ -2022,6 +2048,50 @@ public class GeoIRC
                     );
                 }
                 break;
+            case CMD_MAXIMIZE_WINDOW:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.maximizeWindow( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_MAXIMIZE_WINDOW ]
+                            + " [window id number]" );
+                    }
+                }
+                else
+                {
+                    display_manager.maximizeWindow( -1 );
+                }
+                break;
+            case CMD_MINIMIZE_WINDOW:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.minimizeWindow( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_MINIMIZE_WINDOW ]
+                            + " [window id number]" );
+                    }
+                }
+                else
+                {
+                    display_manager.minimizeWindow( -1 );
+                }
+                break;
             case CMD_NEW_INFO_WINDOW:
                 {
                     String path = arg_string;
@@ -2246,6 +2316,48 @@ public class GeoIRC
                     
                 }
                 break;
+            case CMD_POSITION_WINDOW:
+                {
+                    boolean problem = true;
+                    if( args != null )
+                    {
+                        try
+                        {
+                            if( args.length >= 3 )
+                            {
+                                // Window index specified.
+
+                                display_manager.positionWindow(
+                                    Integer.parseInt( args[ 0 ] ),
+                                    Integer.parseInt( args[ 1 ] ),
+                                    Integer.parseInt( args[ 2 ] )
+                                );
+                                problem = false;
+                            }
+                            else if( args.length == 2 )
+                            {
+                                // No window index specified; assume current window.
+                                
+                                display_manager.positionWindow(
+                                    -1,
+                                    Integer.parseInt( args[ 0 ] ),
+                                    Integer.parseInt( args[ 1 ] )
+                                );
+                                problem = false;
+                            }
+                        } catch( NumberFormatException e ) { }
+                    }
+                    
+                    if( problem )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_POSITION_WINDOW ]
+                            + " [window id number] <width in pixels> <height in pixels>" );
+                    }
+                }
+                break;
             case CMD_PREVIOUS_HISTORY_ENTRY:
                 if(
                     ( input_history_pointer < input_history.size() - 1 )
@@ -2320,6 +2432,29 @@ public class GeoIRC
                         + " <nick/channel> <message>" );
                 }
                 break;
+            case CMD_QUIT:
+                if( current_rm instanceof Server )
+                {
+                    String quit_message = arg_string;
+
+                    Server s = (Server) current_rm;
+                    execute(
+                        CMDS[ CMD_SEND_RAW ] + " QUIT "
+                        + (
+                            ( quit_message != null )
+                            ? ( " :" + quit_message )
+                            : ""
+                        )
+                    );
+                    result = CommandExecutor.EXEC_SUCCESS;
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "First switch to a window associated with a server."
+                    );
+                }
+                break;
             case CMD_REJECT_DCC_CHAT:
                 if( args != null )
                 {
@@ -2367,6 +2502,28 @@ public class GeoIRC
                 break;
             case CMD_RESET_SCRIPT_ENVIRONMENT:
                 initializeScriptingInterfaces();
+                break;
+            case CMD_RESTORE_WINDOW:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.restoreWindow( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_RESTORE_WINDOW ]
+                            + " [window id number]" );
+                    }
+                }
+                else
+                {
+                    display_manager.restoreWindow( -1 );
+                }
                 break;
             case CMD_SEND_RAW:
             case CMD_QUOTE:
@@ -2463,6 +2620,48 @@ public class GeoIRC
                     if( jif != null )
                     {
                         jif.setTitle( arg_string );
+                    }
+                }
+                break;
+            case CMD_SIZE_WINDOW:
+                {
+                    boolean problem = true;
+                    if( args != null )
+                    {
+                        try
+                        {
+                            if( args.length >= 3 )
+                            {
+                                // Window index specified.
+
+                                display_manager.sizeWindow(
+                                    Integer.parseInt( args[ 0 ] ),
+                                    Integer.parseInt( args[ 1 ] ),
+                                    Integer.parseInt( args[ 2 ] )
+                                );
+                                problem = false;
+                            }
+                            else if( args.length == 2 )
+                            {
+                                // No window index specified; assume current window.
+                                
+                                display_manager.sizeWindow(
+                                    -1,
+                                    Integer.parseInt( args[ 0 ] ),
+                                    Integer.parseInt( args[ 1 ] )
+                                );
+                                problem = false;
+                            }
+                        } catch( NumberFormatException e ) { }
+                    }
+                    
+                    if( problem )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_SIZE_WINDOW ]
+                            + " [window id number] <width in pixels> <height in pixels>" );
                     }
                 }
                 break;

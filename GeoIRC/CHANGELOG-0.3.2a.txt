@@ -61,3 +61,10 @@ Pistos 2003-09-24
 Fixed bug where sending raw when there is no active server causes a
 NullPointerException.
 Pistos 2003-09-24
+
+Added "quit" command.
+Pistos 2003-09-24
+
+Added "closewindow", "maximizewindow", "minimizewindow", "restorewindow",
+"sizewindow" and "positionwindow" commands.
+Pistos 2003-09-24

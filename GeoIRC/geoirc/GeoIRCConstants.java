@@ -106,7 +106,14 @@ public interface GeoIRCConstants
         "exectclproc",
         "printactive",
         "clearinputfield",
-        "clearwindow"
+        "clearwindow",
+        "quit",
+        "closewindow",
+        "maximizewindow",
+        "minimizewindow",
+        "restorewindow",
+        "sizewindow",
+        "positionwindow"
     };
     
     public static final String[] IRC_CMDS =
@@ -137,6 +144,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHAR_NORMAL = 67;
     public static final int CMD_CLEAR_INPUT_FIELD = 76;
     public static final int CMD_CLEAR_WINDOW = 77;
+    public static final int CMD_CLOSE_WINDOW = 79;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_DCC_CHAT = 69;
@@ -170,6 +178,8 @@ public interface GeoIRCConstants
     public static final int CMD_LOAD_PY = 52;
     public static final int CMD_LOAD_TCL = 73;
     public static final int CMD_LOG = 48;
+    public static final int CMD_MAXIMIZE_WINDOW = 80;
+    public static final int CMD_MINIMIZE_WINDOW = 81;
     public static final int CMD_MSG = 20;
     public static final int CMD_NEW_INFO_WINDOW = 29;
     public static final int CMD_NEW_SERVER = 5;
@@ -184,23 +194,27 @@ public interface GeoIRCConstants
     public static final int CMD_PAGE_UP = 35;
     public static final int CMD_PART = 14;
     public static final int CMD_PLAY = 44;
+    public static final int CMD_POSITION_WINDOW = 84;
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
     public static final int CMD_PRINT = 47;
     public static final int CMD_PRINT_ACTIVE = 75;
     public static final int CMD_PRINT_DEBUG = 25;
     public static final int CMD_PRIVMSG = 19;
+    public static final int CMD_QUIT = 78;
     public static final int CMD_QUOTE = 45;
     public static final int CMD_RAW = 46;
     public static final int CMD_REJECT_DCC_CHAT = 60;
     public static final int CMD_REMOVE_LOG = 49;
     public static final int CMD_RESET_SCRIPT_ENVIRONMENT = 61;
+    public static final int CMD_RESTORE_WINDOW = 82;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
     public static final int CMD_SET = 16;
     public static final int CMD_SET_FILTER = 17;
     public static final int CMD_SET_TITLE = 18;
     public static final int CMD_SHOW_QUALITIES = 42;
+    public static final int CMD_SIZE_WINDOW = 83;
     public static final int CMD_SWITCH_WINDOW = 21;
     public static final int CMD_TEST = 51;
     public static final int CMD_TOPIC = 57;
@@ -301,7 +315,11 @@ public interface GeoIRCConstants
     static final int GI_NORMAL = 0;
     static final int GI_MAXIMIZED = 1;
     static final int GI_MINIMIZED = 2;
-    static final Dimension GI_WINDOW_MINIMUM_SIZE = new Dimension( 30, 30 );
+    static final int WINDOW_MINIMUM_WIDTH = 20;
+    static final int WINDOW_MAXIMUM_WIDTH = 5000;
+    static final int WINDOW_MINIMUM_HEIGHT = 20;
+    static final int WINDOW_MAXIMUM_HEIGHT = 5000;
+    static final Dimension GI_WINDOW_MINIMUM_SIZE = new Dimension( WINDOW_MINIMUM_WIDTH, WINDOW_MINIMUM_HEIGHT );
     static final Dimension DEFAULT_DESKTOP_PANE_SIZE = new Dimension( 500, 300 );
     
     static final String STYLE_ESCAPE_SEQUENCE = Character.toString( (char) 255 );

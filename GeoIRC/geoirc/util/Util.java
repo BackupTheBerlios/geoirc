@@ -325,4 +325,18 @@ public class Util implements GeoIRCConstants
         return new String[] { string1, string2 };
     }
 
+    public static int fitInt( int number, int min, int max )
+    {
+        int retval = number;
+        if( retval < min )
+        {
+            retval = min;
+        }
+        else if( retval > max )
+        {
+            retval = max;
+        }
+        
+        return retval;
+    }
 }
