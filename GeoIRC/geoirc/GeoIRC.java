@@ -281,6 +281,9 @@ public class GeoIRC
         display_manager.beginListening();
         listening_to_servers = true;
         
+        System.out.println(
+            "GeoIRC " + GEOIRC_VERSION
+        );
         display_manager.printlnDebug(
             "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
         );

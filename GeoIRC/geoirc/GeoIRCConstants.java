@@ -80,7 +80,8 @@ public interface GeoIRCConstants
         "PART",
         "QUIT",
         "PING",
-        "NICK"
+        "NICK",
+        "NOTICE"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -88,6 +89,7 @@ public interface GeoIRCConstants
     static final int IRCMSG_QUIT = 3;
     static final int IRCMSG_PING = 4;
     static final int IRCMSG_NICK = 5;
+    static final int IRCMSG_NOTICE = 6;
     
     static final String [] CTCP_CMDS =
     {

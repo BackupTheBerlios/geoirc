@@ -277,6 +277,70 @@ public class Server
                         sound_manager.check( text, qualities );
                     }
                 }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NOTICE ] ) )
+                {
+                    String nick = getNick( tokens[ 0 ] );
+                    String text = Util.stringArrayToString( tokens, 3 );
+                    text = text.substring( 1 );  // Remove leading colon.
+                    qualities += " " + FILTER_SPECIAL_CHAR + "notice";
+
+                    if( text.charAt( 0 ) == CTCP_MARKER )
+                    {
+                        // CTCP message.
+                        
+                        qualities += " " + FILTER_SPECIAL_CHAR + "ctcp";
+                        
+                        String ctcp_message = text.substring(
+                            1,
+                            text.lastIndexOf( CTCP_MARKER )
+                        );
+                        
+                        int space_index = ctcp_message.indexOf( " " );
+                        String command_name;
+                        String arg_string;
+                        if( space_index > -1 )
+                        {
+                            command_name = ctcp_message.substring( 0, space_index );
+                            arg_string = ctcp_message.substring( space_index + 1 );
+                        }
+                        else
+                        {
+                            command_name = ctcp_message;
+                            arg_string = null;
+                        }
+                        String [] args = Util.tokensToArray( arg_string );
+
+                        int command_id = UNKNOWN_CTCP_CMD;
+                        for( int i = 0; i < CTCP_CMDS.length; i++ )
+                        {
+                            if( command_name.equals( CTCP_CMDS[ i ] ) )
+                            {
+                                command_id = i;
+                                break;
+                            }
+                        }
+
+                        text = "Received CTCP " + CTCP_CMDS[ command_id ]
+                            + " from " + nick;
+                    }
+                    else
+                    {
+                        text = "-" + nick + "- " + text;
+                    }
+
+                    String timestamp = GeoIRC.getATimeStamp(
+                        settings_manager.getString( "/gui/format/timestamp", "" )
+                    );
+                    qualities += " " + Server.this.toString()
+                        + " " + tokens[ 2 ]
+                        + " from=" + nick;
+
+                    display_manager.println(
+                        timestamp + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
+                }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
@@ -319,9 +383,7 @@ public class Server
                         text = "* " + nick + text.substring( 7, text.length() - 1 );
                         qualities += " " + FILTER_SPECIAL_CHAR + "action";
                     }
-                    else if(
-                        ( text.charAt( 0 ) == CTCP_MARKER )
-                    )
+                    else if( text.charAt( 0 ) == CTCP_MARKER )
                     {
                         // CTCP message.
                         
@@ -364,7 +426,7 @@ public class Server
                         {
                             case CTCP_CMD_SOURCE:
                                 send(
-                                    IRCMSGS[ IRCMSG_PRIVMSG ] + " "
+                                    IRCMSGS[ IRCMSG_NOTICE ] + " "
                                     + nick + " :"
                                     + CTCP_MARKER 
                                     + CTCP_CMDS[ CTCP_CMD_SOURCE ]
@@ -374,7 +436,7 @@ public class Server
                                 break;
                             case CTCP_CMD_USERINFO:
                                 send(
-                                    IRCMSGS[ IRCMSG_PRIVMSG ] + " "
+                                    IRCMSGS[ IRCMSG_NOTICE ] + " "
                                     + nick + " :"
                                     + CTCP_MARKER 
                                     + CTCP_CMDS[ CTCP_CMD_USERINFO ]
@@ -387,7 +449,7 @@ public class Server
                                 break;
                             case CTCP_CMD_VERSION:
                                 send(
-                                    IRCMSGS[ IRCMSG_PRIVMSG ] + " "
+                                    IRCMSGS[ IRCMSG_NOTICE ] + " "
                                     + nick + " :"
                                     + CTCP_MARKER 
                                     + CTCP_CMDS[ CTCP_CMD_VERSION ]

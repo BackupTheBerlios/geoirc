@@ -73,8 +73,6 @@ public class DisplayManager
         
         restoreDesktopState();
         
-        printlnDebug( "GeoIRC started." );
-        
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
