@@ -5,14 +5,13 @@
  */
 package geoirc.conf.beans;
 
-import java.util.regex.Pattern;
 
 /**
  * @author netseeker aka Michael Manske
  */
 public class Highlighting
 {
-	private Pattern regexp;
+	private String regexp;
 	private String filter;
 	private String format;
 
@@ -79,7 +78,7 @@ public class Highlighting
 	 */
 	public String getRegexp()
 	{
-		return regexp.pattern();
+		return regexp;
 	}
 
 	/**
@@ -103,7 +102,7 @@ public class Highlighting
 	 */
 	public void setRegexp(String pattern)
 	{
-		regexp = Pattern.compile(pattern);
+		regexp = pattern;
 	}
 
 }
