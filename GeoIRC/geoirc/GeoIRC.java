@@ -75,6 +75,10 @@ import org.python.core.PyMethod;
 import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
+import tcl.lang.Interp;
+import tcl.lang.ReflectObject;
+import tcl.lang.TclException;
+
 import com.l2fprod.gui.plaf.skin.CompoundSkin;
 import com.l2fprod.gui.plaf.skin.Skin;
 import com.l2fprod.gui.plaf.skin.SkinLookAndFeel;
@@ -105,11 +109,13 @@ public class GeoIRC
     protected LogManager log_manager;
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
-    protected ScriptInterface script_interface;
+    protected PythonScriptInterface python_script_interface;
+    protected TclScriptInterface tcl_script_interface;
     
     protected Hashtable python_methods;
-//    protected BSFManager bsf_manager;
+    protected Vector tcl_procs;
     protected PythonInterpreter python_interpreter;
+    protected Interp tcl_interpreter;
     
     protected Hashtable processes;
     protected Hashtable audio_clips;
@@ -244,7 +250,8 @@ public class GeoIRC
         */
         
         python_methods = new Hashtable();
-        initializeJython();
+        tcl_procs = new Vector();
+        initializeScriptingInterfaces();
         
         // Ident server.
         
@@ -422,13 +429,30 @@ public class GeoIRC
         display_manager.applySettings();
     }
     
-    protected void initializeJython()
+    protected void initializeScriptingInterfaces()
     {
         python_interpreter = new PythonInterpreter();
-        script_interface = new ScriptInterface(
+        python_script_interface = new PythonScriptInterface(
             this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
         );
-        python_interpreter.set( "geoirc", new PyJavaInstance( script_interface ) );
+        python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
+        
+        tcl_interpreter = new Interp();
+        tcl_script_interface = new TclScriptInterface(
+            this, settings_manager, display_manager, variable_manager, tcl_interpreter, tcl_procs
+        );
+        try
+        {
+            tcl_interpreter.setVar(
+                "geoirc",
+                ReflectObject.newInstance( tcl_interpreter, TclScriptInterface.class, tcl_script_interface ),
+                0
+            );
+        }
+        catch( TclException e )
+        {
+            Util.printException( display_manager, e, "Error during Tcl interpreter initialization:" );
+        }
     }
     
     /* ********************************************************************* */
@@ -513,8 +537,8 @@ public class GeoIRC
     {
         Server s = new Server(
             this, display_manager, settings_manager, trigger_manager,
-            info_manager, variable_manager, script_interface, conversation_words,
-            hostname, port
+            info_manager, variable_manager, python_script_interface,
+            tcl_script_interface, conversation_words, hostname, port
         );
         addRemoteMachine( s );
         
@@ -534,7 +558,8 @@ public class GeoIRC
             display_manager,
             settings_manager,
             trigger_manager,
-            script_interface,
+            python_script_interface,
+            tcl_script_interface,
             hostname,
             port,
             type,
@@ -1378,6 +1403,25 @@ public class GeoIRC
                         + " <nick/channel> <message>" );
                 }
                 break;
+            case CMD_DISABLE_COLOUR_CODES:
+                {
+                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                    if( giw != null )
+                    {
+                        GIPane pane = giw.getPane();
+                        if( pane instanceof GITextPane )
+                        {
+                            GITextPane gitp = (GITextPane) pane;
+                            gitp.setPaintMIRCCodes( false );
+                            display_manager.printlnDebug(
+                                "Display of colour codes disabled for '"
+                                + giw.getTitle()
+                                + "'"
+                            );
+                        }
+                    }
+                }
+                break;
             case CMD_DISCONNECT:
                 {
                     RemoteMachine rm = null;
@@ -1455,6 +1499,25 @@ public class GeoIRC
                         + " [window id number] [t|r|b|l]" );
                 }
                 break;
+            case CMD_ENABLE_COLOUR_CODES:
+                {
+                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
+                    if( giw != null )
+                    {
+                        GIPane pane = giw.getPane();
+                        if( pane instanceof GITextPane )
+                        {
+                            GITextPane gitp = (GITextPane) pane;
+                            gitp.setPaintMIRCCodes( true );
+                            display_manager.printlnDebug(
+                                "Display of colour codes enabled for '"
+                                + giw.getTitle()
+                                + "'"
+                            );
+                        }
+                    }
+                }
+                break;
             case CMD_EXEC:
             case CMD_EXEC2:
             case CMD_EXEC_WITH_WINDOW:
@@ -1504,6 +1567,19 @@ public class GeoIRC
                         {
                             Util.printException( display_manager, e, "Failed to execute python method." );
                         }
+                    }
+                }
+                break;
+            case CMD_EXEC_TCL_PROC:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        tcl_interpreter.eval( arg_string );
+                    }
+                    catch( TclException e )
+                    {
+                        Util.printException( display_manager, e, "Tcl error:" );
                     }
                 }
                 break;
@@ -1737,6 +1813,23 @@ public class GeoIRC
                 {
                     display_manager.printlnDebug( "Loading " + arg_string + "..." );
                     python_interpreter.execfile( arg_string );
+                }
+                break;
+            case CMD_LOAD_TCL:
+                if( arg_string != null )
+                {
+                    display_manager.printlnDebug( "Loading " + arg_string + "..." );
+                    try
+                    {
+                        tcl_interpreter.evalFile( arg_string );
+                    }
+                    catch( TclException e )
+                    {
+                        Util.printException(
+                            display_manager, e,
+                            "Failed to load '" + arg_string + "':"
+                        );
+                    }
                 }
                 break;
             case CMD_LOG:
@@ -2118,6 +2211,9 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_RESET_SCRIPT_ENVIRONMENT:
+                initializeScriptingInterfaces();
+                break;
             case CMD_SEND_RAW:
             case CMD_QUOTE:
             case CMD_RAW:
@@ -2228,25 +2324,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_TEST:
-                /*
-                try
-                {
-                    
-                    
-                }
-                catch( BSFException e )
-                {
-                    Util.printException( display_manager, e, "Script execution error: " );
-                }
-                 */
-                if( arg_string != null )
-                {
-                    python_interpreter.execfile( arg_string );
-                }
-                else
-                {
-                    python_interpreter.execfile( "ooga.py" );
-                }
+                // For testing/debugging purposes.
                 break;
             case CMD_TOPIC:
                 {
@@ -2298,9 +2376,6 @@ public class GeoIRC
                             + " <docked window index>" );
                     }
                 }
-                break;
-            case CMD_UNLOAD_ALL_PY:
-                initializeJython();
                 break;
             
             case UNKNOWN_COMMAND:

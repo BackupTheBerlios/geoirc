@@ -1,5 +1,5 @@
 /*
- * ScriptInterface.java
+ * PythonScriptInterface.java
  *
  * Created on August 8, 2003, 3:54 PM
  */
@@ -16,7 +16,7 @@ import org.python.util.PythonInterpreter;
  * This object is accessed in python scripts as an object by the name of "geoirc".
  * @author  Pistos
  */
-public class ScriptInterface
+public class PythonScriptInterface
 {
     
     protected CommandExecutor executor;
@@ -29,9 +29,9 @@ public class ScriptInterface
     protected Vector raw_listeners;
     protected Vector print_listeners;
     
-    private ScriptInterface() { }
+    private PythonScriptInterface() { }
     
-    public ScriptInterface(
+    public PythonScriptInterface(
         CommandExecutor executor,
         SettingsManager settings_manager,
         DisplayManager display_manager,

@@ -90,7 +90,7 @@ public interface GeoIRCConstants
         "list_dcc_chat_requests",
         "accept_dcc_chat",
         "reject_dcc_chat",
-        "unloadallpy",
+        "resetscriptenvironment",
         "hidequalities",
         "charbold",
         "charitalic",
@@ -99,7 +99,11 @@ public interface GeoIRCConstants
         "charnormal",
         "extendedpaste",
         "dccchat",
-        "list_dcc_chat_offers"
+        "list_dcc_chat_offers",
+        "enablecolourcodes",
+        "disablecolourcodes",
+        "loadtcl",
+        "exectclproc"
     };
     
     public static final String[] IRC_CMDS =
@@ -131,11 +135,14 @@ public interface GeoIRCConstants
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_DCC_CHAT = 69;
+    public static final int CMD_DISABLE_COLOUR_CODES = 72;
     public static final int CMD_DISCONNECT = 12;
     public static final int CMD_DOCK_WINDOW = 28;
+    public static final int CMD_ENABLE_COLOUR_CODES = 71;
     public static final int CMD_EXEC = 40;
     public static final int CMD_EXEC2 = 43;
     public static final int CMD_EXEC_PY_METHOD = 53;
+    public static final int CMD_EXEC_TCL_PROC = 74;
     public static final int CMD_EXEC_WITH_WINDOW = 56;
     public static final int CMD_EXIT = 31;
     public static final int CMD_EXTENDED_PASTE = 68;
@@ -156,6 +163,7 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_PROCESSES = 54;
     public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_LOAD_PY = 52;
+    public static final int CMD_LOAD_TCL = 73;
     public static final int CMD_LOG = 48;
     public static final int CMD_MSG = 20;
     public static final int CMD_NEW_INFO_WINDOW = 29;
@@ -180,6 +188,7 @@ public interface GeoIRCConstants
     public static final int CMD_RAW = 46;
     public static final int CMD_REJECT_DCC_CHAT = 60;
     public static final int CMD_REMOVE_LOG = 49;
+    public static final int CMD_RESET_SCRIPT_ENVIRONMENT = 61;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
     public static final int CMD_SET = 16;
@@ -190,7 +199,6 @@ public interface GeoIRCConstants
     public static final int CMD_TEST = 51;
     public static final int CMD_TOPIC = 57;
     public static final int CMD_UNDOCK_WINDOW = 34;
-    public static final int CMD_UNLOAD_ALL_PY = 61;
     
     static final String [] IRCMSGS =
     {

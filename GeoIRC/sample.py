@@ -1,3 +1,4 @@
+# Nearly all basic java classes can be imported and used.
 from java.util import Random
 generator = Random()
 

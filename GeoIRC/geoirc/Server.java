@@ -32,7 +32,8 @@ public class Server
     protected Vector channels;
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
-    protected ScriptInterface script_interface;
+    protected PythonScriptInterface python_script_interface;
+    protected TclScriptInterface tcl_script_interface;
     protected HashSet users;
     protected Set conversation_words;
     
@@ -47,7 +48,8 @@ public class Server
         TriggerManager trigger_manager,
         InfoManager info_manager,
         VariableManager variable_manager,
-        ScriptInterface script_interface,
+        PythonScriptInterface python_script_interface,
+        TclScriptInterface tcl_script_interface,
         Set conversation_words,
         String hostname,
         String port
@@ -61,7 +63,8 @@ public class Server
         current_nick = "";
         this.info_manager = info_manager;
         this.variable_manager = variable_manager;
-        this.script_interface = script_interface;
+        this.python_script_interface = python_script_interface;
+        this.tcl_script_interface = tcl_script_interface;
         this.conversation_words = conversation_words;
         current_nick_width = 0;
     }
@@ -527,14 +530,16 @@ public class Server
         protected void interpretLine( String line )
         {
             String [] transformed_message =
-                script_interface.onRaw( line, Server.this.toString() );
+                python_script_interface.onRaw( line, Server.this.toString() );
+            transformed_message = tcl_script_interface.onRaw(
+                transformed_message[ 0 ],
+                transformed_message[ 1 ]
+            );
             
-            //String [] tokens = Util.tokensToArray( line );
             String [] tokens = Util.tokensToArray( transformed_message[ 0 ] );
             int windows_printed_to = 0;
             if( tokens != null )
             {
-                //String qualities = Server.this.toString();
                 String qualities = transformed_message[ 1 ];
                 
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )

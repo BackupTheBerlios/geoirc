@@ -31,6 +31,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     protected boolean colour_toggle;
     protected Color foreground_colour;
     protected Color background_colour;
+    protected boolean paint_mirc_codes;
     
     public GITextPane(
         DisplayManager display_manager,
@@ -75,6 +76,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         applySettings();
         
         colour_toggle = false;
+        paint_mirc_codes = true;
     }
     
     public String appendLine( String text )
@@ -266,7 +268,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             {
                 index = ((Integer) indices.elementAt( i )).intValue();
                 sas = (SimpleAttributeSet) formats.elementAt( i );
-                if( sas != null )
+                if( ( sas != null ) && paint_mirc_codes )
                 {
                     document.setCharacterAttributes(
                         offset + index,
@@ -424,5 +426,10 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     public int getDocumentLength()
     {
         return document.getLength();
+    }
+    
+    public void setPaintMIRCCodes( boolean setting )
+    {
+        paint_mirc_codes = setting;
     }
 }

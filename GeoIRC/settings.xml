@@ -70,6 +70,11 @@
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
+            <node name="1">
+              <map>
+                <entry key="name" value="#geoshell" />
+              </map>
+            </node>
           </node>
         </node>
         <node name="1">
@@ -150,6 +155,13 @@
                 <entry key="path" value="/" />
               </map>
             </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="#geoshell on irc.freenode.net" />
+                <entry key="filter" value="irc.freenode.net and #geoshell" />
+              </map>
+            </node>
           </node>
           <node name="windows">
             <map />
@@ -175,6 +187,18 @@
                 <entry key="state" value="1" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="title" value="#geoshell on irc.freenode.net" />
+                <entry key="x" value="0" />
+                <entry key="y" value="0" />
+                <entry key="height" value="779" />
+                <entry key="width" value="1048" />
+                <entry key="state" value="1" />
+                <entry key="selected" value="true" />
+                <entry key="pane" value="4" />
               </map>
             </node>
           </node>

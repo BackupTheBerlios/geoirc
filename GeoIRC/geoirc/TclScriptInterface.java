@@ -1,7 +1,7 @@
 /*
- * ScriptInterface.java
+ * TclScriptInterface.java
  *
- * Created on August 8, 2003, 3:54 PM
+ * Created on September 16, 2003, 2:37 PM
  */
 
 package geoirc;
@@ -9,43 +9,42 @@ package geoirc;
 import geoirc.util.Util;
 import java.util.Hashtable;
 import java.util.Vector;
-import org.python.core.*;
-import org.python.util.PythonInterpreter;
+import tcl.lang.*;
 
 /**
- * This object is accessed in python scripts as an object by the name of "geoirc".
+ *
  * @author  Pistos
  */
-public class ScriptInterface
+public class TclScriptInterface
 {
     
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected VariableManager variable_manager;
-    protected PythonInterpreter python_interpreter;
-    protected Hashtable python_methods;
+    protected Interp tcl_interpreter;
+    protected Vector tcl_procs;
     
     protected Vector raw_listeners;
     protected Vector print_listeners;
     
-    private ScriptInterface() { }
+    private TclScriptInterface() { }
     
-    public ScriptInterface(
+    public TclScriptInterface(
         CommandExecutor executor,
         SettingsManager settings_manager,
         DisplayManager display_manager,
         VariableManager variable_manager,
-        PythonInterpreter python_interpreter,
-        Hashtable python_methods
+        Interp tcl_interpreter,
+        Vector tcl_procs
     )
     {
         this.executor = executor;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         this.variable_manager = variable_manager;
-        this.python_interpreter = python_interpreter;
-        this.python_methods = python_methods;
+        this.tcl_interpreter = tcl_interpreter;
+        this.tcl_procs = tcl_procs;
         
         raw_listeners = new Vector();
         print_listeners = new Vector();
@@ -75,47 +74,46 @@ public class ScriptInterface
         return variable_manager.getBoolean( variable, default_ );
     }
     
-    public void registerRawListener( PyObject listener )
+    public void registerRawListener( String proc )
     {
-        raw_listeners.add( listener );
+        raw_listeners.add( proc );
     }
     
-    public void registerMethod( PyString object, PyString method )
+    public void registerProc( String proc_name )
     {
-        String object_name = object.toString();
-        String reference = object_name + "." + method.toString();
-        PyObject py_object = python_interpreter.get( object_name );
-        PyMethod py_method = (PyMethod) py_object.__findattr__( method );
-        python_methods.put( reference, py_method );
+        tcl_procs.add( proc_name );
     }
     
     public String [] onRaw( String line_, String qualities_ )
     {
-        PyObject py_object;
-        PyMethod method;
-        PyObject transformed_message = null;
+        String tcl_proc;
+        TclObject transformed_message = null;
         
         String line = line_;
         String qualities = qualities_;
         
         for( int i = 0, n = raw_listeners.size(); i < n; i++ )
         {
-            py_object = (PyObject) raw_listeners.elementAt( i );
-            method = (PyMethod) py_object.__findattr__( new PyString( "onRaw" ) );
-            if( method != null )
+            tcl_proc = (String) raw_listeners.elementAt( i );
+            if( tcl_proc != null )
             {
                 try
                 {
-                    transformed_message = method.__call__( new PyString( line ), new PyString( qualities ) );
+                    tcl_interpreter.eval(
+                        tcl_proc + " "
+                        + "\"" + line
+                        + "\" \"" + qualities + "\""
+                    );
+                    transformed_message = tcl_interpreter.getResult();
+                    if( transformed_message != null )
+                    {
+                        line = (TclList.index( tcl_interpreter, transformed_message, 0 )).toString();
+                        qualities = (TclList.index( tcl_interpreter, transformed_message, 1 )).toString();
+                    }
                 }
                 catch( Exception e )
                 {
-                    Util.printException( display_manager, e, "Exception when executing Python raw parser." );
-                }
-                if( transformed_message != null )
-                {
-                    line = ( transformed_message.__findattr__( new PyString( "text" ) ) ).toString();
-                    qualities = ( transformed_message.__findattr__( new PyString( "qualities" ) ) ).toString();
+                    Util.printException( display_manager, e, "Exception when executing Tcl raw parser." );
                 }
             }
         }
