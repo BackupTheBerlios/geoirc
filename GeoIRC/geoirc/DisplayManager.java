@@ -101,7 +101,6 @@ public class DisplayManager
         desktop_pane.add( text_window, last_added_frame_x, last_added_frame_y );
         text_window.setBounds( last_added_frame_x, last_added_frame_y, 700, 500 );
         
-        windows.add( text_window );
         printlnDebug( Integer.toString( windows.size() ) + " windows" );
         
         return text_window;
@@ -227,8 +226,8 @@ public class DisplayManager
     public void internalFrameClosed(InternalFrameEvent e)
     {
         windows.remove( e.getSource() );
-        printlnDebug( Integer.toString( windows.size() ) + " windows" );
         recordDesktopState();
+        printlnDebug( Integer.toString( windows.size() ) + " windows" );
     }
     public void internalFrameClosing(InternalFrameEvent e) {    }
     public void internalFrameDeactivated(InternalFrameEvent e) {    }
@@ -236,8 +235,9 @@ public class DisplayManager
     public void internalFrameIconified(InternalFrameEvent e) {    }
     public void internalFrameOpened(InternalFrameEvent e)
     {
-        printlnDebug( Integer.toString( windows.size() ) + " windows" );
+        windows.add( e.getSource() );
         recordDesktopState();
+        printlnDebug( Integer.toString( windows.size() ) + " windows" );
     }
 
     public boolean switchToNextWindow( boolean previous )
@@ -278,38 +278,40 @@ public class DisplayManager
     
     protected void recordDesktopState()
     {
-        settings_manager.removeNode( "/gui/desktop" );
+        settings_manager.removeNode( "/gui/desktop/" );
         int n = windows.size();
         JInternalFrame frame;
+        String i_str;
         for( int i = 0; i < n; i++ )
         {
             frame = (JInternalFrame) windows.elementAt( i );
+            i_str = Integer.toString( i );
             
             settings_manager.putString(
-                "/gui/desktop/title",
+                "/gui/desktop/" + i_str + "/title",
                 frame.getTitle()
             );
             settings_manager.putInt(
-                "/gui/desktop/x",
+                "/gui/desktop/" + i_str + "/x",
                 frame.getX()
             );
             settings_manager.putInt(
-                "/gui/desktop/y",
+                "/gui/desktop/" + i_str + "/y",
                 frame.getY()
             );
             settings_manager.putInt(
-                "/gui/desktop/height",
+                "/gui/desktop/" + i_str + "/height",
                 frame.getHeight()
             );
             settings_manager.putInt(
-                "/gui/desktop/width",
+                "/gui/desktop/" + i_str + "/width",
                 frame.getWidth()
             );
             
             if( frame instanceof GITextWindow )
             {
                 settings_manager.putString(
-                    "/gui/desktop/filter",
+                    "/gui/desktop/" + i_str + "/filter",
                     ((GITextWindow) frame).getFilter()
                 );
             }

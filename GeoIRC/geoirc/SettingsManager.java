@@ -232,33 +232,22 @@ public class SettingsManager
             p = p_;
         }
         
-        String [] keys;
-        String [] children;
-        try
-        {
-            children = p.childrenNames();
-            for( int i = 0; i < children.length; i++ )
-            {
-                listenToPreference( p.node( children[ i ] ) );
-            }
-        }
-        catch( BackingStoreException e )
-        {
-            printlnDebug( e.getMessage() );
-        }
-
         String ind = "";
         for( int i = 0; i < level; i++ )
         {
             ind += "  ";
         }
         
+        printlnDebug( ind + p.name() );
+        
+        String [] keys;
+        String [] children;
         try
         {
             keys = p.keys();
             for( int i = 0; i < keys.length; i++ )
             {
-                printlnDebug( keys[ i ] + ": " + p.get( keys[ i ], "?" ) );
+                printlnDebug( ind + keys[ i ] + ": " + p.get( keys[ i ], "?" ) );
             }
             
             children = p.childrenNames();
