@@ -1,0 +1,20 @@
+Changelog for GeoIRC 0.3.0a
+---------------------------
+
+Began adding Python (Jython) scripting interface.
+Pistos 2003-08-08
+
+Changed the way processes of the exec command work such that their stdout and
+stderr are sent to the DisplayManager with "process=<pid>" qualities, and text
+typed when "process=<pid>" windows are in focus are sent to the process' stdin.
+Pistos 2003-08-09 and 2003-08-10
+
+Added execwithwindow command, so that exec will not create a new window for
+the process output.
+Pistos 2003-08-11
+
+Reworked/fixed the input history.
+Pistos 2003-08-12
+
+Added the topic command.  Added RPL_NOTOPIC.  Added TOPIC message.
+Pistos 2003-08-12
