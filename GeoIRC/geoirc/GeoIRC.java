@@ -2186,9 +2186,6 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_LIST_DOCKED_WINDOWS:
-                //display_manager.listDockedPanes();
-                break;
             case CMD_LIST_FONTS:
                 GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 Font [] fonts = genv.getAllFonts();
@@ -2473,6 +2470,9 @@ public class GeoIRC
             case CMD_NEXT_PANE:
                 display_manager.switchToNextPane( NEXT_PANE );
                 break;
+            case CMD_NEXT_WINDOW:
+                display_manager.switchToNextWindow( NEXT_WINDOW );
+                break;
             case CMD_NICK:
                 if( args != null )
                 {
@@ -2683,6 +2683,9 @@ public class GeoIRC
                 break;
             case CMD_PREVIOUS_PANE:
                 display_manager.switchToNextPane( PREVIOUS_PANE );
+                break;
+            case CMD_PREVIOUS_WINDOW:
+                display_manager.switchToNextWindow( PREVIOUS_WINDOW );
                 break;
             case CMD_PRINT:
                 if( arg_string != null )

@@ -1,8 +1,9 @@
 Changelog for GeoIRC 0.3.5a
 ---------------------------
 
-Began making frame-pane system changes.
-Pistos 2003-10-23
+Made frame-pane system changes.  Panes are now the main display unit, dockable
+into any of: the main GeoIRC frame, MDI child frames, or SDI frames.
+Pistos 2003-10-23 to 2003-10-29
 
 Changed underlying XML processing code for settings.
 Pistos 2003-10-27 to 2003-10-28

@@ -63,7 +63,7 @@ public interface GeoIRCConstants
         "newinfowindow",
         "newtextwindow",
         "exit",
-        "listdockedwindows",
+        "nextwindow",
         "floatpane",
         "undockpane",
         "pageup",
@@ -123,7 +123,8 @@ public interface GeoIRCConstants
         "activatepane",
         "activatetextpane",
         "activatepanebyindex",
-        "newexternalwindow"
+        "newexternalwindow",
+        "previouswindow"
     };
     
     public static final String[] IRC_CMDS =
@@ -184,7 +185,6 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_CONNECTIONS = 13;
     public static final int CMD_LIST_DCC_REQUESTS = 58;
     public static final int CMD_LIST_DCC_OFFERS = 70;
-    public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_LOGS = 50;
     public static final int CMD_LIST_MEMBERS = 41;
@@ -204,6 +204,7 @@ public interface GeoIRCConstants
     public static final int CMD_NEW_WINDOW = 1;
     public static final int CMD_NEXT_HISTORY_ENTRY = 9;
     public static final int CMD_NEXT_PANE = 7;
+    public static final int CMD_NEXT_WINDOW = 32;
     public static final int CMD_NICK = 6;
     public static final int CMD_NUDGE_DOWN = 38;
     public static final int CMD_NUDGE_UP = 37;
@@ -215,6 +216,7 @@ public interface GeoIRCConstants
     public static final int CMD_POSITION_WINDOW = 84;
     public static final int CMD_PREVIOUS_PANE = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
+    public static final int CMD_PREVIOUS_WINDOW = 93;
     public static final int CMD_PRINT = 47;
     public static final int CMD_PRINT_ACTIVE = 75;
     public static final int CMD_PRINT_DEBUG = 25;
@@ -307,6 +309,8 @@ public interface GeoIRCConstants
     
     static final boolean NEXT_PANE = false;
     static final boolean PREVIOUS_PANE = true;
+    static final boolean NEXT_WINDOW = false;
+    static final boolean PREVIOUS_WINDOW = true;
     
     static final int SHIFT_ = InputEvent.SHIFT_DOWN_MASK;
     static final int CTRL_ = InputEvent.CTRL_DOWN_MASK;

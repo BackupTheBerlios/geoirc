@@ -75,6 +75,7 @@ public class GITextPane extends GIPane implements geoirc.GeoIRCConstants
         text_pane.setEditable( false );
         text_pane.addKeyListener( display_manager );
         text_pane.addMouseListener( mouse_listener );
+        text_pane.addMouseListener( this );
         
         setViewportView( text_pane );
         setVerticalScrollBarPolicy(

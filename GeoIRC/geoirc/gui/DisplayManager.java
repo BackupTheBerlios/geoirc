@@ -658,6 +658,12 @@ public class DisplayManager
         {
             split_pane_parent.remove( split_pane );
             split_pane_parent.add( other_component );
+            if( split_pane_parent instanceof GeoIRC )
+            {
+                geo_irc.recordMainFrameState();
+                geo_irc.pack();
+                geo_irc.restoreMainFrameState();
+            }
         }
         GIPaneWrapper spp_gipw = getPaneWrapperByPane( split_pane_parent );
         partner_gipw.setParent( spp_gipw );
@@ -985,6 +991,43 @@ public class DisplayManager
         if( next_pane != null )
         {
             next_pane.activate();
+        }
+        
+        return true;
+    }
+    
+    public boolean switchToNextWindow( boolean previous )
+    {
+        if( ( frames == null ) || ( frames.size() < 2 ) )
+        {
+            return false;
+        }
+        
+        GIFrameWrapper gifw;
+        GIFrameWrapper next_frame = null;
+        for( int i = 0, n = frames.size(); i < n; i++ )
+        {
+            gifw = (GIFrameWrapper) frames.elementAt( i );
+            if( gifw == last_activated_frame )
+            {
+                int motion = ( previous ? -1 : 1 );
+                int next_index = i + motion;
+                if( next_index == n )
+                {
+                    next_index = 0;
+                }
+                else if( next_index < 0 )
+                {
+                    next_index = n - 1;
+                }
+                next_frame = (GIFrameWrapper) frames.elementAt( next_index );
+                break;
+            }
+        }
+        
+        if( next_frame != null )
+        {
+            next_frame.activate();
         }
         
         return true;

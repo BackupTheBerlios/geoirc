@@ -53,6 +53,7 @@ public class GIInfoPane extends GIPane implements geoirc.GeoIRCConstants
         tree.setShowsRootHandles( true );
         setViewportView( tree );
         tree.addKeyListener( display_manager );
+        tree.addMouseListener( this );
     }
     
     public void deactivate()
