@@ -339,6 +339,7 @@
           <entry key="nick completion suffix" value=": " />
           <entry key="nick completion prefix" value="" />
           <entry key="quit message" value="http://geoirc.berlios.de" />
+          <entry key="global pre-filter" value="" />
         </map>
         <node name="paste flood">
           <map>

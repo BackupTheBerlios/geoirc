@@ -7,6 +7,8 @@
 package geoirc;
 
 import geoirc.conf.SettingsDialog;
+import geoirc.util.BadExpressionException;
+import geoirc.util.BoolExpEvaluator;
 import geoirc.util.JMenuHelper;
 import geoirc.util.Util;
 
@@ -541,6 +543,25 @@ public class DisplayManager
         {
             return 0;
         }
+        
+        boolean result = false;
+        String prefilter = settings_manager.getString(
+            "/misc/global pre-filter",
+            ""
+        );
+        try
+        {
+            if( ! BoolExpEvaluator.evaluate( prefilter, qualities ) )
+            {
+                return 0;
+            }
+        }
+        catch( BadExpressionException e )
+        {
+            printlnDebug( "Filter evaluation error for filter '" + prefilter + "'" );
+            printlnDebug( e.getMessage() );
+        }
+
         
         if( show_qualities )
         {

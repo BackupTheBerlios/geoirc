@@ -25,7 +25,8 @@ public class BoolExpEvaluator
     // No default constructor
     private BoolExpEvaluator() { }
     
-    /* Returns the evaluation of the expression, given the truths
+    /**
+     * @return the evaluation of the expression, given the truths
      * provided in flag_set.
      *
      * flag_set is a whitespace-separated list of flags.  Terms in

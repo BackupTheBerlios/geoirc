@@ -35,3 +35,6 @@ Pistos 2003-09-30
 
 User-to-user PRIVMSGs and NOTICEs now spawn new windows.
 Pistos 2003-10-01
+
+Added "/misc/global pre-filter" setting.
+Pistos 2003-10-01
