@@ -362,6 +362,29 @@ public class Server
                         
                         switch( command_id )
                         {
+                            case CTCP_CMD_SOURCE:
+                                send(
+                                    IRCMSGS[ IRCMSG_PRIVMSG ] + " "
+                                    + nick + " :"
+                                    + CTCP_MARKER 
+                                    + CTCP_CMDS[ CTCP_CMD_SOURCE ]
+                                    + " http://geoirc.berlios.de"
+                                    + CTCP_MARKER
+                                );
+                                break;
+                            case CTCP_CMD_USERINFO:
+                                send(
+                                    IRCMSGS[ IRCMSG_PRIVMSG ] + " "
+                                    + nick + " :"
+                                    + CTCP_MARKER 
+                                    + CTCP_CMDS[ CTCP_CMD_USERINFO ]
+                                    + " "
+                                    + settings_manager.getString(
+                                        "/personal/ctcp/userinfo", ""
+                                    )
+                                    + CTCP_MARKER
+                                );
+                                break;
                             case CTCP_CMD_VERSION:
                                 send(
                                     IRCMSGS[ IRCMSG_PRIVMSG ] + " "
@@ -370,10 +393,7 @@ public class Server
                                     + CTCP_CMDS[ CTCP_CMD_VERSION ]
                                     + " GeoIRC/" + GEOIRC_VERSION + " "
                                     + settings_manager.getString(
-                                        "/personal/ctcp/os", "unknown"
-                                    ) + " "
-                                    + settings_manager.getString( 
-                                        "/personal/ctcp/contact", "unknown"
+                                        "/personal/ctcp/version", ""
                                     )
                                     + CTCP_MARKER
                                 );

@@ -84,7 +84,10 @@ public class GeoIRC
     public GeoIRC( String settings_filepath )
     {
         System.out.println(
-            "GeoIRC\nCopyright (C) 2003 Alex Reyes (\"Pistos\")"
+            "GeoIRC " + GEOIRC_VERSION
+        );
+        System.out.println(
+            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
         );
         System.out.println(
             "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."

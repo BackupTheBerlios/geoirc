@@ -193,8 +193,7 @@
         </map>
         <node name="ctcp">
           <map>
-            <entry key="os" value="unknown" />
-            <entry key="contact" value="unknown" />
+            <entry key="version" value="" />
           </map>
         </node>
         <node name="ident">

@@ -91,10 +91,14 @@ public interface GeoIRCConstants
     
     static final String [] CTCP_CMDS =
     {
-        "VERSION"
+        "VERSION",
+        "SOURCE",
+        "USERINFO"
     };
     static final int UNKNOWN_CTCP_CMD = -1;
     static final int CTCP_CMD_VERSION = 0;
+    static final int CTCP_CMD_SOURCE = 1;
+    static final int CTCP_CMD_USERINFO = 2;
     
     static final boolean NEXT_WINDOW = false;
     static final boolean PREVIOUS_WINDOW = true;
