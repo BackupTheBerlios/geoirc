@@ -769,14 +769,14 @@ public class DisplayManager
             {
                 giw = addTextWindow(
                     title,
-                    (String) filters.get( new Integer( pane_index ) )
+                    (String) filters.get( Integer.toString( pane_index ) )
                 );
             }
             else if( pane_type == INFO_PANE )
             {
                 giw = addInfoWindow(
                     title,
-                    (String) paths.get( new Integer( pane_index ) )
+                    (String) paths.get( Integer.toString( pane_index ) )
                 );
             }
             else

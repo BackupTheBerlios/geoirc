@@ -105,17 +105,8 @@
             <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="filter" value="#geoshell" />
-              </map>
-            </node>
-            <node name="3">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="filter" value="irc.freenode.net" />
               </map>
-            </node>
-            <node name="4">
-              <map />
             </node>
           </node>
           <node name="windows">
@@ -128,7 +119,7 @@
                 <entry key="height" value="464" />
                 <entry key="width" value="633" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -146,30 +137,15 @@
             </node>
             <node name="2">
               <map>
-                <entry key="title" value="#geoshell" />
-                <entry key="x" value="0" />
-                <entry key="y" value="464" />
-                <entry key="height" value="464" />
-                <entry key="width" value="633" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="2" />
-              </map>
-            </node>
-            <node name="3">
-              <map>
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
                 <entry key="height" value="464" />
                 <entry key="width" value="633" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
-                <entry key="pane" value="3" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="2" />
               </map>
-            </node>
-            <node name="4">
-              <map />
             </node>
           </node>
         </node>
