@@ -26,7 +26,6 @@
 
 package geoirc;
 
-import geoirc.conf.GeoIRCDefaults;
 import geoirc.util.Util;
 
 import java.applet.AudioClip;
@@ -53,7 +52,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ActionMap;
@@ -64,7 +62,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-//import org.apache.bsf.BSFManager;
 import org.python.core.PyJavaInstance;
 import org.python.core.PyMethod;
 import org.python.core.PyString;
@@ -378,12 +375,7 @@ public class GeoIRC
         display_manager.beginListening();
         listening_to_connections = true;
         processes = new Hashtable();
-        dcc_chat_requests = new Vector();
-        
-		/*
-		GeoIRCDefaults defs = new GeoIRCDefaults(display_manager);
-		Map rules = defs.getValueRules();
-        */
+        dcc_chat_requests = new Vector();       
         
         // Open the curtains!
 
@@ -642,7 +634,7 @@ public class GeoIRC
             int width = settings_manager.getInt( "/gui/main frame width", 600 );
             int height = settings_manager.getInt( "/gui/main frame height", 400 );
             setBounds( x, y, width, height );
-        }
+        }                        
     }
     
     public String getRemoteMachineID( RemoteMachine rm )
