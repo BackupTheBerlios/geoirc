@@ -1363,10 +1363,12 @@ public class DisplayManager
     public void componentShown(java.awt.event.ComponentEvent e) { }
     public void componentMoved(java.awt.event.ComponentEvent e)
     {
+        /*
         if( ! restoring )
         {
             recordDesktopState();
         }
+         */
     }
     public void componentResized(java.awt.event.ComponentEvent e)
     {

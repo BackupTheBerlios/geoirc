@@ -46,7 +46,7 @@ public class SettingsManager
     protected String filepath;
     protected DisplayManager displayMgr = null;
     protected boolean any_load_failure;
-
+    
     // No default constructor.
     private SettingsManager() { }
     

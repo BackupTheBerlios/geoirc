@@ -501,4 +501,6 @@ public interface GeoIRCConstants
     
     static final boolean CREATE_NODES = true;
     static final boolean DONT_CREATE_NODES = false;
+    
+    static final long MININUM_TIME_BETWEEN_SETTINGS_SAVES = 10;  // milliseconds
 }

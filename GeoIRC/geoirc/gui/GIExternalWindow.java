@@ -9,7 +9,7 @@ package geoirc.gui;
 import geoirc.SettingsManager;
 
 import java.awt.Container;
-import java.awt.event.MouseEvent;
+//import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
 /**
@@ -18,7 +18,7 @@ import javax.swing.JFrame;
  */
 public class GIExternalWindow
     extends JFrame
-    implements geoirc.GeoIRCConstants, java.awt.event.MouseListener
+    implements geoirc.GeoIRCConstants//, java.awt.event.MouseListener
 {
     
     protected DisplayManager display_manager;
@@ -45,7 +45,7 @@ public class GIExternalWindow
         
         addWindowListener( display_manager );
         addComponentListener( display_manager );
-        addMouseListener( this );
+        //addMouseListener( this );
         
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
@@ -128,6 +128,7 @@ public class GIExternalWindow
         return activated;
     }
     
+    /*
     public void mouseClicked( MouseEvent e ) { }
     public void mouseEntered( MouseEvent e ) { }
     public void mouseExited( MouseEvent e ) { }
@@ -136,5 +137,5 @@ public class GIExternalWindow
     {
         activateFirstTextPane();
     }
-    
+     */
 }
