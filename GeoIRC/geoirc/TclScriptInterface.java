@@ -106,16 +106,12 @@ public class TclScriptInterface
             {
                 try
                 {
-                    line = line.replaceAll( "\\\\", "\\\\\\\\" );
-                    line = line.replaceAll( "\\{", "\\\\{" );
-                    line = line.replaceAll( "\\}", "\\\\}" );
-                    qualities = qualities.replaceAll( "\\\\", "\\\\\\\\" );
-                    qualities = qualities.replaceAll( "\\{", "\\\\{" );
-                    qualities = qualities.replaceAll( "\\}", "\\\\}" );
+                    line = escapeTclChars( line );
+                    qualities = escapeTclChars( qualities );
                     tcl_interpreter.eval(
                         tcl_proc + " "
-                        + "{" + line
-                        + "} {" + qualities + "}"
+                        + "\"" + line
+                        + "\" \"" + qualities + "\""
                     );
                     transformed_message = tcl_interpreter.getResult();
                     if( transformed_message != null )
@@ -156,10 +152,8 @@ public class TclScriptInterface
             {
                 try
                 {
-                    line = line.replaceAll( "\\\\", "\\\\\\\\" );
-                    line = line.replaceAll( "\\{", "\\\\{" );
-                    line = line.replaceAll( "\\}", "\\\\}" );
-                    tcl_interpreter.eval( tcl_proc + " {" + line + "}" );
+                    line = escapeTclChars( line );
+                    tcl_interpreter.eval( tcl_proc + " \"" + line + "\"" );
                     transformed_line = tcl_interpreter.getResult();
                     if( transformed_line != null )
                     {
@@ -180,4 +174,21 @@ public class TclScriptInterface
         return line;
     }
     
+    protected String escapeTclChars( String text )
+    {
+        String retval = text;
+        retval = retval.replaceAll( "\\\\", "\\\\\\\\" );
+        retval = retval.replaceAll( "\\{", "\\\\{" );
+        retval = retval.replaceAll( "\\}", "\\\\}" );
+        retval = retval.replaceAll( "\"", "\\\\\"" );
+        retval = retval.replaceAll( "\\[", "\\\\[" );
+        retval = retval.replaceAll( "\\]", "\\\\]" );
+        int i = -2;
+        while( (i = retval.indexOf( '$', i + 2 )) > -1 )
+        {
+            retval = retval.substring( 0, i ) + "\\" + retval.substring( i );
+        }
+        //retval = retval.replaceAll( "\\$", "\\\\$" );
+        return retval;
+    }
 }
