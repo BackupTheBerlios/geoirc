@@ -140,7 +140,11 @@ public class Util implements GeoIRCConstants
         return retval;
     }
     
-	public static String colorToHexString(Color color)
+	/**
+     * @param color
+     * @return
+     */
+    public static String colorToHexString(Color color)
 	{
 		int[] col = { color.getRed(), color.getGreen(), color.getBlue() };
 		StringBuffer hex = new StringBuffer();
@@ -154,5 +158,28 @@ public class Util implements GeoIRCConstants
 		}
 		
 		return hex.toString();
-	}    
+	}
+    
+    /**
+     * @param object
+     * @param def
+     * @return
+     */
+    public static Object getDefaultIfNull(Object object, Object def)
+    {
+        if(object != null)
+            return object;
+        
+        return def;    
+    }
+    
+    /**
+     * @param object
+     * @param def
+     * @return
+     */
+    public static String getDefaultIfNull(Object object, String def)
+    {
+        return getDefaultIfNull(object, (Object)def).toString();
+    }
 }
