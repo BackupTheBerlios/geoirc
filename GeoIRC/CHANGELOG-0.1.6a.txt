@@ -12,3 +12,11 @@ Pistos 2003-07-18
 
 Fixed highlighting.
 Pistos 2003-07-19
+
+Fixed the nick change bug.
+Pistos 2003-07-21
+
+Added a connectivity check to the ServerReader's run() loop.  Added a
+complementary connect command.  GeoIRC will attempt one reconnection if the
+connection to a server is lost.
+Pistos 2003-07-21

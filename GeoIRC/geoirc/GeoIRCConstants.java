@@ -60,13 +60,15 @@ public interface GeoIRCConstants
         "pageup",
         "pagedown",
         "nudgeup",
-        "nudgedown"
+        "nudgedown",
+        "connect"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_SERVER = 12;
     public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_COMPLETE_NICK = 24;
+    public static final int CMD_CONNECT = 39;
     public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_EXIT = 31;
     public static final int CMD_FLOAT_WINDOW = 33;
@@ -219,4 +221,6 @@ public interface GeoIRCConstants
     static final int TEXT_PANE = 1;
 
     static final int DEFAULT_NUDGE_AMOUNT = 20;
+    
+    static final int DELAY_FOR_SERVER_READER_DEATH = 100;  // milliseconds
 }

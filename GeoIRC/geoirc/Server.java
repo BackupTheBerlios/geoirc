@@ -58,9 +58,24 @@ public class Server
     {
         try
         {
+            if( socket != null )
+            {
+                socket.close();
+            }
+            
             socket = new Socket( hostname, port );
             if( socket != null )
             {
+                if( server_reader != null )
+                {
+                    while( server_reader.isAlive() )
+                    {
+                        try {
+                            Thread.sleep( DELAY_FOR_SERVER_READER_DEATH );
+                        } catch( InterruptedException e ) { }
+                    }
+                }
+                
                 server_reader = new ServerReader( 
                     new BufferedReader(
                         new InputStreamReader(
@@ -101,6 +116,7 @@ public class Server
         {
             restoreChannels();
             listening_to_channels = true;
+            info_manager.addRemoteMachine( this );
         }
                 
         return isConnected();
@@ -286,27 +302,6 @@ public class Server
         return u;
     }
 
-    /*
-    protected User getUser( User user )
-    {
-        User retval = null;
-        User user;
-        Iterator it = users.iterator();
-        while( it.hasNext() )
-        {
-            user = (User) it.next();
-            if( user.equals( user ) )
-            {
-                retval = user;
-                break;
-            }
-        }
-
-        return retval;
-    }
-     */
-
-    
     /* ******************************************************************** */
     
     protected class ServerReader
@@ -359,6 +354,14 @@ public class Server
                         e,
                         "I/O error while reading from server " + toString()
                     );
+                    
+                    if( ! isConnected() )
+                    {
+                        display_manager.printlnDebug( "Connection to " + toString() + " lost." );
+                        display_manager.printlnDebug( "Attempting to reconnect..." );
+                        connect( current_nick );
+                        break;
+                    }
                 }
             }
         }

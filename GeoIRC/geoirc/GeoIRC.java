@@ -468,10 +468,7 @@ public class GeoIRC
             if( type.equals( "Server") )
             {
                 Server s = addServer( hostname, Integer.toString( port ) );
-                if( s.connect( preferred_nick ) )
-                {
-                    info_manager.addRemoteMachine( s );
-                }
+                s.connect( preferred_nick );
             }
             else
             {
@@ -787,6 +784,54 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_CONNECT:
+                {
+                    Server s = null;
+                    
+                    if( arg_string != null )
+                    {
+                        int server_id = -1;
+                        boolean problem = true;
+
+                        try
+                        {
+                            server_id = Integer.parseInt( args[ 0 ] );
+                            if( ( server_id >= 0 ) && ( server_id < remote_machines.size() ) )
+                            {
+                                RemoteMachine rm = (RemoteMachine) remote_machines.elementAt( server_id );
+                                if( rm instanceof Server )
+                                {
+                                    s = (Server) rm;
+                                    problem = false;
+                                }
+                            }
+                        } catch( NumberFormatException e ) { }
+                        
+                        if( problem )
+                        {
+                            display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
+                            display_manager.printlnDebug( "Try /listservers" );
+                        }
+                    }
+                    else
+                    {
+                        if( current_remote_machine instanceof Server )
+                        {
+                            s = (Server) current_remote_machine;
+                        }
+                        else
+                        {
+                            display_manager.printlnDebug( "First use /changeserver <server id>" );
+                            display_manager.printlnDebug( "To see a list of server id's, use /listservers" );
+                        }
+                    }
+                    
+                    if( s != null )
+                    {
+                        s.connect( preferred_nick );
+                    }
+                }
+                break;
             case CMD_DOCK_WINDOW:
                 if( ( args != null ) && ( args.length > 1 ) )
                 {
@@ -962,10 +1007,7 @@ public class GeoIRC
                     }
                     Server s = addServer( host, port );
                     display_manager.addTextWindow( s.toString(), s.toString() );
-                    if( s.connect( preferred_nick ) )
-                    {
-                        info_manager.addRemoteMachine( s );
-                    }
+                    s.connect( preferred_nick );
                 }
                 else
                 {
