@@ -177,7 +177,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         protected void interpretLine( String line )
         {
             String qualities =
-                DCCClient.this.toString()
+                DCCClient.this.toString() + " "
                 + FILTER_SPECIAL_CHAR + "dccchat";
             display_manager.println(
                 GeoIRC.getATimeStamp(

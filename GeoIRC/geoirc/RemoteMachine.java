@@ -99,7 +99,10 @@ public class RemoteMachine implements GeoIRCConstants
     // Sends a line out to the server, including newline.
     public void send( String text )
     {
-        out.println( text );
+        if( out != null )
+        {
+            out.println( text );
+        }
     }
     
     public String toString()

@@ -599,167 +599,172 @@ public class Server
                     
                     if( channel_or_nick.charAt( 0 ) == '#' )
                     {
-                        String nick = getNick( tokens[ 0 ] );
-                        User user = getUserByNick( nick );
-                        if( user != null )
+                        try
                         {
-                            user.noteActivity();
-                        }
-                        String channel = channel_or_nick;
-                        String polarity = tokens[ 3 ].substring( 0, 1 );
-                        String mode = tokens[ 3 ].substring( 1, 2 );
-                        String arg = tokens[ 4 ];
-                        
-                        String text = null;
-                        qualities += " " + channel
-                            + " from=" + nick
-                            + " " + FILTER_SPECIAL_CHAR + "mode"
-                            + " mode=" + mode
-                            + " polarity=" + polarity;
+                            String nick = getNick( tokens[ 0 ] );
+                            User user = getUserByNick( nick );
+                            if( user != null )
+                            {
+                                user.noteActivity();
+                            }
+                            String channel = channel_or_nick;
+                            String polarity = tokens[ 3 ].substring( 0, 1 );
+                            String mode = tokens[ 3 ].substring( 1, 2 );
+                            String arg = tokens[ 4 ];
 
-                        if( mode.equals( MODE_OP ) )
-                        {
-                            User recipient_user = getUserByNick( arg );
-                            if( recipient_user != null )
+                            String text = null;
+                            qualities += " " + channel
+                                + " from=" + nick
+                                + " " + FILTER_SPECIAL_CHAR + "mode"
+                                + " mode=" + mode
+                                + " polarity=" + polarity;
+
+                            if( mode.equals( MODE_OP ) )
+                            {
+                                User recipient_user = getUserByNick( arg );
+                                if( recipient_user != null )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        recipient_user.addModeFlag( MODE_OP );
+                                        text = nick + " has given channel operator privileges for "
+                                            + channel + " to " + arg + ".";
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        recipient_user.removeModeFlag( MODE_OP );
+                                        text = nick + " has taken channel operator privileges for "
+                                            + channel + " from " + arg + ".";
+                                    }
+
+                                    qualities += " recipient=" + nick;
+                                }
+                            }
+                            else if( mode.equals( "p" ) )
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    recipient_user.addModeFlag( MODE_OP );
-                                    text = nick + " has given channel operator privileges for "
-                                        + channel + " to " + arg + ".";
+                                    text = nick + " has made " + channel
+                                        + " a private channel.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    recipient_user.removeModeFlag( MODE_OP );
-                                    text = nick + " has taken channel operator privileges for "
-                                        + channel + " from " + arg + ".";
+                                    text = nick + " has removed the private status of "
+                                        + channel + ".";
                                 }
-
-                                qualities += " recipient=" + nick;
                             }
-                        }
-                        else if( mode.equals( "p" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has made " + channel
-                                    + " a private channel.";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has removed the private status of "
-                                    + channel + ".";
-                            }
-                        }
-                        else if( mode.equals( "s" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has made " + channel
-                                    + " a secret channel.";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has removed the secret status of "
-                                    + channel + ".";
-                            }
-                        }
-                        else if( mode.equals( "i" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has made " + channel
-                                    + " invite-only.";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has removed the invite-only status of "
-                                    + channel + ".";
-                            }
-                        }
-                        else if( mode.equals( "t" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has made the topic of " + channel
-                                    + " settable only by channel operators.";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has made the topic of " + channel
-                                    + " settable by anyone.";
-                            }
-                        }
-                        else if( mode.equals( "n" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has blocked messages to  " + channel
-                                    + " from people who are not in the channel.";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has allowed messages to  " + channel
-                                    + " from people who are not in the channel.";
-                            }
-                        }
-                        else if( mode.equals( "m" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has made " + channel
-                                    + " a moderated channel.";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has made " + channel
-                                    + " an unmoderated channel.";
-                            }
-                        }
-                        else if( mode.equals( "b" ) )
-                        {
-                            if( polarity.equals( "+" ) )
-                            {
-                                text = nick + " has added the ban " + arg + " for "
-                                    + channel + ".";
-                            }
-                            else if( polarity.equals( "-" ) )
-                            {
-                                text = nick + " has lifted the ban " + arg + " for "
-                                    + channel + ".";
-                            }
-                        }
-                        else if( mode.equals( MODE_VOICE ) )
-                        {
-                            User recipient_user = getUserByNick( arg );
-                            if( recipient_user != null )
+                            else if( mode.equals( "s" ) )
                             {
                                 if( polarity.equals( "+" ) )
                                 {
-                                    recipient_user.addModeFlag( MODE_VOICE );
-                                    text = nick + " has given voice in "
-                                        + channel + " to " + arg + ".";
+                                    text = nick + " has made " + channel
+                                        + " a secret channel.";
                                 }
                                 else if( polarity.equals( "-" ) )
                                 {
-                                    recipient_user.removeModeFlag( MODE_VOICE );
-                                    text = nick + " has taken voice in "
-                                        + channel + " from " + arg + ".";
+                                    text = nick + " has removed the secret status of "
+                                        + channel + ".";
                                 }
-
-                                qualities += " recipient=" + nick;
                             }
+                            else if( mode.equals( "i" ) )
+                            {
+                                if( polarity.equals( "+" ) )
+                                {
+                                    text = nick + " has made " + channel
+                                        + " invite-only.";
+                                }
+                                else if( polarity.equals( "-" ) )
+                                {
+                                    text = nick + " has removed the invite-only status of "
+                                        + channel + ".";
+                                }
+                            }
+                            else if( mode.equals( "t" ) )
+                            {
+                                if( polarity.equals( "+" ) )
+                                {
+                                    text = nick + " has made the topic of " + channel
+                                        + " settable only by channel operators.";
+                                }
+                                else if( polarity.equals( "-" ) )
+                                {
+                                    text = nick + " has made the topic of " + channel
+                                        + " settable by anyone.";
+                                }
+                            }
+                            else if( mode.equals( "n" ) )
+                            {
+                                if( polarity.equals( "+" ) )
+                                {
+                                    text = nick + " has blocked messages to  " + channel
+                                        + " from people who are not in the channel.";
+                                }
+                                else if( polarity.equals( "-" ) )
+                                {
+                                    text = nick + " has allowed messages to  " + channel
+                                        + " from people who are not in the channel.";
+                                }
+                            }
+                            else if( mode.equals( "m" ) )
+                            {
+                                if( polarity.equals( "+" ) )
+                                {
+                                    text = nick + " has made " + channel
+                                        + " a moderated channel.";
+                                }
+                                else if( polarity.equals( "-" ) )
+                                {
+                                    text = nick + " has made " + channel
+                                        + " an unmoderated channel.";
+                                }
+                            }
+                            else if( mode.equals( "b" ) )
+                            {
+                                if( polarity.equals( "+" ) )
+                                {
+                                    text = nick + " has added the ban " + arg + " for "
+                                        + channel + ".";
+                                }
+                                else if( polarity.equals( "-" ) )
+                                {
+                                    text = nick + " has lifted the ban " + arg + " for "
+                                        + channel + ".";
+                                }
+                            }
+                            else if( mode.equals( MODE_VOICE ) )
+                            {
+                                User recipient_user = getUserByNick( arg );
+                                if( recipient_user != null )
+                                {
+                                    if( polarity.equals( "+" ) )
+                                    {
+                                        recipient_user.addModeFlag( MODE_VOICE );
+                                        text = nick + " has given voice in "
+                                            + channel + " to " + arg + ".";
+                                    }
+                                    else if( polarity.equals( "-" ) )
+                                    {
+                                        recipient_user.removeModeFlag( MODE_VOICE );
+                                        text = nick + " has taken voice in "
+                                            + channel + " from " + arg + ".";
+                                    }
+
+                                    qualities += " recipient=" + nick;
+                                }
+                            }
+
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                qualities
+                            );
+                            trigger_manager.check( text, qualities );
                         }
-                        
-                        windows_printed_to += display_manager.println(
-                            GeoIRC.getATimeStamp(
-                                settings_manager.getString( "/gui/format/timestamp", "" )
-                            ) + text,
-                            qualities
-                        );
-                        trigger_manager.check( text, qualities );
+                        catch( ArrayIndexOutOfBoundsException e )
+                        {
+                        }
                     }
-                    
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NICK ] ) )
                 {
@@ -1089,12 +1094,18 @@ public class Server
                                         String address_str = args[ 2 ];
                                         String port_str = args[ 3 ];
                                         
+                                        long ip = Long.parseLong( address_str );
+                                        String ip_str =
+                                            Long.toString( ( ip & 0xFF000000 ) / 0x1000000 ) + "."
+                                            + Long.toString( ( ip & 0x00FF0000 ) / 0x10000 ) + "."
+                                            + Long.toString( ( ip & 0x0000FF00 ) / 0x100 ) + "."
+                                            + Long.toString( ip & 0x000000FF );
+                                        
                                         // Parse for the sake of checking data correctness.
-                                        Long.parseLong( address_str );
                                         Integer.parseInt( port_str );
                                         
                                         DCCClient dcc_client = geoirc.addDCCClient(
-                                            address_str, port_str
+                                            ip_str, port_str
                                         );
                                         display_manager.addTextWindow(
                                             dcc_client.toString(),

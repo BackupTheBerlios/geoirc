@@ -771,14 +771,27 @@ public class GeoIRC
             text = text.substring( 1 );
             execute( CMDS[ CMD_SEND_RAW ] + " " + text );
         }
-        else if( current_rm instanceof DCCClient )
-        {
-            execute( CMDS[ CMD_SEND_RAW ] + " " + text );
-        }
         else if( text.charAt( 0 ) == '/' )
         {
             text = text.substring( 1 );
             execute( text );
+        }
+        else if( current_rm instanceof DCCClient )
+        {
+            text = "<" + preferred_nick + "> " + text;
+            display_manager.println(
+                getATimeStamp(
+                    settings_manager.getString(
+                        "/gui/format/timestamp", ""
+                    )
+                )
+                + text,
+                current_rm.toString() + " "
+                + FILTER_SPECIAL_CHAR + "dccchat"
+                + " from=" + FILTER_SPECIAL_CHAR + "self"
+            );
+            
+            execute( CMDS[ CMD_SEND_RAW ] + " " + text );
         }
         else
         {
