@@ -8,6 +8,8 @@ package geoirc;
 
 import java.awt.*;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowStateListener;
 import java.awt.event.WindowEvent;
 import java.util.Vector;
@@ -24,7 +26,8 @@ public class DisplayManager
     implements
         InternalFrameListener,
         GeoIRCConstants,
-        ComponentListener
+        ComponentListener,
+        KeyListener
 {
     protected SettingsManager settings_manager;
     protected StyleManager style_manager;
@@ -32,6 +35,7 @@ public class DisplayManager
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
     protected JInternalFrame last_activated_frame;
+    protected JTextField input_field;
     protected boolean listening;
     
     protected int last_added_frame_x;
@@ -51,7 +55,8 @@ public class DisplayManager
     public DisplayManager(
         Container content_pane,
         JMenuBar menu_bar,
-        SettingsManager settings_manager
+        SettingsManager settings_manager,
+        JTextField input_field
     )
     {
         listening = false;
@@ -64,6 +69,7 @@ public class DisplayManager
         
         desktop_pane = new JScrollDesktopPane( menu_bar );
         content_pane.add( desktop_pane );
+        this.input_field = input_field;
         
         restoreDesktopState();
         
@@ -111,21 +117,13 @@ public class DisplayManager
 
     public GITextWindow addTextWindow( String title, String filter )
     {
-        /*
-        return addTextWindow( title, filter, null );
-    }
-    
-    // Returns the GITextWindow created.
-    protected GITextWindow addTextWindow( String title, String filter, RemoteMachine rm )
-    {
-         */
         String actual_title = title;
         if( actual_title == null )
         {
             actual_title = "";
         }
         GITextWindow text_window = new GITextWindow(
-            this, settings_manager, style_manager, title, filter/*, rm */
+            this, settings_manager, style_manager, title, filter
         );
 
         if( last_added_frame_x < MAX_NEW_WINDOW_X )
@@ -145,19 +143,15 @@ public class DisplayManager
             last_added_frame_y = MIN_NEW_WINDOW_Y;
         }
         desktop_pane.add( text_window, last_added_frame_x, last_added_frame_y );
-        text_window.setBounds( last_added_frame_x, last_added_frame_y, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT );
-        
-        printlnDebug( Integer.toString( windows.size() ) + " windows" );
+        text_window.setBounds(
+            last_added_frame_x,
+            last_added_frame_y,
+            DEFAULT_WINDOW_WIDTH,
+            DEFAULT_WINDOW_HEIGHT
+        );
         
         return text_window;
     }
-    
-    /*
-    public GITextWindow addServerWindow( Server s )
-    {
-        return addTextWindow( s.toString(), s.toString(), s );
-    }
-     */
     
     public GITextWindow addChannelWindow( Server s, String channel_name )
     {
@@ -168,8 +162,7 @@ public class DisplayManager
            
         return addTextWindow(
             channel_name + " on " + s.toString(),
-            s.toString() + " AND " + channel_name/*,
-            s*/
+            s.toString() + " AND " + channel_name
         );
     }
     
@@ -202,24 +195,6 @@ public class DisplayManager
     {
         return desktop_pane.getSelectedFrame();
     }
-    
-    /*
-    public RemoteMachine getSelectedRemoteMachine()
-    {
-        RemoteMachine retval;
-        
-        if( last_activated_frame instanceof GITextWindow )
-        {
-            retval = ((GITextWindow) last_activated_frame).getAssociatedMachine();
-        }
-        else
-        {
-            retval = null;
-        }
-        
-        return retval;
-    }
-     */
     
     public String getSelectedChannel()
     {
@@ -313,6 +288,32 @@ public class DisplayManager
         if( listening )
         {
             recordDesktopState();
+        }
+    }
+
+    public void keyPressed( KeyEvent e )
+    {
+    }
+    
+    public void keyReleased( KeyEvent e )
+    {
+    }
+    
+    public void keyTyped( KeyEvent e )
+    {
+        // The user is accidentally typing into a window.
+        // Redirect them to the input field.
+        
+        String mods = e.getModifiersExText( e.getModifiersEx() );
+        if( mods.equals( "" ) || mods.equals( "Shift" ) ) 
+        {
+            String character = "" + e.getKeyChar();
+
+            input_field.grabFocus();
+            input_field.setText(
+                input_field.getText()
+                + character
+            );
         }
     }
     

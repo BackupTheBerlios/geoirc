@@ -70,11 +70,11 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         
         this.display_manager = display_manager;
         this.filter = filter;
-        //this.associated_machine = associated_machine;
         this.settings_manager = settings_manager;
         
         text_pane = new JTextPane();
         text_pane.setEditable( false );
+        text_pane.addKeyListener( display_manager );
         
         String rgb_str = settings_manager.getString(
             "/gui/text windows/default foreground colour",

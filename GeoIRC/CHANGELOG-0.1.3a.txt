@@ -32,3 +32,7 @@ Pistos 2003-07-11
 Whoops, forgot to put the Ident server in an infinite loop to continually
 serve Ident requests.
 Pistos 2003-07-11
+
+Reworked the input field focus issue... still not a satisfactory solution, but
+better.
+Pistos 2003-07-11

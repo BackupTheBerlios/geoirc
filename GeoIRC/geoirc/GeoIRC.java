@@ -182,7 +182,7 @@ public class GeoIRC
         this.setTitle( "GeoIRC" );
         
         display_manager = new DisplayManager(
-            getContentPane(), menu_bar, settings_manager
+            getContentPane(), menu_bar, settings_manager, input_field
         );
         display_manager.printlnDebug( skin_errors );
         
@@ -590,9 +590,9 @@ public class GeoIRC
     public void focusLost( FocusEvent e )
     {
         Component thief = e.getOppositeComponent();
+        /*
         if(
             ( thief instanceof JTextPane )
-            //|| ( thief instanceof SkinWindowButton )
         )
         {
             SwingUtilities.invokeLater( new Runnable()
@@ -604,7 +604,7 @@ public class GeoIRC
                 }
             );
         }
-        else if( thief != null )
+        else */if( thief != null )
         {
             display_manager.printlnDebug( "Focus stolen by: " 
             + thief.getClass().toString() );
