@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.event.TreeSelectionEvent;
@@ -47,6 +48,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private XmlProcessable settings_manager;
     private JPanel mainPanel = new JPanel();
     private JPanel ButtonPanel = new JPanel();
+    private JToolBar toolbar = new JToolBar();
     private JSplitPane jSplitPane1 = new JSplitPane();
     private JTree categoryTree = null;
     private JButton Apply = new JButton();
@@ -145,6 +147,10 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         this("GeoIRC Settings", settings_manager, display_manager);
     }
 
+    
+    /* (non-Javadoc)
+     * @see javax.swing.JDialog#createRootPane()
+     */
     protected JRootPane createRootPane()
     {
         KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -192,6 +198,9 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         ButtonPanel.setLayout(flowLayout1);
 
         getContentPane().setLayout(borderLayout1);
+                
+        addToolBarButtons( toolbar );
+        getContentPane().add(toolbar, BorderLayout.NORTH);        
 
         //left category tree
         categoryTree = buildCategoryTree();
@@ -205,10 +214,10 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         jSplitPane1.setMinimumSize(new Dimension());
         jSplitPane1.setContinuousLayout(true);
         jSplitPane1.setOneTouchExpandable(true);
-        jSplitPane1.setDividerSize(5);
-        jSplitPane1.setResizeWeight(0.0);
-        flowLayout1.setAlignment(FlowLayout.RIGHT);
-        getContentPane().add(mainPanel, BorderLayout.CENTER);
+        jSplitPane1.setDividerSize( 6 );
+        jSplitPane1.setResizeWeight( 0.0 );
+        flowLayout1.setAlignment(FlowLayout.RIGHT);       
+        getContentPane().add(mainPanel, BorderLayout.CENTER);        
         mainPanel.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(scrollTree, JSplitPane.LEFT);
         jSplitPane1.add(new JScrollPane(rootPane), JSplitPane.RIGHT);
@@ -222,6 +231,22 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         open();
     }
 
+    private void addToolBarButtons( JToolBar bar )
+    {
+        JButton rexpdlg_button = new JButton( "Regular Expression Tester" );
+        rexpdlg_button.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                final RegularExpressionTester tester = new RegularExpressionTester();
+                tester.setVisible( true );
+                
+            }
+        });
+        
+        bar.add( rexpdlg_button );
+    }
+    
     /**
      * @param panels
      * @return
