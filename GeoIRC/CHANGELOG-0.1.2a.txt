@@ -9,3 +9,6 @@ Pistos 2003-07-07
 
 Filled out the keymapping code in GeoIRC.java.
 Pistos 2003-07-07
+
+Fixed first-line-in-history bug.
+Pistos 2003-07-07

@@ -415,7 +415,14 @@ public class GeoIRC
             return;
         }
 
-        addToInputHistory( text );
+        if( input_saved )
+        {
+            input_history.set( input_history_pointer, text );
+        }
+        else
+        {
+            addToInputHistory( text );
+        }
         input_history_pointer = MOST_RECENT_ENTRY;
         input_saved = false;
         
@@ -718,7 +725,10 @@ public class GeoIRC
                 }
                 break;
             case CMD_PREVIOUS_HISTORY_ENTRY:
-                if( input_history_pointer < input_history.size() - 1 )
+                if(
+                    ( input_history_pointer < input_history.size() - 1 )
+                    || ( input_history.size() == 1 )
+                )
                 {
                     String input_text = input_field.getText();
                     if( input_saved )

@@ -28,14 +28,6 @@
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
-            <node name="1">
-              <map>
-                <entry key="name" value="#geoshell" />
-              </map>
-            </node>
-            <node name="2">
-              <map />
-            </node>
           </node>
         </node>
         <node name="1">
@@ -102,6 +94,9 @@
               <entry key="width" value="633" />
               <entry key="filter" value="irc.freenode.net AND #geoshell" />
             </map>
+          </node>
+          <node name="4">
+            <map />
           </node>
         </node>
         <node name="format">
