@@ -60,6 +60,9 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
 
         table = new JValidatingTable( ltm, validation_listener );
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setColumnSelectionAllowed( false );
+        table.setRowSelectionAllowed( true );
+        
         table.setRowHeight(18);
         ltm.setData( SettingsPeer.loadTriggers( settings_manager, rules ) );
 
@@ -92,6 +95,10 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
             {
                 int pos = table.getSelectedRow();
                 ltm.delRow(pos);
+                if( table.getRowCount() > 0 )
+                {
+                    table.setRowSelectionInterval(pos - 1, pos - 1);
+                }                
             }
         });
 
@@ -101,7 +108,9 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         {
             public void actionPerformed(ActionEvent arg0)
             {
+                int count = table.getRowCount() - 1;
                 ltm.addRow(new Trigger("", ".*", ""));
+                table.setRowSelectionInterval(count, count);                
             }
         });
 
