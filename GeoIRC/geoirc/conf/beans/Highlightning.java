@@ -65,7 +65,7 @@ public class Highlightning
 	 */
 	public String getColorPrefix()
 	{
-		return format.substring(0, 1);
+		return format.substring(0, 2);
 	}
 	
 	public void setColorPrefix(String value)
