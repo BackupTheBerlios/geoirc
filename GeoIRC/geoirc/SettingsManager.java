@@ -179,6 +179,17 @@ public class SettingsManager
         return parent.getChildren( first_node.getName() );
     }
     
+    public List getChildren( String absolute_path, boolean create_nodes )
+    {
+        Element parent = getNode( absolute_path, create_nodes );
+        if( parent == null )
+        {
+            return null;
+        }
+        
+        return parent.getChildren();
+    }
+    
     /**
      * @return the Element denoted by the absolute_path, or null if
      * create_nodes is false, and the node doesn't exist.

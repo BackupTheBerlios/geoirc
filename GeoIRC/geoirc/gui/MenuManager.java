@@ -29,7 +29,7 @@ public class MenuManager
     protected CommandExecutor executor;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
-    protected JPopupMenu menu;
+    protected JPopupMenu popup_menu;
     
     /** Creates a new instance of MenuManager */
     public MenuManager(
@@ -41,7 +41,7 @@ public class MenuManager
         this.executor = executor;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        menu = null;
+        popup_menu = null;
     }
     
     public void showPopup( MouseEvent event )
@@ -56,12 +56,11 @@ public class MenuManager
     
     public void showPopup( MouseEvent event, Object param1, Object param2 )
     {
-        if( menu != null )
+        if( popup_menu != null )
         {
-            menu.setVisible( false );
+            popup_menu.setVisible( false );
         }
-        menu = new JPopupMenu();
-        JMenuItem item;
+        popup_menu = new JPopupMenu();
         
         if( event.getSource() instanceof javax.swing.JTextPane )
         {
@@ -76,10 +75,12 @@ public class MenuManager
             {
                 index_str = "";
             }
+            
+            String [] args = new String [] { index_str };
 
             /*
             JMenu submenu = new JMenu( "Dock" );
-            menu.add( submenu );
+            popup_menu.add( submenu );
 
             item = new JMenuItem( "Top" );
             item.setActionCommand( "dockpane " + index_str + " t" );
@@ -99,34 +100,51 @@ public class MenuManager
             submenu.add( item );
              */
             
-            List menu_items = settings_manager.getNodes(
-                "/menu/context/text_pane",
-                DONT_CREATE_NODES
-            );
-            Iterator it = menu_items.iterator();
-            Element element;
-            String menu_text;
-            String command;
-            while( it.hasNext() )
+            buildMenu( popup_menu, "/popup_menu/context/text_pane/", args );
+            
+            popup_menu.show( event.getComponent(), event.getX(), event.getY() );
+        }
+    }
+    
+    protected void buildMenu( javax.swing.JComponent menu, String path, String [] args )
+    {
+        List menu_items = settings_manager.getChildren(
+            path, DONT_CREATE_NODES
+        );
+        Iterator it = menu_items.iterator();
+        Element element;
+        String menu_text;
+        String command;
+        JMenuItem item;
+        String is_submenu = "false";
+        while( it.hasNext() )
+        {
+            element = (Element) it.next();
+            menu_text = element.getAttributeValue( "text" );
+            is_submenu = element.getAttributeValue( "submenu" );
+            if( ( is_submenu != null ) && is_submenu.equals( "true" ) )
             {
-                element = (Element) it.next();
-                menu_text = element.getAttributeValue( "text" );
+            }
+            else
+            {
                 command = element.getAttributeValue( "command" );
-                menu_text.replaceAll( "%0", index_str );
-                command.replaceAll( "%0", index_str );
+                for( int i = 0; i < args.length; i++ )
+                {
+                    menu_text = menu_text.replaceAll( "%" + Integer.toString( i ), args[ i ] );
+                    command = command.replaceAll( "%" + Integer.toString( i ), args[ i ] );
+                }
                 item = new JMenuItem( menu_text );
                 item.setActionCommand( command );
                 item.addActionListener( this );
-                menu.add( item );
+                if( menu instanceof JPopupMenu )
+                {
+                    ((JPopupMenu) menu).add( item );
+                }
+                else if( menu instanceof JMenu )
+                {
+                    ((JMenu) menu).add( item );
+                }
             }
-            
-
-            item = new JMenuItem( "Clear" );
-            item.setActionCommand( "clearpane " + index_str );
-            item.addActionListener( this );
-            menu.add( item );
-
-            menu.show( event.getComponent(), event.getX(), event.getY() );
         }
     }
     
