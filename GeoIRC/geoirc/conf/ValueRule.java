@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * Simple wrapper for configured default value rules
  * @author netseeker aka Michael Manske
  */
-public class ValueRule
+public class ValueRule implements Verifiable
 {
 	protected String name = null;
 	protected String value = null;

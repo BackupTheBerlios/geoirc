@@ -13,14 +13,14 @@
 					<node name="IDENT_PORT">
 						<map>
 							<entry key="default" value="113" />
-				            <entry key="pattern" value="\d(1,4)" />
+				            <entry key="pattern" value="\d{1,4}+" />
 				            <entry key="javaType" value="java.lang.Integer" />							
 						</map>
 					</node>
 					<node name="PORT">
 						<map>
 							<entry key="default" value="6667" />
-				            <entry key="pattern" value="\d(1,4)" />
+				            <entry key="pattern" value="\d{1,4}+" />
 				            <entry key="javaType" value="java.lang.Integer" />							
 						</map>
 					</node>
