@@ -377,6 +377,8 @@ public interface GeoIRCConstants
     static final int SORT_UNSORTED = -1;
     static final int SORT_ALPHABETICAL_ASCENDING = 0;
     static final int SORT_TIME_SINCE_LAST_ASCENDING = 1;
+    static final int SORT_MODE_ALPHABETICAL_ASCENDING = 2;
+    static final int SORT_MODE_TIME_SINCE_LAST_ASCENDING = 3;
     static final int DEFAULT_SORT_ORDER = SORT_ALPHABETICAL_ASCENDING;
     
     static final int PROCESS_WATCH_INTERVAL = 1000;  // millseconds

@@ -18,10 +18,11 @@ public class UserComparator
     implements java.util.Comparator, GeoIRCConstants
 {
     protected int sort_order;
+    protected Channel channel;
     
     private UserComparator() { }
     
-    public UserComparator( int sort_order )
+    public UserComparator( int sort_order, Channel channel )
     {
         if( ! Util.isValidSortOrder( sort_order ) )
         {
@@ -29,6 +30,12 @@ public class UserComparator
         }
 
         this.sort_order = sort_order;
+        this.channel = channel;
+    }
+    
+    public void setChannel( Channel channel )
+    {
+        this.channel = channel;
     }
     
     /**
@@ -45,12 +52,43 @@ public class UserComparator
         switch( sort_order )
         {
             case SORT_ALPHABETICAL_ASCENDING:
-                comparison = u1.getNick().compareTo( u2.getNick() );
+                String[] nicks = Util.getStringsCuttedToEqualLength(u1.getNick(), u2.getNick());
+                comparison = nicks[0].toLowerCase().compareTo( nicks[1].toLowerCase() );
                 break;
             case SORT_TIME_SINCE_LAST_ASCENDING:
                 // Reverse sort because these are "times OF", not "times SINCE"
                 comparison = u2.getTimeOfLastActivity().compareTo( u1.getTimeOfLastActivity() );
                 break;
+            case SORT_MODE_ALPHABETICAL_ASCENDING:
+                if( channel != null )
+                {
+                    //Reverse because we have to follow the ascending order
+                    comparison = compareMode( u2, u1, channel);
+                    if( comparison == 0)
+                    {
+                        String[] nicknames = Util.getStringsCuttedToEqualLength(u1.getNick(), u2.getNick());
+                        comparison = nicknames[0].toLowerCase().compareTo( nicknames[1].toLowerCase() );
+                    }
+                }
+                else
+                {
+                    throw new IllegalArgumentException( "No valid channel set." );
+                }
+                break;
+            case SORT_MODE_TIME_SINCE_LAST_ASCENDING:
+                if( channel != null )
+                {
+                    comparison = compareMode( u1, u2, channel);
+                    if( comparison == 0)
+                    {
+                        comparison = u2.getTimeOfLastActivity().compareTo( u1.getTimeOfLastActivity() );
+                    }
+                }
+                else
+                {
+                    throw new IllegalArgumentException( "No valid channel set." );
+                }
+                break;                
             default:
                 throw new IllegalArgumentException( "Invalid sort order." );
         }
@@ -58,4 +96,34 @@ public class UserComparator
         return comparison;
     }
     
+    protected int compareMode(User u1, User u2, Channel channel)
+    {
+        boolean u1HasFlag = u1.hasModeFlag(channel, MODE_OP);
+        boolean u2HasFlag = u2.hasModeFlag(channel, MODE_OP);
+        
+        if(u1HasFlag == true && u2HasFlag == false)
+        {
+            return 1;
+        }
+        else if(u1HasFlag == false && u2HasFlag == true)
+        {
+            return -1;
+        }
+        else if(u1HasFlag == false && u2HasFlag == false)
+        {
+            u1HasFlag = u1.hasModeFlag(channel, MODE_VOICE);
+            u2HasFlag = u2.hasModeFlag(channel, MODE_VOICE);
+            
+            if(u1HasFlag == true && u2HasFlag == false)
+            {
+                return 1;
+            }
+            else if(u1HasFlag == false && u2HasFlag == true)
+            {
+                return -1;
+            }
+        }
+                
+        return 0;
+    }
 }

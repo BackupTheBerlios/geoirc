@@ -196,14 +196,18 @@ public class VisualPane extends BaseSettingsPanel implements Storable
                         break;
             case 1:     value = "activity descending";                    
                         break;
+            case 2:     value = "mode and alphabetic ascending";                    
+                        break;
+            case 3:     value = "mode and activity descending";                    
+                        break;
         }
         
         addComponent(new JLabel("Nicknames sort order"), 0, 15, 1, 1, 0, 0);
-        String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending" };        
+        String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending", "mode and alphabetic ascending", "mode and activity descending" };        
         sortBox = new JComboBox(sort_options);
-        addComponent(sortBox, 1, 15, 2, 1, 0, 0);
+        addComponent(sortBox, 1, 15, 3, 1, 0, 0);
         sortBox.setSelectedItem(value);
-        addLayoutStopper(0, 16);
+        addLayoutStopper(0, 19);
     }
 
     /* (non-Javadoc)

@@ -277,6 +277,10 @@ public class Server
             {
                 u.setNick( new_nick );
                 changed = true;
+                for ( Iterator cit = channels.iterator(); cit.hasNext(); )
+                {
+                    ((Channel)cit.next()).acknowledgeUserChange(u);
+                }
                 break;
             }
         }

@@ -122,6 +122,8 @@ public class Util implements GeoIRCConstants
         switch( sort_order )
         {
             case SORT_ALPHABETICAL_ASCENDING:
+            case SORT_MODE_ALPHABETICAL_ASCENDING:
+            case SORT_MODE_TIME_SINCE_LAST_ASCENDING:
             case SORT_TIME_SINCE_LAST_ASCENDING:
                 is_valid = true;
                 break;
@@ -306,4 +308,21 @@ public class Util implements GeoIRCConstants
 
         return retval;
     }
+
+    public static String[] getStringsCuttedToEqualLength(String string1, String string2)
+    {
+        int dif = string1.length() - string2.length();                
+                
+        if( dif > 0)
+        {
+            string1 = string1.substring(0, string2.length());
+        }
+        else if ( dif < 0)
+        {
+            string2 = string2.substring(0, string1.length());
+        }
+                
+        return new String[] { string1, string2 };
+    }
+
 }

@@ -122,7 +122,7 @@ public class Channel implements GeoIRCConstants
         if( Util.isValidSortOrder( new_sort_order ) )
         {
             sort_order = new_sort_order;
-            comparator = new UserComparator( sort_order );
+            comparator = new UserComparator( sort_order, this );
             success = true;
         }
         
