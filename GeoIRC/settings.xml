@@ -7,12 +7,11 @@
     <map />
     <node name="geoirc">
       <map />
-      <node name="personal">
-      	<map>
-     	  <entry key="nick1" value="GeoIRC_User" />
-     	  <entry key="nick2" value="GeoIRC|User" />
-     	  <entry key="nick3" value="GeoIRCUser" />
-     	</map>
+      <node name="config">
+        <map>
+          <entry key="default download directory" value="downloads/" />
+          <entry key="confirm receive" value="true" />
+        </map>
       </node>
       <node name="gui">
         <map>
@@ -20,11 +19,19 @@
           <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
           <entry key="start maximized" value="True" />
         </map>
-        <node name="text windows">
-          <map>
-            <entry key="font face" value="Lucida Console" />
-            <entry key="font size" value="14" />
-          </map>
+        <node name="desktop">
+          <map />
+          <node name="0">
+            <map>
+              <entry key="type" value="class geoirc.GITextWindow" />
+              <entry key="title" value="Debug" />
+              <entry key="x" value="0" />
+              <entry key="y" value="0" />
+              <entry key="height" value="0" />
+              <entry key="width" value="129" />
+              <entry key="filter" value="" />
+            </map>
+          </node>
         </node>
         <node name="input field">
           <map>
@@ -32,12 +39,12 @@
             <entry key="font size" value="14" />
           </map>
         </node>
-      </node>
-      <node name="config">
-        <map>
-          <entry key="default download directory" value="downloads/" />
-          <entry key="confirm receive" value="true" />
-        </map>
+        <node name="text windows">
+          <map>
+            <entry key="font face" value="Lucida Console" />
+            <entry key="font size" value="14" />
+          </map>
+        </node>
       </node>
       <node name="keyboard">
         <map>
@@ -45,6 +52,18 @@
           <entry key="|Down" value="next_history_entry" />
           <entry key="Alt|Left" value="previouswindow" />
           <entry key="Alt|Right" value="nextwindow" />
+        </map>
+      </node>
+      <node name="personal">
+        <map>
+          <entry key="nick1" value="GeoIRC_User" />
+          <entry key="nick2" value="GeoIRC|User" />
+          <entry key="nick3" value="GeoIRCUser" />
+        </map>
+      </node>
+      <node name="test">
+        <map>
+          <entry key="testval" value="ooga" />
         </map>
       </node>
     </node>

@@ -20,7 +20,7 @@ import org.jscroll.widgets.JScrollInternalFrame;
  * @author  Pistos
  */
 public class DisplayManager
-    implements InternalFrameListener
+    implements InternalFrameListener, GeoIRCConstants
 {
     protected SettingsManager settings_manager;
     protected GITextWindow debug_window;
@@ -36,6 +36,8 @@ public class DisplayManager
     protected static final int MIN_NEW_WINDOW_Y = 10;
     protected static final int NEW_WINDOW_X_INCREMENT = 20;
     protected static final int NEW_WINDOW_Y_INCREMENT = 20;
+    protected static final int DEFAULT_WINDOW_WIDTH = 700;
+    protected static final int DEFAULT_WINDOW_HEIGHT = 500;
     
     // No default constructor
     private DisplayManager() { }
@@ -53,13 +55,24 @@ public class DisplayManager
         content_pane.add( desktop_pane );
         
         debug_window = null;
-        debug_window = addTextWindow( "Debug" );
+        
+        restoreDesktopState();
+        
+        ensureDebugWindowExists();
         
         debug_window.appendLine( "GeoIRC started." );
         
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
+    }
+    
+    protected void ensureDebugWindowExists()
+    {
+        if( debug_window == null )
+        {
+            debug_window = addTextWindow( "Debug" );
+        }
     }
 
     protected GITextWindow addTextWindow( String title )
@@ -99,7 +112,7 @@ public class DisplayManager
             last_added_frame_y = MIN_NEW_WINDOW_Y;
         }
         desktop_pane.add( text_window, last_added_frame_x, last_added_frame_y );
-        text_window.setBounds( last_added_frame_x, last_added_frame_y, 700, 500 );
+        text_window.setBounds( last_added_frame_x, last_added_frame_y, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT );
         
         printlnDebug( Integer.toString( windows.size() ) + " windows" );
         
@@ -288,6 +301,11 @@ public class DisplayManager
             i_str = Integer.toString( i );
             
             settings_manager.putString(
+                "/gui/desktop/" + i_str + "/type", 
+                frame.getClass().toString()
+            );
+            
+            settings_manager.putString(
                 "/gui/desktop/" + i_str + "/title",
                 frame.getTitle()
             );
@@ -318,4 +336,76 @@ public class DisplayManager
         }
     }
 
+    protected void restoreDesktopState()
+    {
+        int i = 0;
+        JInternalFrame frame;
+        String i_str;
+        
+        String type;
+        String title;
+        int x;
+        int y;
+        int width;
+        int height;
+        String filter;
+        
+        while( GOD_IS_GOOD )
+        {
+            i_str = Integer.toString( i );
+            
+            type = settings_manager.getString(
+                "/gui/desktop/" + i_str + "/type", 
+                ""
+            );
+            
+            if( type.equals( "" ) )
+            {
+                // No more windows stored in the settings.
+                break;
+            }
+            
+            type = type.substring( type.lastIndexOf( "." ) );
+            
+            title = settings_manager.getString(
+                "/gui/desktop/" + i_str + "/title",
+                "GeoIRC"
+            );
+            
+            x = settings_manager.getInt(
+                "/gui/desktop/" + i_str + "/x",
+                MIN_NEW_WINDOW_X
+            );
+            y = settings_manager.getInt(
+                "/gui/desktop/" + i_str + "/y",
+                MIN_NEW_WINDOW_Y
+            );
+            height = settings_manager.getInt(
+                "/gui/desktop/" + i_str + "/height",
+                DEFAULT_WINDOW_HEIGHT
+            );
+            width = settings_manager.getInt(
+                "/gui/desktop/" + i_str + "/width",
+                DEFAULT_WINDOW_WIDTH
+            );
+            
+            if( type.equals( "GITextWindow" ) )
+            {
+                filter = settings_manager.getString(
+                    "/gui/desktop/" + i_str + "/filter",
+                    ""
+                );
+                
+                GITextWindow gitw = addTextWindow( title, filter );
+                gitw.setBounds( x, y, width, height );
+            }
+            else
+            {
+                // Huh?  Unknown window type.
+            }
+            
+            i++;
+        }
+    }
+    
 }

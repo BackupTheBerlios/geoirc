@@ -14,6 +14,8 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
+    static final boolean GOD_IS_GOOD = true;
+    
     static final String [] IRCMSGS =
     {
         "PRIVMSG"

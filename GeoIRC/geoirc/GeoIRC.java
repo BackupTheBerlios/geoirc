@@ -189,8 +189,6 @@ public class GeoIRC
         servers = new Vector();
         //geoirc.execute( "newserver irc.freenode.net 6667" );
 
-        settings_manager.printSettings( null, 0 );
-        
         show();
     }
     
