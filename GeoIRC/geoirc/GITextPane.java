@@ -24,7 +24,7 @@ import org.jscroll.widgets.*;
 public class GITextPane extends GIPane implements GeoIRCConstants
 {
     protected JTextPane text_pane;
-    protected Document document;
+    protected StyledDocument document;
     protected String filter;
     protected JScrollBar scrollbar;
     
@@ -84,7 +84,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         } catch( NumberFormatException e ) { /* accept defaults */ }
         text_pane.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
 
-        document = text_pane.getDocument();
+        document = text_pane.getStyledDocument();
 
         setViewportView( text_pane );
         setVerticalScrollBarPolicy(
@@ -95,20 +95,26 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         style_manager.initializeTextPane( text_pane );
     }
     
-    public void appendLine( String text )
+    public int appendLine( String text )
     {
-        append( text + "\n" );
+        return append( text + "\n" );
     }
     
-    synchronized public void append( String text )
+    /**
+     * @return the document offset of the appended text.
+     */
+    synchronized public int append( String text )
     {
+        int offset = document.getLength();
+        
         // Tokenize this string into styled fragments.
         
-        String [] fragments = text.split( STYLE_ESCAPE_SEQUENCE );
-        String [] fragment_parts;
-        boolean first_is_styled = ( text.indexOf( STYLE_ESCAPE_SEQUENCE ) == 0 );
         try
         {
+            /*
+            String [] fragments = text.split( STYLE_ESCAPE_SEQUENCE );
+            String [] fragment_parts;
+            boolean first_is_styled = ( text.indexOf( STYLE_ESCAPE_SEQUENCE ) == 0 );
             int index;
             for( int i = 0; i < fragments.length; i++ )
             {
@@ -142,11 +148,16 @@ public class GITextPane extends GIPane implements GeoIRCConstants
                     }
                 }
             }
+             */
+            
+            document.insertString( offset, text, text_pane.getStyle( "normal" ) );
         }
         catch( BadLocationException e )
         {
             display_manager.printlnDebug( e.getMessage() );
         }
+        
+        // Autoscroll if the user is not holding the scrollbar.
 
         if( ! scrollbar.getValueIsAdjusting() )
         {
@@ -166,6 +177,14 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             );
         }
         
+        return offset;
+    }
+    
+    public void applyStyle( int offset, int length, String style_name )
+    {
+        document.setCharacterAttributes(
+            offset, length, text_pane.getStyle( style_name ), false
+        );
     }
     
     public boolean accepts( String text )
@@ -181,6 +200,12 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             display_manager.printlnDebug( e.getMessage() );
         }
         return result;
+    }
+    
+    public String getText( int offset, int length )
+        throws BadLocationException
+    {
+        return document.getText( offset, length );
     }
     
     public String getFilter()

@@ -8,6 +8,7 @@ package geoirc;
 
 import geoirc.util.*;
 import java.util.regex.*;
+import javax.swing.text.*;
 
 /**
  *
@@ -52,14 +53,19 @@ public class HighlightTrigger implements GeoIRCConstants
     /* Check against a message which has certain qualities.
      * Return the line in highlighted form.
      */
-    public String highlight( String line, String qualities )
+    public void highlight(
+        GITextPane text_pane,
+        int offset,
+        int length,
+        String qualities
+    )
     {
-        String highlighted_line = line;
-        Matcher matcher = regexp.matcher( line );
-        String group = null;
-        
         try
         {
+            String line = text_pane.getText( offset, length );
+            Matcher matcher = regexp.matcher( line );
+            String group = null;
+        
             if(
                 BoolExpEvaluator.evaluate( filter, qualities )
                 && matcher.find()
@@ -67,34 +73,26 @@ public class HighlightTrigger implements GeoIRCConstants
             {
                 if( matcher.groupCount() > 0 )
                 {
+                    // There are one or more groups marked off by parentheses,
+                    // so we want to apply the highlighting only to those groups.
+                    
                     do
                     {
                         group = matcher.group( 1 );
                         if( ( group != null ) && ( ! group.equals( "" ) ) )
                         {
-                            int start = matcher.start( 1 );
-                            int end = matcher.end( 1 );
-                            highlighted_line =
-                                line.substring( 0, start )
-                                + STYLE_ESCAPE_SEQUENCE
-                                + format
-                                + STYLE_TERMINATION_SEQUENCE
-                                + group
-                                + STYLE_ESCAPE_SEQUENCE
-                                + "normal"
-                                + STYLE_TERMINATION_SEQUENCE
-                                + line.substring( end );
+                            int start = offset + matcher.start( 1 );
+                            int end = offset + matcher.end( 1 );
+                            
+                            text_pane.applyStyle( start, end - start, format );
                         }
                     } while( matcher.find() );
                 }
                 else
                 {
                     // No parentheses, so highlight the whole line.
-                    highlighted_line =
-                        STYLE_ESCAPE_SEQUENCE
-                        + format
-                        + STYLE_TERMINATION_SEQUENCE
-                        + line;
+                    
+                    text_pane.applyStyle( offset, length, format );
                 }
             }
         }
@@ -103,7 +101,10 @@ public class HighlightTrigger implements GeoIRCConstants
             display_manager.printlnDebug( "Filter evaluation error for filter '" + filter + "'" );
             display_manager.printlnDebug( e.getMessage() );
         }
-        
-        return highlighted_line;
+        catch( BadLocationException e )
+        {
+            display_manager.printlnDebug( "highlight called on invalid location" );
+            display_manager.printlnDebug( e.getMessage() );
+        }
     }
 }

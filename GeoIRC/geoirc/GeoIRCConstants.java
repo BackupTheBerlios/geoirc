@@ -14,7 +14,7 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.1.5a";
+    static final String GEOIRC_VERSION = "0.1.6a";
     
     static final boolean GOD_IS_GOOD = true;
     

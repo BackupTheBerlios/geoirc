@@ -828,8 +828,17 @@ public class GeoIRC
                 }
                 break;
             case CMD_EXIT:
-                // Do we need a more graceful termination?  :)
-                System.exit( 0 );
+                {
+                    int n = remote_machines.size();
+                    for( int i = 0; i < n; i++ )
+                    {
+                        ((RemoteMachine) remote_machines.elementAt( i )).send(
+                            "QUIT"
+                        );
+                    }
+                    // Do we need a more graceful termination?  :)
+                    System.exit( 0 );
+                }
                 break;
             case CMD_FOCUS_ON_INPUT_FIELD:
                 input_field.grabFocus();

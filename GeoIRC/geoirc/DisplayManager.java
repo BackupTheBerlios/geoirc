@@ -257,7 +257,13 @@ public class DisplayManager
                 text_pane = (GITextPane) pane;
                 if( text_pane.accepts( qualities ) )
                 {
-                    text_pane.appendLine( highlight_manager.highlight( line, qualities ) );
+                    int offset = text_pane.appendLine( line );
+                    highlight_manager.highlight(
+                        text_pane, 
+                        offset, 
+                        line.length(),
+                        qualities
+                    );
                 }
             }
         }

@@ -9,3 +9,6 @@ Pistos 2003-07-18
 
 Fixed bug where an unknown CTCP command would kill the ServerReader.
 Pistos 2003-07-18
+
+Fixed highlighting.
+Pistos 2003-07-19

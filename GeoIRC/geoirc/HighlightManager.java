@@ -7,6 +7,7 @@
 package geoirc;
 
 import java.util.Vector;
+import javax.swing.text.*;
 
 /**
  *
@@ -65,12 +66,9 @@ public class HighlightManager implements GeoIRCConstants
         }
     }
     
+    /*
     public String highlight( String line, String qualities )
     {
-        /* TODO: There's the problem that the highlighting rules
-         * also apply to the raw formatting text, as well.  :(
-         */
-        
         int n = triggers.size();
         HighlightTrigger ht;
         String highlighted_line = line;
@@ -81,6 +79,23 @@ public class HighlightManager implements GeoIRCConstants
         }
         
         return highlighted_line;
+    }
+     */
+    
+    public void highlight(
+        GITextPane text_pane,
+        int offset,
+        int length,
+        String qualities
+    )
+    {
+        int n = triggers.size();
+        HighlightTrigger ht;
+        for( int i = 0; i < n; i++ )
+        {
+            ht = (HighlightTrigger) triggers.elementAt( i );
+            ht.highlight( text_pane, offset, length, qualities );
+        }
     }
     
     protected boolean addTrigger( String filter, String regexp, String format )
