@@ -6,8 +6,7 @@
 
 package geoirc;
 
-import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.JTree;
 
 /**
  *
@@ -48,6 +47,9 @@ public class GIInfoPane extends GIPane implements GeoIRCConstants
         tree.setCellRenderer( display_manager.getCellRenderer() );
         tree.setRowHeight( INFO_WINDOW_TREE_ROW_HEIGHT );
         tree.setLargeModel( true );
+        tree.setDoubleBuffered( true );        
+        tree.setRootVisible( settings_manager.getBoolean("/gui/info windows/show root node", true) );
+        tree.setShowsRootHandles( true );
         setViewportView( tree );
         tree.addKeyListener( display_manager );
     }

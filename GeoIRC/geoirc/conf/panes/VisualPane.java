@@ -21,6 +21,7 @@ import geoirc.util.JValidatingTextField;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
@@ -150,6 +151,11 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         //INFO WINDOWS
         addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 10, 5, 1, 0, 0);
         path = "/gui/info windows/";
+        boolean bValue = settings_manager.getBoolean(path + "show root node", true);
+        JCheckBox show_root_box = new JCheckBox("Show root node", bValue);
+        addComponent(show_root_box, 0, 11, 2, 1, 0, 0);
+        save_handler.register(show_root_box, path + "show root node");
+        
         int sort_order = settings_manager.getInt(path + "sort order", DEFAULT_SORT_ORDER);
         switch( sort_order )
         {
@@ -165,12 +171,12 @@ public class VisualPane extends BaseSettingsPanel implements Storable
                         break;
         }
         
-        addComponent(new JLabel("Nicknames sort order"), 0, 11, 1, 1, 0, 0);
+        addComponent(new JLabel("Nicknames sort order"), 0, 12, 1, 1, 0, 0);
         String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending", "mode and alphabetic ascending", "mode and activity descending" };        
         sortBox = new JComboBox(sort_options);
-        addComponent(sortBox, 1, 11, 3, 1, 0, 0);
+        addComponent(sortBox, 1, 12, 3, 1, 0, 0);
         sortBox.setSelectedItem(value);
-        addLayoutStopper(0, 15);
+        addLayoutStopper(0, 16);
     }
 
     /* (non-Javadoc)

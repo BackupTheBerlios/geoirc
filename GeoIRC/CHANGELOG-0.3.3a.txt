@@ -19,3 +19,7 @@ Setting dialog is now non-modal, which means it will stay on the top but GeoIRC
 is also usable as long as settings dialog is open.
 netseeker 2003-09-26
 
+Added boolean switch "/gui/info windows/show root node" for configurable
+enabling/disabling wheter the root node "Connections" should be drawn or not.
+Added graphical configuration of this switch to "Visual Settings" in settings gui.
+netseeker 2003-09-27

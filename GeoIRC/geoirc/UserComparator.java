@@ -60,32 +60,18 @@ public class UserComparator implements java.util.Comparator, GeoIRCConstants
                 comparison = u2.getTimeOfLastActivity().compareTo(u1.getTimeOfLastActivity());
                 break;
             case SORT_MODE_ALPHABETICAL_ASCENDING :
-                if (channel != null)
+                //Reverse because we have to follow the ascending order
+                comparison = compareMode(u2, u1, channel);
+                if (comparison == 0)
                 {
-                    //Reverse because we have to follow the ascending order
-                    comparison = compareMode(u2, u1, channel);
-                    if (comparison == 0)
-                    {
-                        comparison = u1.getNick().toLowerCase().compareTo(u2.getNick().toLowerCase());
-                    }
-                }
-                else
-                {
-                    throw new IllegalArgumentException("No valid channel set.");
+                    comparison = u1.getNick().toLowerCase().compareTo(u2.getNick().toLowerCase());
                 }
                 break;
             case SORT_MODE_TIME_SINCE_LAST_ASCENDING :
-                if (channel != null)
+                comparison = compareMode(u1, u2, channel);
+                if (comparison == 0)
                 {
-                    comparison = compareMode(u1, u2, channel);
-                    if (comparison == 0)
-                    {
-                        comparison = u2.getTimeOfLastActivity().compareTo(u1.getTimeOfLastActivity());
-                    }
-                }
-                else
-                {
-                    throw new IllegalArgumentException("No valid channel set.");
+                    comparison = u2.getTimeOfLastActivity().compareTo(u1.getTimeOfLastActivity());
                 }
                 break;
             default :

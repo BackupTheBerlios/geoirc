@@ -221,6 +221,16 @@ public class JValidatingTextField extends JTextField implements DocumentListener
     public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
+        
+        if( !enabled )
+        {
+            this.setBackground( Color.LIGHT_GRAY );
+        }
+        else
+        {
+            this.setBackground( Color.WHITE );
+        }
+        
         validateText();
     }
 
