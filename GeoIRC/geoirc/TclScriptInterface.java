@@ -177,18 +177,13 @@ public class TclScriptInterface
     protected String escapeTclChars( String text )
     {
         String retval = text;
-        retval = retval.replaceAll( "\\\\", "\\\\\\\\" );
-        retval = retval.replaceAll( "\\{", "\\\\{" );
-        retval = retval.replaceAll( "\\}", "\\\\}" );
+        retval = retval.replaceAll( "\\\\", "\\\\\\\\" );  // gee that's a lot of backslashes.  :)
+        retval = retval.replaceAll( "\\{", "\\\\\\{" );
+        retval = retval.replaceAll( "\\}", "\\\\\\}" );
         retval = retval.replaceAll( "\"", "\\\\\"" );
-        retval = retval.replaceAll( "\\[", "\\\\[" );
-        retval = retval.replaceAll( "\\]", "\\\\]" );
-        int i = -2;
-        while( (i = retval.indexOf( '$', i + 2 )) > -1 )
-        {
-            retval = retval.substring( 0, i ) + "\\" + retval.substring( i );
-        }
-        //retval = retval.replaceAll( "\\$", "\\\\$" );
+        retval = retval.replaceAll( "\\[", "\\\\\\[" );
+        retval = retval.replaceAll( "\\]", "\\\\\\]" );
+        retval = retval.replaceAll( "\\$", "\\\\\\$" );
         return retval;
     }
 }
