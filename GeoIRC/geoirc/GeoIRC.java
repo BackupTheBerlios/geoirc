@@ -71,6 +71,8 @@ public class GeoIRC
     protected LogManager log_manager;
     protected ScriptInterface script_interface;
     
+    protected Hashtable python_methods;
+    
     protected BSFManager bsf_manager;
     protected PythonInterpreter python_interpreter;
     
@@ -229,9 +231,12 @@ public class GeoIRC
         }
         */
         
-        script_interface = new ScriptInterface( this, settings_manager, display_manager, variable_manager, python_interpreter );
-        
+        python_methods = new Hashtable();
         python_interpreter = new PythonInterpreter();
+        script_interface = new ScriptInterface(
+            this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
+        );
+        
         python_interpreter.set( "geoirc", new PyJavaInstance( script_interface ) );
         
         // Read settings.
@@ -1061,6 +1066,23 @@ public class GeoIRC
                     );
                 }
                 break;
+            case CMD_EXEC_PY_METHOD:
+                if( args.length > 0 )
+                {
+                    PyMethod method = (PyMethod) python_methods.get( args[ 0 ] );
+                    if( method != null )
+                    {
+                        if( args.length > 1 )
+                        {
+                            method.__call__( new PyString( Util.stringArrayToString( args, 1 ) ) );
+                        }
+                        else
+                        {
+                            method.__call__();
+                        }
+                    }
+                }
+                break;
             case CMD_EXIT:
                 {
                     int n = remote_machines.size();
@@ -1193,6 +1215,13 @@ public class GeoIRC
                 break;
             case CMD_LIST_WINDOWS:
                 display_manager.listWindows();
+                break;
+            case CMD_LOAD_PY:
+                if( arg_string != null )
+                {
+                    display_manager.printlnDebug( "Loading " + arg_string + "..." );
+                    python_interpreter.execfile( arg_string );
+                }
                 break;
             case CMD_LOG:
                 if( arg_string != null )

@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import java.util.Hashtable;
 import java.util.Vector;
 import org.python.core.*;
 import org.python.util.PythonInterpreter;
@@ -22,8 +23,7 @@ public class ScriptInterface
     protected SettingsManager settings_manager;
     protected VariableManager variable_manager;
     protected PythonInterpreter python_interpreter;
-    
-    protected PyObject py_object;
+    protected Hashtable python_methods;
     
     protected Vector raw_listeners;
     protected Vector print_listeners;
@@ -35,7 +35,8 @@ public class ScriptInterface
         SettingsManager settings_manager,
         DisplayManager display_manager,
         VariableManager variable_manager,
-        PythonInterpreter python_interpreter
+        PythonInterpreter python_interpreter,
+        Hashtable python_methods
     )
     {
         this.executor = executor;
@@ -43,6 +44,7 @@ public class ScriptInterface
         this.display_manager = display_manager;
         this.variable_manager = variable_manager;
         this.python_interpreter = python_interpreter;
+        this.python_methods = python_methods;
         
         raw_listeners = new Vector();
         print_listeners = new Vector();
@@ -77,6 +79,15 @@ public class ScriptInterface
         raw_listeners.add( listener );
     }
     
+    public void registerMethod( PyString object, PyString method )
+    {
+        String object_name = object.toString();
+        String reference = object_name + "." + method.toString();
+        PyObject py_object = python_interpreter.get( object_name );
+        PyMethod py_method = (PyMethod) py_object.__findattr__( method );
+        python_methods.put( reference, py_method );
+    }
+    
     public void onRaw( String line )
     {
         PyObject py_object;
@@ -91,4 +102,14 @@ public class ScriptInterface
             }
         }
     }
+    
+    public void onStartup()
+    {
+        
+    }
+    
+    public void onConnect( String remote_machine_name )
+    {
+    }
+    
 }

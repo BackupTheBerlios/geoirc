@@ -1058,7 +1058,7 @@ public class Server
             }
 
             display_manager.println( line, Server.this.toString() + " " + FILTER_SPECIAL_CHAR + "raw" );
-            script_interface.onRaw( line );
+            script_interface.onRaw( Server.this.toString() + " " + line );
         }
     }
 }

@@ -77,7 +77,9 @@ public interface GeoIRCConstants
         "log",
         "removelog",
         "listlogs",
-        "test"
+        "test",
+        "loadpy",
+        "execpymethod"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -88,6 +90,7 @@ public interface GeoIRCConstants
     public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_EXEC = 40;
     public static final int CMD_EXEC2 = 43;
+    public static final int CMD_EXEC_PY_METHOD = 53;
     public static final int CMD_EXIT = 31;
     public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
@@ -100,6 +103,7 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_LOGS = 50;
     public static final int CMD_LIST_MEMBERS = 41;
     public static final int CMD_LIST_WINDOWS = 27;
+    public static final int CMD_LOAD_PY = 52;
     public static final int CMD_LOG = 48;
     public static final int CMD_MSG = 20;
     public static final int CMD_NEW_INFO_WINDOW = 29;
