@@ -1216,6 +1216,7 @@ public class Server
                         namlist = namlist.substring( 1 );  // remove leading colon
                         Vector v = handleNamesList( namlist );
                         channel.setChannelMembership( v );
+                        //channel.addToChannelMembership( v );
                     }
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) )
@@ -1321,7 +1322,7 @@ public class Server
                     : ""
                 )
             );
-            script_interface.onRaw( Server.this.toString() + " " + line );
+            script_interface.onRaw( line, Server.this.toString() );
         }
     }
 }

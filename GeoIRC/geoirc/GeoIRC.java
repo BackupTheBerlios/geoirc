@@ -275,12 +275,7 @@ public class GeoIRC
         */
         
         python_methods = new Hashtable();
-        python_interpreter = new PythonInterpreter();
-        script_interface = new ScriptInterface(
-            this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
-        );
-        
-        python_interpreter.set( "geoirc", new PyJavaInstance( script_interface ) );
+        initializeJython();
         
         // Read settings.
         
@@ -380,6 +375,15 @@ public class GeoIRC
         // Open the curtains!
 
         show();
+    }
+    
+    protected void initializeJython()
+    {
+        python_interpreter = new PythonInterpreter();
+        script_interface = new ScriptInterface(
+            this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
+        );
+        python_interpreter.set( "geoirc", new PyJavaInstance( script_interface ) );
     }
     
     /* ********************************************************************* */
@@ -1996,6 +2000,9 @@ public class GeoIRC
                             + " <docked window index>" );
                     }
                 }
+                break;
+            case CMD_UNLOAD_ALL_PY:
+                initializeJython();
                 break;
             
             case UNKNOWN_COMMAND:

@@ -207,7 +207,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                 qualities
             );
             trigger_manager.check( line, qualities );
-            script_interface.onRaw( DCCClient.this.toString() + " " + line );
+            script_interface.onRaw( line, DCCClient.this.toString() );
         }
         
     }    

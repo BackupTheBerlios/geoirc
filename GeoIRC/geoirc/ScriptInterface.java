@@ -6,13 +6,14 @@
 
 package geoirc;
 
+import geoirc.util.Util;
 import java.util.Hashtable;
 import java.util.Vector;
 import org.python.core.*;
 import org.python.util.PythonInterpreter;
 
 /**
- *
+ * This object is accessed in python scripts as an object by the name of "geoirc".
  * @author  Pistos
  */
 public class ScriptInterface
@@ -88,19 +89,42 @@ public class ScriptInterface
         python_methods.put( reference, py_method );
     }
     
-    public void onRaw( String line )
+    public String [] onRaw( String line_, String qualities_ )
     {
         PyObject py_object;
         PyMethod method;
+        PyObject transformed_message = null;
+        
+        String line = line_;
+        String qualities = qualities_;
+        
         for( int i = 0, n = raw_listeners.size(); i < n; i++ )
         {
             py_object = (PyObject) raw_listeners.elementAt( i );
             method = (PyMethod) py_object.__findattr__( new PyString( "onRaw" ) );
             if( method != null )
             {
-                method.__call__( new PyString( line ) );
+                try
+                {
+                    transformed_message = method.__call__( new PyString( qualities ), new PyString( line ) );
+                }
+                catch( Exception e )
+                {
+                    Util.printException( display_manager, e, "Exception when executing Python raw parser." );
+                }
+                if( transformed_message != null )
+                {
+                    line = ( transformed_message.__findattr__( new PyString( "text" ) ) ).toString();
+                    qualities = ( transformed_message.__findattr__( new PyString( "qualities" ) ) ).toString();
+                }
             }
         }
+        
+        String [] retval = new String[ 2 ];
+        retval[ 0 ] = line;
+        retval[ 1 ] = qualities;
+        
+        return retval;
     }
     
     public void onStartup()

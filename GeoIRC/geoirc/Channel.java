@@ -84,7 +84,11 @@ public class Channel implements GeoIRCConstants
     public void setChannelMembership( Vector new_member_list )
     {
         info_manager.removeAllMembers( this );
-        
+        addToChannelMembership( new_member_list );
+    }
+
+    public void addToChannelMembership( Vector new_member_list )
+    {
         members = new_member_list;
         for( int i = 0, n = members.size(); i < n; i++ )
         {

@@ -89,7 +89,8 @@ public interface GeoIRCConstants
         "topic",
         "list_dcc_chat_requests",
         "accept_dcc_chat",
-        "reject_dcc_chat"
+        "reject_dcc_chat",
+        "unloadallpy"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACCEPT_DCC_CHAT = 59;
@@ -153,6 +154,7 @@ public interface GeoIRCConstants
     public static final int CMD_TEST = 51;
     public static final int CMD_TOPIC = 57;
     public static final int CMD_UNDOCK_WINDOW = 34;
+    public static final int CMD_UNLOAD_ALL_PY = 61;
     
     static final String [] IRCMSGS =
     {
