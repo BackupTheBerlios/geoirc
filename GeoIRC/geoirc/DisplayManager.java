@@ -643,6 +643,15 @@ public class DisplayManager
                     String server_name = m.group();
                     geoirc.setCurrentRemoteMachine( server_name );
                 }
+                else
+                {
+                    m = Pattern.compile( "\\d+\\.\\d+\\.\\d+\\.\\d+" ).matcher( filter );
+                    if( m.find() )
+                    {
+                        String ip_address = m.group();
+                        geoirc.setCurrentRemoteMachine( ip_address );
+                    }
+                }
             }
         }
     }

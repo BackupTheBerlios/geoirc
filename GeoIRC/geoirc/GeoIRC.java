@@ -459,13 +459,34 @@ public class GeoIRC
             this, display_manager, settings_manager, trigger_manager,
             info_manager, variable_manager, script_interface, hostname, port
         );
-        remote_machines.add( s );
+        addRemoteMachine( s );
+        
+        return s;
+    }
+    
+    public DCCClient addDCCClient( String hostname, String port )
+    {
+        DCCClient dcc_client = new DCCClient(
+            this,
+            display_manager,
+            settings_manager,
+            trigger_manager,
+            script_interface,
+            hostname,
+            port
+        );
+        addRemoteMachine( dcc_client );
+        
+        return dcc_client;
+    }
+    
+    protected void addRemoteMachine( RemoteMachine rm )
+    {
+        remote_machines.add( rm );
         if( listening_to_connections )
         {
             recordConnections();
         }
-        
-        return s;
     }
     
     protected void removeRemoteMachine( RemoteMachine rm )
@@ -748,6 +769,10 @@ public class GeoIRC
         if( text.charAt( 0 ) == '\\' )
         {
             text = text.substring( 1 );
+            execute( CMDS[ CMD_SEND_RAW ] + " " + text );
+        }
+        else if( current_rm instanceof DCCClient )
+        {
             execute( CMDS[ CMD_SEND_RAW ] + " " + text );
         }
         else if( text.charAt( 0 ) == '/' )
@@ -1657,6 +1682,8 @@ public class GeoIRC
             case CMD_RAW:
                 if( ( args != null ) && ( ! args.equals( "" ) ) )
                 {
+                    current_rm.send( arg_string );
+                    
                     if( current_rm instanceof Server )
                     {
                         Server s = (Server) current_rm;
@@ -1665,7 +1692,6 @@ public class GeoIRC
                         {
                             u.noteActivity();
                         }
-                        s.send( arg_string );
                         if( args[ 0 ].toUpperCase().equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                         {
                             if( u != null )
@@ -1696,8 +1722,9 @@ public class GeoIRC
                                 + " from=" + FILTER_SPECIAL_CHAR + "self"
                             );
                         }
-                        result = CommandExecutor.EXEC_SUCCESS;
                     }
+                    
+                    result = CommandExecutor.EXEC_SUCCESS;
                 }
                 break;
             case CMD_SET:

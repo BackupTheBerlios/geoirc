@@ -197,13 +197,15 @@ public interface GeoIRCConstants
         "VERSION",
         "SOURCE",
         "USERINFO",
-        "PAGE"
+        "PAGE",
+        "DCC"
     };
     static final int UNKNOWN_CTCP_CMD = -1;
     static final int CTCP_CMD_VERSION = 0;
     static final int CTCP_CMD_SOURCE = 1;
     static final int CTCP_CMD_USERINFO = 2;
     static final int CTCP_CMD_PAGE = 3;
+    static final int CTCP_CMD_DCC = 4;
     
     static final boolean NEXT_WINDOW = false;
     static final boolean PREVIOUS_WINDOW = true;
@@ -318,4 +320,8 @@ public interface GeoIRCConstants
     static final int DEFAULT_SORT_ORDER = SORT_ALPHABETICAL_ASCENDING;
     
     static final int PROCESS_WATCH_INTERVAL = 1000;  // millseconds
+    
+    static final int DCC_NOT_YET_SET = -1;
+    static final int DCC_CHAT = 0;
+    static final int DCC_SEND = 1;
 }

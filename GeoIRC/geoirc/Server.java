@@ -28,7 +28,6 @@ public class Server
     extends RemoteMachine
     implements GeoIRCConstants
 {
-    protected ServerReader server_reader;
     protected Vector channels;
     protected boolean listening_to_channels;
     protected String current_nick;
@@ -52,7 +51,6 @@ public class Server
         super( parent, display_manager, settings_manager, trigger_manager, hostname, port );
         
         listening_to_channels = false;
-        server_reader = null;
         channels = new Vector();
         users = new HashSet();
         current_nick = "";
@@ -74,9 +72,9 @@ public class Server
             socket = new Socket( hostname, port );
             if( socket != null )
             {
-                if( server_reader != null )
+                if( reader != null )
                 {
-                    while( server_reader.isAlive() )
+                    while( reader.isAlive() )
                     {
                         try {
                             Thread.sleep( DELAY_FOR_SERVER_READER_DEATH );
@@ -84,7 +82,7 @@ public class Server
                     }
                 }
                 
-                server_reader = new ServerReader( 
+                reader = new ServerReader( 
                     new BufferedReader(
                         new InputStreamReader(
                             socket.getInputStream()
@@ -93,7 +91,7 @@ public class Server
                 );
                 out = new PrintWriter( socket.getOutputStream(), true );
                 
-                server_reader.start();
+                reader.start();
 
                 out.println( "PASS ooga7" );
                 out.println( "NICK " + nick_to_use );
@@ -339,7 +337,7 @@ public class Server
     /* ******************************************************************** */
     
     protected class ServerReader
-        extends java.lang.Thread
+        extends RemoteMachineReader
         implements GeoIRCConstants
     {
         protected BufferedReader in;
@@ -1075,6 +1073,43 @@ public class Server
                                     break;
                                 case CTCP_CMD_PAGE:
                                     qualities += " " + FILTER_SPECIAL_CHAR + "page";
+                                    break;
+                                case CTCP_CMD_DCC:
+                                    // Example: DCC CHAT chat 3655733111 4453
+                                    // 3655733111 == 0xD9E60F77
+                                    // 0xD9 == 217
+                                    // 0xE6 == 230
+                                    // 0x0F == 15
+                                    // 0x77 == 119
+                                    // 217.230.15.119
+                                    try
+                                    {
+                                        String type = args[ 0 ];
+                                        String dcc_arg = args[ 1 ];
+                                        String address_str = args[ 2 ];
+                                        String port_str = args[ 3 ];
+                                        
+                                        // Parse for the sake of checking data correctness.
+                                        Long.parseLong( address_str );
+                                        Integer.parseInt( port_str );
+                                        
+                                        DCCClient dcc_client = geoirc.addDCCClient(
+                                            address_str, port_str
+                                        );
+                                        display_manager.addTextWindow(
+                                            dcc_client.toString(),
+                                            dcc_client.toString()
+                                        );
+                                        dcc_client.connect( DCC_CHAT );
+                                    }
+                                    catch( ArrayIndexOutOfBoundsException e )
+                                    {
+                                        // Someone tried to send us an invalid DCC command.
+                                    }
+                                    catch( NumberFormatException e )
+                                    {
+                                        // Bad long integer...
+                                    }
                                     break;
                                 default:
                                     text = "Unknown CTCP command from " + nick + ": "

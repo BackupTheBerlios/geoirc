@@ -22,7 +22,9 @@ public class RemoteMachine implements GeoIRCConstants
     protected String hostname;
     protected int port;
     protected GeoIRC geoirc;
-    
+
+    protected RemoteMachineReader reader;
+
     protected Socket socket;
     protected PrintWriter out;
     
@@ -63,6 +65,7 @@ public class RemoteMachine implements GeoIRCConstants
         out = null;
         closed = false;
         reset = false;
+        reader = null;
     }
     
     public void close()
