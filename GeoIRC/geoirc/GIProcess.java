@@ -6,9 +6,9 @@
 
 package geoirc;
 
-import geoirc.DisplayManager;
 import geoirc.GeoIRCConstants;
 import geoirc.ProcessJanitor;
+import geoirc.gui.DisplayManager;
 import geoirc.util.InputStreamReaderThread;
 import java.io.*;
 import java.util.Hashtable;

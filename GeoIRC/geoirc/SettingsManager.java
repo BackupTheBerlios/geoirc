@@ -13,6 +13,8 @@ package geoirc;
  * @author  netseeker
  */
 
+import geoirc.gui.DisplayManager;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;

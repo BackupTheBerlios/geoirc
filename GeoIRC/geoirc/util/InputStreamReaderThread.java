@@ -6,7 +6,9 @@
 
 package geoirc.util;
 
-import geoirc.*;
+import geoirc.CommandExecutor;
+import geoirc.GIProcess;
+import geoirc.gui.DisplayManager;
 import java.io.*;
 
 /**

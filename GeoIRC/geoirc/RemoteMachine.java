@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import geoirc.util.Util;
 import java.io.*;
 import java.net.Socket;

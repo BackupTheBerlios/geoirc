@@ -4,9 +4,12 @@
  * Created on July 12, 2003, 1:16 AM
  */
 
-package geoirc;
+package geoirc.gui;
+
+import geoirc.SettingsManager;
 
 import java.awt.Color;
+import java.awt.Container;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.jscroll.*;
@@ -16,13 +19,13 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
+public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConstants
 {
     protected JScrollPane scroll_pane;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
-    protected int pane_type;
-    protected JComponent pane;
+    protected Container pane;
+    protected GIPaneWrapper pane_wrapper;
     
     // No default constructor
     private GIWindow() { }
@@ -45,54 +48,37 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
 
-        pane_type = NO_PANE;
         pane = null;
+        pane_wrapper = null;
         
         selectFrameAndAssociatedButtons();
     }
     
-    public void addPane( JComponent pane )
+    public void addPane( Container pane )
     {
-        if( pane instanceof GIInfoPane )
-        {
-            pane_type = INFO_PANE;
-        }
-        else if( pane instanceof GITextPane )
-        {
-            pane_type = TEXT_PANE;
-        }
         getContentPane().add( pane );
         this.pane = pane;
     }
     
-    public void removePane( JComponent pane )
+    /*
+    public void removePane( Container pane )
     {
         getContentPane().remove( pane );
-        pane_type = NO_PANE;
         this.pane = null;
     }
-    
-    public int getPaneType()
-    {
-        return pane_type;
-    }
+     */
     
     /**
      * @return either the data pane of this window, or the SplitPane.
      */
-    public JComponent getPane()
+    public Container getPane()
     {
-        JComponent retval = pane;
+        Container retval = pane;
         if( ( pane != null ) && ( pane.getParent() instanceof JSplitPane ) )
         {
             retval = (JSplitPane) pane.getParent();
         }
         return retval;
-    }
-    
-    public JComponent getActualPane()
-    {
-        return pane;
     }
     
     protected void createScrollPane( java.awt.Component contents )
@@ -140,5 +126,15 @@ public class GIWindow extends JScrollInternalFrame implements GeoIRCConstants
         {
             button.setForeground( colour );
         }
+    }
+    
+    public GIPaneWrapper getPaneWrapper()
+    {
+        return pane_wrapper;
+    }
+    
+    public void setPaneWrapper( GIPaneWrapper pane_wrapper )
+    {
+        this.pane_wrapper = pane_wrapper;
     }
 }

@@ -6,6 +6,8 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
+
 import javax.swing.tree.*;
 import java.util.Enumeration;
 import java.util.Hashtable;

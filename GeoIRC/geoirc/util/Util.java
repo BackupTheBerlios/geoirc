@@ -6,7 +6,7 @@
 
 package geoirc.util;
 
-import geoirc.DisplayManager;
+import geoirc.gui.DisplayManager;
 import geoirc.GeoIRCConstants;
 
 import java.awt.Color;

@@ -6,6 +6,9 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
+import geoirc.gui.GITextPane;
+
 import java.util.Vector;
 import javax.swing.text.*;
 

@@ -7,6 +7,7 @@
 package geoircscripting;
 
 import geoirc.*;
+import geoirc.gui.DisplayManager;
 import geoirc.util.Util;
 import java.util.Hashtable;
 import java.util.Vector;

@@ -4,15 +4,16 @@
  * Created on July 16, 2003, 11:18 PM
  */
 
-package geoirc;
+package geoirc.gui;
 
+import geoirc.SettingsManager;
 import javax.swing.JTree;
 
 /**
  *
  * @author  Pistos
  */
-public class GIInfoPane extends GIPane implements GeoIRCConstants
+public class GIInfoPane extends GIPane implements geoirc.GeoIRCConstants
 {
     protected JTree tree;
     String path;  // server-channel-user path
@@ -20,12 +21,11 @@ public class GIInfoPane extends GIPane implements GeoIRCConstants
     public GIInfoPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        GIWindow parent,
         String title,
         String path
     )
     {
-        super( display_manager, settings_manager, parent, title, null );
+        super( display_manager, settings_manager, title, null );
         if( ( path == null ) || ( path.equals( "" ) ) )
         {
             this.path = "/";

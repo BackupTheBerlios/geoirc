@@ -5,7 +5,6 @@
  */
 package geoirc.conf;
 
-import geoirc.DisplayManager;
 import geoirc.XmlProcessable;
 import geoirc.conf.panes.CommandAliasesPane;
 import geoirc.conf.panes.DCCPane;
@@ -19,6 +18,7 @@ import geoirc.conf.panes.RootPane;
 import geoirc.conf.panes.TriggerPane;
 import geoirc.conf.panes.VariablesPane;
 import geoirc.conf.panes.VisualPane;
+import geoirc.gui.DisplayManager;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import geoirc.util.*;
 import java.applet.Applet;
 import java.applet.AudioClip;

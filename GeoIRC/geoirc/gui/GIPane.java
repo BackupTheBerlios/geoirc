@@ -4,7 +4,9 @@
  * Created on July 16, 2003, 11:20 PM
  */
 
-package geoirc;
+package geoirc.gui;
+
+import geoirc.SettingsManager;
 
 import java.awt.Container;
 import javax.swing.JScrollPane;
@@ -18,7 +20,6 @@ public class GIPane extends JScrollPane
     String title;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
-    protected GIWindow giw;
     
     // No default constructor
     private GIPane() { }
@@ -26,7 +27,6 @@ public class GIPane extends JScrollPane
     public GIPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        GIWindow parent,
         String title,
         java.awt.Component contents
     )
@@ -36,7 +36,6 @@ public class GIPane extends JScrollPane
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
         this.title = title;
-        giw = parent;
         
         addComponentListener( display_manager );
     }
@@ -51,10 +50,4 @@ public class GIPane extends JScrollPane
         title = new_title;
     }
     
-    /*
-    public GIWindow getParentWindow()
-    {
-        return giw;
-    }
-     */
 }

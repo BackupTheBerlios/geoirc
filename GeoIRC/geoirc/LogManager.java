@@ -6,6 +6,8 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
+
 import java.io.File;
 import java.util.Vector;
 

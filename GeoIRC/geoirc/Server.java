@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import geoirc.util.BadExpressionException;
 import geoirc.util.BoolExpEvaluator;
 import geoirc.util.Util;

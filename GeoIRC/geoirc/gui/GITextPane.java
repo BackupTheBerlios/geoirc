@@ -4,7 +4,10 @@
  * Created on July 17, 2003, 12:07 AM
  */
 
-package geoirc;
+package geoirc.gui;
+
+import geoirc.I18nManager;
+import geoirc.SettingsManager;
 
 import geoirc.util.*;
 import java.awt.*;
@@ -22,7 +25,7 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GITextPane extends GIPane implements GeoIRCConstants
+public class GITextPane extends GIPane implements geoirc.GeoIRCConstants
 {
     protected JTextPane text_pane;
     protected String filter;
@@ -38,7 +41,6 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         I18nManager i18n_manager,
-        GIWindow parent,
         String title
     )
     {
@@ -47,7 +49,6 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             display_manager,
             settings_manager,
             i18n_manager,
-            parent,
             title,
             (String) null
         );
@@ -58,12 +59,11 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         I18nManager i18n_manager,
-        GIWindow parent,
         String title,
         String filter
     )
     {
-        super( display_manager, settings_manager, parent, title, null );
+        super( display_manager, settings_manager, title, null );
         
         this.i18n_manager = i18n_manager;
         this.filter = filter;
@@ -307,7 +307,8 @@ public class GITextPane extends GIPane implements GeoIRCConstants
             display_manager.printlnDebug( e.getMessage() );
         }
         
-        GIWindow giw = display_manager.getSelectedFrame();
+        /*
+        GIPaneWrapper gipw = display_manager.getSelectedPane();
         boolean highlight_button = true;
         if( giw != null )
         {
@@ -321,6 +322,9 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         {
             display_manager.highlightButton( this );
         }
+         */
+        
+        // TODO: highlight button on pane bar
         
         // Autoscroll if the user is not holding the scrollbar.
 

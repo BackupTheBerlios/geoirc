@@ -5,10 +5,10 @@
  */
 package geoirc.conf;
 
-import geoirc.DisplayManager;
 import geoirc.BaseXmlHandler;
 import geoirc.XmlProcessable;
 import geoirc.conf.beans.*;
+import geoirc.gui.DisplayManager;
 
 import java.util.HashMap;
 import java.util.Iterator;

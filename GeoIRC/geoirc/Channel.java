@@ -6,7 +6,9 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import geoirc.util.Util;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;

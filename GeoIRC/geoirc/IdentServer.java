@@ -5,6 +5,8 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
+
 import java.io.*; // Needed for Input/Output streams. (BufferedReader, DataOutputStream)
 import java.net.*; // Needed for sockets. (Socket, ServerSocket)
 

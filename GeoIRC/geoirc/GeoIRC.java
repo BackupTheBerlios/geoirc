@@ -27,6 +27,7 @@
 package geoirc;
 
 import geoirc.conf.SettingsDialog;
+import geoirc.gui.*;
 import geoirc.util.Util;
 
 import java.applet.AudioClip;
@@ -1034,34 +1035,30 @@ public class GeoIRC
             }
             else
             {
-                GIWindow giw = display_manager.getSelectedFrame();
+                GIPaneWrapper gipw = display_manager.getSelectedTextPane();
                 boolean handled = false;
-                if( ( giw != null ) && ( giw.getPaneType() == TEXT_PANE ) )
+                if( gipw != null )
                 {
-                    JComponent pane = (JComponent) giw.getActualPane();
-                    if( pane instanceof GITextPane )
+                    GITextPane gitp = (GITextPane) gipw.getPane();
+                    String filter = gitp.getFilter();
+
+                    if( filter.matches( ".*from=%self.*" ) )
                     {
-                        GITextPane gitp = (GITextPane) pane;
-                        String filter = gitp.getFilter();
+                        // Determine the other party in this query conversation
+                        // based on the filter.
 
-                        if( filter.matches( ".*from=%self.*" ) )
+                        Pattern p = Pattern.compile( "from=([^%]\\S*)" );
+                        Matcher m = p.matcher( filter );
+                        if( m.find() )
                         {
-                            // Determine the other party in this query conversation
-                            // based on the filter.
-
-                            Pattern p = Pattern.compile( "from=([^%]\\S*)" );
-                            Matcher m = p.matcher( filter );
-                            if( m.find() )
-                            {
-                                String recipient = m.group( 1 );
-                                execute(
-                                    CMDS[ CMD_SEND_RAW ]
-                                    + " privmsg "
-                                    + recipient + " :"
-                                    + text
-                                );
-                                handled = true;
-                            }
+                            String recipient = m.group( 1 );
+                            execute(
+                                CMDS[ CMD_SEND_RAW ]
+                                + " privmsg "
+                                + recipient + " :"
+                                + text
+                            );
+                            handled = true;
                         }
                     }
                 }
@@ -1364,7 +1361,7 @@ public class GeoIRC
                     try
                     {
                         int index = Integer.parseInt( args[ 0 ] );
-                        display_manager.clearTextWindow( index );
+                        display_manager.clearTextPane( index );
                     }
                     catch( NumberFormatException e )
                     {
@@ -1377,10 +1374,11 @@ public class GeoIRC
                 }
                 else
                 {
-                    display_manager.clearTextWindow( -1 );
+                    display_manager.clearTextPane( -1 );
                 }
                 break;
             case CMD_CLOSE_WINDOW:
+                /*
                 if( arg_string != null )
                 {
                     try
@@ -1401,6 +1399,7 @@ public class GeoIRC
                 {
                     display_manager.closeWindow( -1 );
                 }
+                 */
                 break;
             case CMD_COMPLETE_NICK:
                 {
@@ -1729,21 +1728,17 @@ public class GeoIRC
                 break;
             case CMD_DISABLE_COLOUR_CODES:
                 {
-                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                    if( giw != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = giw.getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            GITextPane gitp = (GITextPane) pane;
-                            gitp.setPaintMIRCCodes( false );
-                            display_manager.printlnDebug(
-                                i18n_manager.getString(
-                                    "codes disabled",
-                                    new Object [] { giw.getTitle() }
-                                )
-                            );
-                        }
+                        GITextPane gitp = (GITextPane) gipw.getPane();
+                        gitp.setPaintMIRCCodes( false );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "codes disabled",
+                                new Object [] { gipw.getTitle() }
+                            )
+                        );
                     }
                 }
                 break;
@@ -1842,21 +1837,17 @@ public class GeoIRC
                 break;
             case CMD_ENABLE_COLOUR_CODES:
                 {
-                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                    if( giw != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = giw.getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            GITextPane gitp = (GITextPane) pane;
-                            gitp.setPaintMIRCCodes( true );
-                            display_manager.printlnDebug(
-                                i18n_manager.getString(
-                                    "codes enabled",
-                                    new Object [] { giw.getTitle() }
-                                )
-                            );
-                        }
+                        GITextPane gitp = (GITextPane) gipw.getPane();
+                        gitp.setPaintMIRCCodes( true );
+                        display_manager.printlnDebug(
+                            i18n_manager.getString(
+                                "codes enabled",
+                                new Object [] { gipw.getTitle() }
+                            )
+                        );
                     }
                 }
                 break;
@@ -2261,15 +2252,11 @@ public class GeoIRC
                         // Assign the filter of the current window, if any.
                         // No regexp specified.
                         
-                        GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                        if( giw != null )
+                        GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                        if( gipw != null )
                         {
-                            JComponent pane = giw.getPane();
-                            if( pane instanceof GITextPane )
-                            {
-                                GITextPane gitp = (GITextPane) pane;
-                                filter = gitp.getFilter();
-                            }
+                            GITextPane gitp = (GITextPane) gipw.getPane();
+                            filter = gitp.getFilter();
                         }
                     }
                     
@@ -2424,27 +2411,19 @@ public class GeoIRC
                 break;
             case CMD_NUDGE_DOWN:
                 {
-                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                    if( giw != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = giw.getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            ((GITextPane) pane).nudgeDown();
-                        }
+                        ((GITextPane) gipw.getPane()).nudgeDown();
                     }
                 }
                 break;
             case CMD_NUDGE_UP:
                 {
-                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                    if( giw != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = giw.getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            ((GITextPane) pane).nudgeUp();
-                        }
+                        ((GITextPane) gipw.getPane()).nudgeUp();
                     }
                 }
                 break;
@@ -2453,27 +2432,19 @@ public class GeoIRC
                 break;
             case CMD_PAGE_DOWN:
                 {
-                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                    if( giw != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = giw.getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            ((GITextPane) pane).pageDown();
-                        }
+                        ((GITextPane) gipw.getPane()).pageDown();
                     }
                 }
                 break;
             case CMD_PAGE_UP:
                 {
-                    GIWindow giw = (GIWindow) display_manager.getSelectedFrame();
-                    if( giw != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = giw.getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            ((GITextPane) pane).pageUp();
-                        }
+                        ((GITextPane) gipw.getPane()).pageUp();
                     }
                 }
                 break;
@@ -2887,23 +2858,19 @@ public class GeoIRC
                 break;
             case CMD_SET_FILTER:
                 {
-                    JInternalFrame jif = display_manager.getSelectedFrame();
-                    if( jif != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        JComponent pane = ((GIWindow) jif).getPane();
-                        if( pane instanceof GITextPane )
-                        {
-                            ((GITextPane) pane).setFilter( arg_string );
-                        }
+                        ((GITextPane) gipw.getPane()).setFilter( arg_string );
                     }
                 }
                 break;
             case CMD_SET_TITLE:
                 {
-                    JInternalFrame jif = display_manager.getSelectedFrame();
-                    if( jif != null )
+                    GIPaneWrapper gipw = (GIPaneWrapper) display_manager.getSelectedTextPane();
+                    if( gipw != null )
                     {
-                        jif.setTitle( arg_string );
+                        ((GITextPane) gipw.getPane()).setTitle( arg_string );
                     }
                 }
                 break;

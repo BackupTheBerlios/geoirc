@@ -5,6 +5,7 @@
  */
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import geoirc.util.TypeConverter;
 
 import java.io.FileNotFoundException;

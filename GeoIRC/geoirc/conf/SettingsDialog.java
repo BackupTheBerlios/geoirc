@@ -5,9 +5,9 @@
  */
 package geoirc.conf;
 
-import geoirc.DisplayManager;
 import geoirc.GeoIRC;
 import geoirc.SettingsManager;
+import geoirc.gui.DisplayManager;
 import geoirc.util.ExtensionFileFilter;
 import geoirc.util.LayoutUtil;
 

@@ -9,6 +9,7 @@ package geoirc;
 import java.awt.event.InputEvent;
 import java.awt.Dimension;
 import java.util.Locale;
+import javax.swing.JSplitPane;
 
 /**
  *
@@ -378,10 +379,19 @@ public interface GeoIRCConstants
     static final String [] DOCK_STR = { "t", "r", "b", "l" };
     static final double DEFAULT_DOCK_WEIGHT = 0.25;
     static final int DEFAULT_DIVIDER_LOCATION = 100;  // pixels
+    static final int SPLIT_PRIMARY = 0;
+    static final int SPLIT_SECONDARY = 1;
+    static final int SPLIT_NOT_SPLIT_MEMBER = -1;
+    static final int UNKNOWN_ORIENTATION = JSplitPane.VERTICAL_SPLIT + JSplitPane.HORIZONTAL_SPLIT;
     
-    static final int NO_PANE = -1;
-    static final int INFO_PANE = 0;
-    static final int TEXT_PANE = 1;
+    static final int NO_PANE_TYPE = -1;
+    static final int MAIN_CONTENT_PANE = 0;
+    static final int CHILD_CONTENT_PANE = 1;
+    static final int TEXT_PANE = 2;
+    static final int INFO_PANE = 3;
+    static final int SPLIT_PANE = 4;
+    
+    static final int NO_PARENT = -1;
 
     static final int DEFAULT_NUDGE_AMOUNT = 20;
 
@@ -452,7 +462,7 @@ public interface GeoIRCConstants
     
     static final int DEFAULT_SERVER_TIMEOUT = 60 * 1000; // milliseconds
     
-    static final int DESKTOP_PANE = -1;
+    static final int DESKTOP_PANE = 0;
     
     static final String ICON_PATH = "icons" + java.io.File.separator;
 }

@@ -58,21 +58,6 @@
       <node name="connections">
         <map />
         <node name="0">
-          <map>
-            <entry key="type" value="class geoirc.Server" />
-            <entry key="hostname" value="tolkien.freenode.net" />
-            <entry key="port" value="6667" />
-          </map>
-          <node name="channels">
-            <map />
-            <node name="0">
-              <map>
-                <entry key="name" value="#geoirc" />
-              </map>
-            </node>
-          </node>
-        </node>
-        <node name="1">
           <map />
         </node>
       </node>
@@ -106,80 +91,106 @@
         </map>
         <node name="desktop">
           <map />
-          <node name="docked panes">
-            <map />
-            <node name="0">
-              <map>
-                <entry key="pane" value="2" />
-                <entry key="location" value="1" />
-                <entry key="divider location" value="781" />
-                <entry key="partner" value="-1" />
-              </map>
-            </node>
-            <node name="1">
-              <map>
-                <entry key="pane" value="3" />
-                <entry key="location" value="0" />
-                <entry key="divider location" value="154" />
-                <entry key="partner" value="-1" />
-              </map>
-            </node>
-          </node>
           <node name="panes">
             <map />
             <node name="0">
               <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="tolkien.freenode.net and %raw and not %printed" />
-                <entry key="filter" value="tolkien.freenode.net and %raw and not %printed" />
+                <entry key="type" value="0" />
+                <entry key="title" value="GeoIRC" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc on tolkien.freenode.net" />
-                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
+                <entry key="type" value="1" />
+                <entry key="title" value="x" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
+                <entry key="height" value="637" />
+                <entry key="width" value="669" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
               </map>
             </node>
             <node name="2">
               <map>
-                <entry key="type" value="class geoirc.GIInfoPane" />
-                <entry key="title" value="Info" />
-                <entry key="path" value="/" />
+                <entry key="type" value="2" />
+                <entry key="title" value="x" />
+                <entry key="parent" value="1" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="x" />
               </map>
             </node>
             <node name="3">
               <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="%debug" />
-                <entry key="filter" value="%debug" />
-              </map>
-            </node>
-          </node>
-          <node name="windows">
-            <map />
-            <node name="0">
-              <map>
-                <entry key="title" value="tolkien.freenode.net and %raw and not %printed" />
-                <entry key="x" value="27" />
-                <entry key="y" value="16" />
-                <entry key="height" value="549" />
-                <entry key="width" value="712" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="0" />
-              </map>
-            </node>
-            <node name="1">
-              <map>
-                <entry key="title" value="#geoirc on tolkien.freenode.net" />
-                <entry key="x" value="60" />
-                <entry key="y" value="60" />
+                <entry key="type" value="1" />
+                <entry key="title" value="y" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
                 <entry key="height" value="500" />
                 <entry key="width" value="700" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
-                <entry key="pane" value="1" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="2" />
+                <entry key="title" value="y" />
+                <entry key="parent" value="3" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="y" />
+              </map>
+            </node>
+            <node name="5">
+              <map>
+                <entry key="type" value="1" />
+                <entry key="title" value="z" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="40" />
+                <entry key="y" value="40" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+              </map>
+            </node>
+            <node name="6">
+              <map>
+                <entry key="type" value="2" />
+                <entry key="title" value="z" />
+                <entry key="parent" value="5" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="z" />
+              </map>
+            </node>
+            <node name="7">
+              <map>
+                <entry key="type" value="1" />
+                <entry key="title" value="%debug" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="true" />
+              </map>
+            </node>
+            <node name="8">
+              <map>
+                <entry key="type" value="2" />
+                <entry key="title" value="%debug" />
+                <entry key="parent" value="7" />
+                <entry key="split rank" value="-1" />
+                <entry key="filter" value="%debug" />
               </map>
             </node>
           </node>

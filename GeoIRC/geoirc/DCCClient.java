@@ -6,7 +6,9 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import geoirc.util.Util;
+
 import java.io.BufferedReader;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

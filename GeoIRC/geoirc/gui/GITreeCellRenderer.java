@@ -4,7 +4,10 @@
  * Created on September 15, 2003, 5:02 PM
  */
 
-package geoirc;
+package geoirc.gui;
+
+import geoirc.Channel;
+import geoirc.User;
 
 import java.awt.Component;
 import java.io.File;
@@ -20,7 +23,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  */
 public class GITreeCellRenderer
     extends DefaultTreeCellRenderer
-    implements GeoIRCConstants
+    implements geoirc.GeoIRCConstants
 {
     ImageIcon regular_icon;
     ImageIcon voiced_icon;

@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.gui.DisplayManager;
 import java.util.Hashtable;
 
 /**

@@ -3,7 +3,9 @@
  * 
  * Created on 10.10.2003
  */
-package geoirc;
+package geoirc.gui;
+
+import geoirc.I18nManager;
 
 import javax.swing.UIManager;
 

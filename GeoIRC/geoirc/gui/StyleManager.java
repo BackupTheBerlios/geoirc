@@ -4,7 +4,10 @@
  * Created on July 8, 2003, 8:40 AM
  */
 
-package geoirc;
+package geoirc.gui;
+
+import geoirc.I18nManager;
+import geoirc.SettingsManager;
 
 import geoirc.util.Util;
 import java.awt.Color;
@@ -17,7 +20,7 @@ import javax.swing.text.*;
  * @author  Pistos
  */
 public class StyleManager
-    implements GeoIRCConstants
+    implements geoirc.GeoIRCConstants
 {
     protected String [] style_names;
     protected Style base_style;
