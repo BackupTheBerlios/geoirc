@@ -10,25 +10,39 @@ package geoirc;
  *
  * @author  livesNbox
  * @author  Pistos
+ * @author  netseeker
  */
 
-import geoirc.*;
-import java.io.*;
-import java.util.prefs.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.InvalidPreferencesFormatException;
+import java.util.prefs.NodeChangeEvent;
+import java.util.prefs.NodeChangeListener;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
     
 public class SettingsManager
     implements PreferenceChangeListener, NodeChangeListener
 {
-    
-    private static Preferences root = Preferences.userNodeForPackage( GeoIRC.class );
+	protected Preferences root = null;
     protected String filepath;
     protected DisplayManager displayMgr = null;
 
     // No default constructor.
-    private SettingsManager() { }
+    private SettingsManager()
+    { 
+		root = Preferences.userNodeForPackage( GeoIRC.class );    
+    }
     
     public SettingsManager( DisplayManager newDisplayMgr, String filepath )
     {
+        this();
         displayMgr = newDisplayMgr;
         this.filepath = filepath;
     }
@@ -76,8 +90,13 @@ public class SettingsManager
         boolean success = false;
         try {
             is = new BufferedInputStream(new FileInputStream( filepath ));
+            /* TODO: check whether this is necessary. 
+             * root is already assigned so why remove the top
+             * node and assign it again?
+            */
             root.removeNode();
             root = Preferences.userNodeForPackage( GeoIRC.class );
+
             root.importPreferences( is );
             success = true;
         }
