@@ -1189,15 +1189,22 @@ public class GeoIRC
         switch( command_id )
         {
             case CMD_ACCEPT_DCC_CHAT:
-                if( args != null )
                 {
-                    try
+                    boolean problem = true;
+                    
+                    if( args != null )
                     {
-                        int index = Integer.parseInt( args[ 0 ] );
-                        DCCRequest request = (DCCRequest) dcc_chat_requests.elementAt( index );
-                        request.accept( preferred_nick );
+                        try
+                        {
+                            int index = Integer.parseInt( args[ 0 ] );
+                            DCCRequest request = (DCCRequest) dcc_chat_requests.elementAt( index );
+                            request.accept( preferred_nick );
+                            problem = false;
+                        }
+                        catch( NumberFormatException e ) { }
                     }
-                    catch( NumberFormatException e )
+                    
+                    if( problem )
                     {
                         display_manager.printlnDebug(
                             "/" + CMDS[ CMD_LIST_DCC_CHAT_REQUESTS ]
@@ -1536,7 +1543,7 @@ public class GeoIRC
                     display_manager.printlnDebug(
                         "/"
                         + CMDS[ CMD_DCC_CHAT ]
-                        + " <nick/channel> <message>" );
+                        + " <nick>" );
                 }
                 break;
             case CMD_DISABLE_COLOUR_CODES:
@@ -1713,8 +1720,15 @@ public class GeoIRC
                         }
                     }
                 }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_EXEC_PY_METHOD ]
+                        + " <Python method name> [arguments]"
+                    );
+                }
                 break;
-            case CMD_EXEC_TCL_PROC:
+            case CMD_EXEC_TCL:
                 if( arg_string != null )
                 {
                     try
@@ -1725,6 +1739,13 @@ public class GeoIRC
                     {
                         Util.printException( display_manager, e, "Tcl error:" );
                     }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_EXEC_TCL ]
+                        + " <Tcl code>"
+                    );
                 }
                 break;
             case CMD_EXIT:
@@ -1821,18 +1842,21 @@ public class GeoIRC
                 }
                 break;
             case CMD_KILL_PROCESS:
-                if( args != null )
                 {
                     boolean problem = true;
-                    Integer pid = null;
-                    try
+                    
+                    if( args != null )
                     {
-                        pid = new Integer( Integer.parseInt( args[ 0 ] ) );
-                        GIProcess gip = (GIProcess) processes.get( pid );
-                        gip.destroy();
-                        problem = false;
+                        Integer pid = null;
+                        try
+                        {
+                            pid = new Integer( Integer.parseInt( args[ 0 ] ) );
+                            GIProcess gip = (GIProcess) processes.get( pid );
+                            gip.destroy();
+                            problem = false;
+                        }
+                        catch( NumberFormatException e ) { }
                     }
-                    catch( NumberFormatException e ) { }
                     
                     if( problem )
                     {
@@ -1841,7 +1865,7 @@ public class GeoIRC
                         );
                         display_manager.printlnDebug(
                             "/" + CMDS[ CMD_KILL_PROCESS ]
-                            + " <process id>"
+                            + " <GeoIRC-internal process id>"
                         );
                     }
                 }
@@ -1942,7 +1966,12 @@ public class GeoIRC
                         }
                     }
                 }
-                
+                else
+                {
+                    display_manager.printlnDebug(
+                        "First switch to a window associated with a server."
+                    );
+                }
                 break;
             case CMD_LIST_PROCESSES:
                 {
@@ -1967,6 +1996,13 @@ public class GeoIRC
                     display_manager.printlnDebug( "Loading " + arg_string + "..." );
                     python_interpreter.execfile( arg_string );
                 }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_LOAD_PY ]
+                        + " <Python script filename>"
+                    );
+                }
                 break;
             case CMD_LOAD_TCL:
                 if( arg_string != null )
@@ -1983,6 +2019,13 @@ public class GeoIRC
                             "Failed to load '" + arg_string + "':"
                         );
                     }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_LOAD_TCL ]
+                        + " <Tcl script filename>"
+                    );
                 }
                 break;
             case CMD_LOG:
@@ -2392,6 +2435,13 @@ public class GeoIRC
                     }
                     display_manager.println( text, qualities );
                 }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/" + CMDS[ CMD_PRINT ]
+                        + " [qualities;]<text>"
+                    );
+                }
                 break;
             case CMD_PRINT_ACTIVE:
                 if( arg_string != null )
@@ -2451,14 +2501,20 @@ public class GeoIRC
                 }
                 break;
             case CMD_REJECT_DCC_CHAT:
-                if( args != null )
                 {
-                    try
+                    boolean problem = true;
+
+                    if( args != null )
                     {
-                        int index = Integer.parseInt( args[ 0 ] );
-                        dcc_chat_requests.remove( index );
+                        try
+                        {
+                            int index = Integer.parseInt( args[ 0 ] );
+                            dcc_chat_requests.remove( index );
+                        }
+                        catch( NumberFormatException e ) { }
                     }
-                    catch( NumberFormatException e )
+
+                    if( problem )
                     {
                         display_manager.printlnDebug(
                             "/" + CMDS[ CMD_LIST_DCC_CHAT_REQUESTS ]

@@ -103,7 +103,7 @@ public interface GeoIRCConstants
         "enablecolourcodes",
         "disablecolourcodes",
         "loadtcl",
-        "exectclproc",
+        "exectcl",
         "printactive",
         "clearinputfield",
         "clearwindow",
@@ -155,7 +155,7 @@ public interface GeoIRCConstants
     public static final int CMD_EXEC = 40;
     public static final int CMD_EXEC2 = 43;
     public static final int CMD_EXEC_PY_METHOD = 53;
-    public static final int CMD_EXEC_TCL_PROC = 74;
+    public static final int CMD_EXEC_TCL = 74;
     public static final int CMD_EXEC_WITH_WINDOW = 56;
     public static final int CMD_EXIT = 31;
     public static final int CMD_EXTENDED_PASTE = 68;
