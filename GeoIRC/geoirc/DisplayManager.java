@@ -175,10 +175,15 @@ public class DisplayManager
     
     public void printlnDebug( String line )
     {
-        println( line, "debug" );
+        println( line, "debug", "normal" );
     }
     
     public void println( String line, String qualities )
+    {
+        println( line, qualities, "normal" );
+    }
+    
+    public void println( String line, String qualities, String style )
     {
         int n = windows.size();
         GITextWindow tw;
@@ -192,7 +197,7 @@ public class DisplayManager
                 tw = (GITextWindow) windows.elementAt( i );
                 if( tw.accepts( qualities ) )
                 {
-                    tw.appendLine( line );
+                    tw.appendLine( line, style );
                 }
             }
         }
@@ -391,6 +396,25 @@ public class DisplayManager
                 frame.getWidth()
             );
             
+            int state = GI_NORMAL;
+            if( frame.isMaximum() )
+            {
+                state = GI_MAXIMIZED;
+            }
+            else if( frame.isIcon() )
+            {
+                state = GI_MINIMIZED;
+            }
+            settings_manager.putInt(
+                "/gui/desktop/" + i_str + "/state",
+                state
+            );
+            
+            settings_manager.putBoolean(
+                "/gui/desktop/" + i_str + "/selected",
+                frame.isSelected()
+            );
+            
             if( frame instanceof GITextWindow )
             {
                 settings_manager.putString(
@@ -412,6 +436,8 @@ public class DisplayManager
         int y;
         int width;
         int height;
+        int state;
+        boolean is_selected;
         String filter;
         
         while( GOD_IS_GOOD )
@@ -452,6 +478,14 @@ public class DisplayManager
                 "/gui/desktop/" + i_str + "/width",
                 DEFAULT_WINDOW_WIDTH
             );
+            state = settings_manager.getInt(
+                "/gui/desktop/" + i_str + "/state",
+                GI_NORMAL
+            );
+            is_selected = settings_manager.getBoolean(
+                "/gui/desktop/" + i_str + "/selected",
+                false
+            );
             
             if( type.equals( "GITextWindow" ) )
             {
@@ -462,6 +496,27 @@ public class DisplayManager
                 
                 GITextWindow gitw = addTextWindow( title, filter );
                 gitw.setBounds( x, y, width, height );
+                try
+                {
+                    switch( state )
+                    {
+                        case GI_MAXIMIZED:
+                            gitw.setMaximum( true );
+                            break;
+                        case GI_MINIMIZED:
+                            gitw.setIcon( true );
+                            break;
+                        case GI_NORMAL:
+                        default:
+                            gitw.setMaximum( false );
+                            break;
+                    }
+                    gitw.setSelected( is_selected );
+                }
+                catch( java.beans.PropertyVetoException e )
+                {
+                    // Do nothing about this error.
+                }
             }
             else
             {

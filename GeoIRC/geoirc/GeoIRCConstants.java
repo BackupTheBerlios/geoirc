@@ -98,4 +98,8 @@ public interface GeoIRCConstants
      */
     
     static final String DEFAULT_SETTINGS_FILEPATH = "./settings.xml";
+    
+    static final int GI_NORMAL = 0;
+    static final int GI_MAXIMIZED = 1;
+    static final int GI_MINIMIZED = 2;
 }

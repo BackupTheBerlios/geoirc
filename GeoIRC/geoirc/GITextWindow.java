@@ -103,6 +103,9 @@ public class GITextWindow extends JScrollInternalFrame
         s = text_pane.addStyle( "bold", style_normal );
         StyleConstants.setBold( s, true );
         
+        s = text_pane.addStyle( "blue", style_normal );
+        StyleConstants.setBackground( s, new Color( 0, 0, 255 ) );
+        
         selectFrameAndAssociatedButtons();
         
     }

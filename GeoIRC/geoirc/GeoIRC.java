@@ -145,6 +145,7 @@ public class GeoIRC
             getContentPane(), menu_bar, settings_manager
         );
         display_manager.printlnDebug( skin_errors );
+        display_manager.println( "blue text", "debug", "blue" );
         
         // Read settings.
         
@@ -170,43 +171,47 @@ public class GeoIRC
         setupFullKeyMapping( KeyEvent.VK_RIGHT );
         setupFullKeyMapping( KeyEvent.VK_PAGE_UP );
         setupFullKeyMapping( KeyEvent.VK_PAGE_DOWN );
+        setupFullKeyMapping( KeyEvent.VK_HOME );
+        setupFullKeyMapping( KeyEvent.VK_END );
+        setupFullKeyMapping( KeyEvent.VK_INSERT );
+        setupFullKeyMapping( KeyEvent.VK_DELETE );
         setupFullKeyMapping( KeyEvent.VK_ESCAPE );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_A );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_B );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_C );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_D );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_E );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_F );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_G );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_H );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_I );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_J );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_K );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_L );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_M );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_N );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_O );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_P );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_Q );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_R );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_S );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_T );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_U );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_V );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_W );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_X );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_Y );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_Z );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_1 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_2 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_3 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_4 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_5 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_6 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_7 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_8 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_9 );
-        setupNotQuiteFullKeyMapping( KeyEvent.VK_0 );
+        setupFullKeyMapping( KeyEvent.VK_A );
+        setupFullKeyMapping( KeyEvent.VK_B );
+        setupFullKeyMapping( KeyEvent.VK_C );
+        setupFullKeyMapping( KeyEvent.VK_D );
+        setupFullKeyMapping( KeyEvent.VK_E );
+        setupFullKeyMapping( KeyEvent.VK_F );
+        setupFullKeyMapping( KeyEvent.VK_G );
+        setupFullKeyMapping( KeyEvent.VK_H );
+        setupFullKeyMapping( KeyEvent.VK_I );
+        setupFullKeyMapping( KeyEvent.VK_J );
+        setupFullKeyMapping( KeyEvent.VK_K );
+        setupFullKeyMapping( KeyEvent.VK_L );
+        setupFullKeyMapping( KeyEvent.VK_M );
+        setupFullKeyMapping( KeyEvent.VK_N );
+        setupFullKeyMapping( KeyEvent.VK_O );
+        setupFullKeyMapping( KeyEvent.VK_P );
+        setupFullKeyMapping( KeyEvent.VK_Q );
+        setupFullKeyMapping( KeyEvent.VK_R );
+        setupFullKeyMapping( KeyEvent.VK_S );
+        setupFullKeyMapping( KeyEvent.VK_T );
+        setupFullKeyMapping( KeyEvent.VK_U );
+        setupFullKeyMapping( KeyEvent.VK_V );
+        setupFullKeyMapping( KeyEvent.VK_W );
+        setupFullKeyMapping( KeyEvent.VK_X );
+        setupFullKeyMapping( KeyEvent.VK_Y );
+        setupFullKeyMapping( KeyEvent.VK_Z );
+        setupFullKeyMapping( KeyEvent.VK_1 );
+        setupFullKeyMapping( KeyEvent.VK_2 );
+        setupFullKeyMapping( KeyEvent.VK_3 );
+        setupFullKeyMapping( KeyEvent.VK_4 );
+        setupFullKeyMapping( KeyEvent.VK_5 );
+        setupFullKeyMapping( KeyEvent.VK_6 );
+        setupFullKeyMapping( KeyEvent.VK_7 );
+        setupFullKeyMapping( KeyEvent.VK_8 );
+        setupFullKeyMapping( KeyEvent.VK_9 );
+        setupFullKeyMapping( KeyEvent.VK_0 );
         
         // Sound
         
@@ -276,10 +281,11 @@ public class GeoIRC
             KeyStroke.getKeyStroke( keycode, java_modifiers ),
             stroke_text
         );
-        action_map.put(
-            stroke_text,
-            new GIAction( settings_manager.getString( "/keyboard/" + stroke_text, "default" ), this )
-        );
+        String command = settings_manager.getString( "/keyboard/" + stroke_text, "" );
+        if( ! command.equals( "" ) )
+        {
+            action_map.put( stroke_text, new GIAction( command, this ) );
+        }
     }
     
     protected void setupFullKeyMapping( int keycode )
@@ -288,27 +294,6 @@ public class GeoIRC
         setupKeyMapping( CTRL, keycode );
         setupKeyMapping( ALT, keycode );
         setupKeyMapping( SHIFT, keycode );
-        setupKeyMapping( CTRL+ALT, keycode );
-        setupKeyMapping( ALT+SHIFT, keycode );
-        setupKeyMapping( CTRL+SHIFT, keycode );
-        setupKeyMapping( CTRL+ALT+SHIFT, keycode );
-    }
-    
-    protected void setupNearlyFullKeyMapping( int keycode )
-    {
-        setupKeyMapping( CTRL, keycode );
-        setupKeyMapping( ALT, keycode );
-        setupKeyMapping( SHIFT, keycode );
-        setupKeyMapping( CTRL+ALT, keycode );
-        setupKeyMapping( ALT+SHIFT, keycode );
-        setupKeyMapping( CTRL+SHIFT, keycode );
-        setupKeyMapping( CTRL+ALT+SHIFT, keycode );
-    }
-
-    protected void setupNotQuiteFullKeyMapping( int keycode )
-    {
-        setupKeyMapping( CTRL, keycode );
-        setupKeyMapping( ALT, keycode );
         setupKeyMapping( CTRL+ALT, keycode );
         setupKeyMapping( ALT+SHIFT, keycode );
         setupKeyMapping( CTRL+SHIFT, keycode );
@@ -544,7 +529,7 @@ public class GeoIRC
         Component thief = e.getOppositeComponent();
         if(
             ( thief instanceof JTextPane )
-            || ( thief instanceof SkinWindowButton )
+            //|| ( thief instanceof SkinWindowButton )
         )
         {
             SwingUtilities.invokeLater( new Runnable()
