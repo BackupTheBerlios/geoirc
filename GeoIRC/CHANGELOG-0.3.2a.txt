@@ -21,3 +21,7 @@ Pistos 2003-09-19
 
 Fixed highlighting so that multiple parenthesis pairs take effect.
 Pistos 2003-09-19
+
+Added automatic disabling of "OK" and "Apply" buttons
+if the user enters non valid input in any of the settings dialogs
+netseeker 2003-09-20
