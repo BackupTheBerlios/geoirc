@@ -43,3 +43,21 @@ netseeker 2003-09-24
 
 ESCAPE does now close the settings dialog
 netseeker 2003-09-24
+
+Fixed problem where new server windows now have the filter
+"irc.server.org and %raw and not %printed" instead of just "irc.server.org".
+Pistos 2003-09-24
+
+Delayed processing of server connection acknowledgement and channel restoration
+until reception of the welcome message (IRC message 001).  Without this change,
+channel join messages would be sent too early, and the server would ignore them.
+Pistos 2003-09-24
+
+Server connections are no longer saved for the next session unless they are
+connected.
+Pistos 2003-09-24
+
+Ping messages are now parsed for possible arguments, and the PONG response is sent
+with the same argument.  Instead of printing to %debug, the pong message is 
+printed with the qualities "%pong and <servername>".
+Pistos 2003-09-24

@@ -621,23 +621,26 @@ public class GeoIRC
                 continue;
             }
             
-            settings_manager.putString(
-                "/connections/" + i_str + "/type",
-                rm.getClass().toString()
-            );
-            settings_manager.putString(
-                "/connections/" + i_str + "/hostname",
-                rm.getHostname()
-            );
-            settings_manager.putInt(
-                "/connections/" + i_str + "/port",
-                rm.getPort()
-            );
-
-            if( rm instanceof Server )
+            if( rm.isConnected() )
             {
-                Server s = (Server) rm;
-                s.recordChannels();
+                settings_manager.putString(
+                    "/connections/" + i_str + "/type",
+                    rm.getClass().toString()
+                );
+                settings_manager.putString(
+                    "/connections/" + i_str + "/hostname",
+                    rm.getHostname()
+                );
+                settings_manager.putInt(
+                    "/connections/" + i_str + "/port",
+                    rm.getPort()
+                );
+
+                if( rm instanceof Server )
+                {
+                    Server s = (Server) rm;
+                    s.recordChannels();
+                }
             }
         }
     }
@@ -2062,7 +2065,10 @@ public class GeoIRC
                         }
                     }
                     Server s = addServer( host, port );
-                    display_manager.addTextWindow( s.toString(), s.toString() );
+                    display_manager.addTextWindow(
+                        s.toString() + " and %raw and not %printed",
+                        s.toString() + " and %raw and not %printed"
+                    );
                     s.connect( preferred_nick );
                 }
                 else

@@ -68,8 +68,7 @@ public class Server
         current_nick_width = 0;
     }
     
-    // Returns whether a connection has been established.
-    public boolean connect( String nick_to_use )
+    public void connect( String nick_to_use )
     {
         try
         {
@@ -106,7 +105,7 @@ public class Server
                 out.println( "NICK " + nick_to_use );
                 out.println(
                     "USER "
-                    + settings_manager.getString( "/personal/ident/username", "Pistos" )
+                    + settings_manager.getString( "/personal/ident/username", "pistos" )
                     + " x x :Pi Gi" );
                 
                 // TODO: We'll setup some way to find out when the server
@@ -126,16 +125,7 @@ public class Server
             display_manager.printlnDebug( e.getMessage() );
         }
         
-        boolean connected = isConnected();
-        if( connected )
-        {
-            restoreChannels();
-            listening_to_channels = true;
-            info_manager.addRemoteMachine( this );
-            reset = false;
-        }
-                
-        return isConnected();
+        reset = false;
     }
     
     public void addChannel( String channel_name )
@@ -393,7 +383,7 @@ public class Server
             }
 
             String line = "";
-            while( ( line != null ) && ( isConnected() ) && ( ! reset ) )
+            while( ( line != null ) && isConnected() && ( ! reset ) )
             {
                 try
                 {
@@ -1028,8 +1018,17 @@ public class Server
                 }
                 else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
                 {
-                    send( "PONG GeoIRC" );
-                    display_manager.printlnDebug( "PONG sent to " + Server.this.toString() );
+                    String pong_arg = "GeoIRC";
+                    if( tokens.length > 1 )
+                    {
+                        pong_arg = tokens[ 1 ];
+                    }
+                    send( "PONG " + pong_arg );
+                    display_manager.println(
+                        "PONG sent to " + Server.this.toString(),
+                        Server.this.toString() + " "
+                        + FILTER_SPECIAL_CHAR + "pong"
+                    );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                 {
@@ -1373,6 +1372,13 @@ public class Server
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_WELCOME ] ) )
                 {
+                    if( ! listening_to_channels )
+                    {
+                        restoreChannels();
+                        listening_to_channels = true;
+                        info_manager.addRemoteMachine( Server.this );
+                    }
+                    
                     /* Perhaps our suggested nick is longer than the maximum
                      * nick length allowed by the server, and was truncated.
                      * We shall use the welcome message to help us identify

@@ -76,7 +76,10 @@ public class InfoManager
     public synchronized void removeRemoteMachine( RemoteMachine rm )
     {
         DefaultMutableTreeNode rm_node = (DefaultMutableTreeNode) tree_inverse.get( rm );
-        root.remove( rm_node );
+        if( rm_node != null )
+        {
+            root.remove( rm_node );
+        }
         tree.reload( root );
         
         tree_inverse.remove( rm );
