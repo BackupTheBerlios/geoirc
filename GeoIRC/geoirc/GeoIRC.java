@@ -2389,12 +2389,17 @@ public class GeoIRC
                             }
                             
                             String text = Util.stringArrayToString( args, 2 ).substring( 1 );
+                            String qualities =
+                                s.toString() + " " + args[ 1 ]
+                                + " from=" + FILTER_SPECIAL_CHAR + "self";
                             if(
                                 ( text.charAt( 0 ) == (char) 1 )
                                 && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                             )
                             {
                                 text = s.getPadded( "* " + s.getCurrentNick() ) + text.substring( 7, text.length() - 1 );
+                                qualities += " " + FILTER_SPECIAL_CHAR + "action "
+                                    + FILTER_SPECIAL_CHAR + "ctcp";
                             }
                             else
                             {
@@ -2407,8 +2412,7 @@ public class GeoIRC
                                     )
                                 )
                                 + text,
-                                s.toString() + " " + args[ 1 ]
-                                + " from=" + FILTER_SPECIAL_CHAR + "self"
+                                qualities
                             );
                         }
                     }
