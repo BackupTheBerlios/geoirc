@@ -822,7 +822,7 @@ public class DisplayManager
         // The user is accidentally typing into a window.
         // Redirect them to the input field.
         
-        String mods = e.getModifiersExText( e.getModifiersEx() );
+        String mods = KeyEvent.getModifiersExText( e.getModifiersEx() );
         if( mods.equals( "" ) || mods.equals( "Shift" ) ) 
         {
             String character = "" + e.getKeyChar();

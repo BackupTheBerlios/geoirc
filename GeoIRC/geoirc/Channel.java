@@ -184,7 +184,7 @@ public class Channel implements GeoIRCConstants
     public boolean nickIsPresent( String nick )
     {
         boolean is_present = false;
-        User u;
+
         for( int i = 0, n = members.size(); i < n; i++ )
         {
             if( ((User) members.elementAt( i )).getNick().equals( nick ) )

@@ -68,7 +68,6 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -835,9 +834,9 @@ public class GeoIRC
      */
     public void regularPaste( String text_to_paste )
     {
-        String field_text = input_field.getText();
         int selection_start = input_field.getCaretPosition();
         int selection_end = selection_start;
+
         if( input_field.getSelectedText() != null )
         {
             selection_start = input_field.getSelectionStart();
