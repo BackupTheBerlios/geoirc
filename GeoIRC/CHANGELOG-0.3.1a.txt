@@ -24,3 +24,9 @@ Pistos 2003-09-17
 
 Added a "clearinputfield" command.
 Pistos 2003-09-17
+
+Fixed NullPointerException when typing in certain "unassigned" windows.
+Pistos 2003-09-17
+
+Added a "clearwindow" command.
+Pistos 2003-09-17

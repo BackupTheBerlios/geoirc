@@ -998,7 +998,12 @@ public class GeoIRC
                 }
                 else
                 {
-                    String dcc_ip = display_manager.getSelectedDCCConnection().substring( "dcc=".length() );
+                    String dcc_conn = display_manager.getSelectedDCCConnection();
+                    String dcc_ip = null;
+                    if( dcc_conn != null )
+                    {
+                        dcc_ip = dcc_conn.substring( "dcc=".length() );
+                    }
                     if( dcc_ip != null )
                     {
                         // Send to a dcc connection.
@@ -1186,6 +1191,28 @@ public class GeoIRC
                 break;
             case CMD_CLEAR_INPUT_FIELD:
                 input_field.setText( null );
+                break;
+            case CMD_CLEAR_WINDOW:
+                if( arg_string != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        display_manager.clearTextWindow( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_WINDOWS ] );
+                        display_manager.printlnDebug(
+                            "/"
+                            + CMDS[ CMD_CLEAR_WINDOW ]
+                            + " [window id number]" );
+                    }
+                }
+                else
+                {
+                    display_manager.clearTextWindow( -1 );
+                }
                 break;
             case CMD_COMPLETE_NICK:
                 {
@@ -1503,7 +1530,7 @@ public class GeoIRC
                     display_manager.printlnDebug(
                         "/"
                         + CMDS[ CMD_DOCK_WINDOW ]
-                        + " [window id number] [t|r|b|l]" );
+                        + " <window id number> <t|r|b|l>" );
                 }
                 break;
             case CMD_ENABLE_COLOUR_CODES:

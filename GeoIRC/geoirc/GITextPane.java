@@ -25,7 +25,6 @@ import org.jscroll.widgets.*;
 public class GITextPane extends GIPane implements GeoIRCConstants
 {
     protected JTextPane text_pane;
-    protected StyledDocument document;
     protected String filter;
     protected JScrollBar scrollbar;
     protected boolean colour_toggle;
@@ -65,8 +64,6 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         text_pane.setEditable( false );
         text_pane.addKeyListener( display_manager );
         
-        document = text_pane.getStyledDocument();
-
         setViewportView( text_pane );
         setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
@@ -117,6 +114,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
      */
     synchronized public String append( String text_ )
     {
+        StyledDocument document = text_pane.getStyledDocument();
         int offset = document.getLength();
         
         String text = text_;
@@ -332,7 +330,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     
     public void applyStyle( int offset, int length, String style_name )
     {
-        document.setCharacterAttributes(
+        text_pane.getStyledDocument().setCharacterAttributes(
             offset, length, text_pane.getStyle( style_name ), false
         );
     }
@@ -355,7 +353,7 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     public String getText( int offset, int length )
         throws BadLocationException
     {
-        return document.getText( offset, length );
+        return text_pane.getStyledDocument().getText( offset, length );
     }
     
     public String getFilter()
@@ -425,11 +423,17 @@ public class GITextPane extends GIPane implements GeoIRCConstants
     
     public int getDocumentLength()
     {
-        return document.getLength();
+        return text_pane.getStyledDocument().getLength();
     }
     
     public void setPaintMIRCCodes( boolean setting )
     {
         paint_mirc_codes = setting;
+    }
+    
+    public void clearDocument()
+    {
+        text_pane.setDocument( text_pane.getEditorKit().createDefaultDocument() );
+        display_manager.getStyleManager().initializeTextPane( text_pane );
     }
 }

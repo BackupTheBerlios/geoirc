@@ -330,6 +330,33 @@ public class DisplayManager
         }
     }
     
+    public boolean clearTextWindow( int index )
+    {
+        boolean success = false;
+        
+        try
+        {
+            GIWindow giw = (GIWindow) windows.elementAt( index );
+            if( giw.getPaneType() == TEXT_PANE )
+            {
+                GITextPane gitp = (GITextPane) giw.getPane();
+                gitp.clearDocument();
+                success = true;
+            }
+        }
+        catch( ArrayIndexOutOfBoundsException e )
+        {
+            // Clear current text pane.
+            if( last_activated_text_pane != null )
+            {
+                last_activated_text_pane.clearDocument();
+                success = true;
+            }
+        }
+        
+        return success;
+    }
+    
     public DefaultTreeCellRenderer getCellRenderer()
     {
         return cell_renderer;

@@ -105,7 +105,8 @@ public interface GeoIRCConstants
         "loadtcl",
         "exectclproc",
         "printactive",
-        "clearinputfield"
+        "clearinputfield",
+        "clearwindow"
     };
     
     public static final String[] IRC_CMDS =
@@ -135,6 +136,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHAR_COLOUR = 66;
     public static final int CMD_CHAR_NORMAL = 67;
     public static final int CMD_CLEAR_INPUT_FIELD = 76;
+    public static final int CMD_CLEAR_WINDOW = 77;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_DCC_CHAT = 69;
