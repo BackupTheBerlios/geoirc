@@ -142,6 +142,6 @@ public class User
     
     public boolean hasModeFlag( String mode_flag )
     {
-        mode_flags.contains( mode_flag );
+        return mode_flags.contains( mode_flag );
     }
 }
