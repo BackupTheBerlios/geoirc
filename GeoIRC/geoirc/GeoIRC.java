@@ -59,6 +59,7 @@ public class GeoIRC
     protected SettingsManager settings_manager;
     protected SoundManager sound_manager;
     protected AliasManager alias_manager;
+    protected InfoManager info_manager;
     
     protected IdentServer ident_server;
     
@@ -273,6 +274,17 @@ public class GeoIRC
         if( ( current_remote_machine == null ) && ( remote_machines.size() > 0 ) )
         {
             current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
+        }
+        
+        info_manager = new InfoManager( settings_manager, display_manager );
+        {
+            int n = remote_machines.size();
+            for( int i = 0; i < n; i++ )
+            {
+                info_manager.addRemoteMachine(
+                    (RemoteMachine) remote_machines.elementAt( i )
+                );
+            }
         }
         
         // Final miscellaneous initialization

@@ -20,21 +20,13 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstants
-//public class GITextWindow extends JInternalFrame
+public class GITextWindow extends GIWindow implements GeoIRCConstants
 {
-    protected JScrollPane scroll_pane;
     protected JTextPane text_pane;
     protected Document document;
-    protected DisplayManager display_manager;
-    protected SettingsManager settings_manager;
     protected String filter;
-    //protected RemoteMachine associated_machine;
     protected JScrollBar scrollbar;
     
-    // No default constructor.
-    private GITextWindow() { }
-
     public GITextWindow(
         DisplayManager display_manager,
         SettingsManager settings_manager,
@@ -59,18 +51,9 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         String filter
     )
     {
-        super();
-        setIconifiable( true );
-        setClosable( true );
-        setMaximizable( true );
-        setResizable( true );
-        setTitle( title );
+        super( display_manager, settings_manager, title );
         
-        addInternalFrameListener( display_manager );
-        
-        this.display_manager = display_manager;
         this.filter = filter;
-        this.settings_manager = settings_manager;
         
         text_pane = new JTextPane();
         text_pane.setEditable( false );
@@ -97,11 +80,10 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         } catch( NumberFormatException e ) { /* accept defaults */ }
         text_pane.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
 
-        scroll_pane = new JScrollPane( text_pane );
+        createScrollPane( text_pane );
         scroll_pane.setVerticalScrollBarPolicy(
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
         );
-        getContentPane().add( scroll_pane );
         scrollbar = scroll_pane.getVerticalScrollBar();
         
         document = text_pane.getDocument();

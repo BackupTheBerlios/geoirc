@@ -15,6 +15,7 @@ import java.awt.event.WindowEvent;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.tree.TreeModel;
 import org.jscroll.*;
 import org.jscroll.widgets.JScrollInternalFrame;
 
@@ -107,23 +108,9 @@ public class DisplayManager
         
         return debug_window;
     }
-
-    protected GITextWindow addTextWindow( String title )
+    
+    protected void addNewWindow( GIWindow window )
     {
-        return addTextWindow( title, null/*, null*/ );
-    }
-
-    public GITextWindow addTextWindow( String title, String filter )
-    {
-        String actual_title = title;
-        if( actual_title == null )
-        {
-            actual_title = "";
-        }
-        GITextWindow text_window = new GITextWindow(
-            this, settings_manager, style_manager, title, filter
-        );
-
         if( last_added_frame_x < MAX_NEW_WINDOW_X )
         {
             last_added_frame_x += NEW_WINDOW_X_INCREMENT;
@@ -140,15 +127,50 @@ public class DisplayManager
         {
             last_added_frame_y = MIN_NEW_WINDOW_Y;
         }
-        desktop_pane.add( text_window, last_added_frame_x, last_added_frame_y );
-        text_window.setBounds(
+        desktop_pane.add( window, last_added_frame_x, last_added_frame_y );
+        window.setBounds(
             last_added_frame_x,
             last_added_frame_y,
             DEFAULT_WINDOW_WIDTH,
             DEFAULT_WINDOW_HEIGHT
         );
+    }
+
+    protected GITextWindow addTextWindow( String title )
+    {
+        return addTextWindow( title, null );
+    }
+
+    public GITextWindow addTextWindow( String title, String filter )
+    {
+        String actual_title = title;
+        if( actual_title == null )
+        {
+            actual_title = "";
+        }
+        GITextWindow text_window = new GITextWindow(
+            this, settings_manager, style_manager, title, filter
+        );
+
+        addNewWindow( text_window );
         
         return text_window;
+    }
+    
+    public GIInfoWindow addNewInfoWindow( String title, TreeModel model )
+    {
+        String actual_title = title;
+        if( actual_title == null )
+        {
+            actual_title = "";
+        }
+        GIInfoWindow info_window = new GIInfoWindow(
+            this, settings_manager, title, model
+        );
+
+        addNewWindow( info_window );
+        
+        return info_window;
     }
     
     public GITextWindow addChannelWindow( Server s, String channel_name )

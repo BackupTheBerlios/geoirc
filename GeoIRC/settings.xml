@@ -93,7 +93,7 @@
               <entry key="height" value="252" />
               <entry key="width" value="1134" />
               <entry key="state" value="0" />
-              <entry key="selected" value="true" />
+              <entry key="selected" value="false" />
               <entry key="filter" value="debug" />
             </map>
           </node>
@@ -121,6 +121,18 @@
               <entry key="state" value="0" />
               <entry key="selected" value="false" />
               <entry key="filter" value="#geoirc" />
+            </map>
+          </node>
+          <node name="3">
+            <map>
+              <entry key="type" value="class geoirc.GIInfoWindow" />
+              <entry key="title" value="Info" />
+              <entry key="x" value="727" />
+              <entry key="y" value="49" />
+              <entry key="height" value="187" />
+              <entry key="width" value="195" />
+              <entry key="state" value="0" />
+              <entry key="selected" value="true" />
             </map>
           </node>
         </node>
@@ -154,7 +166,7 @@
             <node name="1">
               <map>
                 <entry key="filter" value="" />
-                <entry key="regexp" value=".*&lt;(.+)&gt;.*" />
+                <entry key="regexp" value=".*?&lt;(.+?)&gt;.*?" />
                 <entry key="format" value="fgffffff" />
               </map>
             </node>
