@@ -64,7 +64,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.apache.bsf.BSFManager;
+//import org.apache.bsf.BSFManager;
 import org.python.core.PyJavaInstance;
 import org.python.core.PyMethod;
 import org.python.core.PyString;
@@ -99,7 +99,7 @@ public class GeoIRC
     protected ScriptInterface script_interface;
     
     protected Hashtable python_methods;
-    protected BSFManager bsf_manager;
+//    protected BSFManager bsf_manager;
     protected PythonInterpreter python_interpreter;
     
     protected Hashtable processes;
@@ -262,7 +262,7 @@ public class GeoIRC
         
         // Scripting.
         
-        bsf_manager = new BSFManager();
+//        bsf_manager = new BSFManager();
         
         /*
         try

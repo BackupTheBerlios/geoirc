@@ -49,6 +49,7 @@ public class BoolExpEvaluator
         
         Matcher m;
         
+        /*
         m = Pattern.compile( "(\\S)\\(" ).matcher( expr );
         if( m.matches() )
         {
@@ -72,6 +73,10 @@ public class BoolExpEvaluator
         {
             m.replaceAll( " )" + m.group( 1 ) );
         }
+         */
+        
+        expr = expr.replaceAll( "\\(", " ( " );
+        expr = expr.replaceAll( "\\)", " ) " );
 
         Vector v = new Vector();
         StringTokenizer st = new StringTokenizer( expr );
@@ -375,7 +380,10 @@ public class BoolExpEvaluator
         
         if( expr.length != 1 )
         {
-            throw new BadExpressionException( "malformed expression" );
+            throw new BadExpressionException(
+                "malformed expression (partial evaluation: '"
+                + Util.stringArrayToString( expr ) + "')"
+            );
         }
         
         return ( expr[ 0 ].equals( TRUE ) );

@@ -38,11 +38,7 @@ public class BoolExpTester {
      */
     public static void main(String[] args) {
         BoolExpTester bet = new BoolExpTester();
-        bet.test( "a b or c not d", "a" );
-        bet.test( "a b or c not d", "a b" );
-        bet.test( "a b or c not d", "c" );
-        bet.test( "a b or c not d", "c d" );
-        bet.test( "a b or c not d", "a c" );
+        bet.test( "not(a or b or c)", "a" );
     }
     
 }
