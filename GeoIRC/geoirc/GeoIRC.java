@@ -6,7 +6,7 @@
 
 package geoirc;
 
-//import com.l2fprod.gui.plaf.skin.*;
+import com.l2fprod.gui.plaf.skin.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
@@ -431,14 +431,14 @@ public class GeoIRC
      */
     public static void main( String args[] )
     {
-        /*
+        
         Skin skin = null;
         
         if( args.length > 0 )
         {
             try
             {
-                skin = SkinLookAndFeel.loadSkin( args[ 0 ] );
+                skin = SkinLookAndFeel.loadSkin( "themes\\aqua\\gtk\\gtkrc" );
                 SkinLookAndFeel.setSkin( skin );
                 UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
                 UIManager.setLookAndFeel( new SkinLookAndFeel() );
@@ -448,13 +448,12 @@ public class GeoIRC
                 e.printStackTrace();
             }
         }
-         */
+         
         
         GeoIRC geoirc = new GeoIRC();
         geoirc.setExtendedState( MAXIMIZED_BOTH );
 
         geoirc.execute( "newserver irc.freenode.net 6667" );
-        
         geoirc.show();
     }
     
