@@ -326,23 +326,33 @@ public class Server
                 {
                     String old_nick = getNick( tokens[ 0 ] );
                     String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
+                    getUserByNick( old_nick ).setNick( new_nick );
+
                     if( old_nick.equals( current_nick ) )
                     {
                         // Server acknowledged and allowed our nick change.
                         current_nick = new_nick;
+                        
+                        int n = channels.size();
+                        for( int i = 0; i < n; i++ )
+                        {
+                            info_manager.acknowledgeNickChange( (Channel) channels.elementAt( i ) );
+                        }
                     }
                     else
                     {
                         // Someone else's nick changed.
                         
-                        getUserByNick( old_nick ).setNick( new_nick );
-                        // TODO: mark nick change in channel memberships.
                         int n = channels.size();
                         Channel c;
                         for( int i = 0; i < n; i++ )
                         {
                             c = (Channel) channels.elementAt( i );
-                            c.acknowledgeNickChange( old_nick, new_nick );
+                            if( c.nickIsPresent( new_nick ) )
+                            {
+                                qualities += " " + c.getName();
+                                info_manager.acknowledgeNickChange( c );
+                            }
                         }
                         
                         String text = old_nick + " is now known as " + new_nick + ".";
@@ -576,14 +586,7 @@ public class Server
                     String text = nick + " has quit (" + message + ").";
                     qualities += " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "quit";
-                    display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    sound_manager.check( text, qualities );
-
+                    
                     if( nick.equals( current_nick ) )
                     {
                         // TODO remove server
@@ -595,9 +598,21 @@ public class Server
                         for( int i = 0; i < n; i++ )
                         {
                             channel = (Channel) channels.elementAt( i );
-                            channel.removeMember( nick );
+                            if( channel.nickIsPresent( nick ) )
+                            {
+                                qualities += " " + channel.getName();
+                                channel.removeMember( nick );
+                            }
                         }
                     }
+                    
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + text,
+                        qualities
+                    );
+                    sound_manager.check( text, qualities );
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
                 {

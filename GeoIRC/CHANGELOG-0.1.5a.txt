@@ -1,0 +1,12 @@
+Changelog for GeoIRC 0.1.5a
+---------------------------
+
+Tweaked the auto-scrolling in text windows.
+Pistos 2003-07-15
+
+Fixed the QUIT and NICK handlers, such that they announce to every relevant
+channel.
+Pistos 2003-07-15
+
+Nick changes now register properly in the Info windows.
+Pistos 2003-07-15

@@ -46,13 +46,16 @@ public interface GeoIRCConstants
         "changewindow",
         "switchwindow",
         "help",
-        "completenick"
+        "completenick",
+        "print",
+        "focus_on_input_field"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_SERVER = 12;
     public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_COMPLETE_NICK = 24;
+    public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_CHANNELS = 15;
@@ -67,6 +70,7 @@ public interface GeoIRCConstants
     public static final int CMD_PART = 14;
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
+    public static final int CMD_PRINT = 25;
     public static final int CMD_PRIVMSG = 19;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;

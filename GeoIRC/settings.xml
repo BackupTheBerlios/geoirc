@@ -34,6 +34,12 @@
           </map>
         </node>
         <node name="4">
+          <map>
+            <entry key="alias" value="id" />
+            <entry key="expansion" value="sendraw PRIVMSG nickserv :IDENTIFY &amp;1" />
+          </map>
+        </node>
+        <node name="5">
           <map />
         </node>
       </node>
@@ -215,8 +221,8 @@
           <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
           <entry key="Ctrl|0" value="switchwindow irc.freenode.net" />
-          <entry key="|Tab" value="nick Pistos" />
-          <entry key="|F4" value="completenick" />
+          <entry key="|Tab" value="completenick" />
+          <entry key="Shift|Tab" value="focus_on_input_field" />
         </map>
       </node>
       <node name="personal">
@@ -228,11 +234,12 @@
         <node name="ctcp">
           <map>
             <entry key="version" value="" />
+            <entry key="userinfo" value="http://geoirc.berlios.de" />
           </map>
         </node>
         <node name="ident">
           <map>
-            <entry key="username" value="Pistos" />
+            <entry key="username" value="GeoIRC_User" />
             <entry key="os" value="Unknown OS" />
           </map>
         </node>

@@ -60,9 +60,10 @@ public class Channel
      */
     public void setChannelMembership( String namlist )
     {
-        // Prefixes:
-        // +   voiced
-        // @   channel operator
+        info_manager.removeChannel( this );
+        members = new Vector();
+        info_manager.addChannel( this );
+        
         User user;
         String [] nicks = Util.tokensToArray( namlist );
         for( int i = 0; i < nicks.length; i++ )
@@ -132,6 +133,14 @@ public class Channel
         }
         
         return retval;
+    }
+    
+    /**
+     * @return true iff the given nick matches the nick of a member of the channel
+     */
+    public boolean nickIsPresent( String nick )
+    {
+        return( getUserByNick( nick ) != null );
     }
     
     public String completeNick( String incomplete_nick )

@@ -167,6 +167,10 @@ public class GeoIRC
             settings_manager.getInt( "/gui/input field/font size", 14 )
         ) );
         input_field.addFocusListener( this );
+        
+        // Un-map the Tab-related default mappings which have to do with focus traversal.
+        input_field.setFocusTraversalKeysEnabled( false );
+        
         input_map = input_field.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
         action_map = input_field.getActionMap();
         
@@ -218,6 +222,7 @@ public class GeoIRC
         setupFullKeyMapping( KeyEvent.VK_INSERT );
         setupFullKeyMapping( KeyEvent.VK_DELETE );
         setupFullKeyMapping( KeyEvent.VK_ESCAPE );
+        setupFullKeyMapping( KeyEvent.VK_TAB );
         setupFullKeyMapping( KeyEvent.VK_A );
         setupFullKeyMapping( KeyEvent.VK_B );
         setupFullKeyMapping( KeyEvent.VK_C );
@@ -782,6 +787,9 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_FOCUS_ON_INPUT_FIELD:
+                input_field.grabFocus();
+                break;
             case CMD_HELP:
                 {
                     display_manager.printlnDebug( "Built-in commands:" );
@@ -967,6 +975,12 @@ public class GeoIRC
                 break;
             case CMD_PREVIOUS_WINDOW:
                 display_manager.switchToNextWindow( PREVIOUS_WINDOW );
+                break;
+            case CMD_PRINT:
+                if( arg_string != null )
+                {
+                    display_manager.println( arg_string, "debug" );
+                }
                 break;
             case CMD_PRIVMSG:
             case CMD_MSG:

@@ -38,3 +38,10 @@ Pistos 2003-07-13
 
 Added nick completion.
 Pistos 2003-07-14, -15
+
+Added print command, for debugging and scripting.
+Pistos 2003-07-15
+
+Added a focus_on_input_field command, as a band-aid solution for the focus
+issues.
+Pistos 2003-07-15

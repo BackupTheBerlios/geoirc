@@ -128,8 +128,8 @@ public class InfoManager
         );
     }
     
-    public void acknowledgeNickChange( Channel c, String old_nick, String new_nick )
+    public void acknowledgeNickChange( Channel c )
     {
-        c.acknowledgeNickChange( old_nick, new_nick );
+        tree.reload( (DefaultMutableTreeNode) tree_inverse.get( c ) );
     }
 }
