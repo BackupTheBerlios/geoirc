@@ -7,12 +7,12 @@ package geoirc.conf.panes;
 
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
-import geoirc.conf.Channel;
 import geoirc.conf.GeoIRCDefaults;
-import geoirc.conf.IRCServer;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValueRule;
+import geoirc.conf.beans.Channel;
+import geoirc.conf.beans.IRCServer;
+import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
 import java.awt.Dimension;

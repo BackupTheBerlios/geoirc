@@ -15,7 +15,7 @@ import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.SettingsSaveHandler;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValueRule;
+import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
 import javax.swing.JLabel;
