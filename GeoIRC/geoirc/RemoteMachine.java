@@ -19,6 +19,7 @@ public class RemoteMachine
 
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
+    protected SoundManager sound_manager;
     protected String hostname;
     protected int port;
     protected GeoIRC geoirc;
@@ -34,6 +35,7 @@ public class RemoteMachine
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        SoundManager sound_manager,
         String hostname,
         String port
     )
@@ -53,6 +55,7 @@ public class RemoteMachine
         this.port = i_port;
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
+        this.sound_manager = sound_manager;
         geoirc = parent;
         
         socket = null;

@@ -39,6 +39,7 @@ public class GeoIRC
     protected Vector remote_machines;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
+    protected SoundManager sound_manager;
     protected boolean listening_to_servers;
 
     protected LinkedList input_history;
@@ -166,6 +167,10 @@ public class GeoIRC
             current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
         }
         
+        // Sound
+        
+        sound_manager = new SoundManager( settings_manager, display_manager );
+        
         // Final miscellaneous initialization
         
         settings_manager.listenToPreferences();
@@ -229,7 +234,7 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, settings_manager, hostname, port );
+        Server s = new Server( this, display_manager, settings_manager, sound_manager, hostname, port );
         remote_machines.add( s );
         if( listening_to_servers )
         {

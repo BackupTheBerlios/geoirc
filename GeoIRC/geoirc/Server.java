@@ -30,11 +30,12 @@ public class Server
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        SoundManager sound_manager,
         String hostname,
         String port
     )
     {
-        super( parent, display_manager, settings_manager, hostname, port );
+        super( parent, display_manager, settings_manager, sound_manager, hostname, port );
         
         listening_to_channels = false;
         server_reader = null;
@@ -53,6 +54,7 @@ public class Server
                     this,
                     display_manager,
                     settings_manager,
+                    sound_manager,
                     new BufferedReader(
                         new InputStreamReader(
                             socket.getInputStream()
