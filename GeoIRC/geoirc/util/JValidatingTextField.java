@@ -26,15 +26,15 @@ public class JValidatingTextField
 	extends JTextField
 	implements DocumentListener
 {
-	private static final Border normalBorder =
+	protected static final Border normalBorder =
 		BorderFactory.createLineBorder(Color.BLACK);
-	private static final Border errorBorder =
+	protected static final Border errorBorder =
 		BorderFactory.createLineBorder(Color.RED);
 	public static final int PREFERED_WIDTH = 120;
 	public static final int PREFERED_HEIGHT = 18;
 	
-	private boolean textValid;
-	private Pattern pattern;
+	protected boolean textValid;
+	protected Pattern pattern;
 
 	/**
 	 * Creates a new instance
