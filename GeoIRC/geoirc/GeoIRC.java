@@ -2970,8 +2970,8 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_UNDOCK_WINDOW:
-            case CMD_FLOAT_WINDOW:
+            case CMD_UNDOCK_PANE:
+            case CMD_FLOAT_PANE:
                 {
                     boolean problem = true;
                     
@@ -2989,11 +2989,11 @@ public class GeoIRC
                     
                     if( problem )
                     {
-                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_DOCKED_WINDOWS ] );
+                        display_manager.printlnDebug( "/" + CMDS[ CMD_LIST_PANES ] );
                         display_manager.printlnDebug(
                             "/"
-                            + CMDS[ CMD_UNDOCK_WINDOW ]
-                            + " <docked window index>" );
+                            + CMDS[ CMD_UNDOCK_PANE ]
+                            + " <docked pane index>" );
                     }
                 }
                 break;

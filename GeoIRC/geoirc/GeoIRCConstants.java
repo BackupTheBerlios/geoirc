@@ -64,8 +64,8 @@ public interface GeoIRCConstants
         "newtextwindow",
         "exit",
         "listdockedwindows",
-        "floatwindow",
-        "undockwindow",
+        "floatpane",
+        "undockpane",
         "pageup",
         "pagedown",
         "nudgeup",
@@ -167,7 +167,7 @@ public interface GeoIRCConstants
     public static final int CMD_EXEC_WITH_WINDOW = 56;
     public static final int CMD_EXIT = 31;
     public static final int CMD_EXTENDED_PASTE = 68;
-    public static final int CMD_FLOAT_WINDOW = 33;
+    public static final int CMD_FLOAT_PANE = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
     public static final int CMD_HELP = 23;
     public static final int CMD_HIDE_QUALITIES = 62;
@@ -228,7 +228,7 @@ public interface GeoIRCConstants
     public static final int CMD_SWITCH_WINDOW = 21;
     public static final int CMD_TEST = 51;
     public static final int CMD_TOPIC = 57;
-    public static final int CMD_UNDOCK_WINDOW = 34;
+    public static final int CMD_UNDOCK_PANE = 34;
     
     static final String [] IRCMSGS =
     {

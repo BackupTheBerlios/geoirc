@@ -559,6 +559,8 @@ public class DisplayManager
             return;
         }
         
+        panes.remove( parent_gipw );
+        
         Container pane = gipw.getPane();
         JSplitPane split_pane = (JSplitPane) parent_gipw.getPane();
         Container split_pane_parent = split_pane.getParent();
@@ -572,6 +574,10 @@ public class DisplayManager
         {
             other_component = split_pane.getTopComponent();
         }
+        GIPaneWrapper partner_gipw = getPaneWrapperByPane( other_component );
+        
+        gipw.setSplitRank( SPLIT_NOT_SPLIT_MEMBER );
+        partner_gipw.setSplitRank( SPLIT_NOT_SPLIT_MEMBER );
         
         /* Replace the split pane which housed the pane we're undocking with
          * the 'partner component' of the pane.
@@ -586,10 +592,12 @@ public class DisplayManager
             if( parental_split_pane.getTopComponent() == split_pane )
             {
                 parental_split_pane.setTopComponent( other_component );
+                partner_gipw.setSplitRank( SPLIT_PRIMARY );
             }
             else
             {
                 parental_split_pane.setBottomComponent( other_component );
+                partner_gipw.setSplitRank( SPLIT_SECONDARY );
             }
         }
         else
@@ -597,9 +605,12 @@ public class DisplayManager
             split_pane_parent.remove( split_pane );
             split_pane_parent.add( other_component );
         }
+        GIPaneWrapper spp_gipw = getPaneWrapperByPane( split_pane_parent );
+        partner_gipw.setParent( spp_gipw );
         
-        GIWindow window = new GIWindow( this, settings_manager, "" );
+        GIWindow window = new GIWindow( this, settings_manager, gipw.getTitle() );
         window.addPane( pane );
+        gipw.setParent( window.getPaneWrapper() );
         addNewWindow( window );
     }
     
@@ -625,6 +636,24 @@ public class DisplayManager
         {
             retval = (GIPaneWrapper) panes.elementAt( index );
         } catch( ArrayIndexOutOfBoundsException e ) { }
+        
+        return retval;
+    }
+    
+    public GIPaneWrapper getPaneWrapperByPane( Component pane )
+    {
+        GIPaneWrapper retval = null;
+        GIPaneWrapper gipw;
+        
+        for( int i = 0, n = panes.size(); i < n; i++ )
+        {
+            gipw = (GIPaneWrapper) panes.elementAt( i );
+            if( gipw.getPane() == pane )
+            {
+                retval = gipw;
+                break;
+            }
+        }
         
         return retval;
     }
