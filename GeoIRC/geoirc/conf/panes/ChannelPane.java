@@ -145,15 +145,18 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 			{
 				if(channelList.getSelectedIndex() > 0)
 				{
-					channelName.setEditable(false);
-					channelJoin.setEnabled(false);
+					enableChannelInput(false);
 					addChannelButton.setEnabled(false);
 					delChannelButton.setEnabled(true);
+					IRCServer server = (IRCServer) servers.get((String) serverList.getSelectedValue());
+					int pos = channelList.getSelectedIndex() - 1;
+					Channel channel = (Channel)server.getChannels().get(pos);					
+					channelName.setText(channel.getName());
+					channelJoin.setSelected(channel.isAutojoin());
 				}
 				else
 				{
-					channelName.setEditable(true);
-					channelJoin.setEnabled(true);
+					enableChannelInput(true);
 					channelName.setText(null);
 					channelJoin.setSelected(false);			
 					addChannelButton.setEnabled(true);
@@ -201,11 +204,6 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 		addLayoutStopper(0, 11);
 
 		serverList.setSelectedIndex(0);
-
-		channelName.setEditable(false);
-		channelJoin.setEnabled(false);
-		addChannelButton.setEnabled(false);
-		delChannelButton.setEnabled(false);
 	}
 
 	/**
@@ -263,7 +261,7 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 	public void handleServerInput()
 	{
 		if (serverList.getSelectedIndex() == 0)
-		{
+		{			
 			if (hostName.isValid()
 				&& hostPort.isValid()
 				&& hostName.isEmpty() == false
@@ -274,6 +272,18 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 			else
 				addServerButton.setEnabled(false);
 		}
+	}
+
+	private void enableServerInput(boolean enable)	
+	{
+		hostName.setEditable(enable);
+		hostPort.setEditable(enable);
+	}
+		
+	private void enableChannelInput(boolean enable)	
+	{
+		channelName.setEditable(enable);
+		channelJoin.setEnabled(enable);		
 	}
 
 	/**
@@ -328,17 +338,19 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 						0);
 					delServerButton.setEnabled(true);
 					addServerButton.setEnabled(false);
-					hostName.setEditable(false);
-					hostPort.setEditable(false);
+					enableServerInput(false);				
 				}
 				else
 				{
 					delServerButton.setEnabled(false);
 					addServerButton.setEnabled(false);
-					hostName.setEditable(true);
-					hostPort.setEditable(true);
 					hostName.setText(null);
 					hostPort.setText(null);
+					enableServerInput(true);
+					((DefaultListModel)channelList.getModel()).removeAllElements();
+					enableChannelInput(false);
+					addChannelButton.setEnabled(false);
+					delChannelButton.setEnabled(false);									
 				}
 			}
 		}
@@ -392,7 +404,7 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 				"New",
 				0);
 			serverList.setSelectedIndex(pos);
-			serverList.ensureIndexIsVisible(pos);
+			serverList.ensureIndexIsVisible(pos);			 
 		}
 	}
 
@@ -426,10 +438,9 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 			}
 			else
 			{
-				delChannelButton.setEnabled(false);
+				enableChannelInput(false);
 				addChannelButton.setEnabled(false);
-				channelName.setEditable(true);
-				channelJoin.setEnabled(true);
+				delChannelButton.setEnabled(false);																	
 			}
 
 		}
