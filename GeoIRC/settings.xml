@@ -215,7 +215,8 @@
           <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
           <entry key="Ctrl|0" value="switchwindow irc.freenode.net" />
-          <entry key="|`" value="completenick" />
+          <entry key="|Tab" value="nick Pistos" />
+          <entry key="|F4" value="completenick" />
         </map>
       </node>
       <node name="personal">

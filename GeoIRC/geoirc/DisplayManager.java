@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowStateListener;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -73,6 +74,16 @@ public class DisplayManager
         desktop_pane = new JScrollDesktopPane( menu_bar );
         content_pane.add( desktop_pane );
         this.input_field = input_field;
+
+        // Re-map the Tab-related default mappings which have to do with focus traversal.
+        desktop_pane.setFocusTraversalKeys(
+            KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+            Collections.EMPTY_SET
+        );
+        desktop_pane.setFocusTraversalKeys(
+            KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, 
+            Collections.EMPTY_SET
+        );
         
         restoreDesktopState();
         
