@@ -1,3 +1,20 @@
+Changelog for GeoIRC 0.1.4a
+---------------------------
+
+Added a /help command, which lists the available commands and aliases.
+Pistos 2003-07-11
+
+Reworked the input field focus issue some more.  It's a bit of a band-aid
+solution, but it seems to work well.
+Pistos 2003-07-11
+
+Began adding CTCP responses, beginning with VERSION
+Pistos 2003-07-11
+
+Parting a channel now truly removes it from the joined-channel list in the
+settings.
+Pistos 2003-07-11
+
 Added SOURCE and USERINFO CTCP commands.
 Pistos 2003-07-11
 
