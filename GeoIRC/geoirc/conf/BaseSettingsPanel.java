@@ -209,13 +209,13 @@ public class BaseSettingsPanel extends JPanel
 	{
 		JLabel label = new JLabel();
 		//label.setVisible(false);
-		addComponent(label, x, y, 1, 1, 0, 1);		
+		addComponent(label, x, y, 1, 1, 0, 1, GridBagConstraints.NORTHWEST);		
 	}
 
 	public void addHorizontalLayoutStopper(int x, int y)
 	{
 		JLabel label = new JLabel();
 		//label.setVisible(false);
-		addComponent(label, x, y, 1, 1, 1, 0);		
+		addComponent(label, x, y, 1, 1, 1, 0, GridBagConstraints.NORTHWEST);		
 	}
 }
