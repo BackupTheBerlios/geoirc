@@ -18,13 +18,8 @@ public class JKeyRecordField
     extends JValidatingTextField
     implements KeyListener, GeoIRCConstants {
     public JKeyRecordField() {
-        super(".+", "");
-        //setEditable(false);
-        setPreferredSize(
-            new Dimension(
-                JValidatingTextField.PREFERED_WIDTH,
-                JValidatingTextField.PREFERED_HEIGHT));
-        
+        super();
+       
         removeKeyListener(this);        
         addKeyListener(this);
     }
@@ -35,11 +30,8 @@ public class JKeyRecordField
      * @param arg2
      */
     public JKeyRecordField(int width, int height) {
+        this();
         setPreferredSize(new Dimension(width, height));
-    }
-
-    protected boolean setHokey() {
-        return true;
     }
 
     /* (non-Javadoc)

@@ -44,7 +44,7 @@ public class JValidatingTextField
 	public JValidatingTextField()
 	{
 		super();
-        setPattern(".+");
+        setPattern(null);
 		this.setPreferredSize(new Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
         init();
 	}
@@ -97,7 +97,6 @@ public class JValidatingTextField
 		{
 			getDocument().addDocumentListener(this);
 		}
-		validateText();
 	}
 
 	/**
@@ -113,11 +112,9 @@ public class JValidatingTextField
 	}
 
 	protected void validateText()
-	{
-		String t = getText();
-        int pos = 0;
-        if(pattern.pattern().equalsIgnoreCase(".+"))
-            pos = 1;
+	{		
+        String t = getText();
+        int pos = (pattern.pattern().indexOf(".+") != -1) ? 1 : 0;
             
 		boolean valid = t.length() >= pos || pattern.matcher(t).matches();
 		setTextValid(valid);
