@@ -19,7 +19,7 @@ import org.jscroll.widgets.JScrollInternalFrame;
  */
 public class DisplayManager implements InternalFrameListener
 {
-    
+    protected SettingsManager settings_manager;
     protected GITextWindow debug_window;
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
@@ -37,7 +37,13 @@ public class DisplayManager implements InternalFrameListener
     // No default constructor
     private DisplayManager() { }
     
-    public DisplayManager( Container content_pane, JMenuBar menu_bar ) {
+    public DisplayManager(
+        Container content_pane,
+        JMenuBar menu_bar,
+        SettingsManager settings_manager
+    )
+    {
+        this.settings_manager = settings_manager;
         windows = new Vector();
         
         desktop_pane = new JScrollDesktopPane( menu_bar );
@@ -71,7 +77,7 @@ public class DisplayManager implements InternalFrameListener
         {
             actual_title = "";
         }
-        GITextWindow text_window = new GITextWindow( this, title, filter, rm );
+        GITextWindow text_window = new GITextWindow( this, settings_manager, title, filter, rm );
 
         if( last_added_frame_x < MAX_NEW_WINDOW_X )
         {

@@ -73,7 +73,6 @@ public class GeoIRC
     protected InputMap input_map;
     protected ActionMap action_map;
     
-    // SETMGR
     protected String current_nick;
 
     /* **************************************************************** */
@@ -89,7 +88,55 @@ public class GeoIRC
             display_manager,
             ( settings_filepath == null ) ? DEFAULT_SETTINGS_FILEPATH : settings_filepath
         );
-            
+        settings_manager.loadSettingsFromXML();
+        
+        String skin1 = settings_manager.getString( "/gui/skin1", null );
+        String skin2 = settings_manager.getString( "/gui/skin2", null );
+        String skin_errors = "";
+        
+        try
+        {
+            Skin skin = null;
+
+            if( ( skin1 != null ) && ( skin2 != null ) )
+            {
+                skin = new CompoundSkin(
+                    SkinLookAndFeel.loadSkin( skin1 ),
+                    SkinLookAndFeel.loadSkin( skin2 )
+                );
+            }
+            else if( skin1 != null )
+            {
+                skin = SkinLookAndFeel.loadSkin( skin1 );
+                skin_errors += "(No second skin specified.)\n";
+            }
+            else
+            {
+                skin_errors += "(No skins specified.)\n";
+            }
+
+            if( skin != null )
+            {
+                SkinLookAndFeel.setSkin( skin );
+                UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+                UIManager.setLookAndFeel( new SkinLookAndFeel() );
+                skin_errors += "Skin applied.\n";
+            }
+            else
+            {
+                skin_errors += "No skin applied.\n";
+            }
+        }
+        catch( Exception e )
+        {
+            skin_errors += "Failed to apply skin.\n";
+            if( skin1 != null ) { skin_errors += "(" + skin1 + ")\n"; }
+            if( skin2 != null ) { skin_errors += "(" + skin2 + ")\n"; }
+            skin_errors += e.getMessage() + "\n";
+        }
+
+        // Setup GUI.
+
         initComponents();
 
         input_field.addActionListener( this );
@@ -102,17 +149,20 @@ public class GeoIRC
         input_map = input_field.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
         action_map = input_field.getActionMap();
         
-        servers = new Vector();
         input_history = new LinkedList();
         input_history_pointer = MOST_RECENT_ENTRY;
         input_saved = false;
         
-        display_manager = new DisplayManager( getContentPane(), menu_bar );
         setFocusable( false );
+        if( settings_manager.getBoolean( "/gui/start maximized", true ) == true )
+        {
+            setExtendedState( MAXIMIZED_BOTH );
+        }
         
-        // Load settings.
+        display_manager = new DisplayManager( getContentPane(), menu_bar, settings_manager );
+        display_manager.printlnDebug( skin_errors );
         
-        settings_manager.loadSettingsFromXML();
+        // Read settings.
         
         current_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
 
@@ -122,6 +172,13 @@ public class GeoIRC
         setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_DOWN );
         setupKeyMapping( ALT, KeyEvent.VK_RIGHT );
         setupKeyMapping( ALT, KeyEvent.VK_LEFT );
+        
+        // Remaining initialization.
+        
+        servers = new Vector();
+        //geoirc.execute( "newserver irc.freenode.net 6667" );
+        
+        show();
     }
     
     /* ********************************************************************* */
@@ -163,7 +220,7 @@ public class GeoIRC
             InputEvent.getModifiersExText( java_modifiers ) + "|"
             + KeyEvent.getKeyText( keycode );
         
-        display_manager.printlnDebug( stroke_text );
+        //display_manager.printlnDebug( stroke_text );
         
         input_map.put(
             KeyStroke.getKeyStroke( keycode, java_modifiers ),
@@ -518,10 +575,6 @@ public class GeoIRC
      */
     public static void main( String args[] )
     {
-        Skin skin = null;
-        
-        int skin_index = -1;
-        String [] skins = new String[ 2 ];
         String settings_filepath = null;
         
         try
@@ -541,25 +594,6 @@ public class GeoIRC
 
                     settings_filepath = args[ i ];
                 }
-                else if(
-                    ( args[ i ].equals( "-s" ) )
-                    || ( args[ i ].equals( "--skin" ) )
-                )
-                {
-                    i++;
-                    if( i == args.length )
-                    {
-                        throw new BadArgumentsException( "skin rc filepath expected" );
-                    }
-
-                    skin_index++;
-                    if( skin_index > 1 )
-                    {
-                        throw new BadArgumentsException( "only as many as two skin rc's can be specified" );
-                    }
-                    
-                    skins[ skin_index ] = args[ i ];
-                }
             }
         }
         catch( BadArgumentsException e )
@@ -568,40 +602,9 @@ public class GeoIRC
             System.out.println( "Usage:" );
             System.out.println( "java -classpath skinlf.jar;. geoirc.GeoIRC [options]" );
             System.out.println( "\t-c, --config\t<settings filepath>" );
-            System.out.println( "\t-s, --skin\t<skin rc file>  (up to two can be specified)" );
-        }
-        
-        if( skin_index > -1 )
-        {
-            try
-            {
-                if( skin_index == 1 )
-                {
-                    skin = new CompoundSkin(
-                        SkinLookAndFeel.loadSkin( skins[ 0 ] ),
-                        SkinLookAndFeel.loadSkin( skins[ 1 ] )
-                    );
-                }
-                else // if( skin_index == 0 )
-                {
-                    skin = SkinLookAndFeel.loadSkin( args[ 0 ] );
-                }
-
-                SkinLookAndFeel.setSkin( skin );
-                UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-                UIManager.setLookAndFeel( new SkinLookAndFeel() );
-            }
-            catch( Exception e )
-            {
-                e.printStackTrace();
-            }
         }
         
         GeoIRC geoirc = new GeoIRC( settings_filepath );
-        geoirc.setExtendedState( MAXIMIZED_BOTH );
-
-        //geoirc.execute( "newserver irc.freenode.net 6667" );
-        geoirc.show();
     }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables

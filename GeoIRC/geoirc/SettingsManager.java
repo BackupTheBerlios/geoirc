@@ -35,6 +35,18 @@ public class SettingsManager {
         this.filepath = filepath;
     }
     
+    protected void printlnDebug( String s )
+    {
+        if( displayMgr != null )
+        {
+            displayMgr.printlnDebug( s );
+        }
+        else
+        {
+            System.err.println( s );
+        }
+    }
+    
     public boolean loadSettingsFromXML()
     {
         InputStream is = null;
@@ -42,17 +54,17 @@ public class SettingsManager {
         try {
             is = new BufferedInputStream(new FileInputStream( filepath ));
         } catch (FileNotFoundException e) {
-            displayMgr.printlnDebug( "File not found: '" + filepath + "'." );
+            printlnDebug( "File not found: '" + filepath + "'." );
             success = false;
         }
         
         try {
             root.importPreferences(is);
         } catch (InvalidPreferencesFormatException e) {
-            displayMgr.printlnDebug( "Invalid format in '" + filepath + "'; cannot import settings." );
+            printlnDebug( "Invalid format in '" + filepath + "'; cannot import settings." );
             success = false;
         } catch (IOException e) {
-            displayMgr.printlnDebug("I/O problem while trying to load settings from '" + filepath + "'.");
+            printlnDebug("I/O problem while trying to load settings from '" + filepath + "'.");
             success = false;
         }
         
@@ -73,10 +85,10 @@ public class SettingsManager {
         try {
             root.exportSubtree(new FileOutputStream( filepath ));
         } catch (IOException e) {
-            displayMgr.printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
+            printlnDebug("I/O problem while trying to save settings to '" + filepath + "'.");
             success = false;
         } catch (BackingStoreException e) {
-            displayMgr.printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
+            printlnDebug("Backing Store problem while trying to save settings to '" + filepath + "'.");
             success = false;
         }
         

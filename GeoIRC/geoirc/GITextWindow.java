@@ -26,6 +26,7 @@ public class GITextWindow extends JScrollInternalFrame
     protected Style default_style;
     protected Document document;
     protected DisplayManager display_manager;
+    protected SettingsManager settings_manager;
     protected String filter;
     protected RemoteMachine associated_machine;
     protected JScrollBar scrollbar;
@@ -33,18 +34,19 @@ public class GITextWindow extends JScrollInternalFrame
     // No default constructor.
     private GITextWindow() { }
 
-    public GITextWindow( DisplayManager display_manager, String title )
+    public GITextWindow( DisplayManager display_manager, SettingsManager settings_manager, String title )
     {
-        this( display_manager, title, (String) null, (RemoteMachine) null );
+        this( display_manager, settings_manager, title, (String) null, (RemoteMachine) null );
     }
 
-    public GITextWindow( DisplayManager display_manager, String title, String filter )
+    public GITextWindow( DisplayManager display_manager, SettingsManager settings_manager, String title, String filter )
     {
-        this( display_manager, title, filter, (RemoteMachine) null );
+        this( display_manager, settings_manager, title, filter, (RemoteMachine) null );
     }
     
     public GITextWindow(
         DisplayManager display_manager,
+        SettingsManager settings_manager,
         String title,
         String filter,
         RemoteMachine associated_machine
@@ -60,6 +62,7 @@ public class GITextWindow extends JScrollInternalFrame
         this.display_manager = display_manager;
         this.filter = filter;
         this.associated_machine = associated_machine;
+        this.settings_manager = settings_manager;
         
         addInternalFrameListener( display_manager );
         
@@ -80,10 +83,16 @@ public class GITextWindow extends JScrollInternalFrame
         // Setup some default text styles.
         
         Style style_def = StyleContext.getDefaultStyleContext().getStyle( StyleContext.DEFAULT_STYLE );
-        StyleConstants.setFontFamily( style_def, "Lucida Console" );
+        StyleConstants.setFontFamily(
+            style_def,
+            settings_manager.getString( "/gui/text windows/font face", "Lucida Console" )
+        );
         
         Style style_normal = text_pane.addStyle( "normal", style_def );
-        StyleConstants.setFontSize( style_normal, 14 );
+        StyleConstants.setFontSize(
+            style_normal,
+            settings_manager.getInt( "/gui/text windows/font size", 14 )
+        );
         default_style = style_normal;
         
         Style s = text_pane.addStyle( "italic", style_normal );
