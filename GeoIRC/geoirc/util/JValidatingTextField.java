@@ -42,6 +42,7 @@ public class JValidatingTextField
 	public JValidatingTextField()
 	{
 		super();
+        setPattern(".+");
 		this.setPreferredSize(new Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
 	}
 	

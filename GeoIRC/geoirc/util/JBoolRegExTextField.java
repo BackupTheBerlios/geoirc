@@ -23,46 +23,28 @@ public class JBoolRegExTextField extends JValidatingTextField {
     }
 
     /**
-     * @param regex
      * @param value
      */
-    public JBoolRegExTextField(String regex) {
-        super(regex, "");
+    public JBoolRegExTextField(String value) {
+        super(".+", value);
     }
 
     /**
-     * @param regex
-     * @param value
-     */
-    public JBoolRegExTextField(String regex, String value) {
-        super(regex, value);
-    }
-
-    /**
-     * @param regex
      * @param value
      * @param width
      */
-    public JBoolRegExTextField(String regex, String value, int width) {
-        super(regex, value, width);
-    }
-
-    /**
-     * @param regex
-     * @param value
-     * @param width
-     */
-    public JBoolRegExTextField(String regex, int width) {
-        super(regex, "", width);
+    public JBoolRegExTextField(String value, int width) {
+        super(".+", value, width);
     }
 
     protected void validateText() {
         String t = getText();
-        boolean valid = true;
+        boolean valid = false;
 
         if (!isEmpty()) {
             try {
                 BoolExpEvaluator.evaluate(t, pattern.pattern());
+                valid = true;
             }
             catch (BadExpressionException e) {
                 valid = false;
