@@ -847,7 +847,7 @@ public class DisplayManager
             if( filter != null )
             {
                 // Search for a server name in this filter.
-                Matcher m = Pattern.compile( "irc\\.\\S+" ).matcher( filter );
+                Matcher m = Pattern.compile( "\\S+\\.\\S+\\.\\S+" ).matcher( filter );
                 if( m.find() )
                 {
                     String server_name = m.group();

@@ -28,3 +28,7 @@ Various IRC messages dealing with channel names (e.g. JOIN, PART, etc.) now
 treat channel names case insensitively.  (There were problems with servers that,
 for example, capitalized the first letter of channel names in these messages.)
 Pistos 2003-09-30
+
+Changed assumption that all IRC server hostnames fit the mask "irc.*".  Mask is
+now "\S+\.\S+\.\S+".
+Pistos 2003-09-30
