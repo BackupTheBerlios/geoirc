@@ -189,11 +189,18 @@
           <node name="0">
             <map>
               <entry key="filter" value="" />
-              <entry key="regexp" value=".*[Gg]eo[Ss]hell.*" />
+              <entry key="regexp" value=".*ooga.*" />
               <entry key="filename" value="./bloop.wav" />
             </map>
           </node>
           <node name="1">
+            <map>
+              <entry key="filter" value="" />
+              <entry key="regexp" value=".*" />
+              <entry key="filename" value="./blip.wav" />
+            </map>
+          </node>
+          <node name="2">
             <map />
           </node>
         </node>

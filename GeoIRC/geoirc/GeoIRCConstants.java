@@ -38,11 +38,14 @@ public interface GeoIRCConstants
         "setfilter",
         "settitle",
         "privmsg",
-        "msg"
+        "msg",
+        "changewindow",
+        "switchwindow"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_SERVER = 12;
+    public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_FONTS = 4;
@@ -62,6 +65,7 @@ public interface GeoIRCConstants
     public static final int CMD_SET = 16;
     public static final int CMD_SET_FILTER = 17;
     public static final int CMD_SET_TITLE = 18;
+    public static final int CMD_SWITCH_WINDOW = 21;
     
     static final String [] IRCMSGS =
     {
