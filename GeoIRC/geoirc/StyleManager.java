@@ -24,17 +24,20 @@ public class StyleManager
     
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     
     // No default constructor.
     private StyleManager() { }
     
     public StyleManager(
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         
         Vector v = new Vector();
         
@@ -199,7 +202,12 @@ public class StyleManager
             
             if( ! valid_format )
             {
-                System.err.println( "Bad style format definition: '" + style_names[ i ] + "'" );
+                System.err.println(
+                    i18n_manager.getString(
+                        "bad format",
+                        new Object [] { style_names[ i ] }
+                    )
+                );
             }
         }
     }

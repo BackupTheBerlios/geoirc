@@ -18,6 +18,7 @@ public class TriggerManager implements GeoIRCConstants
     protected CommandExecutor executor;
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     
     // No default constructor
     private TriggerManager() { }
@@ -25,12 +26,14 @@ public class TriggerManager implements GeoIRCConstants
     public TriggerManager(
         CommandExecutor executor,
         SettingsManager settings_manager,
-        DisplayManager display_manager
+        DisplayManager display_manager,
+        I18nManager i18n_manager
     )
     {
         this.executor = executor;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         triggers = new Vector();
         
         int i = 0;
@@ -85,7 +88,7 @@ public class TriggerManager implements GeoIRCConstants
         Trigger trigger;
         try
         {
-            trigger = new Trigger( executor, display_manager, filter, regexp, command );
+            trigger = new Trigger( executor, display_manager, i18n_manager, filter, regexp, command );
             triggers.add( trigger );
         }
         catch( java.util.regex.PatternSyntaxException e )

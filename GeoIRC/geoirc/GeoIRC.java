@@ -126,7 +126,6 @@ public class GeoIRC
     protected Hashtable python_methods;
     protected Vector tcl_procs;
     protected PythonInterpreter python_interpreter;
-    protected Interp tcl_interpreter;
     
     protected Hashtable processes;
     protected Hashtable audio_clips;
@@ -410,11 +409,11 @@ public class GeoIRC
 
         // Managers
         
-        style_manager = new StyleManager( settings_manager, display_manager );
+        style_manager = new StyleManager( settings_manager, display_manager, i18n_manager );
         highlight_manager = new HighlightManager( settings_manager, display_manager, i18n_manager );
         log_manager = new LogManager( settings_manager, display_manager, i18n_manager );
         display_manager.setLogManager( log_manager );
-        trigger_manager = new TriggerManager( this, settings_manager, display_manager );
+        trigger_manager = new TriggerManager( this, settings_manager, display_manager, i18n_manager );
         alias_manager = new AliasManager( settings_manager, display_manager, variable_manager );
         
         display_manager.applySettings();
@@ -422,6 +421,10 @@ public class GeoIRC
     
     protected void initializeScriptingInterfaces()
     {
+        python_methods = null;
+        python_interpreter = null;
+        python_script_interface = null;
+        
         if( settings_manager.getBoolean( "/modules/python", false ) == true )
         {
             python_methods = new Hashtable();
@@ -433,40 +436,24 @@ public class GeoIRC
             
             display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
         }
-        else
-        {
-            python_methods = null;
-            python_interpreter = null;
-            python_script_interface = null;
-        }
+        
+        tcl_script_interface = null;
+        tcl_procs = null;
         
         if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
         {
             tcl_procs = new Vector();
-            tcl_interpreter = new Interp();
-            tcl_script_interface = new TclScriptInterface(
-                this, settings_manager, display_manager, variable_manager, tcl_interpreter, tcl_procs
-            );
             try
             {
-                tcl_interpreter.setVar(
-                    "geoirc",
-                    ReflectObject.newInstance( tcl_interpreter, TclScriptInterface.class, tcl_script_interface ),
-                    0
+                tcl_script_interface = new TclScriptInterface(
+                    this, settings_manager, display_manager, variable_manager, i18n_manager, tcl_procs
                 );
-
                 display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
             }
             catch( TclException e )
             {
                 Util.printException( display_manager, e, i18n_manager.getString( "tcl init error" ) );
             }
-        }
-        else
-        {
-            tcl_procs = null;
-            tcl_interpreter = null;
-            tcl_script_interface = null;
         }
     }
     
@@ -1911,14 +1898,7 @@ public class GeoIRC
                 {
                     if( arg_string != null )
                     {
-                        try
-                        {
-                            tcl_interpreter.eval( arg_string );
-                        }
-                        catch( TclException e )
-                        {
-                            Util.printException( display_manager, e, i18n_manager.getString( "tcl error" ) );
-                        }
+                        tcl_script_interface.eval( arg_string );
                     }
                     else
                     {
@@ -2211,17 +2191,7 @@ public class GeoIRC
                         display_manager.printlnDebug(
                             i18n_manager.getString( "loading", new Object [] { arg_string } )
                         );
-                        try
-                        {
-                            tcl_interpreter.evalFile( arg_string );
-                        }
-                        catch( TclException e )
-                        {
-                            Util.printException(
-                                display_manager, e,
-                                i18n_manager.getString( "load failure", new Object [] { arg_string } )
-                            );
-                        }
+                        tcl_script_interface.evalFile( arg_string );
                     }
                     else
                     {

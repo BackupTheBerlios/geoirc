@@ -23,6 +23,7 @@ public class Trigger
     protected String filter;
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
+    protected I18nManager i18n_manager;
     protected Pattern regexp;
     protected String command;
     
@@ -32,6 +33,7 @@ public class Trigger
     public Trigger(
         CommandExecutor executor,
         DisplayManager display_manager,
+        I18nManager i18n_manager,
         String filter,
         String regexp_str,
         String command
@@ -40,6 +42,7 @@ public class Trigger
     {
         this.executor = executor;
         this.display_manager = display_manager;
+        this.i18n_manager = i18n_manager;
         this.filter = filter;
         this.command = command;
 
@@ -50,8 +53,7 @@ public class Trigger
         catch( PatternSyntaxException e )
         {
             display_manager.printlnDebug(
-                "Regular expression syntax error for expression '"
-                + regexp_str + "'"
+                i18n_manager.getString( "regexp error", new Object [] { regexp_str } )
             );
             display_manager.printlnDebug( e.getMessage() );
             throw e;
@@ -83,7 +85,9 @@ public class Trigger
         }
         catch( BadExpressionException e )
         {
-            display_manager.printlnDebug( "Filter evaluation error for filter '" + filter + "'" );
+            display_manager.printlnDebug(
+                i18n_manager.getString( "filter error", new Object [] { filter } )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         

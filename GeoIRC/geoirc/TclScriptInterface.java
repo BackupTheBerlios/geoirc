@@ -17,11 +17,11 @@ import tcl.lang.*;
  */
 public class TclScriptInterface
 {
-    
     protected CommandExecutor executor;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected VariableManager variable_manager;
+    protected I18nManager i18n_manager;
     protected Interp tcl_interpreter;
     protected Vector tcl_procs;
     
@@ -36,20 +36,27 @@ public class TclScriptInterface
         SettingsManager settings_manager,
         DisplayManager display_manager,
         VariableManager variable_manager,
-        Interp tcl_interpreter,
+        I18nManager i18n_manager,
         Vector tcl_procs
-    )
+    ) throws TclException
     {
         this.executor = executor;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
         this.variable_manager = variable_manager;
-        this.tcl_interpreter = tcl_interpreter;
+        this.i18n_manager = i18n_manager;
         this.tcl_procs = tcl_procs;
         
+        tcl_interpreter = new Interp();
         raw_listeners = new Vector();
         input_listeners = new Vector();
         print_listeners = new Vector();
+        
+        tcl_interpreter.setVar(
+            "geoirc",
+            ReflectObject.newInstance( tcl_interpreter, TclScriptInterface.class, this ),
+            0
+        );
     }
     
     public int execute( String command )
@@ -122,7 +129,7 @@ public class TclScriptInterface
                 }
                 catch( TclException e )
                 {
-                    display_manager.printlnDebug( "Exception when executing Tcl raw parser." );
+                    display_manager.printlnDebug( i18n_manager.getString( "tcl raw exception" ) );
                     if( e.getCompletionCode() == TCL.ERROR )
                     {
                         display_manager.printlnDebug( tcl_interpreter.getResult().toString() );
@@ -162,7 +169,7 @@ public class TclScriptInterface
                 }
                 catch( TclException e )
                 {
-                    display_manager.printlnDebug( "Exception when executing Tcl input parser." );
+                    display_manager.printlnDebug( i18n_manager.getString( "tcl input exception" ) );
                     if( e.getCompletionCode() == TCL.ERROR )
                     {
                         display_manager.printlnDebug( tcl_interpreter.getResult().toString() );
@@ -185,5 +192,32 @@ public class TclScriptInterface
         retval = retval.replaceAll( "\\]", "\\\\\\]" );
         retval = retval.replaceAll( "\\$", "\\\\\\$" );
         return retval;
+    }
+    
+    public void eval( String tcl_code )
+    {
+        try
+        {
+            tcl_interpreter.eval( tcl_code );
+        }
+        catch( TclException e )
+        {
+            Util.printException( display_manager, e, i18n_manager.getString( "tcl error" ) );
+        }
+    }
+    
+    public void evalFile( String tcl_file )
+    {
+        try
+        {
+            tcl_interpreter.evalFile( tcl_file );
+        }
+        catch( TclException e )
+        {
+            Util.printException(
+                display_manager, e,
+                i18n_manager.getString( "load failure", new Object [] { tcl_file } )
+            );
+        }
     }
 }
