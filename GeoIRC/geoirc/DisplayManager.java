@@ -80,6 +80,7 @@ public class DisplayManager
 
         windows = new Vector();
         inactive_info_panes = new Vector();
+        active_info_panes = new Vector();
         docked_panes = new Vector();
         undocked_panes = new Vector();
         panes = new Vector();
@@ -232,6 +233,11 @@ public class DisplayManager
     
     public void println( String line, String qualities )
     {
+        if( line == null )
+        {
+            return;
+        }
+        
         int n = windows.size();
         GITextPane text_pane;
         GIPane pane;
@@ -679,7 +685,7 @@ public class DisplayManager
                 break;
             }
             
-            if( type.equals( "class geoirc.GITextPane" ) )
+            if( type.equals( "class geoirc.GIInfoPane" ) )
             {
                 paths.put(
                     i_str,
@@ -688,9 +694,9 @@ public class DisplayManager
                         ""
                     )
                 );
-                pane_types.put( i_str, new Integer( TEXT_PANE ) );
+                pane_types.put( i_str, new Integer( INFO_PANE ) );
             }
-            else if( type.equals( "class geoirc.GIInfoPane" ) )
+            else if( type.equals( "class geoirc.GITextPane" ) )
             {
                 filters.put(
                     i_str,
@@ -699,7 +705,7 @@ public class DisplayManager
                         ""
                     )
                 );
-                pane_types.put( i_str, new Integer( INFO_PANE ) );
+                pane_types.put( i_str, new Integer( TEXT_PANE ) );
             }
             
             i++;

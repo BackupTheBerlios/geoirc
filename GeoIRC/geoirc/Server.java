@@ -258,7 +258,7 @@ public class Server
                     display_manager.printlnDebug(
                         "NullPointerException in interpretLine."
                     );
-                    display_manager.printlnDebug( e.getMessage() );
+                    display_manager.printlnDebug( "Problem line: " + line );
                 }
                 catch( IOException e )
                 {
