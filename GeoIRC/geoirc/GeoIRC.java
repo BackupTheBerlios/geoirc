@@ -928,9 +928,6 @@ public class GeoIRC
     {
         String text = input_field.getText();
         
-        text = python_script_interface.onInput( text );
-        text = tcl_script_interface.onInput( text );
-        
         if( ( text == null ) || ( text.equals( "" ) ) )
         {
             return;
@@ -946,7 +943,10 @@ public class GeoIRC
             addToInputHistory( text );
         }
         input_saved = false;
-        
+
+        text = python_script_interface.onInput( text );
+        text = tcl_script_interface.onInput( text );
+
         /* What we do with this input depends on its nature.
          * 
          * If the text starts with a backslash, we send it (without the
@@ -1301,91 +1301,50 @@ public class GeoIRC
                         }
                         
                         
-                        if( word != null )
+                        if( ( word != null ) && ( word.length() > 0 ) )
                         {
                             String replacement_text = "";
                             
-                            if( ( word.length() > 0 ) && ( word.charAt( 0 ) == '/' ) )
+                            if( word.charAt( 0 ) == '/' )
                             {
-                                word = word.substring( 1 );
-                                Vector commands_found = new Vector();
+                                // Command completion.
                                 
-                                for( int i = 0, n = CMDS.length; i < n; i++ )
-                                {
-                                    if( CMDS[ i ].startsWith( word ) )
-                                    {
-                                        commands_found.add( CMDS[ i ] );
-                                    }
-                                }
-                                
-                                if( commands_found.size() == 0 )
-                                {
-                                    display_manager.printlnDebug(
-                                        "No command found starting with " + word + "."
-                                    );
-                                }
-                                else if( commands_found.size() == 1 )
-                                {
-                                    replacement_text = "/" + (String) commands_found.elementAt( 0 ) + " ";
-                                }
-                                else
-                                {
-                                    int word_len = word.length();
-                                    int matches_up_to = ((String) commands_found.elementAt( 0 )).length();
-                                    String cmd;
-                                    String prev_cmd;
-                                    String available_commands = "";
-                                    for( int i = 0, n = commands_found.size(); i < n; i++ )
-                                    {
-                                        cmd = (String) commands_found.elementAt( i );
-                                        if( i > 0 )
-                                        {
-                                            prev_cmd = (String) commands_found.elementAt( i - 1 );
-                                            for( int j = matches_up_to; j >= word_len; j-- )
-                                            {
-                                                if( j > prev_cmd.length() )
-                                                {
-                                                    j = prev_cmd.length();
-                                                }
-                                                if( j > cmd.length() )
-                                                {
-                                                    j = cmd.length();
-                                                }
-                                                if( cmd.substring( 0, j ).equals( prev_cmd.substring( 0, j ) ) )
-                                                {
-                                                    matches_up_to = j;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        available_commands += "/" + cmd + " ";
-                                    }
-                                    
-                                    display_manager.printlnDebug( available_commands );
-                                    
-                                    replacement_text =
-                                        "/" + ((String) commands_found.elementAt( 0 )).substring( 0, matches_up_to );
-                                }
+                                String completion = Util.completeFrom( word.substring( 1 ), CMDS );
                             }
                             else if( current_rm instanceof Server )
                             {
                                 Server s = (Server) current_rm;
-                                Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
-                                if( channel != null )
-                                {
-                                    replacement_text = channel.completeNick( word, (left_space_pos == -1) );
-                                }
                                 
-                                if( replacement_text.equals( word ) )
+                                if( word.charAt( 0 ) == '#' )
                                 {
-                                    String [] words = new String[ 0 ];
-                                    words = (String []) conversation_words.toArray( words );
-                                    for( int i = 0; i < words.length; i++ )
+                                    // Channel name completion
+                                    
+                                    Channel [] channels = s.getChannels();
+                                    
+                                }
+                                else
+                                {
+                                    // Nick completion
+
+                                    Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
+                                    if( channel != null )
                                     {
-                                        if( words[ i ].toLowerCase().startsWith( word.toLowerCase() ) )
+                                        replacement_text = channel.completeNick( word, (left_space_pos == -1) );
+                                    }
+
+                                    if( replacement_text.equals( word ) )
+                                    {
+                                        // If no nick found, search for conversation words.
+
+                                        String [] words = new String[ 0 ];
+                                        words = (String []) conversation_words.toArray( words );
+                                        for( int i = 0; i < words.length; i++ )
                                         {
-                                            replacement_text = words[ i ];
-                                            break;
+                                            if( words[ i ].toLowerCase().startsWith( word.toLowerCase() ) )
+                                            {
+                                                replacement_text = words[ i ];
+                                                break;
+                                            }
                                         }
                                     }
                                 }

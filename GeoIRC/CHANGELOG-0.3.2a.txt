@@ -25,3 +25,7 @@ Pistos 2003-09-19
 Added automatic disabling of "OK" and "Apply" buttons
 if the user enters non valid input in any of the settings dialogs
 netseeker 2003-09-20
+
+Changed processing order, such that input history management comes *before*
+scripting engine processing.
+Pistos 2003-09-21

@@ -231,4 +231,69 @@ public class Util implements GeoIRCConstants
             + Long.toString( ( ip & 0x0000FF00 ) / 0x100 ) + "."
             + Long.toString( ip & 0x000000FF );
     }
+    
+    /**
+     * @return a String containing a space-separated list of possible matches,
+     * or null if no matches are found.
+     */
+    public static String completeFrom( String word, String [] possible_words )
+    {
+        Vector words_found = new Vector();
+
+        for( int i = 0, n = possible_words.length; i < n; i++ )
+        {
+            if( possible_words[ i ].startsWith( word ) )
+            {
+                words_found.add( possible_words[ i ] );
+            }
+        }
+
+        if( words_found.size() == 0 )
+        {
+            display_manager.printlnDebug(
+                "No command found starting with " + word + "."
+            );
+        }
+        else if( words_found.size() == 1 )
+        {
+            replacement_text = "/" + (String) words_found.elementAt( 0 ) + " ";
+        }
+        else
+        {
+
+        }
+        
+        int word_len = word.length();
+        int matches_up_to = ((String) possible_words.elementAt( 0 )).length();
+        String cmd;
+        String prev_cmd;
+        String available_commands = "";
+        for( int i = 0, n = possible_words.size(); i < n; i++ )
+        {
+            cmd = (String) possible_words.elementAt( i );
+            if( i > 0 )
+            {
+                prev_cmd = (String) possible_words.elementAt( i - 1 );
+                for( int j = matches_up_to; j >= word_len; j-- )
+                {
+                    if( j > prev_cmd.length() )
+                    {
+                        j = prev_cmd.length();
+                    }
+                    if( j > cmd.length() )
+                    {
+                        j = cmd.length();
+                    }
+                    if( cmd.substring( 0, j ).equals( prev_cmd.substring( 0, j ) ) )
+                    {
+                        matches_up_to = j;
+                        break;
+                    }
+                }
+            }
+            available_commands += "/" + cmd + " ";
+        }
+
+        return ((String) possible_words.elementAt( 0 )).substring( 0, matches_up_to );
+    }
 }
