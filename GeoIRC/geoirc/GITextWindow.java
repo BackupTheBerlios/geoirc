@@ -28,7 +28,7 @@ public class GITextWindow extends JScrollInternalFrame
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected String filter;
-    protected RemoteMachine associated_machine;
+    //protected RemoteMachine associated_machine;
     protected JScrollBar scrollbar;
     
     // No default constructor.
@@ -36,11 +36,12 @@ public class GITextWindow extends JScrollInternalFrame
 
     public GITextWindow( DisplayManager display_manager, SettingsManager settings_manager, String title )
     {
-        this( display_manager, settings_manager, title, (String) null, (RemoteMachine) null );
+        this( display_manager, settings_manager, title, (String) null /*, (RemoteMachine) null */ );
     }
 
     public GITextWindow( DisplayManager display_manager, SettingsManager settings_manager, String title, String filter )
     {
+        /*
         this( display_manager, settings_manager, title, filter, (RemoteMachine) null );
     }
     
@@ -52,6 +53,7 @@ public class GITextWindow extends JScrollInternalFrame
         RemoteMachine associated_machine
     )
     {
+         */
         super();
         setIconifiable( true );
         setClosable( true );
@@ -63,7 +65,7 @@ public class GITextWindow extends JScrollInternalFrame
         
         this.display_manager = display_manager;
         this.filter = filter;
-        this.associated_machine = associated_machine;
+        //this.associated_machine = associated_machine;
         this.settings_manager = settings_manager;
         
         text_pane = new JTextPane();
@@ -188,10 +190,12 @@ public class GITextWindow extends JScrollInternalFrame
         return result;
     }
     
+    /*
     public RemoteMachine getAssociatedMachine()
     {
         return associated_machine;
     }
+     */
     
     public String getFilter()
     {

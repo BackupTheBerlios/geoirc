@@ -44,12 +44,16 @@ public class GeoIRC
         "previouswindow",
         "next_history_entry",
         "previous_history_entry",
-        "server"
+        "server",
+        "changeserver",
+        "listservers"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
+    public static final int CMD_CHANGE_SERVER = 12;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_FONTS = 4;
+    public static final int CMD_LIST_SERVERS = 13;
     public static final int CMD_NEW_SERVER = 5;
     public static final int CMD_NEW_TEXT_WINDOW = 1;
     public static final int CMD_NEXT_HISTORY_ENTRY = 9;
@@ -76,6 +80,7 @@ public class GeoIRC
     protected ActionMap action_map;
     
     protected String current_nick;
+    protected RemoteMachine current_remote_machine;
 
     /* **************************************************************** */
     
@@ -184,8 +189,13 @@ public class GeoIRC
         
         // Restore connections, if any.
         
+        current_remote_machine = null;
         remote_machines = new Vector();
         restoreConnections();
+        if( ( current_remote_machine == null ) && ( remote_machines.size() > 0 ) )
+        {
+            current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
+        }
         
         // Final miscellaneous initialization
         
@@ -256,6 +266,7 @@ public class GeoIRC
         {
             recordConnections();
         }
+        current_remote_machine = s;
         //GITextWindow window = display_manager.addServerWindow( s );
         
         return s;
@@ -501,24 +512,55 @@ public class GeoIRC
         switch( command_id )
         {
             case CMD_ACTION:
-                String channel = display_manager.getSelectedChannel();
-                if( channel != null )
                 {
-                    execute(
-                        CMDS[ CMD_SEND_RAW ]
-                        + " PRIVMSG "
-                        + channel
-                        + " :" + Character.toString( (char) 1 )
-                        + "ACTION "
-                        + arg_string
-                        + Character.toString( (char) 1 )
-                    );
+                    String channel = display_manager.getSelectedChannel();
+                    if( channel != null )
+                    {
+                        execute(
+                            CMDS[ CMD_SEND_RAW ]
+                            + " PRIVMSG "
+                            + channel
+                            + " :" + Character.toString( (char) 1 )
+                            + "ACTION "
+                            + arg_string
+                            + Character.toString( (char) 1 )
+                        );
+                    }
+                }
+                break;
+            case CMD_CHANGE_SERVER:
+                {
+                    int id = -1;
+                    boolean problem = false;
+                    try
+                    {
+                        id = Integer.parseInt( args[ 0 ] );
+                        if( ( id < 0 ) || ( id >= remote_machines.size() ) )
+                        {
+                            problem = true;
+                        }
+                        else
+                        {
+                            current_remote_machine = (RemoteMachine) remote_machines.elementAt( id );
+                        }
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        problem = true;
+                    }
+                    
+                    if( problem )
+                    {
+                        display_manager.printlnDebug( "Invalid server id: '" + args[ 0 ] + "'" );
+                        display_manager.printlnDebug( "Try /listservers" );
+                    }
                 }
                 break;
             case CMD_JOIN:
                 if( args != null )
                 {
-                    Server s = (Server) display_manager.getSelectedRemoteMachine();
+                    //Server s = (Server) display_manager.getSelectedRemoteMachine();
+                    Server s = (Server) current_remote_machine;
                     if( s != null )
                     {
                         GITextWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
@@ -536,6 +578,18 @@ public class GeoIRC
                 for( int i = 0; i < fonts.length; i++ )
                 {
                     display_manager.printlnDebug( fonts[ i ].getName() + " -- " + fonts[ i ].getFontName() );
+                }
+                break;
+            case CMD_LIST_SERVERS:
+                {
+                    int n = remote_machines.size();
+                    for( int i = 0; i < n; i++ )
+                    {
+                        display_manager.printlnDebug(
+                            Integer.toString( i ) + ": "
+                            + ((RemoteMachine) remote_machines.elementAt( i )).toString()
+                        );
+                    }
                 }
                 break;
             case CMD_SERVER:
@@ -559,7 +613,8 @@ public class GeoIRC
                         }
                     }
                     Server s = addServer( host, port );
-                    display_manager.addServerWindow( s );
+                    //display_manager.addServerWindow( s );
+                    display_manager.addTextWindow( s.toString(), s.toString() );
                     s.connect( current_nick );
                 }
                 else
@@ -632,7 +687,8 @@ public class GeoIRC
                 break;
             case CMD_SEND_RAW:
                 {
-                    Server s = (Server) display_manager.getSelectedRemoteMachine();
+                    //Server s = (Server) display_manager.getSelectedRemoteMachine();
+                    Server s = (Server) current_remote_machine;
                     if( s != null )
                     {
                         s.send( arg_string );

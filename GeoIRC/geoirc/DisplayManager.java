@@ -108,23 +108,25 @@ public class DisplayManager
 
     protected GITextWindow addTextWindow( String title )
     {
-        return addTextWindow( title, null, null );
+        return addTextWindow( title, null/*, null*/ );
     }
 
     public GITextWindow addTextWindow( String title, String filter )
     {
+        /*
         return addTextWindow( title, filter, null );
     }
     
     // Returns the GITextWindow created.
     protected GITextWindow addTextWindow( String title, String filter, RemoteMachine rm )
     {
+         */
         String actual_title = title;
         if( actual_title == null )
         {
             actual_title = "";
         }
-        GITextWindow text_window = new GITextWindow( this, settings_manager, title, filter, rm );
+        GITextWindow text_window = new GITextWindow( this, settings_manager, title, filter/*, rm */);
 
         if( last_added_frame_x < MAX_NEW_WINDOW_X )
         {
@@ -150,10 +152,12 @@ public class DisplayManager
         return text_window;
     }
     
+    /*
     public GITextWindow addServerWindow( Server s )
     {
         return addTextWindow( s.toString(), s.toString(), s );
     }
+     */
     
     public GITextWindow addChannelWindow( Server s, String channel_name )
     {
@@ -164,8 +168,8 @@ public class DisplayManager
            
         return addTextWindow(
             channel_name + " on " + s.toString(),
-            s.toString() + " AND " + channel_name,
-            s
+            s.toString() + " AND " + channel_name/*,
+            s*/
         );
     }
     
@@ -199,6 +203,7 @@ public class DisplayManager
         return desktop_pane.getSelectedFrame();
     }
     
+    /*
     public RemoteMachine getSelectedRemoteMachine()
     {
         RemoteMachine retval;
@@ -214,6 +219,7 @@ public class DisplayManager
         
         return retval;
     }
+     */
     
     public String getSelectedChannel()
     {
