@@ -41,8 +41,7 @@ public class PythonScriptInterfaceClass implements geoirc.PythonScriptInterface
         SettingsManager settings_manager,
         DisplayManager display_manager,
         VariableManager variable_manager,
-        I18nManager i18n_manager,
-        Hashtable python_methods
+        I18nManager i18n_manager
     )
     {
         this.executor = executor;
@@ -50,7 +49,6 @@ public class PythonScriptInterfaceClass implements geoirc.PythonScriptInterface
         this.display_manager = display_manager;
         this.variable_manager = variable_manager;
         this.i18n_manager = i18n_manager;
-        this.python_methods = python_methods;
         
         python_interpreter = new PythonInterpreter();
         python_interpreter.set( "geoirc", new PyJavaInstance( this ) );
@@ -58,6 +56,7 @@ public class PythonScriptInterfaceClass implements geoirc.PythonScriptInterface
         raw_listeners = new Vector();
         input_listeners = new Vector();
         print_listeners = new Vector();
+        python_methods = new Hashtable();
     }
     
     public int execute( String command )
@@ -84,23 +83,36 @@ public class PythonScriptInterfaceClass implements geoirc.PythonScriptInterface
         return variable_manager.getBoolean( variable, default_ );
     }
     
-    public void registerRawListener( PyObject listener )
+    public void registerRawListener( Object listener_ )
     {
-        raw_listeners.add( listener );
+        try
+        {
+            PyObject listener = (PyObject) listener_;
+            raw_listeners.add( listener );
+        } catch( ClassCastException e ) { }
     }
     
-    public void registerInputListener( PyObject listener )
+    public void registerInputListener( Object listener_ )
     {
-        input_listeners.add( listener );
+        try
+        {
+            PyObject listener = (PyObject) listener_;
+            input_listeners.add( listener );
+        } catch( ClassCastException e ) { }
     }
     
-    public void registerMethod( PyString object, PyString method )
+    public void registerMethod( Object object_, Object method_ )
     {
-        String object_name = object.toString();
-        String reference = object_name + "." + method.toString();
-        PyObject py_object = python_interpreter.get( object_name );
-        PyMethod py_method = (PyMethod) py_object.__findattr__( method );
-        python_methods.put( reference, py_method );
+        try
+        {
+            PyString object = (PyString) object_;
+            PyString method = (PyString) method_;
+            String object_name = object.toString();
+            String reference = object_name + "." + method.toString();
+            PyObject py_object = python_interpreter.get( object_name );
+            PyMethod py_method = (PyMethod) py_object.__findattr__( method );
+            python_methods.put( reference, py_method );
+        } catch( ClassCastException e ) { }
     }
     
     public String [] onRaw( String line_, String qualities_ )
@@ -185,4 +197,32 @@ public class PythonScriptInterfaceClass implements geoirc.PythonScriptInterface
     {
         python_interpreter.execfile( python_file );
     }
+    
+    public void execMethod( String [] args )
+    {
+        PyMethod method = (PyMethod) python_methods.get( args[ 0 ] );
+        if( method != null )
+        {
+            try
+            {
+                if( args.length > 1 )
+                {
+                    method.__call__( new PyString( Util.stringArrayToString( args, 1 ) ) );
+                }
+                else
+                {
+                    method.__call__();
+                }
+            }
+            catch( Exception e )
+            {
+                Util.printException(
+                    display_manager,
+                    e,
+                    i18n_manager.getString( "py method failure" ) );
+            }
+        }
+        
+    }
+    
 }

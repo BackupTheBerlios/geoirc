@@ -84,14 +84,22 @@ public class TclScriptInterfaceClass implements geoirc.TclScriptInterface
         return variable_manager.getBoolean( variable, default_ );
     }
     
-    public void registerRawListener( String proc )
+    public void registerRawListener( Object proc_ )
     {
-        raw_listeners.add( proc );
+        try
+        {
+            String proc = (String) proc_;
+            raw_listeners.add( proc );
+        } catch( ClassCastException e ) { }
     }
     
-    public void registerInputListener( String proc )
+    public void registerInputListener( Object proc_ )
     {
-        input_listeners.add( proc );
+        try
+        {
+            String proc = (String) proc_;
+            input_listeners.add( proc );
+        } catch( ClassCastException e ) { }
     }
     
     public void registerProc( String proc_name )

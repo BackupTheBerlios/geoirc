@@ -13,4 +13,5 @@ package geoirc;
 public interface PythonScriptInterface extends ScriptInterface
 {
     void registerMethod( Object object, Object method );
+    void execMethod( String [] args );
 }
