@@ -1,3 +1,22 @@
 #!/bin/sh
 
-./makeself.sh --bzip2 ../image geoirc-install.run GeoIRC './setup.sh'
+SETUP="setup.`date +%s`"
+
+rm -rf setup.*
+
+echo "Creating temp install image..."
+cp -a ../image $SETUP
+
+echo "Removing CVS related files..."
+rm -rf `find $SETUP -type d|grep CVS`
+
+FILES=`find $SETUP/*|wc -l|sed -e 's/ //g'`
+echo "$FILES files copied."
+
+echo "Creating install script..."
+./makeself.sh --bzip2 $SETUP geoirc-install.run GeoIRC './setup.sh' >/dev/null 2>&1
+
+echo "Cleaning up..."
+rm -rf $SETUP
+
+echo "Done."
