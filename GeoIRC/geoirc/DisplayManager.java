@@ -7,6 +7,8 @@
 package geoirc;
 
 import java.awt.*;
+import java.awt.event.WindowStateListener;
+import java.awt.event.WindowEvent;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -17,7 +19,8 @@ import org.jscroll.widgets.JScrollInternalFrame;
  *
  * @author  Pistos
  */
-public class DisplayManager implements InternalFrameListener
+public class DisplayManager
+    implements InternalFrameListener
 {
     protected SettingsManager settings_manager;
     protected GITextWindow debug_window;
@@ -99,6 +102,7 @@ public class DisplayManager implements InternalFrameListener
         text_window.setBounds( last_added_frame_x, last_added_frame_y, 700, 500 );
         
         windows.add( text_window );
+        printlnDebug( Integer.toString( windows.size() ) + " windows" );
         
         return text_window;
     }
@@ -124,7 +128,10 @@ public class DisplayManager implements InternalFrameListener
     
     public void printlnDebug( String line )
     {
-        debug_window.appendLine( line );
+        if( debug_window != null )
+        {
+            debug_window.appendLine( line );
+        }
     }
     
     public void println( String line, String qualities )
@@ -217,12 +224,21 @@ public class DisplayManager implements InternalFrameListener
         last_activated_frame = e.getInternalFrame();
     }
     
-    public void internalFrameClosed(InternalFrameEvent e) {    }
+    public void internalFrameClosed(InternalFrameEvent e)
+    {
+        windows.remove( e.getSource() );
+        printlnDebug( Integer.toString( windows.size() ) + " windows" );
+        recordDesktopState();
+    }
     public void internalFrameClosing(InternalFrameEvent e) {    }
     public void internalFrameDeactivated(InternalFrameEvent e) {    }
     public void internalFrameDeiconified(InternalFrameEvent e) {    }
     public void internalFrameIconified(InternalFrameEvent e) {    }
-    public void internalFrameOpened(InternalFrameEvent e) {    }
+    public void internalFrameOpened(InternalFrameEvent e)
+    {
+        printlnDebug( Integer.toString( windows.size() ) + " windows" );
+        recordDesktopState();
+    }
 
     public boolean switchToNextWindow( boolean previous )
     {
@@ -259,4 +275,45 @@ public class DisplayManager implements InternalFrameListener
         
         return true;
     }
+    
+    protected void recordDesktopState()
+    {
+        settings_manager.removeNode( "/gui/desktop" );
+        int n = windows.size();
+        JInternalFrame frame;
+        for( int i = 0; i < n; i++ )
+        {
+            frame = (JInternalFrame) windows.elementAt( i );
+            
+            settings_manager.putString(
+                "/gui/desktop/title",
+                frame.getTitle()
+            );
+            settings_manager.putInt(
+                "/gui/desktop/x",
+                frame.getX()
+            );
+            settings_manager.putInt(
+                "/gui/desktop/y",
+                frame.getY()
+            );
+            settings_manager.putInt(
+                "/gui/desktop/height",
+                frame.getHeight()
+            );
+            settings_manager.putInt(
+                "/gui/desktop/width",
+                frame.getWidth()
+            );
+            
+            if( frame instanceof GITextWindow )
+            {
+                settings_manager.putString(
+                    "/gui/desktop/filter",
+                    ((GITextWindow) frame).getFilter()
+                );
+            }
+        }
+    }
+
 }

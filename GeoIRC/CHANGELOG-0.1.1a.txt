@@ -10,3 +10,7 @@ Pistos 2003-07-04
 Fixed input field focus theft problem by making GeoIRC a FocusListener, and
 giving the focus back to the input field when it is stolen by a new window.
 Pistos 2003-07-05
+
+Began adding code to keep the desktop state (window sizes, positions, etc.) in
+the settings node "/gui/desktop/".
+Pistos 2003-07-05
