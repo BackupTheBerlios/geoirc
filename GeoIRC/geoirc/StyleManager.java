@@ -21,6 +21,9 @@ public class StyleManager
     protected StyleContext styles;
     protected String [] style_names;
     
+    protected SettingsManager settings_manager;
+    protected DisplayManager display_manager;
+    
     // No default constructor.
     private StyleManager() { }
     
@@ -29,6 +32,11 @@ public class StyleManager
         DisplayManager display_manager
     )
     {
+        this.settings_manager = settings_manager;
+        this.display_manager = display_manager;
+        
+        Vector v = new Vector();
+        
         styles = new StyleContext();
         style_names = new String[ 0 ];
         
@@ -45,10 +53,9 @@ public class StyleManager
         );
         
         styles.addStyle( "normal", base_style );
+        v.add( "normal" );
         
         // Read in more styles based on highlight settings.
-        
-        Vector v = new Vector();
         
         int i = 0;
         String i_str;
@@ -100,8 +107,8 @@ public class StyleManager
                         try
                         {
                             red = Integer.parseInt( arg.substring( 0, 2 ), 16 );
-                            green = Integer.parseInt( arg.substring( 2, 2 ), 16 );
-                            blue = Integer.parseInt( arg.substring( 4, 2 ), 16 );
+                            green = Integer.parseInt( arg.substring( 2, 4 ), 16 );
+                            blue = Integer.parseInt( arg.substring( 4, 6 ), 16 );
                         }
                         catch( NumberFormatException e )
                         {
@@ -127,8 +134,8 @@ public class StyleManager
                         try
                         {
                             red = Integer.parseInt( arg.substring( 0, 2 ), 16 );
-                            green = Integer.parseInt( arg.substring( 2, 2 ), 16 );
-                            blue = Integer.parseInt( arg.substring( 4, 2 ), 16 );
+                            green = Integer.parseInt( arg.substring( 2, 4 ), 16 );
+                            blue = Integer.parseInt( arg.substring( 4, 6 ), 16 );
                         }
                         catch( NumberFormatException e )
                         {
@@ -157,8 +164,10 @@ public class StyleManager
             
             if( ! valid_format )
             {
-                display_manager.printlnDebug( "Invalid style format string: " + format );
+                System.err.println( "Invalid style format string: " + format );
             }
+            
+            i++;
         }
         
         style_names = (String []) v.toArray( style_names );
