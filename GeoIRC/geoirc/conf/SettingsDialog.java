@@ -8,6 +8,7 @@ package geoirc.conf;
 import geoirc.DisplayManager;
 import geoirc.GeoIRC;
 import geoirc.XmlProcessable;
+import geoirc.util.LayoutUtil;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -199,6 +200,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
 
         getContentPane().setLayout(borderLayout1);
                 
+        toolbar.setFloatable( false );
         addToolBarButtons( toolbar );
         getContentPane().add(toolbar, BorderLayout.NORTH);        
 
@@ -233,13 +235,18 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
 
     private void addToolBarButtons( JToolBar bar )
     {
-        JButton rexpdlg_button = new JButton( "Regular Expression Tester" );
-        
-        
-        rexpdlg_button.addActionListener( new RegexTesterActionAdapter( this ));      
-        bar.add( rexpdlg_button );
+        JButton rexpdlg_button = LayoutUtil.getSafeImageButton(SettingsDialog.class.getResource("images/regexp_wizard.png"), null, "Regular Expression Wizard", 24, 24);
+        JButton ex_settings_button = LayoutUtil.getSafeImageButton(SettingsDialog.class.getResource("images/settings_export.png"), null, "Backup Settings", 24, 24);
+        JButton imp_settings_button = LayoutUtil.getSafeImageButton(SettingsDialog.class.getResource("images/settings_import.png"), null, "Restore Settings", 24, 24);
+               
+        rexpdlg_button.addActionListener( new RegexTesterActionAdapter( this ));        
+              
+        bar.add( ex_settings_button );
+        bar.add( imp_settings_button );
+        bar.addSeparator();        
+        bar.add( rexpdlg_button );        
     }
-    
+        
     /**
      * @param panels
      * @return

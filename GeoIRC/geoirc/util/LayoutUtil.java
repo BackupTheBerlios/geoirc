@@ -5,8 +5,13 @@
  */
 package geoirc.util;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.net.URL;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 /**
  * @author netseeker aka Michael Manske
@@ -66,4 +71,50 @@ public class LayoutUtil
         return getGBC( x, y, width, height, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE );
     }
 
+
+    public static JButton getSafeImageButton( URL icon, String text, String tooltip )
+    {
+        JButton button = null;
+        
+        try
+        {
+            if(text != null )
+            {
+                button = new JButton( text, new ImageIcon( icon ));
+            }
+            else
+            {
+                button = new JButton( new ImageIcon( icon ));
+            }            
+        }
+        catch (NullPointerException e)
+        {
+            if(text != null )
+            {
+                button = new JButton( text );
+            }
+            else
+            {
+                button = new JButton( ".." );
+            }            
+        }
+        
+        if( tooltip != null )
+        {
+            button.setToolTipText( tooltip );
+        }
+        
+        return button;
+    }
+
+
+    public static JButton getSafeImageButton( URL icon, String text, String tooltip, int width, int height )
+    {
+        JButton button = getSafeImageButton( icon, text, tooltip );
+        Dimension dim =  new Dimension( width, height );
+        button.setPreferredSize( dim );
+        button.setMaximumSize( dim );        
+        
+        return button;
+    }
 }

@@ -62,10 +62,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
      * @param valueRules
      * @param name
      */
-    public HighlightingPane(
-        XmlProcessable settings,
-        GeoIRCDefaults valueRules,
-        String name)
+    public HighlightingPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
     {
         super(settings, valueRules, name);
     }
@@ -76,8 +73,8 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
         table = new JValidatingTable(ltm, validation_listener);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setColumnSelectionAllowed( false );
-        table.setRowSelectionAllowed( true );        
+        table.setColumnSelectionAllowed(false);
+        table.setRowSelectionAllowed(true);
         table.setRowHeight(18);
         colorRule = rules.getValueRule("COLOR");
         ltm.setData(getHighlightings());
@@ -108,25 +105,25 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         setUpColorEditor(table);
 
         upButton = new BasicArrowButton(BasicArrowButton.NORTH);
-        downButton = new BasicArrowButton(BasicArrowButton.SOUTH);        
-        
+        downButton = new BasicArrowButton(BasicArrowButton.SOUTH);
+
         upButton.setToolTipText("move selected highlighting one position up");
         downButton.setToolTipText("move selected highlighting one position down");
         upButton.setEnabled(false);
         downButton.setEnabled(false);
-        
+
         addComponent(upButton, 5, 1, 1, 1, 0, 0);
         addComponent(downButton, 5, 4, 1, 1, 0, 0, GridBagConstraints.SOUTHWEST);
-        
+
         upButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent arg0)
             {
                 int pos = table.getSelectedRow();
                 Object target = ltm.getRow(pos - 1);
-                ltm.setRow(pos - 1,ltm.getRow(pos));
+                ltm.setRow(pos - 1, ltm.getRow(pos));
                 ltm.setRow(pos, target);
-                table.setRowSelectionInterval(pos - 1, pos - 1);                
+                table.setRowSelectionInterval(pos - 1, pos - 1);
             }
         });
 
@@ -136,9 +133,9 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             {
                 int pos = table.getSelectedRow();
                 Object target = ltm.getRow(pos + 1);
-                ltm.setRow(pos + 1,ltm.getRow(pos));
+                ltm.setRow(pos + 1, ltm.getRow(pos));
                 ltm.setRow(pos, target);
-                table.setRowSelectionInterval(pos + 1, pos + 1);                
+                table.setRowSelectionInterval(pos + 1, pos + 1);
             }
         });
 
@@ -150,10 +147,10 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             {
                 int pos = table.getSelectedRow();
                 ltm.delRow(pos);
-                if( table.getRowCount() > 0 )
+                if (table.getRowCount() > 0)
                 {
                     table.setRowSelectionInterval(pos - 1, pos - 1);
-                }                                
+                }
             }
         });
 
@@ -164,13 +161,13 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             {
                 int count = table.getRowCount() - 1;
                 ltm.addRow(new Highlighting("", ".*", colorRule.getValue().toString()));
-                table.setRowSelectionInterval(count, count);                
+                table.setRowSelectionInterval(count, count);
             }
         });
 
         addComponent(delButton, 0, 5, 1, 1, 0, 0);
         addComponent(button, 3, 5, 1, 1, 0, 0, GridBagConstraints.NORTHEAST);
-               
+
         addHorizontalLayoutStopper(6, 5);
         addLayoutStopper(0, 6);
 
@@ -185,17 +182,17 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
                 ListSelectionModel lsm = (ListSelectionModel)e.getSource();
                 delButton.setEnabled(!lsm.isSelectionEmpty());
-                
-                if(lsm.isSelectionEmpty())
+
+                if (lsm.isSelectionEmpty())
                 {
-                   upButton.setEnabled(false);
-                   downButton.setEnabled(false); 
+                    upButton.setEnabled(false);
+                    downButton.setEnabled(false);
                 }
                 else
                 {
                     int pos = table.getSelectedRow();
-                    
-                    if( pos == 0 )
+
+                    if (pos == 0)
                     {
                         upButton.setEnabled(false);
                     }
@@ -203,15 +200,15 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
                     {
                         upButton.setEnabled(true);
                     }
-                    
-                    if( pos == table.getRowCount() - 1 )
+
+                    if (pos == table.getRowCount() - 1)
                     {
                         downButton.setEnabled(false);
                     }
                     else
                     {
                         downButton.setEnabled(true);
-                    }                                       
+                    }
                 }
             }
         });
@@ -446,16 +443,16 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             data.remove(row);
             fireTableDataChanged();
         }
-        
+
         public Object getRow(int row)
         {
             return data.get(row);
         }
-        
+
         public void setRow(int row, Object rowdata)
         {
             data.set(row, rowdata);
-            fireTableDataChanged();            
+            fireTableDataChanged();
         }
     }
 
