@@ -52,8 +52,7 @@ public class UserComparator
         switch( sort_order )
         {
             case SORT_ALPHABETICAL_ASCENDING:
-                String[] nicks = Util.getStringsCuttedToEqualLength(u1.getNick(), u2.getNick());
-                comparison = nicks[0].toLowerCase().compareTo( nicks[1].toLowerCase() );
+                comparison = u1.getNick().toLowerCase().compareTo( u2.getNick().toLowerCase() );
                 break;
             case SORT_TIME_SINCE_LAST_ASCENDING:
                 // Reverse sort because these are "times OF", not "times SINCE"
@@ -66,8 +65,7 @@ public class UserComparator
                     comparison = compareMode( u2, u1, channel);
                     if( comparison == 0)
                     {
-                        String[] nicknames = Util.getStringsCuttedToEqualLength(u1.getNick(), u2.getNick());
-                        comparison = nicknames[0].toLowerCase().compareTo( nicknames[1].toLowerCase() );
+                        comparison = u1.getNick().toLowerCase().compareTo( u2.getNick().toLowerCase() );
                     }
                 }
                 else
