@@ -140,10 +140,10 @@ public class Server
         return removed;
     }
     
-    public String [] getChannels()
+    public Channel [] getChannels()
     {
-        String [] retval = new String [ 0 ];
-        return (String []) channels.toArray( retval );
+        Channel [] retval = new Channel [ 0 ];
+        return (Channel []) channels.toArray( retval );
     }
 
     protected void recordChannels()

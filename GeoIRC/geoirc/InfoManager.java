@@ -38,6 +38,8 @@ public class InfoManager
         
         // Temporary line:
         //display_manager.addNewInfoWindow( "Info", "/" );
+        
+        display_manager.activateInfoWindows( "/", tree );
     }
     
     public void addRemoteMachine( RemoteMachine rm )
@@ -46,17 +48,13 @@ public class InfoManager
         root.add( node );
         tree.reload( root );
         tree_inverse.put( rm, node );
+        display_manager.activateInfoWindows(
+            "/" + rm.toString(),
+            new DefaultTreeModel( node )
+        );
     }
     
     public void removeRemoteMachine( DefaultMutableTreeNode node )
-    {
-        removeTreeNode( node );
-    }
-    public void removeChannel( DefaultMutableTreeNode node )
-    {
-        removeTreeNode( node );
-    }
-    public void removeTreeNode( DefaultMutableTreeNode node )
     {
         root.remove( node );
         tree.reload( root );
@@ -68,6 +66,9 @@ public class InfoManager
         root.remove( (DefaultMutableTreeNode) tree_inverse.get( rm ) );
         tree.reload( root );
         tree_inverse.remove( rm );
+        display_manager.deactivateInfoWindows(
+            "/" + rm.toString()
+        );
     }
     
     public void addChannel( Channel c )
@@ -77,14 +78,21 @@ public class InfoManager
             = (DefaultMutableTreeNode) tree_inverse.get( server );
         node.add( new DefaultMutableTreeNode( c ) );
         tree.reload( node );
-        tree_inverse.put( server, node );
+        tree_inverse.put( c, node );
+        display_manager.activateInfoWindows(
+            "/" + c.getServer().toString() + "/" + c.getName(),
+            new DefaultTreeModel( node )
+        );
     }
     
     public void removeChannel( Channel c )
     {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_inverse.get( c );
-        root.remove( node );
+        ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
         tree.reload( node );
         tree_inverse.remove( c );
+        display_manager.deactivateInfoWindows(
+            "/" + c.getServer().toString() + "/" + c.getName()
+        );
     }
 }
