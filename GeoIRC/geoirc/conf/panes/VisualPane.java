@@ -175,23 +175,20 @@ public class VisualPane extends BaseSettingsPanel implements Storable
             path + "alternate background colour");
         JButton chooseColor5 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(alternate_bgcolor, this));
         addComponent(chooseColor5, 2, 11, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
-
         //FORMAT
-        addComponent(new TitlePane("Format"), 0, 12, 5, 1, 0, 0);
         path = "/gui/format/";
-        //nick width
+        //timestamp
+        value = settings_manager.getString(path + "timestamp", timestampRule.getValue().toString());
+        addComponent(new JLabel("Timestamp"), 0, 12, 1, 1, 0, 0);
+        timestamp = new JValidatingTextField(timestampRule.getPattern(), value);
+        save_handler.register(addComponent(timestamp, 1, 12, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
+        //nick width        
         value = settings_manager.getString(path + "maximum nick width", nickWidthRule.getValue().toString());
         addComponent(new JLabel("max. nick width"), 0, 13, 1, 1, 0, 0);
         nick_width = new JValidatingTextField(nickWidthRule.getPattern(), value, 40);
         save_handler.register(addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "maximum nick width");
-        //timestamp
-        value = settings_manager.getString(path + "timestamp", timestampRule.getValue().toString());
-        addComponent(new JLabel("Timestamp"), 0, 14, 1, 1, 0, 0);
-        timestamp = new JValidatingTextField(timestampRule.getPattern(), value);
-        save_handler.register(addComponent(timestamp, 1, 14, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "timestamp");
-
         //INFO WINDOWS
-        addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 15, 5, 1, 0, 0);
+        addComponent(new TitlePane("Info windows, eg. nick names tree"), 0, 14, 5, 1, 0, 0);
         path = "/gui/info windows/";
         int sort_order = settings_manager.getInt(path + "sort order", DEFAULT_SORT_ORDER);
         switch( sort_order )
@@ -204,12 +201,12 @@ public class VisualPane extends BaseSettingsPanel implements Storable
                         break;
         }
         
-        addComponent(new JLabel("Nicknames sort order"), 0, 16, 1, 1, 0, 0);
+        addComponent(new JLabel("Nicknames sort order"), 0, 15, 1, 1, 0, 0);
         String[] sort_options = { "unsorted", "alphabetic ascending", "activity descending" };        
         sortBox = new JComboBox(sort_options);
-        addComponent(sortBox, 1, 16, 2, 1, 0, 0);
+        addComponent(sortBox, 1, 15, 2, 1, 0, 0);
         sortBox.setSelectedItem(value);
-        addLayoutStopper(0, 17);
+        addLayoutStopper(0, 16);
     }
 
     /* (non-Javadoc)
