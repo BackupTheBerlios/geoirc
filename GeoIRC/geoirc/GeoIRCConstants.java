@@ -384,7 +384,10 @@ public interface GeoIRCConstants
     static final int SPLIT_PRIMARY = 0;
     static final int SPLIT_SECONDARY = 1;
     static final int SPLIT_NOT_SPLIT_MEMBER = -1;
-    static final int UNKNOWN_ORIENTATION = JSplitPane.VERTICAL_SPLIT + JSplitPane.HORIZONTAL_SPLIT;
+    // With any luck, UNKNOWN_ORIENTATION != VERTICAL_SPLIT
+    // and UNKNOWN_ORIENTATION != HORIZONTAL_SPLIT,
+    // and this fact remains true in future Java versions!
+    static final int UNKNOWN_ORIENTATION = -1;
     
     static final int NO_PANE_TYPE = -1;
     static final int MAIN_CONTENT_PANE = 0;

@@ -114,7 +114,21 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
     
     public String toString()
     {
-        return title;
+        String retval =
+            "(" + new Integer( pane.hashCode() ).toString() + ") "
+            + "(t" + new Integer( type ).toString() + ") ";
+        if( parent != null )
+        {
+            retval += "(p" + new Integer( parent.getPane().hashCode() ).toString() + ") ";
+        }
+        if( pane.getParent() != null )
+        {
+            retval += "(pp" + new Integer( pane.getParent().hashCode() ).toString() + ") ";
+        }
+        retval += title;
+        
+        return retval;
+            
     }
     
     public void applySettings()

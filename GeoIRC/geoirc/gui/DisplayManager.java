@@ -518,7 +518,7 @@ public class DisplayManager
                 }
                 else
                 {
-                    frame.getContentPane().add( split_pane );
+                    frame.add( split_pane );
                     split_gipw.setParent( partner_gipw );
                 }
                 panes.add( split_gipw );
@@ -1495,7 +1495,8 @@ public class DisplayManager
                     );
                     if( ! path.equals( "" ) )
                     {
-                        addInfoPane( title, path );
+                        GIPaneWrapper gipw = addInfoPane( title, path );
+                        gipw.setSplitRank( split_rank );
                     }
                     break;
                 case TEXT_PANE:
@@ -1505,7 +1506,8 @@ public class DisplayManager
                     );
                     if( ! filter.equals( "" ) )
                     {
-                        addTextPane( title, filter );
+                        GIPaneWrapper gipw = addTextPane( title, filter );
+                        gipw.setSplitRank( split_rank );
                     }
                     break;
             }

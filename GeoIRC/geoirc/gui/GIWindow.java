@@ -71,6 +71,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     /**
      * @return either the data pane of this window, or the SplitPane.
      */
+    /*
     public Container getPane()
     {
         Container retval = pane;
@@ -80,23 +81,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
         }
         return retval;
     }
-    
-    protected void createScrollPane( java.awt.Component contents )
-    {
-        scroll_pane = new JScrollPane( contents );
-        getContentPane().add( scroll_pane );
-    }
-    
-    protected void destroyScrollPane()
-    {
-        getContentPane().remove( scroll_pane );
-        scroll_pane = null;
-    }
-    
-    public JScrollPane getScrollPane()
-    {
-        return scroll_pane;
-    }
+     */
     
     public void setTitle( String new_title )
     {

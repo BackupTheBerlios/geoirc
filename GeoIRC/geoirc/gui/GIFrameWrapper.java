@@ -63,6 +63,19 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         return retval;
     }
     
+    public void add( Container c )
+    {
+        switch( type )
+        {
+            case GEOIRC_FRAME:
+                ((GeoIRC) frame).getContentPane().add( c );
+                break;
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).addPane( c );
+                break;
+        }
+    }
+    
     public String getTitle()
     {
         String retval = null;
