@@ -176,6 +176,7 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
      */
     private Element getKeyboardNode()
     {
+        /*
         try
         {
             Preferences node = (Preferences)settings_manager.getBuffer();
@@ -210,6 +211,8 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         }
 
         return new Element("keyboard");
+         */
+        return settings_manager.getNode( "/keyboard" );
     }
 
     /**

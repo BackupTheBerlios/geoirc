@@ -487,4 +487,7 @@ public interface GeoIRCConstants
     static final int NO_PARTNER_USER_INDEX_SPECIFIED = 0;
     
     static final String ICON_PATH = "icons" + java.io.File.separator;
+    
+    static final boolean CREATE_NODES = true;
+    static final boolean DONT_CREATE_NODES = false;
 }

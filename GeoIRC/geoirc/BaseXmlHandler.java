@@ -473,7 +473,7 @@ public class BaseXmlHandler implements XmlProcessable
 	/* (non-Javadoc)
 	 * @see geoirc.XmlProcessable#getBuffer()
 	 */
-	public Object getBuffer()
+	public Element getBuffer()
 	{
 		return root; 
 	}
@@ -495,5 +495,8 @@ public class BaseXmlHandler implements XmlProcessable
 		return (obj == null) ? false : true;
 	}
 
+        public Element getNode(String absolute_path) {
+            return getSafeElementByPath( absolute_path );
+        }        
 
 }

@@ -58,7 +58,7 @@ public class GeoIRCDefaults
 	private void extractDefaults()
 	{
 		//load default value rules
-		Element root = (Element)this.xmlProcessor.getBuffer();
+		Element root = this.xmlProcessor.getBuffer();
 		List childs = root.getChild("defaults").getChildren();
 		Iterator it = childs.iterator();
 

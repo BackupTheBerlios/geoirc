@@ -61,6 +61,7 @@ import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -83,6 +84,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.jdom.Element;
 import org.jscroll.components.ResizableToolBar;
 
 /**
@@ -321,6 +323,29 @@ public class GeoIRC
         
         // Map input (keystrokes, mouseclicks, etc.)
         
+        List keymappings = settings_manager.getNodes( "/keyboard/keymap/", DONT_CREATE_NODES );
+        Iterator it = keymappings.iterator();
+        Element element;
+        String keystroke;
+        String command;
+        while( it.hasNext() )
+        {
+            element = (Element) it.next();
+            keystroke = element.getAttributeValue( "keystroke" );
+            command = element.getAttributeValue( "command" );
+            if( ! command.equals( "" ) )
+            {
+                /*
+                input_map.put(
+                    KeyStroke.getKeyStroke( keycode, java_modifiers ),
+                    stroke_text
+                );
+                 */
+                action_map.put( keystroke, new GIAction( command, this ) );
+            }
+        }
+        
+        /*
         setupFullKeyMapping( KeyEvent.VK_F1 );
         setupFullKeyMapping( KeyEvent.VK_F2 );
         setupFullKeyMapping( KeyEvent.VK_F3 );
@@ -381,6 +406,7 @@ public class GeoIRC
         setupFullKeyMapping( KeyEvent.VK_8 );
         setupFullKeyMapping( KeyEvent.VK_9 );
         setupFullKeyMapping( KeyEvent.VK_0 );
+         */
 
         // Managers
         
@@ -457,6 +483,7 @@ public class GeoIRC
     
     /* ********************************************************************* */
     
+    /*
     protected void setupKeyMapping( int modifiers, int keycode )
     {
         int java_modifiers;
@@ -516,6 +543,7 @@ public class GeoIRC
         setupKeyMapping( CTRL+SHIFT, keycode );
         setupKeyMapping( CTRL+ALT+SHIFT, keycode );
     }
+     */
     
     public StyleManager getStyleManager()
     {
