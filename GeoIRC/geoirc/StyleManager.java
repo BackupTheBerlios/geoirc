@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.text.*;
 
@@ -14,8 +15,10 @@ import javax.swing.text.*;
  * @author  Pistos
  */
 public class StyleManager
+    implements GeoIRCConstants
 {
-    Style base_style;
+    protected StyleContext styles;
+    protected String [] style_names;
     
     // No default constructor.
     private StyleManager() { }
@@ -25,9 +28,7 @@ public class StyleManager
         DisplayManager display_manager
     )
     {
-        // Setup some default text styles.
-        
-        base_style = StyleContext.getDefaultStyleContext().getStyle(
+        Style base_style = StyleContext.getDefaultStyleContext().getStyle(
             StyleContext.DEFAULT_STYLE
         );
         StyleConstants.setFontFamily(
@@ -39,7 +40,77 @@ public class StyleManager
             settings_manager.getInt( "/gui/text windows/font size", 14 )
         );
         
+        styles.addStyle( "normal", base_style );
+        
         // Read in more styles based on highlight settings.
+        
+        Vector v = new Vector();
+        
+        int i = 0;
+        String i_str;
+        String format;
+        while( GOD_IS_GOOD )
+        {
+            i_str = Integer.toString( i );
+            format = settings_manager.getString(
+                "/gui/text windows/highlighting/" + i_str + "/format",
+                ""
+            );
+            if( format.equals( "" ) )
+            {
+                // No more highlight rules specified.
+                break;
+            }
+            
+            int len = format.length();
+            boolean valid_format = true;
+            for( int c = 0; c < len; c++ )
+            {
+                if( c > len - 2 )
+                {
+                    valid_format = false;
+                    break;
+                }
+                else
+                {
+                    // Duplicate the base style, and adjust the new copy to create the new style.
+                    
+                    Style style = styles.addStyle( format, base_style );
+                    
+                    String arg;
+                    String code = format.substring( c, 2 );
+                    c += 2;
+                    if( code.equals( STYLE_FOREGROUND ) )
+                    {
+                        if( c > len - 6 )
+                        {
+                            valid_format = false;
+                            break;
+                        }
+                        arg = format.substring( c, 6 );
+                        c += 6;
+                        int red = 
+                    }
+                    else if( code.equals( STYLE_BACKGROUND ) )
+                    {
+                    }
+                    else if( code.equals( STYLE_BOLD ) )
+                    {
+                    }
+                    else if( code.equals( STYLE_ITALIC ) )
+                    {
+                    }
+                    else if( code.equals( STYLE_UNDERLINE ) )
+                    {
+                    }
+                }
+            }
+            
+            if( ! valid_format )
+            {
+                display_manager.printlnDebug( "Invalid style format string: " + format );
+            }
+        }
         
         /*
         s = text_pane.addStyle( "blue", style_normal );
@@ -49,8 +120,10 @@ public class StyleManager
 
     public void initializeTextPane( JTextPane text_pane )
     {
-        text_pane.addStyle( "normal", base_style );
-        
+        for( int i = 0; i < styles_names.length; i++ )
+        {
+            text_pane.addStyle( style_names[ i ], styles.getStyle( style_names[ i ] ) );
+        }
     }
     
 }
