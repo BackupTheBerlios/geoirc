@@ -55,7 +55,7 @@ public abstract class InputChangeListener
         propertyChange(evt);
     }
 
-    abstract void valueChanged(Object source);
+    public abstract void valueChanged(Object source);
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
