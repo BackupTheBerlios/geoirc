@@ -37,7 +37,7 @@ public class I18nManager implements GeoIRCConstants
             DEFAULT_COUNTRY
         );
         locale = new Locale( language, country );
-        geoirc_messages = ResourceBundle.getBundle( "geoirc_messages", locale );
+        geoirc_messages = ResourceBundle.getBundle( "lang/geoirc_messages", locale );
 
         formatter = new MessageFormat( "" );
         formatter.setLocale( locale );
