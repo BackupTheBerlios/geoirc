@@ -42,6 +42,7 @@ public class Server
     protected int current_nick_width;
     protected boolean listening_to_channels;
     protected String current_nick;
+    protected boolean expecting_pong;
     
     public Server(
         GeoIRC parent,
@@ -392,6 +393,7 @@ public class Server
 
             String line = "";
             boolean timed_out = false;
+            expecting_pong = false;
             while( ( line != null ) && isConnected() && ( ! reset ) )
             {
                 try
@@ -435,6 +437,15 @@ public class Server
                     catch( java.io.InterruptedIOException e )
                     {
                         timed_out = true;
+                        if( expecting_pong )
+                        {
+                            throw new IOException( i18n_manager.getString( "ping timeout" ) );
+                        }
+                        else
+                        {
+                            expecting_pong = true;
+                            send( "PING GeoIRC" );
+                        }
                     }
                 }
                 catch( IOException e )
@@ -1457,12 +1468,36 @@ public class Server
                             send( "PONG " + pong_arg );
                             display_manager.println(
                                 i18n_manager.getString(
-                                    "pong",
+                                    "pong sent",
                                     new Object [] { Server.this.toString() }
                                 ),
                                 transformed_message[ MSG_QUALITIES ]
                             );
                         }
+                        break;
+                }
+            }
+            else if( irc_code.equals( IRCMSGS[ IRCMSG_PONG ] ) )
+            {
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                            + " " + FILTER_SPECIAL_CHAR + "pong"
+                            + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        expecting_pong = false;
+                        display_manager.println(
+                            i18n_manager.getString(
+                                "pong received",
+                                new Object [] { Server.this.toString() }
+                            ),
+                            transformed_message[ MSG_QUALITIES ]
+                        );
                         break;
                 }
             }

@@ -450,5 +450,5 @@ public interface GeoIRCConstants
     static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
     static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
     
-    static final int DEFAULT_SERVER_TIMEOUT = 10 * 1000; // milliseconds
+    static final int DEFAULT_SERVER_TIMEOUT = 60 * 1000; // milliseconds
 }
