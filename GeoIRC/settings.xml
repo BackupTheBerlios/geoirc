@@ -13,6 +13,23 @@
           <entry key="confirm receive" value="true" />
         </map>
       </node>
+      <node name="connections">
+        <map />
+        <node name="0">
+          <map>
+            <entry key="type" value="class geoirc.Server" />
+          </map>
+        </node>
+      </node>
+      <node name="dcc">
+        <map />
+        <node name="file transfers">
+          <map>
+            <entry key="default download directory" value="./downloads/" />
+            <entry key="confirm receive" value="true" />
+          </map>
+        </node>
+      </node>
       <node name="gui">
         <map>
           <entry key="skin1" value="themes/aqua/gtk/gtkrc" />
@@ -25,11 +42,22 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="Debug" />
-              <entry key="x" value="278" />
-              <entry key="y" value="15" />
+              <entry key="x" value="1" />
+              <entry key="y" value="492" />
+              <entry key="height" value="137" />
+              <entry key="width" value="1005" />
+              <entry key="filter" value="debug" />
+            </map>
+          </node>
+          <node name="1">
+            <map>
+              <entry key="type" value="class geoirc.GITextWindow" />
+              <entry key="title" value="irc.freenode.net" />
+              <entry key="x" value="20" />
+              <entry key="y" value="20" />
               <entry key="height" value="500" />
               <entry key="width" value="700" />
-              <entry key="filter" value="debug" />
+              <entry key="filter" value="irc.freenode.net" />
             </map>
           </node>
         </node>
@@ -59,11 +87,6 @@
           <entry key="nick1" value="GeoIRC_User" />
           <entry key="nick2" value="GeoIRC|User" />
           <entry key="nick3" value="GeoIRCUser" />
-        </map>
-      </node>
-      <node name="test">
-        <map>
-          <entry key="testval" value="ooga" />
         </map>
       </node>
     </node>

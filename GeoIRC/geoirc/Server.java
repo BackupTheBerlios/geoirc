@@ -19,17 +19,6 @@ import javax.swing.*;
  */
 public class Server extends RemoteMachine
 {
-    
-    protected static final int DEFAULT_PORT = 6667;
-
-    protected DisplayManager display_manager;
-    protected String hostname;
-    protected int port;
-    protected GeoIRC geoirc;
-    
-    protected Socket socket;
-    protected PrintWriter out;
-    
     protected ServerReader server_reader;
     
     public Server(
@@ -41,31 +30,7 @@ public class Server extends RemoteMachine
     {
         super( parent, display_manager, hostname, port );
         
-        int i_port = DEFAULT_PORT;
-        
-        try
-        {
-            i_port = Integer.parseInt( port );
-        }
-        catch( NumberFormatException e )
-        {
-            // On error, keep default port.
-        }
-
-        this.hostname = hostname;
-        this.port = i_port;
-        this.display_manager = display_manager;
-        geoirc = parent;
-        
-        socket = null;
-        out = null;
-        
         server_reader = null;
-    }
-    
-    public boolean isConnected()
-    {
-        return ( ( socket != null ) && socket.isConnected() );
     }
     
     // Returns whether a connection has been established.
@@ -107,14 +72,4 @@ public class Server extends RemoteMachine
         return isConnected();
     }
     
-    // Sends a line out to the server, including newline.
-    public void send( String text )
-    {
-        out.println( text );
-    }
-    
-    public String toString()
-    {
-        return ( hostname /* + Integer.toString( port ) */ );
-    }
 }

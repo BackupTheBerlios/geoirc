@@ -63,7 +63,7 @@ public class GeoIRC
     protected static final int MAX_HISTORY_SIZE = 30;
     protected static final int MOST_RECENT_ENTRY = 0;
     
-    protected Vector servers; // of Server objects
+    protected Vector remote_machines;
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
 
@@ -172,11 +172,6 @@ public class GeoIRC
         
         current_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
         
-        /*
-        settings_manager.putString( "/test/testval", "ooga" );
-        settings_manager.saveSettingsToXML();
-         */
-        
         // Map input (keystrokes, mouseclicks, etc.)
         
         setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_UP );
@@ -186,8 +181,7 @@ public class GeoIRC
         
         // Remaining initialization.
         
-        servers = new Vector();
-        //geoirc.execute( "newserver irc.freenode.net 6667" );
+        remote_machines = new Vector();
 
         show();
     }
@@ -247,10 +241,40 @@ public class GeoIRC
     protected Server addServer( String hostname, String port )
     {
         Server s = new Server( this, display_manager, hostname, port );
-        servers.add( s );
+        remote_machines.add( s );
+        recordConnections();
         GITextWindow window = display_manager.addServerWindow( s );
         
         return s;
+    }
+    
+    protected void recordConnections()
+    {
+        settings_manager.removeNode( "/connections/" );
+        int n = remote_machines.size();
+        RemoteMachine rm;
+        String i_str;
+        
+        for( int i = 0; i < n; i++ )
+        {
+            i_str = Integer.toString( i );
+            rm = (RemoteMachine) remote_machines.elementAt( i );
+            
+            settings_manager.putString(
+                "/connections/" + i_str + "/type",
+                rm.getClass().toString()
+            );
+            settings_manager.putString(
+                "/connections/" + i_str + "/hostname",
+                
+            );
+        }
+        
+        String index = Integer.toString( servers.size() - 1 );
+        settings_manager.putString(
+            "/connections/" + index + "/type",
+            s.getClass().toString()
+        );
     }
     
     /** This method is called from within the constructor to

@@ -6,12 +6,25 @@
 
 package geoirc;
 
+import java.io.*;
+import java.net.Socket;
+
 /**
  *
  * @author  Pistos
  */
 public class RemoteMachine
 {
+    protected static final int DEFAULT_PORT = 6667;
+
+    protected DisplayManager display_manager;
+    protected String hostname;
+    protected int port;
+    protected GeoIRC geoirc;
+    
+    protected Socket socket;
+    protected PrintWriter out;
+    
     
     // No default constructor.
     private RemoteMachine() { }
@@ -23,5 +36,50 @@ public class RemoteMachine
         String port
     )
     {
+        int i_port = DEFAULT_PORT;
+        
+        try
+        {
+            i_port = Integer.parseInt( port );
+        }
+        catch( NumberFormatException e )
+        {
+            // On error, keep default port.
+        }
+
+        this.hostname = hostname;
+        this.port = i_port;
+        this.display_manager = display_manager;
+        geoirc = parent;
+        
+        socket = null;
+        out = null;
+        
+    }
+    
+    public boolean isConnected()
+    {
+        return ( ( socket != null ) && socket.isConnected() );
+    }
+    
+    // Sends a line out to the server, including newline.
+    public void send( String text )
+    {
+        out.println( text );
+    }
+    
+    public String toString()
+    {
+        return ( hostname /* + Integer.toString( port ) */ );
+    }
+    
+    public String getHostname()
+    {
+        return hostname;
+    }
+    
+    public int getPort()
+    {
+        return port;
     }
 }
