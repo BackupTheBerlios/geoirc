@@ -15,3 +15,6 @@ Channels are not added internally until an actual JOIN message is received.
 Servers are not added to the info_manager unless the connect method returns
 success.
 Pistos 2003-07-13
+
+Added handling for RPL_NAMREPLY and RPL_ENDOFNAMES messages.
+Pistos 2003-07-13

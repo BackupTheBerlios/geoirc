@@ -96,4 +96,15 @@ public class InfoManager
             "/" + c.getServer().toString() + "/" + c.getName()
         );
     }
+    
+    /**
+     * Clears any current membership list, and reinitializes it
+     * using the provided content of a RPL_NAMREPLY message.
+     */
+    public void setChannelMembership( Channel channel, String namlist )
+    {
+        // Prefixes:
+        // +   voiced
+        // @   channel operator
+    }
 }

@@ -518,6 +518,21 @@ public class Server
                     );
                     sound_manager.check( text, qualities );
                 }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
+                {
+                    /* Example:
+                    :calvino.freenode.net 366 GeoIRC_User #geoirc :End of /NAMES list.
+                     */
+                }
+                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NAMREPLY ] ) )
+                {
+                    /* Example:
+                    :calvino.freenode.net 353 GeoIRC_User = #geoirc :GeoIRC_User GeoBot Fluff @ChanServ 
+                     */
+                    String namlist = Util.stringArrayToString( tokens, 5 );
+                    namlist = namlist.substring( 1 );  // remove leading colon
+                    
+                }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
                 {
                     String channel = tokens[ 3 ];

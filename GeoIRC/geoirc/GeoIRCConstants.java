@@ -83,7 +83,9 @@ public interface GeoIRCConstants
         "NICK",
         "NOTICE",
         "332",
-        "333"
+        "333",
+        "353",     
+        "366"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -94,6 +96,8 @@ public interface GeoIRCConstants
     static final int IRCMSG_NOTICE = 6;
     static final int IRCMSG_RPL_TOPIC = 7;
     static final int IRCMSG_RPL_TOPIC_SETTER = 8;
+    static final int IRCMSG_RPL_NAMREPLY = 9;
+    static final int IRCMSG_RPL_ENDOFNAMES = 10;
     
     static final String [] CTCP_CMDS =
     {
