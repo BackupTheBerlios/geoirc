@@ -1777,6 +1777,7 @@ public class GeoIRC
                 {
                     int location = DOCK_NOWHERE;
                     int window_index = -1;
+                    int host_index = DESKTOP_PANE;
                     
                     for( int i = 0; i < DOCK_STR.length; i++ )
                     {
@@ -1790,12 +1791,16 @@ public class GeoIRC
                     try
                     {
                         window_index = Integer.parseInt( args[ 0 ] );
+                        if( args.length > 2 )
+                        {
+                            host_index = Integer.parseInt( args[ 2 ] );
+                        }
                     }
                     catch( NumberFormatException e ) { }
                     
                     if( ( location != DOCK_NOWHERE ) && ( window_index > -1 ) )
                     {
-                        if( display_manager.dock( location, window_index ) )
+                        if( display_manager.dock( location, window_index, host_index ) )
                         {
                             display_manager.printlnDebug( i18n_manager.getString( "docked" ) );
                         }

@@ -27,6 +27,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -720,17 +721,30 @@ public class DisplayManager
     
     public boolean dock( int location, int window )
     {
+        return dock( location, window, DESKTOP_PANE );
+    }
+    
+    public boolean dock( int location, int window, int host_window )
+    {
         boolean success = false;
         
-        if( ( windows != null )
+        if(
+            ( windows != null )
             && ( windows.size() > 0 )
+            && ( window >= 0 )
             && ( window < windows.size() )
+            && ( host_window < windows.size() )
         )
         {
             GIWindow giw = (GIWindow) windows.elementAt( window );
             GIPane pane = giw.getPane();
+            JComponent partner_pane_window = desktop_pane;
+            if( host_window >= 0 )
+            {
+                partner_pane_window = ((GIWindow) windows.elementAt( host_window )).getPane();
+            }
             
-            if( dock( location, pane ) )
+            if( dock( location, pane, partner_pane_window ) )
             {
                 success = true;
                 giw.dispose();
@@ -740,7 +754,7 @@ public class DisplayManager
         return success;
     }
     
-    protected boolean dock( int location, GIPane pane )
+    protected boolean dock( int location, GIPane pane, JComponent partner )
     {
         boolean success = false;
         
@@ -752,14 +766,20 @@ public class DisplayManager
         )
         {
             JSplitPane split_pane = null;
-            Container desktop_container = desktop_pane.getParent();
+            
+            // partner_container: The Container holding the partner
+            Container partner_container = partner.getParent();
+            
+            // was_primary: In which of the two panes in the SplitPane is the partner?
             boolean was_primary = true;
-            if( desktop_container instanceof JSplitPane )
+            if( partner_container instanceof JSplitPane )
             {
-                JSplitPane sp = (JSplitPane) desktop_container;
-                was_primary = ( sp.getTopComponent() == desktop_pane );
+                JSplitPane sp = (JSplitPane) partner_container;
+                was_primary = ( sp.getTopComponent() == partner );
             }
-            desktop_container.remove( desktop_pane );
+            
+            partner_container.remove( partner );
+            
             switch( location )
             {
                 case DOCK_TOP:
@@ -767,7 +787,7 @@ public class DisplayManager
                         split_pane = new JSplitPane(
                             JSplitPane.VERTICAL_SPLIT,
                             pane,
-                            desktop_pane
+                            partner
                         );
                         split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
                     }
@@ -776,7 +796,7 @@ public class DisplayManager
                     {
                         split_pane = new JSplitPane(
                             JSplitPane.HORIZONTAL_SPLIT,
-                            desktop_pane, 
+                            partner, 
                             pane
                         );
                         split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
@@ -786,7 +806,7 @@ public class DisplayManager
                     {
                         split_pane = new JSplitPane(
                             JSplitPane.VERTICAL_SPLIT,
-                            desktop_pane, 
+                            partner, 
                             pane
                         );
                         split_pane.setDividerLocation( 1.0 - DEFAULT_DOCK_WEIGHT );
@@ -797,7 +817,7 @@ public class DisplayManager
                         split_pane = new JSplitPane(
                             JSplitPane.HORIZONTAL_SPLIT,
                             pane,
-                            desktop_pane
+                            partner
                         );
                         split_pane.setDividerLocation( DEFAULT_DOCK_WEIGHT );
                     }
@@ -806,9 +826,9 @@ public class DisplayManager
                     break;
             }
 
-            if( desktop_container instanceof JSplitPane )
+            if( partner_container instanceof JSplitPane )
             {
-                JSplitPane sp = (JSplitPane) desktop_container;
+                JSplitPane sp = (JSplitPane) partner_container;
                 if( was_primary )
                 {
                     sp.setTopComponent( split_pane );
@@ -820,7 +840,7 @@ public class DisplayManager
             }
             else
             {
-                desktop_container.add( split_pane );
+                partner_container.add( split_pane );
             }
 
             docked_panes.add( pane );
@@ -834,7 +854,7 @@ public class DisplayManager
     
     public void undock( int pane_index )
     {
-        if( ( pane_index < 0 ) || ( pane_index >= panes.size() ) )
+        if( ( pane_index < 0 ) || ( pane_index >= docked_panes.size() ) )
         {
             return;
         }
@@ -1211,6 +1231,8 @@ public class DisplayManager
         JSplitPane split_pane;
         int orientation;
         n = docked_panes.size();
+        Component partner = null;
+        GIPane pane2;
         for( int i = 0; i < n; i++ )
         {
             pane = (GIPane) docked_panes.elementAt( i );
@@ -1229,10 +1251,12 @@ public class DisplayManager
                 if( split_pane.getTopComponent() == pane )
                 {
                     location = DOCK_TOP;
+                    partner = split_pane.getBottomComponent();
                 }
                 else
                 {
                     location = DOCK_BOTTOM;
+                    partner = split_pane.getTopComponent();
                 }
             }
             else if( orientation == JSplitPane.HORIZONTAL_SPLIT )
@@ -1240,10 +1264,12 @@ public class DisplayManager
                 if( split_pane.getTopComponent() == pane )
                 {
                     location = DOCK_LEFT;
+                    partner = split_pane.getBottomComponent();
                 }
                 else
                 {
                     location = DOCK_RIGHT;
+                    partner = split_pane.getTopComponent();
                 }
             }
             
@@ -1254,6 +1280,11 @@ public class DisplayManager
             settings_manager.putInt(
                 setting_path + "/divider location",
                 split_pane.getDividerLocation()
+            );
+            
+            settings_manager.putInt(
+                setting_path + "/partner",
+                panes.indexOf( partner )
             );
         }
     }
@@ -1488,7 +1519,16 @@ public class DisplayManager
             
             if( gip != null )
             {
-                dock( location, gip );
+                int partner_index = settings_manager.getInt(
+                    setting_path + "/partner",
+                    DESKTOP_PANE
+                );
+                JComponent partner = desktop_pane;
+                if( partner_index >= 0 )
+                {
+                    partner = (JComponent) panes.elementAt( partner_index );
+                }
+                dock( location, gip, partner );
                 ( (JSplitPane) gip.getParent() ).setDividerLocation( divider_location );
             }
             

@@ -451,4 +451,6 @@ public interface GeoIRCConstants
     static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
     
     static final int DEFAULT_SERVER_TIMEOUT = 60 * 1000; // milliseconds
+    
+    static final int DESKTOP_PANE = -1;
 }

@@ -32,3 +32,7 @@ Pistos 2003-10-09 and 2003-10-10
 
 Adjusted server inactivity handling.  Added "/misc/server timeout" setting.
 Pistos 2003-10-09
+
+Enhanced /dockwindow command to allow docking of any free window into any other
+free window.
+Pistos 2003-10-10
