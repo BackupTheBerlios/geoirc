@@ -93,6 +93,7 @@ close( OUT );
 open $in, "< temp.xml" or die "Failed to open temp.xml.";
 open( OUT, "> newsettings.xml" ) or die "Failed to open newsettings.xml";
 
+my $ignoring = 0;
 while( <$in> )
 {
     $line = $_;
@@ -129,9 +130,30 @@ while( <$in> )
 	
 	print( OUT "    </keyboard>\n" );
     }
+    elsif( $line =~ m/\s\Sconnections/ )
+    {
+	$ignoring = 1;
+    }
+    elsif( $line =~ m/\s\S\Sconnections/ )
+    {
+	$ignoring = 0;
+	print( OUT "    <connections />\n" );
+    }
+    elsif( $line =~ m/\s\Sdesktop/ )
+    {
+	$ignoring = 1;
+    }
+    elsif( $line =~ m/\s\S\Sdesktop/ )
+    {
+	$ignoring = 0;
+	print( OUT "      <desktop />\n" );
+    }
     else
     {
-	print( OUT $line );
+	if( ! $ignoring )
+	{
+	    print( OUT $line );
+	}
     }
 }
 close( $in );
