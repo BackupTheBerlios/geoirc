@@ -56,3 +56,7 @@ Pistos 2003-10-03
 
 Added an option to settings gui for exporting backups of the current settings
 netseeker 2003-10-06
+
+Added a regular expression wizard to settings gui (appears as toolbar button, within
+highlighting dialog and log files dialog)
+netseeker 2003-10-06
