@@ -878,7 +878,7 @@ public class GeoIRC
                                 )
                                 + text,
                                 s.toString() + " " + args[ 1 ]
-                                + " from=" + current_nick
+                                + " from=$self"
                             );
                         }
                         result = CommandExecutor.EXEC_SUCCESS;

@@ -67,7 +67,10 @@ public class Server
 
                 out.println( "PASS ooga7" );
                 out.println( "NICK " + nick );
-                out.println( "USER PistosGI x x :Pi Gi" );
+                out.println(
+                    "USER "
+                    + settings_manager.getString( "/personal/ident/username", "Pistos" )
+                    + "x x :Pi Gi" );
             }
         }
         catch( UnknownHostException e )

@@ -146,7 +146,7 @@
             <map />
             <node name="0">
               <map>
-                <entry key="filter" value="NOT from=Pistos|GeoIRC" />
+                <entry key="filter" value="not from=$self" />
                 <entry key="regexp" value=".*Pistos.*" />
                 <entry key="format" value="bg0000ff" />
               </map>
