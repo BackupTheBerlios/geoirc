@@ -7,6 +7,8 @@ package geoirc.conf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.TextEvent;
+import java.awt.event.TextListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -21,7 +23,7 @@ import javax.swing.text.Document;
  * @author netseeker aka Michael Manske
  */
 public abstract class InputChangeListener
-    implements PropertyChangeListener, DocumentListener, ActionListener, TableModelListener
+    implements PropertyChangeListener, DocumentListener, ActionListener, TableModelListener, TextListener
 {
     public static String IDENT = "VALUE_CHANGE";
 
@@ -54,8 +56,6 @@ public abstract class InputChangeListener
         PropertyChangeEvent evt = new PropertyChangeEvent(doc, IDENT, "", text);
         propertyChange(evt);
     }
-
-    public abstract void valueChanged(Object source);
 
     /* (non-Javadoc)
      * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
@@ -97,4 +97,16 @@ public abstract class InputChangeListener
         PropertyChangeEvent p_evt = new PropertyChangeEvent(evt.getSource(), IDENT, "0", "1");
         propertyChange(p_evt);
     }
+    /* (non-Javadoc)
+     * @see java.awt.event.TextListener#textValueChanged(java.awt.event.TextEvent)
+     */
+    public void textValueChanged(TextEvent evt)
+    {
+        PropertyChangeEvent p_evt = new PropertyChangeEvent(evt.getSource(), IDENT, "0", "1");
+        propertyChange(p_evt);        
+    }
+
+
+    //abstract
+    public abstract void valueChanged(Object source);
 }

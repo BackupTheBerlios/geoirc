@@ -9,6 +9,7 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.InputChangeListener;
 import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
@@ -23,10 +24,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -51,9 +49,9 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
      * @param valueRules
      * @param name
      */
-    public TriggerPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
+    public TriggerPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
     {
-        super(settings, valueRules, validationListener, name);
+        super(settings, valueRules, validationListener, changeListener, name);
     }
 
     public void initialize()
@@ -181,30 +179,6 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasErrors()
-     */
-    public boolean hasErrors()
-    {
-        Iterator it = ltm.getData().iterator();
-
-        while (it.hasNext())
-        {
-            Trigger trigger = (Trigger)it.next();
-            try
-            {
-                Pattern.compile(trigger.getRegexp());
-            }
-            catch (PatternSyntaxException e)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
     class LittleTableModel extends AbstractTableModel
     {
         final String[] columnNames = { "Filter", "Regular Expression", "Command" };
@@ -312,12 +286,4 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
         }
     }
 
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasChanges()
-     */
-    public boolean hasChanges()
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }

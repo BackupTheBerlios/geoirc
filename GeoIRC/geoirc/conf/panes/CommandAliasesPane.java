@@ -10,6 +10,7 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.InputChangeListener;
 import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
@@ -23,7 +24,6 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -49,9 +49,9 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
      * @param valueRules
      * @param name
      */
-    public CommandAliasesPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
+    public CommandAliasesPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
     {
-        super(settings, valueRules, validationListener, name);
+        super(settings, valueRules, validationListener, changeListener, name);
     }
 
     public void initialize()
@@ -163,22 +163,6 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasErrors()
-     */
-    public boolean hasErrors()
-    {
-        for (Iterator it = ltm.getData().iterator(); it.hasNext();)
-        {
-            CommandAlias ca = (CommandAlias)it.next();
-            if (Util.getDefaultIfNull(ca.getAlias(), "").length() == 0
-                || Util.getDefaultIfNull(ca.getExpansion(), "").length() == 0)
-                return true;
-        }
-
-        return false;
-    }
-
     class LittleTableModel extends AbstractTableModel
     {
         final String[] columnNames = { "Alias", "Command" };
@@ -279,13 +263,5 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
         {
             return this.data;
         }
-    }
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasChanges()
-     */
-    public boolean hasChanges()
-    {
-        // TODO Auto-generated method stub
-        return false;
     }
 }

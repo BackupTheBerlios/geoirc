@@ -9,6 +9,7 @@ import geoirc.SettingsManager;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.InputChangeListener;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
 import geoirc.conf.ValidationListener;
@@ -66,9 +67,9 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
      * @param valueRules
      * @param name
      */
-    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
+    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
     {
-        super(settings, valueRules, validationListener, name);
+        super(settings, valueRules, validationListener, changeListener, name);
         command_field = new JValidatingTextField( validationListener );
         hotkey_field = new JKeyRecordField( validation_listener );
     }
@@ -300,15 +301,6 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasErrors()
-     */
-    public boolean hasErrors()
-    {
-
-        return errorState;
-    }
-
     /**
      * 
      */
@@ -452,15 +444,6 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
     public void changedUpdate(DocumentEvent arg0)
     {
         checkInputState();
-    }
-
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasChanges()
-     */
-    public boolean hasChanges()
-    {
-        // TODO Auto-generated method stub
-        return false;
     }
 
 }

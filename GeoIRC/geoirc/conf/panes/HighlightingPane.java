@@ -9,6 +9,7 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.InputChangeListener;
 import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TableCellColorRenderer;
@@ -28,10 +29,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -63,9 +61,14 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
      * @param valueRules
      * @param name
      */
-    public HighlightingPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
+    public HighlightingPane(
+        XmlProcessable settings,
+        GeoIRCDefaults valueRules,
+        ValidationListener validationListener,
+        InputChangeListener changeListener,
+        String name)
     {
-        super(settings, valueRules, validationListener, name);
+        super(settings, valueRules, validationListener, changeListener, name);
     }
 
     public void initialize()
@@ -73,7 +76,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
         addComponent(new TitlePane("Highlighting"), 0, 0, 3, 1, 0, 0);
 
-        table = new JValidatingTable( ltm, validation_listener );
+        table = new JValidatingTable(ltm, validation_listener);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(18);
         colorRule = rules.getValueRule("COLOR");
@@ -85,11 +88,11 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         comboBox.addItem(STYLE_FOREGROUND);
         sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
-        JBoolRegExTextField valueField = new JBoolRegExTextField( null );
-        table.setValidatingCellEditor( valueField, 0);
+        JBoolRegExTextField valueField = new JBoolRegExTextField(null);
+        table.setValidatingCellEditor(valueField, 0);
 
-        JRegExTextField patternField = new JRegExTextField( null );
-        table.setValidatingCellEditor( patternField, 1);
+        JRegExTextField patternField = new JRegExTextField(null);
+        table.setValidatingCellEditor(patternField, 1);
 
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.getColumnModel().getColumn(0).setPreferredWidth(140);
@@ -142,7 +145,6 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
                 delButton.setEnabled(!lsm.isSelectionEmpty());
             }
         });
-
     }
 
     private List getHighlightings()
@@ -193,29 +195,6 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         }
 
         return true;
-    }
-
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasErrors()
-     */
-    public boolean hasErrors()
-    {
-        Iterator it = ltm.getData().iterator();
-
-        while (it.hasNext())
-        {
-            Highlighting hl = (Highlighting)it.next();
-            try
-            {
-                Pattern.compile(hl.getRegexp());
-            }
-            catch (PatternSyntaxException e)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -452,12 +431,4 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         }
     }
 
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasChanges()
-     */
-    public boolean hasChanges()
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }

@@ -54,6 +54,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private ValidationListener validation_listener;
     private InputChangeListener change_listener;
     private Set invalid_input_components = new HashSet();
+    private Set changed_panes = new HashSet();
 
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
@@ -71,10 +72,14 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
                     if( invalid_input_components.isEmpty() )
                     {
                         Apply.setEnabled( false );
-                        Ok.setEnabled( false );
+                        Ok.setEnabled( false );                                                
                     }                    
 
-                    invalid_input_components.add( source );
+                    if(invalid_input_components.contains(source) == false)
+                    {
+                        invalid_input_components.add( source );
+                        enableErrorDecoratorForSelectedTreeNode( true );
+                    }
                 }
                 else
                 {
@@ -85,11 +90,25 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
                         Apply.setEnabled( true );
                         Ok.setEnabled( true );                        
                     }
+                    
+                    enableErrorDecoratorForSelectedTreeNode( false );
                 }
             }
         };
         
-        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
+        this.change_listener = new InputChangeListener()
+        {
+            public void valueChanged(Object source)
+            {
+                if(changed_panes.contains(source) == false)
+                {
+                    changed_panes.add( source );
+                    enableChangeDecoratorForSelectedTreeNode();
+                }                
+            }
+        };
+        
+        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener, change_listener);
 
         try
         {
@@ -137,10 +156,13 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         Cancel.addActionListener(new SettingsDialog_Cancel_actionAdapter(this));
         ButtonPanel.setLayout(flowLayout1);
 
-        this.getContentPane().setLayout(borderLayout1);
+        getContentPane().setLayout(borderLayout1);
 
         //left category tree
         categoryTree = buildCategoryTree();
+        categoryTree.setShowsRootHandles(true);
+        categoryTree.setScrollsOnExpand(true);
+        categoryTree.setAutoscrolls(true);
         JScrollPane scrollTree = new JScrollPane(categoryTree);
         scrollTree.setAutoscrolls(true);
 
@@ -159,7 +181,8 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         ButtonPanel.add(Cancel, null);
         ButtonPanel.add(Ok, null);
         ButtonPanel.add(Apply, null);
-        //retore window positions
+        
+        //restore window positions
         open();
     }
 
@@ -179,8 +202,6 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         }
 
         JTree categoryTree = new JTree(root);
-        categoryTree.setMinimumSize(new Dimension());
-        categoryTree.setPreferredSize(new Dimension(100, 64));
         categoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         categoryTree.getSelectionModel().addTreeSelectionListener(this);
 
@@ -217,12 +238,12 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     void Cancel_actionPerformed(ActionEvent e)
     {
         close();
-        this.dispose();
+        dispose();
     }
 
     void Ok_actionPerformed(ActionEvent e)
     {
-        this.hide();
+        hide();
         
         saveAllPanelData();
         close();
@@ -232,44 +253,21 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
              ((GeoIRC)parent).applySettings();
         }
                      
-        this.dispose();
+        dispose();
     }
 
     private void saveAllPanelData()
     {
-        Iterator it = this.panels.iterator();
+        //we save only data for panes from which we have received a change event 
+        Iterator it = this.changed_panes.iterator();
 
         while (it.hasNext())
         {
             Object obj = it.next();
-            if (obj instanceof BaseSettingsPanel)
+            if (obj instanceof Storable)
             {
-                savePaneData((BaseSettingsPanel)obj);
-            }
-        }
-    }
-
-    private void savePaneData(BaseSettingsPanel pane)
-    {
-        //store pane itself
-        if (pane instanceof Storable)
-        {
-            Storable store = (Storable)pane;
-            if ( pane.isInitialized() == true && (store.hasChanges() && store.hasErrors() == false) )
-            {
+                Storable store = (Storable)obj;
                 store.saveData();
-            }
-        }
-
-        //store pane's children
-        Iterator it = pane.getChilds().iterator();
-
-        while (it.hasNext())
-        {
-            Object obj = it.next();
-            if (obj instanceof BaseSettingsPanel)
-            {
-                savePaneData((BaseSettingsPanel)obj);
             }
         }
     }
@@ -296,6 +294,70 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             ce.printStackTrace();
         }
+    }
+
+    private synchronized void enableChangeDecoratorForSelectedTreeNode()
+    {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)categoryTree.getLastSelectedPathComponent();
+        if (node == null)
+            return;
+
+        try
+        {
+            BaseSettingsPanel panel = (BaseSettingsPanel)node.getUserObject();
+            String name = panel.getName();            
+            if(name.indexOf("! ") == -1)
+            {
+                int pos = name.indexOf("* ");
+                if(pos == -1)
+                {
+                    panel.setName( "* " + panel.getName());
+                    categoryTree.validate();
+                }                
+            }            
+        }
+        catch (ClassCastException ce)
+        {
+            ce.printStackTrace();
+        }
+    }
+    
+    private synchronized void enableErrorDecoratorForSelectedTreeNode( boolean show )
+    {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)categoryTree.getLastSelectedPathComponent();
+        if (node == null)
+            return;
+
+        try
+        {
+            BaseSettingsPanel panel = (BaseSettingsPanel)node.getUserObject();
+            String name = panel.getName();
+            int pos = name.indexOf("! ");
+            
+            if(show == true)            
+            {                
+                if(pos == -1)
+                {
+                    int change_pos = name.indexOf("* "); 
+                    if(change_pos != -1)
+                    {
+                        name = name.substring(2);
+                    }
+                    
+                    panel.setName( "! " + name);
+                }                
+            }
+            else if( pos != -1)
+            {
+                 panel.setName("* " + name.substring(2));
+            }
+            
+            categoryTree.validate();                        
+        }
+        catch (ClassCastException ce)
+        {
+            ce.printStackTrace();
+        }        
     }
 
     /**
@@ -333,7 +395,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     public void windowClosing(WindowEvent arg0)
     {
         close();
-        this.dispose();
+        dispose();
     }
     public void windowClosed(WindowEvent arg0)
     {}

@@ -12,6 +12,7 @@ import geoirc.conf.ColorChooserHandler;
 import geoirc.conf.ComponentFactory;
 import geoirc.conf.FileChooserHandler;
 import geoirc.conf.GeoIRCDefaults;
+import geoirc.conf.InputChangeListener;
 import geoirc.conf.SettingsSaveHandler;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
@@ -19,10 +20,7 @@ import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
-import java.awt.Component;
 import java.awt.Insets;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -66,9 +64,9 @@ public class VisualPane extends BaseSettingsPanel implements Storable
      * @param valueRules
      * @param name
      */
-    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
+    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
     {
-        super(settings, valueRules, validationListener, name);
+        super(settings, valueRules, validationListener, changeListener, name);
         save_handler = new SettingsSaveHandler(settings);
     }
 
@@ -224,37 +222,6 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         }
         
         return true;
-    }
-
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasErrors()
-     */
-    public boolean hasErrors()
-    {
-        Map components = save_handler.getRegisteredComponents();
-        Iterator it = components.values().iterator();
-
-        while (it.hasNext())
-        {
-            Component comp = (Component)it.next();
-
-            if (comp instanceof JValidatingTextField)
-            {
-                if (((JValidatingTextField)comp).isValid() == false)
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasChanges()
-     */
-    public boolean hasChanges()
-    {
-        // TODO Auto-generated method stub
-        return false;
     }
 
 }

@@ -38,26 +38,37 @@ public class SettingsPanelFactory
         XmlProcessable settings_manager,
         DisplayManager display_manager,
         GeoIRCDefaults valueRules,
-        ValidationListener validation_listener)
+        ValidationListener validation_listener,
+        InputChangeListener change_listener)
     {
         List panels = new ArrayList();
 
         //General Settings
         BaseSettingsPanel genPane =
-            new GeneralPane(settings_manager, valueRules, validation_listener, "General Settings");
-        genPane.addChild(new CommandAliasesPane(settings_manager, valueRules, validation_listener, "Command Aliases"));
+            new GeneralPane(settings_manager, valueRules, validation_listener, change_listener, "General Settings");
+        genPane.addChild(
+            new CommandAliasesPane(
+                settings_manager,
+                valueRules,
+                validation_listener,
+                change_listener,
+                "Command Aliases"));
 
-        genPane.addChild(new HotkeyPane(settings_manager, valueRules, validation_listener, "Keyboard"));
-        genPane.addChild(new TriggerPane(settings_manager, valueRules, validation_listener, "Trigger Settings"));
+        genPane.addChild(
+            new HotkeyPane(settings_manager, valueRules, validation_listener, change_listener, "Keyboard"));
+        genPane.addChild(
+            new TriggerPane(settings_manager, valueRules, validation_listener, change_listener, "Trigger Settings"));
         panels.add(genPane);
         //Connection Settings
-        BaseSettingsPanel conPane = new DCCPane(settings_manager, valueRules, validation_listener, "DCC Settings");
+        BaseSettingsPanel conPane =
+            new DCCPane(settings_manager, valueRules, validation_listener, change_listener, "DCC Settings");
         //conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
         panels.add(conPane);
         //Visual Settings
         BaseSettingsPanel visPane =
-            new VisualPane(settings_manager, valueRules, validation_listener, "Visual Settings");
-        visPane.addChild(new HighlightingPane(settings_manager, valueRules, validation_listener, "Highlighting"));
+            new VisualPane(settings_manager, valueRules, validation_listener, change_listener, "Visual Settings");
+        visPane.addChild(
+            new HighlightingPane(settings_manager, valueRules, validation_listener, change_listener, "Highlighting"));
         panels.add(visPane);
 
         return panels;

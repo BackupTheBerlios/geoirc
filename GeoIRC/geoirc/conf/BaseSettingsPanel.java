@@ -13,11 +13,17 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.text.JTextComponent;
 
 /**
  * @author netseeker aka Michael Manske
@@ -27,10 +33,11 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
     protected XmlProcessable settings_manager = null;
     protected GeoIRCDefaults rules = null;
     protected GridBagLayout layout = new GridBagLayout();
-    protected String name = null;
     protected List childs = new ArrayList();
     protected ValidationListener validation_listener;
-    protected boolean isInitialized = false;
+    private InputChangeListener source_change_listener;
+    private InputChangeListener target_change_listener;
+    private boolean isInitialized = false;
 
     private BaseSettingsPanel()
     {
@@ -38,6 +45,7 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
         setVisible(false);
         setMinimumSize(new Dimension());
         setLayout(layout);
+        setName(getClass().getName());
     }
 
     /**
@@ -47,13 +55,25 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
         XmlProcessable settings,
         GeoIRCDefaults valueRules,
         ValidationListener validationListener,
+        InputChangeListener changeListener,
         String name)
     {
         this();
         this.settings_manager = settings;
         this.rules = valueRules;
-        this.name = name;
+        setName(name);
         this.validation_listener = validationListener;
+        this.target_change_listener = changeListener;
+        this.source_change_listener = new InputChangeListener()
+        {
+            public void valueChanged(Object source)
+            {
+                if (isVisible() == true && isInitialized() == true)
+                {
+                    target_change_listener.valueChanged( this );
+                }
+            }
+        };
     }
 
     /**
@@ -129,6 +149,8 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
 
         layout.setConstraints(c, gbc);
 
+        registerComponentForValueChangeListener(c);
+
         return add(c);
     }
 
@@ -137,10 +159,7 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
      */
     public String toString()
     {
-        if (name != null)
-            return name;
-        else
-            return super.toString();
+        return getName();
     }
 
     /**
@@ -198,6 +217,44 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
     public boolean isInitialized()
     {
         return isInitialized;
+    }
+
+    /**
+     * @param c
+     * TODO: add further java awt/swing component types
+     */
+    private void registerComponentForValueChangeListener(Component c)
+    {
+        //Swing Components
+        if (c instanceof JTextComponent)
+        {
+            ((JTextComponent)c).getDocument().addDocumentListener(source_change_listener);
+        }
+        else if (c instanceof JComboBox)
+        {
+            ((JComboBox)c).addActionListener(source_change_listener);
+        }
+        else if (c instanceof JCheckBox)
+        {
+            ((JCheckBox)c).addActionListener(source_change_listener);
+        }
+        else if (c instanceof JTable)
+        {
+            ((JTable)c).getModel().addTableModelListener(source_change_listener);
+        }
+        else if (c instanceof TextComponent)
+        {
+            ((TextComponent)c).addTextListener(source_change_listener);
+        }
+        //try to register component containers in a recursive way
+        else if (c instanceof JComponent)
+        {
+            Component[] components = ((JComponent)c).getComponents();
+            for (int i = 0; i < components.length; i++)
+            {
+                registerComponentForValueChangeListener(components[i]);
+            }
+        }
     }
 
     //ABSTRACT METHODS

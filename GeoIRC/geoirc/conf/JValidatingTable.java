@@ -145,8 +145,7 @@ public class JValidatingTable extends JTable
             for( Iterator it = target_listeners.iterator(); it.hasNext(); )
             {
                 ((ValidationListener)it.next()).propertyChange( evt );
-            }
-                               
+            }                               
         }
     }
 }

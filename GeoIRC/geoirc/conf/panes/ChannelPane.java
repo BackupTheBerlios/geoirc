@@ -7,6 +7,7 @@ package geoirc.conf.panes;
 
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
+import geoirc.conf.InputChangeListener;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
@@ -67,9 +68,9 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
      * @param valueRules
      * @param name
      */
-    public ChannelPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, String name)
+    public ChannelPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
     {
-        super(settings, valueRules, validationListener, name);
+        super(settings, valueRules, validationListener, changeListener, name);
         typeRule = rules.getValueRule("SERVER_TYPE");
         hostRule = rules.getValueRule("HOSTNAME");
         portRule = rules.getValueRule("PORT");
@@ -512,18 +513,6 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasErrors()
-     */
-    public boolean hasErrors()
-    {
-        if ((hostName.isValid() && hostPort.isValid() || hostName.isEditable() == false)
-            && (channelName.isValid() || channelName.isEditable() == false))
-            return false;
-
-        return true;
-    }
-
     private void applyValuesToListModel(DefaultListModel model, Object values[])
     {
         model.removeAllElements();
@@ -552,14 +541,5 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
         }
 
         addChannelButton.setEnabled(state);
-    }
-
-    /* (non-Javadoc)
-     * @see geoirc.conf.Storable#hasChanges()
-     */
-    public boolean hasChanges()
-    {
-        // TODO Auto-generated method stub
-        return false;
     }
 }

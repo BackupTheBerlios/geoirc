@@ -26,7 +26,7 @@ public class RootPane extends BaseSettingsPanel
 	 */
 	public RootPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
 	{
-		super(settings, valueRules, null, name);
+		super(settings, valueRules, null, null, name);
 	}
 
     public void initialize()

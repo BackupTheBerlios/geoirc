@@ -6,9 +6,9 @@
 package geoirc.conf;
 
 import geoirc.XmlProcessable;
-import geoirc.util.JValidatingTextField;
 
 import java.awt.Component;
+import java.awt.TextComponent;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -111,19 +111,11 @@ public class SettingsSaveHandler
 	 * Saves the value(s) of the given component to the given node path
 	 * @param component component which value should be saved
 	 * @param path node path in preferences
+     * TODO: add further java awt/swing component types
 	 */
 	protected void saveComponent(Component component, String path)
 	{
-		if (component instanceof JValidatingTextField)
-		{
-			JValidatingTextField field = (JValidatingTextField) component;
-			String value = field.getText();
-
-			if (field.isValid() == true && value != null)
-				settings_manager.set(path, value);
-
-		}
-		else if (component instanceof JTextComponent)
+		if (component instanceof JTextComponent)
 		{
 			JTextComponent field = (JTextComponent) component;
 			String value = field.getText();
@@ -156,5 +148,13 @@ public class SettingsSaveHandler
 			JCheckBox box = (JCheckBox)component;
 			settings_manager.setBoolean(path, box.isSelected());
 		}
+        else if(component instanceof TextComponent)
+        {
+            TextComponent field = (TextComponent)component;
+            String value = field.getText();
+            
+            if (value != null)
+                settings_manager.set(path, value);                        
+        }
 	}
 }
