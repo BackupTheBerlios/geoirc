@@ -26,6 +26,9 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import socks.Proxy;
+import socks.SocksSocket;
+
 /**
  *
  * @author  Pistos
@@ -78,7 +81,15 @@ public class Server
                 socket.close();
             }
             
-            socket = new Socket( hostname, port );
+            Proxy proxy = geoirc.getProxy();
+            if( proxy != null )
+            {
+                socket = new SocksSocket( proxy, hostname, port );
+            }
+            else
+            {
+                socket = new Socket( hostname, port );
+            }
             if( socket != null )
             {
                 /*
@@ -133,6 +144,8 @@ public class Server
         
         reset = false;
     }
+    
+    
     
     public void addChannel( String channel_name )
     {

@@ -119,7 +119,7 @@
       <_0 />
     </constants>
   </variables>
-  <connections proxy_server="147.72.93.34" proxy_port="1080">
+  <connections proxy_server="" proxy_port="1080">
     <_0 type="class geoirc.Server" hostname="irc.freenode.net" port="6667">
       <channels>
         <_0 name="#geoirc" />

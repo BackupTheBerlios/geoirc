@@ -87,6 +87,10 @@ import javax.swing.UIManager;
 import org.jdom.Element;
 import org.jscroll.components.ResizableToolBar;
 
+import socks.Proxy;
+import socks.Socks4Proxy;
+import socks.Socks5Proxy;
+
 /**
  *
  * @author  Pistos
@@ -126,6 +130,7 @@ public class GeoIRC
     protected Vector dcc_offers;
     
     protected IdentServer ident_server;
+    protected Proxy proxy;
     
     protected RemoteMachine current_rm;
 
@@ -402,6 +407,29 @@ public class GeoIRC
         setupFullKeyMapping( KeyEvent.VK_9 );
         setupFullKeyMapping( KeyEvent.VK_0 );
          */
+        
+        String host = settings_manager.getString(
+            "/connections/proxy_server",
+            ""
+        );
+        int port = settings_manager.getInt(
+            "/connections/proxy_port", 
+            1080
+        );
+        proxy = null;
+        if( ( ! host.equals( "" ) ) && ( port > 0 ) )
+        {
+            try
+            {
+                proxy = new Socks5Proxy( host, port );
+            }
+            catch( UnknownHostException e )
+            {
+                display_manager.printlnDebug(
+                    i18n_manager.getString( "unknown host", new Object [] { host } )
+                );
+            }
+        }
 
         // Managers
         
@@ -918,6 +946,11 @@ public class GeoIRC
     public void checkAgainstTriggers( String message, String qualities )
     {
         trigger_manager.check( message, qualities );
+    }
+    
+    public Proxy getProxy()
+    {
+        return proxy;
     }
     
     /**

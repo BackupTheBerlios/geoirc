@@ -12,3 +12,6 @@ Pistos 2003-10-23 to 2003-10-29
 
 Changed underlying XML processing code for settings.
 Pistos 2003-10-27 to 2003-10-28
+
+Added support for SOCKS proxies.
+Pistos 2003-10-30
