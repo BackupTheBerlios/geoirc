@@ -74,12 +74,6 @@
         </node>
         <node name="1">
           <map />
-          <node name="channels">
-            <map />
-            <node name="0">
-              <map />
-            </node>
-          </node>
         </node>
       </node>
       <node name="dcc">
@@ -131,15 +125,15 @@
             <node name="0">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc and irc.freenode.net" />
-                <entry key="filter" value="#geoirc and irc.freenode.net" />
+                <entry key="title" value="irc.freenode.net and %raw and not %printed" />
+                <entry key="filter" value="irc.freenode.net and %raw and not %printed" />
               </map>
             </node>
             <node name="1">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="irc.freenode.net and %raw and not %printed" />
-                <entry key="filter" value="irc.freenode.net and %raw and not %printed" />
+                <entry key="title" value="#geoirc on irc.freenode.net" />
+                <entry key="filter" value="irc.freenode.net and #geoirc" />
               </map>
             </node>
             <node name="2">
@@ -156,29 +150,10 @@
                 <entry key="path" value="/" />
               </map>
             </node>
-            <node name="4">
-              <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="irc.quakenet.org and %raw and not %printed" />
-                <entry key="filter" value="irc.quakenet.org and %raw and not %printed" />
-              </map>
-            </node>
           </node>
           <node name="windows">
             <map />
             <node name="0">
-              <map>
-                <entry key="title" value="#geoirc and irc.freenode.net" />
-                <entry key="x" value="0" />
-                <entry key="y" value="0" />
-                <entry key="height" value="779" />
-                <entry key="width" value="1048" />
-                <entry key="state" value="1" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="0" />
-              </map>
-            </node>
-            <node name="1">
               <map>
                 <entry key="title" value="irc.freenode.net and %raw and not %printed" />
                 <entry key="x" value="0" />
@@ -186,20 +161,20 @@
                 <entry key="height" value="779" />
                 <entry key="width" value="1048" />
                 <entry key="state" value="1" />
-                <entry key="selected" value="false" />
-                <entry key="pane" value="1" />
+                <entry key="selected" value="true" />
+                <entry key="pane" value="0" />
               </map>
             </node>
-            <node name="2">
+            <node name="1">
               <map>
-                <entry key="title" value="irc.quakenet.org and %raw and not %printed" />
-                <entry key="x" value="60" />
-                <entry key="y" value="60" />
-                <entry key="height" value="500" />
-                <entry key="width" value="700" />
-                <entry key="state" value="0" />
-                <entry key="selected" value="true" />
-                <entry key="pane" value="4" />
+                <entry key="title" value="#geoirc on irc.freenode.net" />
+                <entry key="x" value="0" />
+                <entry key="y" value="0" />
+                <entry key="height" value="779" />
+                <entry key="width" value="1048" />
+                <entry key="state" value="1" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="1" />
               </map>
             </node>
           </node>

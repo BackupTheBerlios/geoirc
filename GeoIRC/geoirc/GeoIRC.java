@@ -128,12 +128,12 @@ public class GeoIRC
     
     protected IdentServer ident_server;
     
-    protected boolean listening_to_connections;
     protected RemoteMachine current_rm;
 
     protected LinkedList input_history;
     protected int input_history_pointer;
     protected boolean input_saved;
+    protected boolean listening_to_connections;
     
     protected InputMap input_map;
     protected ActionMap action_map;
@@ -165,7 +165,7 @@ public class GeoIRC
         System.out.println(
             "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
         );
-        
+
         listening_to_connections = false;
         
         // Settings.
@@ -242,19 +242,6 @@ public class GeoIRC
         );
         
         // Scripting.
-        
-//        bsf_manager = new BSFManager();
-        
-        /*
-        try
-        {
-            bsf_manager.declareBean( "display_manager", display_manager, DisplayManager.class);
-        }
-        catch( BSFException e )
-        {
-            Util.printException( display_manager, e, "Script error: " );
-        }
-        */
         
         initializeScriptingInterfaces();
         
@@ -588,59 +575,58 @@ public class GeoIRC
     protected void addRemoteMachine( RemoteMachine rm )
     {
         remote_machines.add( rm );
-        if( listening_to_connections )
-        {
-            recordConnections();
-        }
+        recordConnections();
     }
     
     protected void removeRemoteMachine( RemoteMachine rm )
     {
         remote_machines.remove( rm );
         info_manager.removeRemoteMachine( rm );
-        if( listening_to_connections )
-        {
-            recordConnections();
-        }
+        recordConnections();
     }
     
-    protected void recordConnections()
+    public void recordConnections()
     {
-        settings_manager.removeNode( "/connections/" );
-        int n = remote_machines.size();
-        RemoteMachine rm;
-        String i_str;
-        
-        for( int i = 0; i < n; i++ )
+        if( listening_to_connections )
         {
-            i_str = Integer.toString( i );
-            rm = (RemoteMachine) remote_machines.elementAt( i );
-            
-            if( rm instanceof DCCClient )
-            {
-                continue;
-            }
-            
-            if( rm.isConnected() )
-            {
-                settings_manager.putString(
-                    "/connections/" + i_str + "/type",
-                    rm.getClass().toString()
-                );
-                settings_manager.putString(
-                    "/connections/" + i_str + "/hostname",
-                    rm.getHostname()
-                );
-                settings_manager.putInt(
-                    "/connections/" + i_str + "/port",
-                    rm.getPort()
-                );
+            settings_manager.removeNode( "/connections/" );
+            int n = remote_machines.size();
+            RemoteMachine rm;
+            String i_str;
 
-                if( rm instanceof Server )
+            for( int i = 0; i < n; i++ )
+            {
+                i_str = Integer.toString( i );
+                rm = (RemoteMachine) remote_machines.elementAt( i );
+
+                if( rm instanceof DCCClient )
                 {
-                    Server s = (Server) rm;
-                    s.recordChannels();
+                    continue;
                 }
+
+                /*
+                if( rm.isConnected() )
+                {
+                 */
+                    settings_manager.putString(
+                        "/connections/" + i_str + "/type",
+                        rm.getClass().toString()
+                    );
+                    settings_manager.putString(
+                        "/connections/" + i_str + "/hostname",
+                        rm.getHostname()
+                    );
+                    settings_manager.putInt(
+                        "/connections/" + i_str + "/port",
+                        rm.getPort()
+                    );
+
+                    if( rm instanceof Server )
+                    {
+                        Server s = (Server) rm;
+                        s.recordChannels();
+                    }
+                //}
             }
         }
     }
@@ -1178,18 +1164,22 @@ public class GeoIRC
         int result = CommandExecutor.EXEC_GENERAL_FAILURE;
         int space_index = command.indexOf( " " );
         String command_name;
-        String arg_string;
+        String arg_string = null;
+        String [] args = null;
         if( space_index > -1 )
         {
             command_name = command.substring( 0, space_index ).toLowerCase();
             arg_string = command.substring( space_index + 1 );
+            args = Util.tokensToArray( arg_string );
+            if( args == null )
+            {
+                arg_string = null;
+            }
         }
         else
         {
             command_name = command.toLowerCase();
-            arg_string = null;
         }
-        String [] args = Util.tokensToArray( arg_string );
         
         int command_id = UNKNOWN_COMMAND;
         for( int i = 0; i < CMDS.length; i++ )
@@ -1575,6 +1565,10 @@ public class GeoIRC
                             display_manager.printlnDebug(
                                 "First switch to a window associated with a remote machine."
                             );
+                        }
+                        else
+                        {
+                            rm = current_rm;
                         }
                     }
                     
@@ -2379,53 +2373,62 @@ public class GeoIRC
             case CMD_RAW:
                 if( ( args != null ) && ( ! args.equals( "" ) ) )
                 {
-                    current_rm.send( arg_string );
-                    
-                    if( current_rm instanceof Server )
+                    if( current_rm != null )
                     {
-                        Server s = (Server) current_rm;
-                        User u = s.getUserObject();
-                        if( u != null )
+                        current_rm.send( arg_string );
+
+                        if( current_rm instanceof Server )
                         {
-                            u.noteActivity();
-                        }
-                        if( args[ 0 ].toUpperCase().equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
-                        {
+                            Server s = (Server) current_rm;
+                            User u = s.getUserObject();
                             if( u != null )
                             {
-                                s.noteActivity( args[ 1 ], u );
+                                u.noteActivity();
                             }
-                            
-                            String text = Util.stringArrayToString( args, 2 ).substring( 1 );
-                            String qualities =
-                                s.toString() + " " + args[ 1 ]
-                                + " from=" + FILTER_SPECIAL_CHAR + "self";
-                            if(
-                                ( text.charAt( 0 ) == (char) 1 )
-                                && ( text.substring( 1, 7 ).equals( "ACTION" ) )
-                            )
+                            if( args[ 0 ].toUpperCase().equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                             {
-                                text = s.getPadded( "* " + s.getCurrentNick() ) + text.substring( 7, text.length() - 1 );
-                                qualities += " " + FILTER_SPECIAL_CHAR + "action "
-                                    + FILTER_SPECIAL_CHAR + "ctcp";
-                            }
-                            else
-                            {
-                                text = s.getPadded( "<" + s.getCurrentNick() + ">" ) + " " + text;
-                            }
-                            display_manager.println(
-                                getATimeStamp(
-                                    settings_manager.getString(
-                                        "/gui/format/timestamp", ""
-                                    )
+                                if( u != null )
+                                {
+                                    s.noteActivity( args[ 1 ], u );
+                                }
+
+                                String text = Util.stringArrayToString( args, 2 ).substring( 1 );
+                                String qualities =
+                                    s.toString() + " " + args[ 1 ]
+                                    + " from=" + FILTER_SPECIAL_CHAR + "self";
+                                if(
+                                    ( text.charAt( 0 ) == (char) 1 )
+                                    && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                                 )
-                                + text,
-                                qualities
-                            );
+                                {
+                                    text = s.getPadded( "* " + s.getCurrentNick() ) + text.substring( 7, text.length() - 1 );
+                                    qualities += " " + FILTER_SPECIAL_CHAR + "action "
+                                        + FILTER_SPECIAL_CHAR + "ctcp";
+                                }
+                                else
+                                {
+                                    text = s.getPadded( "<" + s.getCurrentNick() + ">" ) + " " + text;
+                                }
+                                display_manager.println(
+                                    getATimeStamp(
+                                        settings_manager.getString(
+                                            "/gui/format/timestamp", ""
+                                        )
+                                    )
+                                    + text,
+                                    qualities
+                                );
+                            }
                         }
+
+                        result = CommandExecutor.EXEC_SUCCESS;
                     }
-                    
-                    result = CommandExecutor.EXEC_SUCCESS;
+                    else
+                    {
+                        display_manager.printlnDebug(
+                            "First switch to a window associated with a server."
+                        );
+                    }
                 }
                 break;
             case CMD_SET:

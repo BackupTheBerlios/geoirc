@@ -425,6 +425,8 @@ public class Server
             
             if( ( ! isConnected() ) || reset )
             {
+                geoirc.recordConnections();
+                
                 if( ! isConnected() )
                 {
                     display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
