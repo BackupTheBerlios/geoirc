@@ -81,7 +81,8 @@ public interface GeoIRCConstants
         "loadpy",
         "execpymethod",
         "listprocesses",
-        "killprocess"
+        "killprocess",
+        "execwithwindow"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -93,6 +94,7 @@ public interface GeoIRCConstants
     public static final int CMD_EXEC = 40;
     public static final int CMD_EXEC2 = 43;
     public static final int CMD_EXEC_PY_METHOD = 53;
+    public static final int CMD_EXEC_WITH_WINDOW = 56;
     public static final int CMD_EXIT = 31;
     public static final int CMD_FLOAT_WINDOW = 33;
     public static final int CMD_FOCUS_ON_INPUT_FIELD = 26;
@@ -306,7 +308,4 @@ public interface GeoIRCConstants
     static final int DEFAULT_SORT_ORDER = SORT_ALPHABETICAL_ASCENDING;
     
     static final int PROCESS_WATCH_INTERVAL = 1000;  // millseconds
-    
-    static final int EXEC_STANDARD = 0;  // stdin and stdout piped.
-    static final int EXEC_COMMAND = 1;  // stdout of process is executed.
 }

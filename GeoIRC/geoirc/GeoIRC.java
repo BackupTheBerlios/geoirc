@@ -1046,13 +1046,13 @@ public class GeoIRC
                 break;
             case CMD_EXEC:
             case CMD_EXEC2:
+            case CMD_EXEC_WITH_WINDOW:
                 if( arg_string != null )
                 {
                     try
                     {
                         GIProcess gip = new GIProcess(
-                            display_manager, processes, arg_string, this,
-                            (command_id == CMD_EXEC) ? EXEC_STANDARD : EXEC_COMMAND
+                            display_manager, processes, arg_string, this, command_id
                         );
                     }
                     catch( IOException e )
@@ -1067,7 +1067,7 @@ public class GeoIRC
                 {
                     display_manager.printlnDebug(
                         "/"
-                        + CMDS[ CMD_EXEC2 ]
+                        + CMDS[ command_id ]
                         + " <program to execute, with any arguments>"
                     );
                 }

@@ -38,7 +38,14 @@ public class GIProcess implements GeoIRCConstants
         throws IOException
     {
         this.exec_string = exec_string;
-        this.executor = executor;
+        if( exec_type == CMD_EXEC2 )
+        {
+            this.executor = executor;
+        }
+        else
+        {
+            this.executor = null;
+        }
         
         pid = next_pid;
         if( next_pid == Integer.MAX_VALUE )
@@ -52,7 +59,10 @@ public class GIProcess implements GeoIRCConstants
         
         processes.put( new Integer( pid ), this );
         
-        executor.execute( "newwindow process=" + getPIDString() );
+        if( exec_type == CMD_EXEC_WITH_WINDOW )
+        {
+            executor.execute( "newwindow process=" + getPIDString() );
+        }
         
         Runtime rt = Runtime.getRuntime();
         process = rt.exec( exec_string );
@@ -66,13 +76,13 @@ public class GIProcess implements GeoIRCConstants
         BufferedReader err = new BufferedReader( new InputStreamReader( stderr ) );
 
         new InputStreamReaderThread(
-            executor,
+            this.executor,
             display_manager,
             out,
             this
         ).start();
         new InputStreamReaderThread(
-            executor,
+            this.executor,
             display_manager,
             err,
             this
