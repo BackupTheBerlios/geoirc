@@ -81,9 +81,6 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.python.core.PyMethod;
-import org.python.core.PyString;
-
 /**
  *
  * @author  Pistos
