@@ -26,9 +26,9 @@ public class GITreeCellRenderer
     
     public GITreeCellRenderer()
     {
-        regular_icon = new ImageIcon( "regular_icon.png" );
-        voiced_icon = new ImageIcon( "voiced_icon.png", "voiced" );
-        op_icon = new ImageIcon( "op_icon.png", "operator" );
+        regular_icon = new ImageIcon( "regular_icon.gif" );
+        voiced_icon = new ImageIcon( "voiced_icon.gif", "voiced" );
+        op_icon = new ImageIcon( "op_icon.gif", "operator" );
     }
     
     public Component getTreeCellRendererComponent(
