@@ -63,17 +63,6 @@
             <entry key="hostname" value="tolkien.freenode.net" />
             <entry key="port" value="6667" />
           </map>
-          <node name="channels">
-            <map />
-            <node name="0">
-              <map>
-                <entry key="name" value="#geoirc" />
-              </map>
-            </node>
-          </node>
-        </node>
-        <node name="1">
-          <map />
         </node>
       </node>
       <node name="dcc">
@@ -109,14 +98,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="2" />
+                <entry key="pane" value="4" />
                 <entry key="location" value="2" />
                 <entry key="divider location" value="825" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="5" />
                 <entry key="location" value="1" />
                 <entry key="divider location" value="990" />
               </map>
@@ -141,11 +130,25 @@
             <node name="2">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="from=NickServ and %self or NickServ and from=%self" />
+                <entry key="filter" value="from=NickServ and %self or NickServ and from=%self" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="from=Striker`Work and %self or Striker`Work and from=%self" />
+                <entry key="filter" value="from=Striker`Work and %self or Striker`Work and from=%self" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="%debug" />
                 <entry key="filter" value="%debug" />
               </map>
             </node>
-            <node name="3">
+            <node name="5">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
@@ -177,6 +180,30 @@
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="title" value="from=NickServ and %self or NickServ and from=%self" />
+                <entry key="x" value="60" />
+                <entry key="y" value="60" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="2" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="title" value="from=Striker`Work and %self or Striker`Work and from=%self" />
+                <entry key="x" value="80" />
+                <entry key="y" value="80" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="3" />
               </map>
             </node>
           </node>
@@ -314,6 +341,13 @@
           </map>
         </node>
         <node name="1">
+          <map>
+            <entry key="filter" value="%debug" />
+            <entry key="regexp" value=".*" />
+            <entry key="file" value="./logs/debug.log" />
+          </map>
+        </node>
+        <node name="2">
           <map />
         </node>
       </node>

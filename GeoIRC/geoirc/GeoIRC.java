@@ -168,6 +168,13 @@ public class GeoIRC
             ( settings_filepath == null ) ? DEFAULT_SETTINGS_FILEPATH : settings_filepath
         );
         settings_manager.loadSettingsFromXML();
+
+        i18n_manager = new I18nManager( settings_manager );
+
+        System.out.println( i18n_manager.getString( "version string", new Object [] { GEOIRC_VERSION } ) );
+        System.out.println( i18n_manager.getString( "copyright" ) );
+        System.out.println( i18n_manager.getString( "gpl1" ) );
+        System.out.println( i18n_manager.getString( "gpl2" ) );
         
         variable_manager = new VariableManager();
         
@@ -214,43 +221,10 @@ public class GeoIRC
 
         applySettings();
         
-        /*
-        System.out.println(
-            "GeoIRC " + GEOIRC_VERSION
-        );
-        System.out.println(
-            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
-        );
-        System.out.println(
-            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-        );
-        System.out.println(
-            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-        );
-         */
-        System.out.println( i18n_manager.getString( "version string", new Object [] { GEOIRC_VERSION } ) );
-        System.out.println( i18n_manager.getString( "copyright" ) );
-        System.out.println( i18n_manager.getString( "gpl1" ) );
-        System.out.println( i18n_manager.getString( "gpl2" ) );
-        
         display_manager.restoreDesktopState();
         
         info_manager = new InfoManager( settings_manager, display_manager, i18n_manager );
         
-        /*
-        display_manager.printlnDebug(
-            "GeoIRC " + GEOIRC_VERSION
-        );
-        display_manager.printlnDebug(
-            "Copyright (C) 2003 Alex Reyes (\"Pistos\")"
-        );
-        display_manager.printlnDebug(
-            "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-        );
-        display_manager.printlnDebug(
-            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-        );
-         */
         display_manager.printlnDebug( i18n_manager.getString( "version string", new Object [] { GEOIRC_VERSION } ) );
         display_manager.printlnDebug( i18n_manager.getString( "copyright" ) );
         display_manager.printlnDebug( i18n_manager.getString( "gpl1" ) );

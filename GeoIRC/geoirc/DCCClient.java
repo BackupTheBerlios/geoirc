@@ -91,24 +91,51 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                         break;
                     case DCC_SEND:
                     {
-                        File file = new File( arg1 );
-                        String filename = file.getName();
+                        String directory = 
+                            settings_manager.getString(
+                                "/dcc/download directory",
+                                "./downloads"
+                            );
+                        if( ! directory.endsWith( File.separator ) )
+                        {
+                            directory += File.separator;
+                        }
+                        
+                        // Use only the filename if a full path is passed.
+                        int index = arg1.lastIndexOf( "/" ) + 1;
+                        index = arg1.lastIndexOf( "\\", index ) + 1;
+                        String filename = arg1.substring( index );
                         problem = true;
                         if( ! filename.equals( "" ) )
                         {
+                            File dir = new File( directory );
+                            if( ! dir.exists() )
+                            {
+                                if( ! dir.mkdirs() )
+                                {
+                                    break;
+                                }
+                            }
+                            
+                            File file = new File( directory + filename );
                             int i = 0;
                             while( file.exists() )
                             {
                                 i++;
                                 file = new File( filename + "." + Integer.toString( i ) );
                             }
-
+                            
                             if( file.createNewFile() )
                             {
                                 reader = new DCCSendReader(
+                                    /*
                                     new BufferedReader( new InputStreamReader(
                                         socket.getInputStream()
                                     ) ),
+                                     */
+                                    new InputStreamReader(
+                                        socket.getInputStream()
+                                    ),
                                     file, 
                                     filesize
                                 );
@@ -141,6 +168,12 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         }
         catch( IOException e )
         {
+            display_manager.printlnDebug(
+                i18n_manager.getString(
+                    "io exception 10",
+                    new Object [] { arg1 }
+                )
+            );
             display_manager.printlnDebug( e.getMessage() );
         }
         
@@ -289,7 +322,9 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         extends RemoteMachineReader
         implements GeoIRCConstants
     {
-        protected BufferedReader in;
+        //protected BufferedReader in;
+        protected InputStreamReader in;
+        protected java.io.OutputStream outstream;
         File file;
         int filesize;
 
@@ -297,7 +332,8 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         private DCCSendReader() { }
 
         public DCCSendReader(
-            BufferedReader in,
+            //BufferedReader in,
+            InputStreamReader in,
             File file,
             int filesize
         )
@@ -323,17 +359,38 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
             BufferedWriter file_out = null;
             try
             {
+                display_manager.printlnDebug(
+                    i18n_manager.getString(
+                        "dcc send starting",
+                        new Object [] { file.getName() }
+                    )
+                );
                 file_out = new BufferedWriter( new FileWriter( file ) );
+                outstream = socket.getOutputStream();
                 
-                while( ( character != -1 ) && ( isConnected() ) && ( ! reset ) )
+                byte [] bytes_written_;
+                while(
+                    ( character != -1 )
+                    && isConnected()
+                    && ( ! reset )
+                    && ( bytes_written < filesize )
+                )
                 {
                     try
                     {
+                        if( ! in.ready() )
+                        {
+                            // Report progress to sender, as per DCC SEND protocol.
+                            
+                            bytes_written_ = Util.intToNetworkByteOrder( bytes_written );
+                            outstream.write( bytes_written_ );
+                        }
                         character = in.read();
 
                         if( character != -1 )
                         {
                             file_out.write( character );
+                            bytes_written++;
                         }
                     }
                     catch( IOException e )
@@ -369,6 +426,9 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                         }
                     }
                 }
+                
+                bytes_written_ = Util.intToNetworkByteOrder( bytes_written );
+                outstream.write( bytes_written_ );
 
                 if( ( ! isConnected() ) || reset )
                 {
@@ -382,6 +442,14 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                 
                 file_out.flush();
                 file_out.close();
+                
+                int percentage = (int) (( (double) bytes_written / (double) filesize ) * 100.0);
+                display_manager.printlnDebug(
+                    i18n_manager.getString(
+                        "dcc send done",
+                        new Object [] { file.getAbsolutePath(), new Integer( percentage ) }
+                    )
+                );
             }
             catch( IOException e )
             {

@@ -349,4 +349,14 @@ public class Util implements GeoIRCConstants
             + remote_nick + " and "
             + "from=" + FILTER_SPECIAL_CHAR + "self";
     }
+    
+    public static byte [] intToNetworkByteOrder( int i )
+    {
+        byte buffer [] = new byte[ 4 ];
+        buffer[ 0 ] = (byte) ( (i >> 24) & 0xff );
+        buffer[ 1 ] = (byte) ( (i >> 16) & 0xff );
+        buffer[ 2 ] = (byte) ( (i >> 8)  & 0xff );
+        buffer[ 3 ] = (byte) (  i        & 0xff );
+        return buffer;
+    }
 }

@@ -1517,6 +1517,8 @@ public class Server
                         + Server.this.toString()
                     );
                 }
+                
+                String padded_nick = getPadded( nick );
 
                 if( text.length() > 0 )
                 {
@@ -1684,18 +1686,12 @@ public class Server
                     else if( stage == STAGE_PROCESSING )
                     {
                         words = Util.tokensToArray( text );
-                        text = i18n_manager.getString(
-                            "privmsg",
-                            new Object [] { nick, text }
-                        );
+                        text = getPadded( "<" + nick + ">" ) + " " + text;
                     }
                 }
                 else if( stage == STAGE_PROCESSING )
                 {
-                    text = i18n_manager.getString(
-                        "privmsg",
-                        new Object [] { nick, "" }
-                    );
+                    text = getPadded( "<" + nick + ">" );
                 }
 
                 switch( stage )
