@@ -2399,13 +2399,8 @@ public class GeoIRC
                     {
                         path = "/";
                     }
-                    GIWindow window = display_manager.addInfoWindow( "Info", path );
-                    if( window != null )
-                    {
-                        info_manager.activateInfoPanes( path );
-                        
-                        result = CommandExecutor.EXEC_SUCCESS;
-                    }
+                    display_manager.addInfoWindow( "Info", path );
+                    info_manager.activateInfoPanes( path );
                 }
                 break;
             case CMD_NEW_SERVER:
@@ -2447,11 +2442,7 @@ public class GeoIRC
             case CMD_NEW_WINDOW:
                 if( args != null )
                 {
-                    GIWindow window = display_manager.addTextWindow( arg_string, arg_string );
-                    if( window != null )
-                    {
-                        result = CommandExecutor.EXEC_SUCCESS;
-                    }
+                    display_manager.addTextWindow( arg_string, arg_string );
                 }
                 else
                 {

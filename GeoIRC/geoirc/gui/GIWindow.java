@@ -25,6 +25,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     protected SettingsManager settings_manager;
     protected Container pane;
     protected GIPaneWrapper pane_wrapper;
+    protected GIFrameWrapper gifw;
     
     // No default constructor
     private GIWindow() { }
@@ -50,6 +51,7 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
 
         pane = null;
         pane_wrapper = null;
+        gifw = null;
         
         selectFrame();
     }
@@ -94,5 +96,15 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
             display_manager.printlnDebug( pve.getMessage() );
         }
         setVisible( true );
+    }
+    
+    public void setFrameWrapper( GIFrameWrapper gifw )
+    {
+        this.gifw = gifw;
+    }
+    
+    public GIFrameWrapper getFrameWrapper()
+    {
+        return gifw;
     }
 }

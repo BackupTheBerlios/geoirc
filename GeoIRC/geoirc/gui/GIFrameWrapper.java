@@ -9,6 +9,7 @@ package geoirc.gui;
 import geoirc.GeoIRC;
 import geoirc.gui.GIWindow;
 import java.awt.Container;
+import java.beans.PropertyVetoException;
 
 /**
  * A wrapper for GIWindows and GeoIRC frames, such that they can be treated
@@ -121,18 +122,15 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
         }
     }
     
-    public boolean close()
+    public boolean close() throws PropertyVetoException
     {
         boolean success = false;
         
         switch( type )
         {
             case GIWINDOW_FRAME:
-                try
-                {
-                    ((GIWindow) frame).setClosed( true );
-                    success = true;
-                } catch( java.beans.PropertyVetoException e ) { }
+                ((GIWindow) frame).setClosed( true );
+                success = true;
                 break;
         }
         
@@ -150,5 +148,69 @@ public class GIFrameWrapper implements geoirc.GeoIRCConstants
                 ((GIExternalWindow) frame).selectFrame();
                 break;
         }
+    }
+    
+    public void maximize() throws PropertyVetoException
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).setMaximum( true );
+                break;
+        }
+    }
+    
+    public void minimize() throws PropertyVetoException
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).setIcon( true );
+                break;
+        }
+    }
+    
+    public void setSize( int width, int height ) throws PropertyVetoException
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).setSize( width, height );
+                break;
+        }
+    }
+    
+    public void setLocation( int x, int y ) throws PropertyVetoException
+    {
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                ((GIWindow) frame).setSize( x, y );
+                break;
+        }
+    }
+    
+    public boolean isMinimized()
+    {
+        boolean retval = false;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).isIcon();
+                break;
+        }
+        return retval;
+    }
+    
+    public boolean isMaximized()
+    {
+        boolean retval = false;
+        switch( type )
+        {
+            case GIWINDOW_FRAME:
+                retval = ((GIWindow) frame).isMaximum();
+                break;
+        }
+        return retval;
     }
 }
