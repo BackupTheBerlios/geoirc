@@ -105,19 +105,24 @@ public class CommandAlias implements GeoIRCConstants
 	 */
     public String getParamString()
     {
+		String buffer = expansion;
+		
 		for ( int i = 0; i < CMDS.length; i++ )
 		{
-			if( expansion.startsWith(CMDS[i] + " ") == true)
+			if( buffer.startsWith(CMDS[i] + " ") == true)
 			{
-				return expansion.substring(CMDS[i].length());
+				buffer = buffer.substring(CMDS[i].length());
 			}
 		}
-		
-		int pos = expansion.indexOf(" ");
-		
-		if( pos != -1 )
-			return expansion.substring(expansion.indexOf(" "));
-		else return null;    
+		for ( int i = 0; i < IRCMSGS.length; i++ )
+		{
+			if( buffer.indexOf(" " +  IRCMSGS[i] + " ") != -1)
+			{
+				buffer = buffer.substring(IRCMSGS[i].length() + 2);
+			}
+		}		
+	
+		return buffer;
     }
     
     /**
