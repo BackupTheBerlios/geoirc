@@ -44,3 +44,5 @@ Added max nick width and nickname tree sort order settings
 to visual settings dialog
 netseeker 2003-09-17
 
+Adjusted tab completion for commands to complete until ambiguity.
+Pistos 2003-09-17

@@ -1266,16 +1266,44 @@ public class GeoIRC
                                 }
                                 else if( commands_found.size() == 1 )
                                 {
-                                    replacement_text = "/" + (String) commands_found.elementAt( 0 );
+                                    replacement_text = "/" + (String) commands_found.elementAt( 0 ) + " ";
                                 }
                                 else
                                 {
+                                    int word_len = word.length();
+                                    int matches_up_to = ((String) commands_found.elementAt( 0 )).length();
+                                    String cmd;
+                                    String prev_cmd;
                                     for( int i = 0, n = commands_found.size(); i < n; i++ )
                                     {
+                                        cmd = (String) commands_found.elementAt( i );
+                                        if( i > 0 )
+                                        {
+                                            prev_cmd = (String) commands_found.elementAt( i - 1 );
+                                            for( int j = matches_up_to; j >= word_len; j-- )
+                                            {
+                                                if( j > prev_cmd.length() )
+                                                {
+                                                    j = prev_cmd.length();
+                                                }
+                                                if( j > cmd.length() )
+                                                {
+                                                    j = cmd.length();
+                                                }
+                                                if( cmd.substring( 0, j ).equals( prev_cmd.substring( 0, j ) ) )
+                                                {
+                                                    matches_up_to = j;
+                                                    break;
+                                                }
+                                            }
+                                        }
                                         display_manager.printlnDebug(
-                                            "/" + (String) commands_found.elementAt( i )
+                                            "/" + cmd
                                         );
                                     }
+                                    
+                                    replacement_text =
+                                        "/" + ((String) commands_found.elementAt( 0 )).substring( 0, matches_up_to );
                                 }
                             }
                             else if( current_rm instanceof Server )
