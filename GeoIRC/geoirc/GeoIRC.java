@@ -1048,11 +1048,12 @@ public class GeoIRC
             case CMD_EXEC2:
                 if( arg_string != null )
                 {
-                    
                     try
                     {
-                        CommandExecutor executor = (command_id == CMD_EXEC) ? null : this;
-                        GIProcess gip = new GIProcess( display_manager, processes, arg_string, executor );
+                        GIProcess gip = new GIProcess(
+                            display_manager, processes, arg_string, this,
+                            (command_id == CMD_EXEC) ? EXEC_STANDARD : EXEC_COMMAND
+                        );
                     }
                     catch( IOException e )
                     {
@@ -1146,6 +1147,18 @@ public class GeoIRC
                         display_manager.printlnDebug(
                             "First switch to a window associated with a server."
                         );
+                    }
+                }
+                break;
+            case CMD_KILL_PROCESS:
+                if( args != null )
+                {
+                    boolean problem = true;
+                    try
+                    {
+                    }
+                    catch( NumberFormatException e )
+                    {
                     }
                 }
                 break;

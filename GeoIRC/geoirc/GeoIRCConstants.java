@@ -306,4 +306,7 @@ public interface GeoIRCConstants
     static final int DEFAULT_SORT_ORDER = SORT_ALPHABETICAL_ASCENDING;
     
     static final int PROCESS_WATCH_INTERVAL = 1000;  // millseconds
+    
+    static final int EXEC_STANDARD = 0;  // stdin and stdout piped.
+    static final int EXEC_COMMAND = 1;  // stdout of process is executed.
 }

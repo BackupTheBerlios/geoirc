@@ -32,16 +32,13 @@ public class GIProcess implements GeoIRCConstants
         DisplayManager display_manager,
         Hashtable processes,
         String exec_string,
-        CommandExecutor executor
+        CommandExecutor executor,
+        int exec_type
     )
         throws IOException
     {
         this.exec_string = exec_string;
         this.executor = executor;
-        Runtime rt = Runtime.getRuntime();
-        process = rt.exec( exec_string );
-        
-        stdin = new PrintWriter( process.getOutputStream() );
         
         pid = next_pid;
         if( next_pid == Integer.MAX_VALUE )
@@ -55,11 +52,13 @@ public class GIProcess implements GeoIRCConstants
         
         processes.put( new Integer( pid ), this );
         
-        if( executor != null )
-        {
-            executor.execute( "newwindow process=" + getPIDString() );
-        }
-
+        executor.execute( "newwindow process=" + getPIDString() );
+        
+        Runtime rt = Runtime.getRuntime();
+        process = rt.exec( exec_string );
+        
+        stdin = new PrintWriter( process.getOutputStream() );
+        
         InputStream stdout = process.getInputStream();
         InputStream stderr = process.getErrorStream();
 
