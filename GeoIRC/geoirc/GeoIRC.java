@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ActionMap;
@@ -117,6 +118,8 @@ public class GeoIRC
     protected ActionMap action_map;
     
     protected String preferred_nick;
+    
+    protected Set conversation_words;
 
     /* **************************************************************** */
     
@@ -360,6 +363,7 @@ public class GeoIRC
                 
         // Restore connections, if any.
         
+        conversation_words = java.util.Collections.synchronizedSet( new java.util.HashSet() );
         current_rm = null;
         remote_machines = new Vector();
         restoreConnections();
@@ -455,7 +459,8 @@ public class GeoIRC
     {
         Server s = new Server(
             this, display_manager, settings_manager, trigger_manager,
-            info_manager, variable_manager, script_interface, hostname, port
+            info_manager, variable_manager, script_interface, conversation_words,
+            hostname, port
         );
         addRemoteMachine( s );
         
@@ -1067,6 +1072,20 @@ public class GeoIRC
                                 if( channel != null )
                                 {
                                     replacement_text = channel.completeNick( word, (left_space_pos == -1) );
+                                }
+                                
+                                if( replacement_text.equals( word ) )
+                                {
+                                    String [] words = new String[ 0 ];
+                                    words = (String []) conversation_words.toArray( words );
+                                    for( int i = 0; i < words.length; i++ )
+                                    {
+                                        if( words[ i ].toLowerCase().startsWith( word.toLowerCase() ) )
+                                        {
+                                            replacement_text = words[ i ];
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                             

@@ -338,4 +338,6 @@ public interface GeoIRCConstants
     static final int DCC_SEND = 1;
     
     static final int DEFAULT_MAXIMUM_NICK_WIDTH = 20;
+    
+    static final int DEFAULT_MINIMUM_WORD_LENGTH = 4;
 }

@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 import java.util.regex.*;
 import javax.swing.*;
@@ -33,6 +34,7 @@ public class Server
     protected VariableManager variable_manager;
     protected ScriptInterface script_interface;
     protected HashSet users;
+    protected Set conversation_words;
     
     protected int current_nick_width;
     protected boolean listening_to_channels;
@@ -46,6 +48,7 @@ public class Server
         InfoManager info_manager,
         VariableManager variable_manager,
         ScriptInterface script_interface,
+        Set conversation_words,
         String hostname,
         String port
     )
@@ -59,6 +62,7 @@ public class Server
         this.info_manager = info_manager;
         this.variable_manager = variable_manager;
         this.script_interface = script_interface;
+        this.conversation_words = conversation_words;
         current_nick_width = 0;
     }
     
@@ -992,6 +996,7 @@ public class Server
                     String text = Util.stringArrayToString( tokens, 3 );
                     text = text.substring( 1 );  // Remove leading colon.
                     qualities += " " + FILTER_SPECIAL_CHAR + "privmsg";
+                    String [] words = null;
                     
                     User user = getUserByNick( nick );
                     if( user != null )
@@ -1019,6 +1024,10 @@ public class Server
                             && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                         )
                         {
+                            String text2 = Util.stringArrayToString( tokens, 4 );
+                            words = Util.tokensToArray(
+                                text2.substring( 0, text2.length() - 1 )
+                            );
                             text =
                                 getPadded( "* " + nick )
                                 + text.substring( 7, text.length() - 1 );
@@ -1136,6 +1145,7 @@ public class Server
                         }
                         else
                         {
+                            words = Util.tokensToArray( text );
                             text = getPadded( "<" + nick + ">" ) + " " + text;
                         }
                     }
@@ -1143,7 +1153,23 @@ public class Server
                     {
                         text = getPadded( "<" + nick + ">" );
                     }
-
+                    
+                    if( words != null )
+                    {
+                        for( int i = 0; i < words.length; i++ )
+                        {
+                            if(
+                                words[ i ].length() >= settings_manager.getInt(
+                                    "/misc/word memory/minimum word length",
+                                    DEFAULT_MINIMUM_WORD_LENGTH
+                                )
+                            )
+                            {
+                                conversation_words.add( words[ i ] );
+                            }
+                        }
+                    }
+                    
                     String timestamp = GeoIRC.getATimeStamp(
                         settings_manager.getString( "/gui/format/timestamp", "" )
                     );

@@ -284,6 +284,11 @@
           <entry key="nick completion prefix" value="" />
           <entry key="quit message" value="http://geoirc.berlios.de" />
         </map>
+        <node name="word memory">
+          <map>
+            <entry key="minimum word length" value="4" />
+          </map>
+        </node>
       </node>
       <node name="personal">
         <map>

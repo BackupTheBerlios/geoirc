@@ -66,3 +66,7 @@ Pistos 2003-08-29
 Fixed variable capturing so that parentheses are honoured, instead of capturing
 the full regexp match.
 Pistos 2003-08-29
+
+Added a "/misc/word memory" settings subtree.  Tab-completion now works on words
+in the conversation.
+Pistos 2003-08-29
