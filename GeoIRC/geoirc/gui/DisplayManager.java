@@ -118,6 +118,7 @@ public class DisplayManager
         frames = new Vector();
 
         GIPaneWrapper gipw = new GIPaneWrapper(
+            this,
             geo_irc.getContentPane(),
             "GeoIRC Content Pane",
             GEOIRC_CONTENT_PANE
@@ -262,7 +263,8 @@ public class DisplayManager
         GITextPane gitp = new GITextPane(
             geo_irc, this, settings_manager, i18n_manager, title, filter
         );
-        GIPaneWrapper gipw = new GIPaneWrapper( gitp, title, TEXT_PANE );
+        GIPaneWrapper gipw = new GIPaneWrapper( this, gitp, title, TEXT_PANE );
+        gitp.setPaneWrapper( gipw );
         panes.add( gipw );
         return gipw;
     }
@@ -290,7 +292,8 @@ public class DisplayManager
         GIInfoPane giip = new GIInfoPane(
             this, settings_manager, title, path
         );
-        GIPaneWrapper gipw = new GIPaneWrapper( giip, title, INFO_PANE );
+        GIPaneWrapper gipw = new GIPaneWrapper( this, giip, title, INFO_PANE );
+        giip.setPaneWrapper( gipw );
         panes.add( gipw );
         return gipw;
     }
@@ -510,7 +513,7 @@ public class DisplayManager
                     break;
             }
 
-            GIPaneWrapper split_gipw = new GIPaneWrapper( split_pane, "Split Pane", SPLIT_PANE );
+            GIPaneWrapper split_gipw = new GIPaneWrapper( this, split_pane, "Split Pane", SPLIT_PANE );
             if( partner_container_gipw != null )
             {
                 split_gipw.setParent( partner_container_gipw );
@@ -1104,66 +1107,42 @@ public class DisplayManager
     public String getSelectedByPrefix( String prefix )
     {
         String retval = null;
-        /*
-        GIWindow giw = (GIWindow) last_activated_frame;
-        if( giw == null )
+        
+        GITextPane gitp = last_activated_text_pane;
+        if( gitp != null )
         {
-            giw = getSelectedFrame();
-        }
-
-        if( giw != null )
-        {
-            Container pane = giw.getPane();
-            if( pane instanceof GITextPane )
+            String filter = gitp.getFilter();
+            if( filter != null )
             {
-                String filter = ((GITextPane) pane).getFilter();
-                if( filter != null )
+                // Search for a channel in this filter.
+                int prefix_index = filter.indexOf( prefix );
+                if( prefix_index > -1 )
                 {
-                    // Search for a channel in this filter.
-                    int prefix_index = filter.indexOf( prefix );
-                    if( prefix_index > -1 )
+                    int space_index = filter.indexOf( " ", prefix_index );
+                    if( space_index > -1 )
                     {
-                        int space_index = filter.indexOf( " ", prefix_index );
-                        if( space_index > -1 )
-                        {
-                            retval = filter.substring( prefix_index, space_index );
-                        }
-                        else
-                        {
-                            retval = filter.substring( prefix_index );
-                        }
+                        retval = filter.substring( prefix_index, space_index );
+                    }
+                    else
+                    {
+                        retval = filter.substring( prefix_index );
                     }
                 }
             }
         }
-         */
-        
-        // TODO: this
         
         return retval;
     }
-
-    /* ************************************************************
-     * Listener Implementations
-     */
     
-    public void internalFrameActivated( InternalFrameEvent e )
+    public void paneActivated( GIPaneWrapper gipw )
     {
-        last_activated_frame = (GIWindow) e.getInternalFrame();
-        GIWindow giw = (GIWindow) e.getSource();
-        JToggleButton button = giw.getAssociatedButton();
-        if( button != null )
+        last_activated_pane = gipw;
+        if( gipw.getType() == TEXT_PANE )
         {
-            button.setForeground( DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR );
-        }
-        
-        /*
-        Container pane = giw.getPane();
-        if( pane instanceof GITextPane )
-        {
-            last_activated_text_pane = (GITextPane) pane;
+            GITextPane gitp = (GITextPane) gipw.getPane();
+            last_activated_text_pane = gitp;
             
-            String filter = ((GITextPane) pane).getFilter();
+            String filter = gitp.getFilter();
             if( filter != null )
             {
                 // Search for a server name in this filter.
@@ -1184,7 +1163,21 @@ public class DisplayManager
                 }
             }
         }
-         */
+    }
+
+    /* ************************************************************
+     * Listener Implementations
+     */
+    
+    public void internalFrameActivated( InternalFrameEvent e )
+    {
+        last_activated_frame = (GIWindow) e.getInternalFrame();
+        GIWindow giw = (GIWindow) e.getSource();
+        JToggleButton button = giw.getAssociatedButton();
+        if( button != null )
+        {
+            button.setForeground( DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR );
+        }
     }
     
     public void internalFrameClosed( InternalFrameEvent e )
@@ -1226,6 +1219,7 @@ public class DisplayManager
         GIWindow giw = (GIWindow) e.getSource();
         frames.add( giw );
         GIPaneWrapper gipw = new GIPaneWrapper(
+            this,
             giw.getContentPane(),
             "Content Pane",
             CHILD_CONTENT_PANE
@@ -1514,7 +1508,7 @@ public class DisplayManager
                     {
                         JSplitPane split_pane = new JSplitPane( orientation );
                         split_pane.setDividerLocation( divider_location );
-                        GIPaneWrapper split_gipw = new GIPaneWrapper( split_pane, title, type );
+                        GIPaneWrapper split_gipw = new GIPaneWrapper( this, split_pane, title, type );
                         panes.add( split_gipw );
                     }
                     else
@@ -1533,6 +1527,7 @@ public class DisplayManager
                     {
                         GIPaneWrapper gipw = addInfoPane( title, path );
                         gipw.setSplitRank( split_rank );
+                        inactive_info_panes.add( gipw.getPane() );
                     }
                     break;
                 case TEXT_PANE:
@@ -1549,7 +1544,7 @@ public class DisplayManager
                 case DESKTOP_PANE:
                 {
                     desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
-                    GIPaneWrapper dgipw = new GIPaneWrapper( desktop_pane, "GeoIRC Desktop Pane", DESKTOP_PANE );
+                    GIPaneWrapper dgipw = new GIPaneWrapper( this, desktop_pane, "GeoIRC Desktop Pane", DESKTOP_PANE );
                     dgipw.setSplitRank( split_rank );
                     panes.add( dgipw );
                     break;

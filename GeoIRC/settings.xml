@@ -66,7 +66,9 @@
           <node name="channels">
             <map />
             <node name="0">
-              <map />
+              <map>
+                <entry key="name" value="#geoirc" />
+              </map>
             </node>
           </node>
         </node>
@@ -99,7 +101,7 @@
           <entry key="main frame y" value="0" />
           <entry key="main frame width" value="1280" />
           <entry key="main frame height" value="1024" />
-          <entry key="main frame state" value="6" />
+          <entry key="main frame state" value="0" />
           <entry key="notices in active window" value="true" />
         </map>
         <node name="desktop">
@@ -145,6 +147,48 @@
                 <entry key="filter" value="z" />
               </map>
             </node>
+            <node name="12">
+              <map>
+                <entry key="type" value="2" />
+                <entry key="title" value="#geoirc on irc.freenode.net" />
+                <entry key="parent" value="-1" />
+                <entry key="split rank" value="-1" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
+                <entry key="height" value="565" />
+                <entry key="width" value="876" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+              </map>
+            </node>
+            <node name="13">
+              <map>
+                <entry key="type" value="3" />
+                <entry key="title" value="#geoirc on irc.freenode.net" />
+                <entry key="parent" value="15" />
+                <entry key="split rank" value="0" />
+                <entry key="filter" value="irc.freenode.net and #geoirc" />
+              </map>
+            </node>
+            <node name="14">
+              <map>
+                <entry key="type" value="4" />
+                <entry key="title" value="Info" />
+                <entry key="parent" value="15" />
+                <entry key="split rank" value="1" />
+                <entry key="path" value="/" />
+              </map>
+            </node>
+            <node name="15">
+              <map>
+                <entry key="type" value="5" />
+                <entry key="title" value="Split Pane" />
+                <entry key="parent" value="12" />
+                <entry key="split rank" value="-1" />
+                <entry key="orientation" value="1" />
+                <entry key="divider location" value="653" />
+              </map>
+            </node>
             <node name="2">
               <map>
                 <entry key="type" value="3" />
@@ -175,7 +219,7 @@
                 <entry key="height" value="500" />
                 <entry key="width" value="700" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="false" />
+                <entry key="selected" value="true" />
               </map>
             </node>
             <node name="5">

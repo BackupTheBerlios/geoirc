@@ -40,12 +40,7 @@ public class GIPaneBarButton extends javax.swing.JToggleButton implements java.a
     
     public void actionPerformed( ActionEvent e )
     {
-        setSelected( true );
-        GIFrameWrapper gifw = (GIFrameWrapper) associated_pane.getFrame();
-        if( gifw != null )
-        {
-            gifw.activate();
-        }
+        associated_pane.activate();
     }
     
 }

@@ -2951,6 +2951,7 @@ public class GeoIRC
                 break;
             case CMD_TEST:
                 // For testing/debugging purposes.
+                pack();
                 break;
             case CMD_TOPIC:
                 {
