@@ -206,10 +206,11 @@ public class SettingsManager
         Preferences p = evt.getChild();
         try
         {
-            if( ! p.nodeExists( "" ) )
+            if( p.nodeExists( "" ) )
             {
                 p.addNodeChangeListener( this );
                 p.addPreferenceChangeListener( this );
+                saveSettingsToXML();
             }
         }
         catch( BackingStoreException e )
@@ -223,4 +224,52 @@ public class SettingsManager
         saveSettingsToXML();
     }
     
+    public void printSettings( Preferences p_, int level )
+    {
+        Preferences p = root;
+        if( p_ != null )
+        {
+            p = p_;
+        }
+        
+        String [] keys;
+        String [] children;
+        try
+        {
+            children = p.childrenNames();
+            for( int i = 0; i < children.length; i++ )
+            {
+                listenToPreference( p.node( children[ i ] ) );
+            }
+        }
+        catch( BackingStoreException e )
+        {
+            printlnDebug( e.getMessage() );
+        }
+
+        String ind = "";
+        for( int i = 0; i < level; i++ )
+        {
+            ind += "  ";
+        }
+        
+        try
+        {
+            keys = p.keys();
+            for( int i = 0; i < keys.length; i++ )
+            {
+                printlnDebug( keys[ i ] + ": " + p.get( keys[ i ], "?" ) );
+            }
+            
+            children = p.childrenNames();
+            for( int i = 0; i < children.length; i++ )
+            {
+                printSettings( p.node( children[ i ] ), level + 1 );
+            }
+        }
+        catch( BackingStoreException e )
+        {
+            printlnDebug( e.getMessage() );
+        }
+    }
 }

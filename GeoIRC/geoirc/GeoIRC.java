@@ -171,7 +171,12 @@ public class GeoIRC
         // Read settings.
         
         current_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
-
+        
+        /*
+        settings_manager.putString( "/test/testval", "ooga" );
+        settings_manager.saveSettingsToXML();
+         */
+        
         // Map input (keystrokes, mouseclicks, etc.)
         
         setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_UP );
@@ -183,6 +188,8 @@ public class GeoIRC
         
         servers = new Vector();
         //geoirc.execute( "newserver irc.freenode.net 6667" );
+
+        settings_manager.printSettings( null, 0 );
         
         show();
     }
