@@ -44,6 +44,8 @@ import javax.swing.table.TableColumn;
 
 /**
  * @author netseeker aka Michael Manske
+ * TODO: Pistos please add correct handling of /gui/text windows/highlighting/format<br>
+ * i don't know exactly how to handle that... 
  */
 public class HighlightningPane
 	extends BaseSettingsPanel
