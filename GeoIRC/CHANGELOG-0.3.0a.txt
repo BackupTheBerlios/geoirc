@@ -78,7 +78,7 @@ Pistos 2003-09-01
 Fixed multiple info-panes bug.
 Pistos 2003-09-05
 
-Added mIRC/VisualIRC formatting support.  (Receive only, not generate).  Added
-/gui/format/mirc colours/ settings subtree.
+Added mIRC/VisualIRC formatting support.  Added /gui/format/mirc colours/
+settings subtree.
 Pistos 2003-09-08 and 2003-09-09
 

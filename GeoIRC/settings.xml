@@ -304,6 +304,11 @@
           <entry key="Ctrl|5" value="switchwindow .*christian.*" />
           <entry key="Ctrl|9" value="switchwindow Pistos" />
           <entry key="Ctrl|0" value="switchwindow .*%raw.*" />
+          <entry key="Ctrl|B" value="charbold" />
+          <entry key="Ctrl|N" value="charitalic" />
+          <entry key="Ctrl|U" value="charunderline" />
+          <entry key="Ctrl|O" value="charnormal" />
+          <entry key="Ctrl|K" value="charcolour" />
           <entry key="|Tab" value="completenick" />
           <entry key="Shift|Tab" value="focus_on_input_field" />
         </map>

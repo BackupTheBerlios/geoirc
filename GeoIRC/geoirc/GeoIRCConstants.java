@@ -91,7 +91,12 @@ public interface GeoIRCConstants
         "accept_dcc_chat",
         "reject_dcc_chat",
         "unloadallpy",
-        "hidequalities"
+        "hidequalities",
+        "charbold",
+        "charitalic",
+        "charunderline",
+        "charcolour",
+        "charnormal"
     };
     
     public static final String[] IRC_CMDS =
@@ -115,6 +120,11 @@ public interface GeoIRCConstants
     public static final int CMD_ACCEPT_DCC_CHAT = 59;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_WINDOW = 22;
+    public static final int CMD_CHAR_BOLD = 63;
+    public static final int CMD_CHAR_ITALIC = 64;
+    public static final int CMD_CHAR_UNDERLINE = 65;
+    public static final int CMD_CHAR_COLOUR = 66;
+    public static final int CMD_CHAR_NORMAL = 67;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
     public static final int CMD_LIST_DCC_CHAT_REQUESTS = 58;

@@ -762,6 +762,17 @@ public class GeoIRC
     {
         return (String []) dcc_chat_requests.remove( index );
     }
+
+    protected void insertCharAtCaret( char char_to_insert )
+    {
+        String input_line = input_field.getText();
+        int pos = input_field.getCaretPosition();
+        input_line =
+            input_line.substring( 0, pos )
+            + char_to_insert
+            + input_line.substring( pos );
+        input_field.setText( input_line );
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -1029,6 +1040,21 @@ public class GeoIRC
                         );
                     }
                 }
+                break;
+            case CMD_CHAR_BOLD:
+                insertCharAtCaret( MIRC_BOLD_CONTROL_CHAR );
+                break;
+            case CMD_CHAR_COLOUR:
+                insertCharAtCaret( MIRC_COLOUR_CONTROL_CHAR );
+                break;
+            case CMD_CHAR_ITALIC:
+                insertCharAtCaret( MIRC_ITALIC_CONTROL_CHAR );
+                break;
+            case CMD_CHAR_NORMAL:
+                insertCharAtCaret( MIRC_NORMAL_CONTROL_CHAR );
+                break;
+            case CMD_CHAR_UNDERLINE:
+                insertCharAtCaret( MIRC_UNDERLINE_CONTROL_CHAR );
                 break;
             case CMD_COMPLETE_NICK:
                 {
