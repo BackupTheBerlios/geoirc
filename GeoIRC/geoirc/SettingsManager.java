@@ -25,6 +25,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -169,9 +170,9 @@ public class SettingsManager
     }
     
     /**
-     * Creates the node if it does not exist.
+     * Creates any nodes and the attribute if they do not exist.
      */
-    protected Element getNode( String absolute_path )
+    protected Attribute getAttribute( String absolute_path )
     {
         if( absolute_path == null )
         {
@@ -193,23 +194,15 @@ public class SettingsManager
         while( index > -1 )
         {
             element = element.getChild( path.substring( 0, index ) );
+            if( element == null )
+            {
+                // Create node.
+            }
             path = path.substring( index + 1 );
             index = path.indexOf( "/" );
         }
         
-        int index = relative_path.indexOf( "/" );
-        if( index == -1 )
-        {
-            // We have the attribute name.
-            return node.getAttributeValue( relative_path, default_ );
-        }
-        
-        // Recurse down to the next child node.
-        return getValue(
-            node.getChild( relative_path.substring( 0, index ) ),
-            relative_path.substring( index + 1 ),
-            default_
-        );
+        return element.getAttribute( path );
     }
     
     /* For all the following get methods,
