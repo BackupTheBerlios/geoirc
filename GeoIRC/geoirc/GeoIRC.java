@@ -1577,6 +1577,7 @@ public class GeoIRC
                                         display_manager,
                                         trigger_manager,
                                         i18n_manager,
+                                        DCC_CHAT,
                                         args[ 0 ],
                                         s.getCurrentNick()
                                     );
