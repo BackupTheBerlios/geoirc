@@ -252,10 +252,11 @@ public class DisplayManager
     {
         if( windows != null )
         {
+            Vector wins = (Vector) windows.clone();
             GIWindow giw;
-            for( int i = 0, n = windows.size(); i < n; i++ )
+            for( int i = 0, n = wins.size(); i < n; i++ )
             {
-                giw = (GIWindow) windows.elementAt( i );
+                giw = (GIWindow) wins.elementAt( i );
                 if( giw.getPaneType() == TEXT_PANE )
                 {
                     GITextPane gip = (GITextPane) giw.getPane();
