@@ -73,7 +73,7 @@ public class HighlightingPane
     }
 
     private void initComponents() {
-        addComponent(new TitlePane("Highlightning"), 0, 0, 3, 1, 0, 0);
+        addComponent(new TitlePane("Highlighting"), 0, 0, 3, 1, 0, 0);
 
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

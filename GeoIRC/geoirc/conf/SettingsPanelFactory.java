@@ -42,8 +42,8 @@ public class SettingsPanelFactory
 	{
 		if (panels.size() == 0)
 		{
-			//Generell Settings
-			BaseSettingsPanel genPane = new GeneralPane(settings_manager, valueRules, "Generell Settings");
+			//General Settings
+			BaseSettingsPanel genPane = new GeneralPane(settings_manager, valueRules, "General Settings");
 			genPane.addChild(new CommandAliasesPane(settings_manager, valueRules, "Command Aliases"));
 			panels.add(genPane);
 			//Connection Settings
