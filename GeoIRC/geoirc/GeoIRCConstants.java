@@ -250,7 +250,8 @@ public interface GeoIRCConstants
         "331",
         "TOPIC",
         "MODE",
-        "433"
+        "433",
+        "PONG"
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
@@ -274,6 +275,7 @@ public interface GeoIRCConstants
     static final int IRCMSG_TOPIC = 19;
     static final int IRCMSG_MODE = 20;
     static final int IRCMSG_ERR_NICKNAMEINUSE = 21;
+    static final int IRCMSG_PONG = 22;
     
     static final String [] CTCP_CMDS =
     {
@@ -447,4 +449,6 @@ public interface GeoIRCConstants
     
     static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
     static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
+    
+    static final int DEFAULT_SERVER_TIMEOUT = 10 * 1000; // milliseconds
 }

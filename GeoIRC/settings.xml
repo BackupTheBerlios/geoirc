@@ -369,6 +369,7 @@
           <entry key="nick completion prefix" value="" />
           <entry key="quit message" value="http://geoirc.berlios.de" />
           <entry key="global pre-filter" value="" />
+          <entry key="server timeout" value="10000" />
         </map>
         <node name="paste flood">
           <map>

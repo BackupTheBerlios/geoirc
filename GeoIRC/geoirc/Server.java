@@ -92,6 +92,10 @@ public class Server
                 }
                  */
                 
+                socket.setSoTimeout(
+                    settings_manager.getInt( "/misc/server timeout", DEFAULT_SERVER_TIMEOUT )
+                );
+                
                 current_nick = nick_to_use;
                 
                 reader = new ServerReader( 
@@ -387,12 +391,15 @@ public class Server
             }
 
             String line = "";
-            boolean disconnected = false;
+            boolean timed_out = false;
             while( ( line != null ) && isConnected() && ( ! reset ) )
             {
                 try
                 {
-                    interpretLine( STAGE_SCRIPTING, new String [] { line, Server.this.toString() } );
+                    if( ! timed_out )
+                    {
+                        interpretLine( STAGE_SCRIPTING, new String [] { line, Server.this.toString() } );
+                    }
                 }
                 catch( NullPointerException e )
                 {
@@ -405,6 +412,7 @@ public class Server
                 
                 try
                 {
+                    /*
                     while( ! in.ready() )
                     {
                         if( ! isConnected() )
@@ -417,10 +425,16 @@ public class Server
                             Thread.sleep( SERVER_READER_POLLING_INTERVAL );
                         } catch( InterruptedException e ) { }
                     }
+                     */
                     
-                    if( ! disconnected )
+                    timed_out = false;
+                    try
                     {
                         line = in.readLine();
+                    }
+                    catch( java.io.InterruptedIOException e )
+                    {
+                        timed_out = true;
                     }
                 }
                 catch( IOException e )
@@ -1430,6 +1444,7 @@ public class Server
                             transformed_message[ MSG_QUALITIES ]
                             + " " + FILTER_SPECIAL_CHAR + "pong"
                             + " acode=" + irc_code
+                            + " from=" + FILTER_SPECIAL_CHAR + "self"
                         );
                         break;
                     case STAGE_PROCESSING:
@@ -2065,4 +2080,5 @@ public class Server
             }
         }
     }
+    
 }

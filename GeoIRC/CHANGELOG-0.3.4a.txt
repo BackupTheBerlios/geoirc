@@ -29,3 +29,6 @@ Pistos 2003-10-09
 Added "/modules/" node to settings, and entries "python", "tcl" and "skinning"
 underneath it.
 Pistos 2003-10-09
+
+Adjusted server inactivity handling.  Added "/misc/server timeout" setting.
+Pistos 2003-10-09
