@@ -15,7 +15,7 @@ import java.awt.Dimension;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.3.3a";
+    static final String GEOIRC_VERSION = "0.3.4a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
 	static final String GEOIRC_HOMEPAGE = "http://geoirc.berlios.de";
