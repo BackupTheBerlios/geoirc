@@ -187,6 +187,8 @@ public class GeoIRC
         );
         display_manager.printlnDebug( skin_errors );
         
+        info_manager = new InfoManager( settings_manager, display_manager );
+        
         // Read settings.
         
         preferred_nick = settings_manager.getString( "/personal/nick1", "GeoIRC_User" );
@@ -265,7 +267,7 @@ public class GeoIRC
         
         ident_server = new IdentServer( settings_manager, display_manager );
         ident_server.start();
-        
+                
         // Restore connections, if any.
         
         current_remote_machine = null;
@@ -274,17 +276,6 @@ public class GeoIRC
         if( ( current_remote_machine == null ) && ( remote_machines.size() > 0 ) )
         {
             current_remote_machine = (RemoteMachine) remote_machines.elementAt( 0 );
-        }
-        
-        info_manager = new InfoManager( settings_manager, display_manager );
-        {
-            int n = remote_machines.size();
-            for( int i = 0; i < n; i++ )
-            {
-                info_manager.addRemoteMachine(
-                    (RemoteMachine) remote_machines.elementAt( i )
-                );
-            }
         }
         
         // Final miscellaneous initialization
@@ -381,8 +372,9 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, settings_manager, sound_manager, hostname, port );
+        Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, hostname, port );
         remote_machines.add( s );
+        info_manager.addRemoteMachine( s );
         if( listening_to_servers )
         {
             recordConnections();
@@ -395,6 +387,7 @@ public class GeoIRC
     protected void removeServer( Server s )
     {
         remote_machines.remove( s );
+        info_manager.removeRemoteMachine( s );
         if( current_remote_machine == s )
         {
             if( remote_machines.size() > 0 )

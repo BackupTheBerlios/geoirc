@@ -28,12 +28,14 @@ public class Server
     protected Vector channels;
     protected boolean listening_to_channels;
     protected String current_nick;
+    protected InfoManager info_manager;
     
     public Server(
         GeoIRC parent,
         DisplayManager display_manager,
         SettingsManager settings_manager,
         SoundManager sound_manager,
+        InfoManager info_manager,
         String hostname,
         String port
     )
@@ -44,6 +46,7 @@ public class Server
         server_reader = null;
         channels = new Vector();
         current_nick = "";
+        this.info_manager = info_manager;
     }
     
     // Returns whether a connection has been established.
@@ -99,11 +102,13 @@ public class Server
         return isConnected();
     }
 
-    public void addChannel( String channel )
+    public void addChannel( String channel_name )
     {
         if( isConnected() )
         {
+            Channel channel = new Channel( this, channel_name );
             channels.add( channel );
+            info_manager.addChannel( channel );
         }
         if( listening_to_channels )
         {
@@ -111,14 +116,28 @@ public class Server
         }
     }
     
-    public boolean removeChannel( String channel )
+    public boolean removeChannel( String channel_name )
     {
-        boolean result = channels.remove( channel );
-        if( listening_to_channels )
+        boolean removed = false;
+        Channel channel = null;
+        int n = channels.size();
+        for( int i = 0; i < n; i++ )
         {
-            recordChannels();
+            channel = (Channel) channels.elementAt( i );
+            if( channel.getName().equals( channel_name ) )
+            {
+                channels.remove( channel );
+                info_manager.removeChannel( channel );
+                removed = true;
+                if( listening_to_channels )
+                {
+                    recordChannels();
+                }
+                break;
+            }
         }
-        return result;
+        
+        return removed;
     }
     
     public String [] getChannels()
@@ -134,17 +153,17 @@ public class Server
         settings_manager.removeNode( nodepath );
         
         int n = channels.size();
-        String channel;
+        Channel channel;
         String i_str;
         
         for( int i = 0; i < n; i++ )
         {
             i_str = Integer.toString( i );
-            channel = (String) channels.elementAt( i );
+            channel = (Channel) channels.elementAt( i );
             
             settings_manager.putString(
                 nodepath + i_str + "/name",
-                channel
+                channel.getName()
             );
         }
     }
@@ -155,25 +174,25 @@ public class Server
         int i = 0;
         String i_str;
         
-        String channel;
+        String channel_name;
         
         while( GOD_IS_GOOD )
         {
             i_str = Integer.toString( i );
             
-            channel = settings_manager.getString(
+            channel_name = settings_manager.getString(
                 "/connections/" + server_id + "/channels/" + i_str + "/name",
                 ""
             );
-            if( channel.equals( "" ) )
+            if( channel_name.equals( "" ) )
             {
                 // No more channels stored in the settings.
                 break;
             }
             
-            geoirc.execute( CMDS[ CMD_SEND_RAW ] + " JOIN " + channel );
+            geoirc.execute( CMDS[ CMD_SEND_RAW ] + " JOIN " + channel_name );
             // TODO: Check if the channel was actually joined.
-            addChannel( channel );
+            addChannel( channel_name );
             
             i++;
         }
