@@ -107,10 +107,10 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         setUpColorEditor(table);
 
         upButton = new BasicArrowButton(BasicArrowButton.NORTH);
-        downButton = new BasicArrowButton(BasicArrowButton.SOUTH);
+        downButton = new BasicArrowButton(BasicArrowButton.SOUTH);        
         
-        upButton.setToolTipText("move selected highlighting pne position up");
-        downButton.setToolTipText("move selected highlighting pne position down");
+        upButton.setToolTipText("move selected highlighting one position up");
+        downButton.setToolTipText("move selected highlighting one position down");
         upButton.setEnabled(false);
         downButton.setEnabled(false);
         
