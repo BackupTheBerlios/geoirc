@@ -38,5 +38,5 @@ public class GIAction extends AbstractAction
     {
         return this.command;
     }
-    
+        
 }
