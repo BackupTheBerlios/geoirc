@@ -109,8 +109,8 @@
           <map>
             <entry key="font face" value="Lucida Console" />
             <entry key="font size" value="14" />
-            <entry key="default foreground colour" value="000000" />
-            <entry key="default background colour" value="ffffff" />
+            <entry key="default foreground colour" value="cccccc" />
+            <entry key="default background colour" value="000000" />
           </map>
           <node name="highlighting">
             <map />

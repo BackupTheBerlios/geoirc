@@ -66,4 +66,26 @@ public class Util
         }
     }
     
+    public static int [] getRGB( String rgb_string ) throws NumberFormatException
+    {
+        int [] retval = new int[ 3 ];
+        
+        retval[ 0 ] = Integer.parseInt( rgb_string.substring( 0, 2 ), 16 );
+        retval[ 1 ] = Integer.parseInt( rgb_string.substring( 2, 4 ), 16 );
+        retval[ 2 ] = Integer.parseInt( rgb_string.substring( 4, 6 ), 16 );
+        
+        for( int i = 0; i < 3; i++ )
+        {
+            if( retval[ i ] < 0 )
+            {
+                retval[ i ] = 0;
+            }
+            else if( retval[ i ] > 255 )
+            {
+                retval[ i ] = 255;
+            }
+        }
+        
+        return retval;
+    }
 }

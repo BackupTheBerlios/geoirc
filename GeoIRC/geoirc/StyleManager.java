@@ -6,6 +6,7 @@
 
 package geoirc;
 
+import geoirc.util.Util;
 import java.awt.Color;
 import java.util.Vector;
 import javax.swing.*;
@@ -113,14 +114,13 @@ public class StyleManager
                         
                         arg = format.substring( c, c + 6 );
                         c += 6;
-                        int red = 0xff;
-                        int green = 0xff;
-                        int blue = 0xff;
+                        int [] rgb = new int [ 3 ];
+                        rgb[ 0 ] = 0xff;
+                        rgb[ 1 ] = 0xff;
+                        rgb[ 2 ] = 0xff;
                         try
                         {
-                            red = Integer.parseInt( arg.substring( 0, 2 ), 16 );
-                            green = Integer.parseInt( arg.substring( 2, 4 ), 16 );
-                            blue = Integer.parseInt( arg.substring( 4, 6 ), 16 );
+                            rgb = Util.getRGB( arg );
                         }
                         catch( NumberFormatException e )
                         {
@@ -128,7 +128,9 @@ public class StyleManager
                             break;
                         }
                         
-                        StyleConstants.setForeground( style, new Color( red, green, blue ) );
+                        StyleConstants.setForeground( style,
+                            new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                        );
                     }
                     else if( code.equals( STYLE_BACKGROUND ) )
                     {
@@ -140,14 +142,13 @@ public class StyleManager
                         
                         arg = format.substring( c, c + 6 );
                         c += 6;
-                        int red = 0xff;
-                        int green = 0xff;
-                        int blue = 0xff;
+                        int [] rgb = new int [ 3 ];
+                        rgb[ 0 ] = 0;
+                        rgb[ 1 ] = 0;
+                        rgb[ 2 ] = 0;
                         try
                         {
-                            red = Integer.parseInt( arg.substring( 0, 2 ), 16 );
-                            green = Integer.parseInt( arg.substring( 2, 4 ), 16 );
-                            blue = Integer.parseInt( arg.substring( 4, 6 ), 16 );
+                            rgb = Util.getRGB( arg );
                         }
                         catch( NumberFormatException e )
                         {
@@ -155,7 +156,9 @@ public class StyleManager
                             break;
                         }
                         
-                        StyleConstants.setBackground( style, new Color( red, green, blue ) );
+                        StyleConstants.setBackground( style,
+                            new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] )
+                        );
                     }
                     else if( code.equals( STYLE_BOLD ) )
                     {

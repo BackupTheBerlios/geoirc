@@ -88,8 +88,27 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         
         text_pane = new JTextPane();
         text_pane.setEditable( false );
-        text_pane.setForeground( new Color( 204, 204, 204 ) );
-        text_pane.setBackground( new Color( 0, 0, 0 ) );
+        
+        String rgb_str = settings_manager.getString(
+            "/gui/text windows/default foreground colour",
+            "cccccc"
+        );
+        int [] rgb = new int [ 3 ];
+        rgb[ 0 ] = 0xcc;  rgb[ 1 ] = 0xcc;  rgb[ 2 ] = 0xcc;
+        try {
+            rgb = Util.getRGB( rgb_str );
+        } catch( NumberFormatException e ) { /* accept defaults */ }
+        text_pane.setForeground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
+        
+        rgb_str = settings_manager.getString(
+            "/gui/text windows/default background colour",
+            "000000"
+        );
+        rgb[ 0 ] = 0;  rgb[ 1 ] = 0;  rgb[ 2 ] = 0;
+        try {
+            rgb = Util.getRGB( rgb_str );
+        } catch( NumberFormatException e ) { /* accept defaults */ }
+        text_pane.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
 
         scroll_pane = new JScrollPane( text_pane );
         scroll_pane.setVerticalScrollBarPolicy(
