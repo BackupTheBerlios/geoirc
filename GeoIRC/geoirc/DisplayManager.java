@@ -189,7 +189,7 @@ public class DisplayManager
         );
     }
     
-    public void activateInfoWindow( String path, TreeModel model )
+    public void activateInfoWindows( String path, TreeModel model )
     {
         int n = inactive_info_windows.size();
         GIInfoWindow giiw;
@@ -199,6 +199,26 @@ public class DisplayManager
             if( giiw.getPath().equals( path ) )
             {
                 giiw.activate( model );
+                inactive_info_windows.remove( i );
+            }
+        }
+    }
+    
+    public void deactivateInfoWindows( String path )
+    {
+        int n = windows.size();
+        GIWindow window;
+        for( int i = 0; i < n; i++ )
+        {
+            window = (GIWindow) windows.elementAt( i );
+            if( window instanceof GIInfoWindow )
+            {
+                GIInfoWindow giiw = (GIInfoWindow) window;
+                if( giiw.getPath().equals( path ) )
+                {
+                    giiw.deactivate();
+                    inactive_info_windows.add( giiw );
+                }
             }
         }
     }
@@ -555,6 +575,7 @@ public class DisplayManager
             );
             
             boolean type_known = true;
+            GIWindow frame = null;
             if( type.equals( "GITextWindow" ) )
             {
                 String filter = settings_manager.getString(
@@ -563,6 +584,7 @@ public class DisplayManager
                 );
                 
                 GITextWindow gitw = addTextWindow( title, filter );
+                frame = gitw;
             }
             else if( type.equals( "GIInfoWindow" ) )
             {
@@ -572,6 +594,7 @@ public class DisplayManager
                 );
                 
                 GIInfoWindow giiw = addInfoWindow( title, path );
+                frame = giiw;
             }
             else
             {

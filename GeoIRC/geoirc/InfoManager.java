@@ -76,12 +76,13 @@ public class InfoManager
         Server server = c.getServer();
         DefaultMutableTreeNode node
             = (DefaultMutableTreeNode) tree_inverse.get( server );
-        node.add( new DefaultMutableTreeNode( c ) );
+        DefaultMutableTreeNode channel_node = new DefaultMutableTreeNode( c );
+        node.add( channel_node );
         tree.reload( node );
-        tree_inverse.put( c, node );
+        tree_inverse.put( c, channel_node );
         display_manager.activateInfoWindows(
             "/" + c.getServer().toString() + "/" + c.getName(),
-            new DefaultTreeModel( node )
+            new DefaultTreeModel( channel_node )
         );
     }
     

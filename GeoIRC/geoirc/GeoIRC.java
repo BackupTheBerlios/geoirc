@@ -779,10 +779,10 @@ public class GeoIRC
                 if( current_remote_machine instanceof Server )
                 {
                     Server s = (Server) current_remote_machine;
-                    String [] channels = s.getChannels();
+                    Channel [] channels = s.getChannels();
                     for( int i = 0; i < channels.length; i++ )
                     {
-                        display_manager.printlnDebug( channels[ i ] );
+                        display_manager.printlnDebug( channels[ i ].toString() );
                     }
                 }
                 break;

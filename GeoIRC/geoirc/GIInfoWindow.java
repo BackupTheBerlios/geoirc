@@ -44,6 +44,12 @@ public class GIInfoWindow extends GIWindow
         createScrollPane( tree );
     }
     
+    public void deactivate()
+    {
+        destroyScrollPane();
+        tree = null;
+    }
+    
     public String getPath()
     {
         return path;
