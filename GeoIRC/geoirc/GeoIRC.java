@@ -721,6 +721,7 @@ public class GeoIRC
             return;
         }
 
+        input_history_pointer = MOST_RECENT_ENTRY;
         if( input_saved )
         {
             input_history.set( input_history_pointer, text );
@@ -729,7 +730,6 @@ public class GeoIRC
         {
             addToInputHistory( text );
         }
-        input_history_pointer = MOST_RECENT_ENTRY;
         input_saved = false;
         
         /* What we do with this input depends on its nature.
@@ -1425,7 +1425,6 @@ public class GeoIRC
             case CMD_NEXT_HISTORY_ENTRY:
                 if( input_history_pointer > MOST_RECENT_ENTRY )
                 {
-                    String input_text = input_field.getText();
                     input_history_pointer--;
                     input_field.setText( (String) input_history.get( input_history_pointer ) );
                 }
