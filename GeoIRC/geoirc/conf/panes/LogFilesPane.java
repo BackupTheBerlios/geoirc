@@ -41,6 +41,7 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
     private JButton delButton = new JButton("delete");
     private JButton addButton = new JButton("new");
     private String default_log_dir;
+    private ValueRule log_file_rule;
 
     
     /**
@@ -52,6 +53,7 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
     {
         super(settings, valueRules, name);
         ValueRule path_rule = rules.getValueRule("DIRECTORY");
+        log_file_rule = rules.getValueRule("LOG_FILE");
         default_log_dir = settings_manager.getString("/logs/default log path", path_rule.getValue().toString());
     }
 
@@ -72,8 +74,7 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
         JRegExTextField patternField = new JRegExTextField(null);
         table.setValidatingCellEditor(patternField, 1);
         
-        ValueRule path_rule = rules.getValueRule("LOG_FILE");
-        JValidatingTextField pathField = new JValidatingTextField(path_rule.getPattern(), null, null);
+        JValidatingTextField pathField = new JValidatingTextField(log_file_rule.getPattern(), null, null);
         table.setValidatingCellEditor(pathField, 2);        
         
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
@@ -101,7 +102,7 @@ public class LogFilesPane extends BaseSettingsPanel implements Storable
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                ltm.addRow(new Log("new log", ".*", default_log_dir + "/#?.log"));
+                ltm.addRow(new Log("new log", ".*", default_log_dir + "/" + log_file_rule.getValue()));
             }
         });
         
