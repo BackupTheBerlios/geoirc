@@ -27,7 +27,7 @@ import org.jscroll.widgets.*;
  */
 public class GITextPane
     extends GIPane
-    implements geoirc.GeoIRCConstants, MouseListener
+    implements geoirc.GeoIRCConstants
 {
     protected JTextPane text_pane;
     protected String filter;
@@ -496,15 +496,4 @@ public class GITextPane
         return found;
     }
     
-    public void mouseClicked( MouseEvent e ) { }
-    public void mouseEntered( MouseEvent e ) { }
-    public void mouseExited( MouseEvent e ) { }
-    public void mousePressed( MouseEvent e ) { }
-    public void mouseReleased( MouseEvent e )
-    {
-        if( e.isPopupTrigger() )
-        {
-            display_manager.getMenuManager().showPopup( e, gipw );
-        }
-    }
 }

@@ -61,6 +61,7 @@ public class MenuManager
         if( event.getSource() instanceof javax.swing.JTextPane )
         {
             // %0  pane index
+            // %1  pane title
             
             GIPaneWrapper gipw = (GIPaneWrapper) param1;
             int index = display_manager.trueIndexToUserIndex(
@@ -81,6 +82,38 @@ public class MenuManager
                 popup_menu,
                 settings_manager.getChildren(
                     "/menu/context/text_pane/",
+                    DONT_CREATE_NODES
+                ),
+                args
+            );
+            
+            if( popup_menu.getComponentCount() > 0 )
+            {
+                popup_menu.show( event.getComponent(), event.getX(), event.getY() );
+            }
+        }
+        else if( event.getSource() instanceof javax.swing.JTree )
+        {
+            // %0  pane index
+            
+            GIPaneWrapper gipw = (GIPaneWrapper) param1;
+            int index = display_manager.trueIndexToUserIndex(
+                display_manager.getPaneIndexByPaneWrapper( gipw )
+            );
+            String index_str = Integer.toString( index );
+            if( index == -1 )
+            {
+                index_str = "";
+            }
+            
+            String [] args = new String [] {
+                index_str
+            };
+
+            buildMenu(
+                popup_menu,
+                settings_manager.getChildren(
+                    "/menu/context/info_pane/",
                     DONT_CREATE_NODES
                 ),
                 args

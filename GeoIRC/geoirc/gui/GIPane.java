@@ -69,6 +69,11 @@ public class GIPane extends JScrollPane implements java.awt.event.MouseListener
     public void mouseReleased( MouseEvent e )
     {
         gipw.activate();
+        
+        if( e.isPopupTrigger() )
+        {
+            display_manager.getMenuManager().showPopup( e, gipw );
+        }
     }
     
 }
