@@ -158,7 +158,7 @@
                 <entry key="height" value="386" />
                 <entry key="width" value="946" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
@@ -316,6 +316,9 @@
               <entry key="regexp" value=".*" />
               <entry key="filename" value="./page.wav" />
             </map>
+          </node>
+          <node name="4">
+            <map />
           </node>
         </node>
       </node>

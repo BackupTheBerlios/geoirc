@@ -122,6 +122,7 @@ public class Server
             restoreChannels();
             listening_to_channels = true;
             info_manager.addRemoteMachine( this );
+            reset = false;
         }
                 
         return isConnected();
@@ -286,16 +287,21 @@ public class Server
      */
     protected User getUserByNick( String nick )
     {
-        Iterator it = users.iterator();
         User retval = null;
-        User user;
-        while( it.hasNext() )
+        
+        if( nick != null )
         {
-            user = (User) it.next();
-            if( user.getNick().equals( nick ) )
+            Iterator it = users.iterator();
+            User user;
+            
+            while( it.hasNext() )
             {
-                retval = user;
-                break;
+                user = (User) it.next();
+                if( user.getNick().equals( nick ) )
+                {
+                    retval = user;
+                    break;
+                }
             }
         }
 
@@ -353,7 +359,7 @@ public class Server
             }
 
             String line = "";
-            while( ( line != null ) && ( isConnected() ) )
+            while( ( line != null ) && ( isConnected() ) && ( ! reset ) )
             {
                 try
                 {
@@ -374,21 +380,31 @@ public class Server
                 }
                 catch( IOException e )
                 {
+                    Util.printException(
+                        display_manager,
+                        e,
+                        "I/O error while reading from server " + Server.this.toString()
+                    );
+                    
                     if( ! isConnected() && ( ! closed ) )
                     {
                         display_manager.printlnDebug( "Connection to " + Server.this.toString() + " lost." );
-                        Util.printException(
-                            display_manager,
-                            e,
-                            "I/O error while reading from server " + Server.this.toString()
-                        );
+                    }
+                    
+                    if( e.getMessage().equals( "Connection reset" ) )
+                    {
+                        display_manager.printlnDebug( "Connection to " + Server.this.toString() + " reset." );
                     }
                 }
             }
             
-            if( ! isConnected() )
+            if( ( ! isConnected() ) || reset )
             {
-                display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
+                if( ! isConnected() )
+                {
+                    display_manager.printlnDebug( "No longer connected to " + Server.this.toString() );
+                }
+                
                 if( ! closed )
                 {
                     display_manager.printlnDebug( "Attempting to reconnect..." );
@@ -399,7 +415,18 @@ public class Server
 
         protected String getNick( String nick_and_username_and_host )
         {
-            return nick_and_username_and_host.substring( 1, nick_and_username_and_host.indexOf( "!" ) );
+            String retval = null;
+            
+            if( nick_and_username_and_host != null )
+            {
+                int index = nick_and_username_and_host.indexOf( "!" );
+                if( index > -1 )
+                {
+                    retval = nick_and_username_and_host.substring( 1, index );
+                }
+            }
+            
+            return retval;
         }
         
         public Vector handleNamesList( String namlist )

@@ -8,3 +8,7 @@ Pistos 2003-08-01
 Added support for the CTCP PAGE message, which marks the message with the 
 %page quality.
 Pistos 2003-08-01
+
+Fixed a bug where GeoIRC couldn't handle IRC servers who send notices from no
+nick in particular.
+Pistos 2003-08-05

@@ -29,6 +29,7 @@ public class RemoteMachine
     protected PrintWriter out;
     
     protected boolean closed;
+    protected boolean reset;
     
     // No default constructor.
     private RemoteMachine() { }
@@ -63,6 +64,7 @@ public class RemoteMachine
         socket = null;
         out = null;
         closed = false;
+        reset = false;
     }
     
     public void close()
@@ -86,7 +88,11 @@ public class RemoteMachine
     
     public boolean isConnected()
     {
-        return ( ( socket != null ) && socket.isConnected() && ( ! socket.isClosed() ) );
+        return (
+            ( socket != null )
+            && socket.isConnected()
+            && ( ! socket.isClosed() )
+        );
     }
     
     // Sends a line out to the server, including newline.
