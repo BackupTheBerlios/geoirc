@@ -14,7 +14,7 @@ import java.awt.event.InputEvent;
  */
 public interface GeoIRCConstants
 {
-    static final String GEOIRC_VERSION = "0.1.8a";
+    static final String GEOIRC_VERSION = "0.1.9a";
     
     static final String BASE_GEOIRC_TITLE = "GeoIRC";
     static final String DEFAULT_NEW_CONTENT_TITLE_PREFIX = "*";

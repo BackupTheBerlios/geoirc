@@ -127,15 +127,19 @@ public class Channel implements GeoIRCConstants
     
     public void addMember( User user )
     {
-        int insertion_point = Collections.binarySearch(
-            members,
-            user,
-            comparator
-        );
+        int insertion_point =
+        (
+            Collections.binarySearch(
+                members,
+                user,
+                comparator
+            )
+            + 1
+        ) * (-1);
         try
         {
-            members.insertElementAt( user, insertion_point + 1 );
-            info_manager.addMember( user, this, insertion_point + 1 );
+            members.insertElementAt( user, insertion_point );
+            info_manager.addMember( user, this, insertion_point );
         }
         catch( ArrayIndexOutOfBoundsException e )
         {
