@@ -11,16 +11,14 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JTextField;
-
 /**
  * @author netseeker aka Michael Manske
  */
 public class JKeyRecordField
-    extends JTextField
+    extends JValidatingTextField
     implements KeyListener, GeoIRCConstants {
     public JKeyRecordField() {
-        super();
+        super(".+", "");
         //setEditable(false);
         setPreferredSize(
             new Dimension(
@@ -30,20 +28,13 @@ public class JKeyRecordField
         removeKeyListener(this);        
         addKeyListener(this);
     }
-    /**
-     * @param arg0
-     */
-    public JKeyRecordField(String hotkey) {
-        this();
-    }
 
     /**
      * @param arg0
      * @param arg1
      * @param arg2
      */
-    public JKeyRecordField(String hotkey, int width, int height) {
-        this(hotkey);
+    public JKeyRecordField(int width, int height) {
         setPreferredSize(new Dimension(width, height));
     }
 

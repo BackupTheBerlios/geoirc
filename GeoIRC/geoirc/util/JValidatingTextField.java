@@ -32,8 +32,8 @@ public class JValidatingTextField
 		BorderFactory.createLineBorder(Color.BLACK);
 	protected static final Border errorBorder =
 		BorderFactory.createLineBorder(Color.RED);
-	public static final int PREFERED_WIDTH = 120;
-	public static final int PREFERED_HEIGHT = 18;
+	public static final int PREFERED_WIDTH = 100;
+	public static final int PREFERED_HEIGHT = 20;
 	
 	protected boolean textValid;
 	protected Pattern pattern;
@@ -71,7 +71,6 @@ public class JValidatingTextField
     protected void init()
     {
         this.addFocusListener(new FocusListener(){
-
             public void focusGained(FocusEvent arg0) {                
                 validateText();
             }
@@ -80,7 +79,8 @@ public class JValidatingTextField
             }});
         setIgnoreRepaint(true);
         setOpaque(true);
-        setVerifyInputWhenFocusTarget(true);        
+        setVerifyInputWhenFocusTarget(true);
+        validateText();                
     }
 
 	/* (non-Javadoc)
@@ -115,7 +115,11 @@ public class JValidatingTextField
 	protected void validateText()
 	{
 		String t = getText();
-		boolean valid = t.length() == 0 || pattern.matcher(t).matches();
+        int pos = 0;
+        if(pattern.pattern().equalsIgnoreCase(".+"))
+            pos = 1;
+            
+		boolean valid = t.length() >= pos || pattern.matcher(t).matches();
 		setTextValid(valid);
 	}
 
