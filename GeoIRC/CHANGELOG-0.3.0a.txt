@@ -25,3 +25,7 @@ Pistos 2003-08-13
 Automatic closure of channel windows under optimal conditions when parting
 channels.
 Pistos 2003-08-13
+
+If a raw message is parsed and some interpretation is printed in at least one
+other window, then a %printed quality is added to the raw print.
+Pistos 2003-08-14

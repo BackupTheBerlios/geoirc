@@ -297,22 +297,27 @@ public class DisplayManager
         }
     }
     
-    public void printlnDebug( String line )
+    public int printlnDebug( String line )
     {
-        println( line, FILTER_SPECIAL_CHAR + "debug" );
+        return println( line, FILTER_SPECIAL_CHAR + "debug" );
     }
     
-    public void println( String line, String qualities )
+    /**
+     * @return the number of windows that the line was printed in
+     */
+    public int println( String line, String qualities )
     {
         if( line == null )
         {
-            return;
+            return 0;
         }
         
         if( show_qualities )
         {
             line = "[" + qualities + "] " + line;
         }
+        
+        int windows_printed_to = 0;
         
         int n = panes.size();
         GITextPane text_pane;
@@ -333,6 +338,7 @@ public class DisplayManager
                         line.length(),
                         qualities
                     );
+                    windows_printed_to++;
                 }
             }
         }
@@ -350,6 +356,8 @@ public class DisplayManager
         {
             log_manager.log( line, qualities );
         }
+        
+        return windows_printed_to;
     }
     
     public GIWindow getSelectedFrame()

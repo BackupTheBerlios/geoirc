@@ -502,6 +502,7 @@ public class Server
         protected void interpretLine( String line )
         {
             String [] tokens = Util.tokensToArray( line );
+            int windows_printed_to = 0;
             if( tokens != null )
             {
                 String qualities = Server.this.toString();
@@ -514,7 +515,7 @@ public class Server
                     qualities += " " + channel
                         + " from=" + nick
                         + " " + FILTER_SPECIAL_CHAR + "join";
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -571,7 +572,7 @@ public class Server
                         extractVariables( message, qualities );
                     }
                     
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -640,7 +641,7 @@ public class Server
                     String text = old_nick + " is now known as " + new_nick + ".";
                     qualities += " from=" + new_nick
                         + " " + FILTER_SPECIAL_CHAR + "nick";
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -727,7 +728,7 @@ public class Server
                         + " from=" + nick;
 
                     extractVariables( text, qualities );
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         timestamp + text,
                         qualities
                     );
@@ -758,7 +759,7 @@ public class Server
                         extractVariables( message, qualities );
                     }
                     
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -929,7 +930,7 @@ public class Server
                     
                     extractVariables( text, qualities );
 
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         timestamp + text,
                         qualities
                     );
@@ -972,7 +973,7 @@ public class Server
                     }
                     
                     extractVariables( message, qualities );
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -1008,7 +1009,7 @@ public class Server
                         + " " + channel;
                     String text = channel + " has no topic set.";
                     
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -1026,7 +1027,7 @@ public class Server
                     String text = "The topic of " + channel + " is: " + topic;
                     
                     extractVariables( topic, qualities );
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -1054,7 +1055,7 @@ public class Server
                         + " " + channel;
                     String text = "The topic for " + channel + " was set by "
                         + setter + " on " + time;
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -1074,7 +1075,7 @@ public class Server
                     String text = nick + " has changed the topic for " + channel + " to: " + topic;
                     
                     extractVariables( topic, qualities );
-                    display_manager.println(
+                    windows_printed_to += display_manager.println(
                         GeoIRC.getATimeStamp(
                             settings_manager.getString( "/gui/format/timestamp", "" )
                         ) + text,
@@ -1094,7 +1095,15 @@ public class Server
                 }
             }
 
-            display_manager.println( line, Server.this.toString() + " " + FILTER_SPECIAL_CHAR + "raw" );
+            display_manager.println(
+                line,
+                Server.this.toString() + " " + FILTER_SPECIAL_CHAR + "raw"
+                + (
+                    ( windows_printed_to > 0 )
+                    ? ( FILTER_SPECIAL_CHAR + "printed" )
+                    : ""
+                )
+            );
             script_interface.onRaw( Server.this.toString() + " " + line );
         }
     }
