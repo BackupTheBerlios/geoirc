@@ -1,0 +1,6 @@
+Changelog for GeoIRC 0.1.9a
+---------------------------
+
+Fixed nicklist bug.
+Pistos 2003-07-30
+

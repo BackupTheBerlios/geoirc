@@ -41,7 +41,7 @@ public class Channel implements GeoIRCConstants
     )
     {
         this.server = server;
-        this.name = name;
+        this.name = name.toLowerCase();
         this.info_manager = info_manager;
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
@@ -237,9 +237,23 @@ public class Channel implements GeoIRCConstants
     {
         if( user != null )
         {
+            int old_index = members.indexOf( user );
             sortMembers();
             int new_index = members.indexOf( user );
             info_manager.acknowledgeUserChange( this, user, new_index );
+            
+            if(
+                ( sort_order == SORT_TIME_SINCE_LAST_ASCENDING )
+                && ( old_index == new_index )
+                && ( old_index != 0 )
+            )
+            {
+                display_manager.printlnDebug(
+                    "Warning: Member position unchanged after sort ("
+                    + Integer.toString( old_index ) + ")"
+                );
+            }
+            
         }
     }
     

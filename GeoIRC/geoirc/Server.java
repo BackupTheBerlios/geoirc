@@ -235,7 +235,7 @@ public class Server
         for( int i = 0; i < n; i++ )
         {
             c = (Channel) channels.elementAt( i );
-            if( c.getName().equals( name ) )
+            if( c.getName().equals( name.toLowerCase() ) )
             {
                 retval = c;
                 break;
@@ -451,6 +451,11 @@ public class Server
             {
                 String qualities = Server.this.toString();
                 
+                /*
+                :Viper874!rnxyl@trvl-216-12-83-225.access.ntelos.net JOIN :#GeoShell
+                :ChanServ!ChanServ@services. MODE #geoshell +v Viper874 
+                 */
+                
                 if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
                 {
                     String nick = getNick( tokens[ 0 ] );
@@ -478,6 +483,13 @@ public class Server
                         {
                             User user = addMember( nick );
                             chan_obj.addMember( user );
+                        }
+                        else
+                        {
+                            display_manager.printlnDebug(
+                                "Warning: No associated channel object for '"
+                                + channel + "'."
+                            );
                         }
                     }
                 }
