@@ -6,7 +6,7 @@
 
 package geoirc;
 
-//import geoirc.conf.SettingsDialog;
+import geoirc.conf.SettingsDialog;
 import geoirc.util.JMenuHelper;
 import geoirc.util.Util;
 
@@ -101,7 +101,7 @@ public class DisplayManager
         
         desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
 		JMenu settings_menu = JMenuHelper.addMenuBarItem(menu_bar, "_Settings");
-		ActionListener actionProcCmd = new OpenSettingsDialogListener(settings_manager);
+		ActionListener actionProcCmd = new OpenSettingsDialogListener(settings_manager, this);
 		JMenuHelper.addMenuItem(settings_menu, "_Options", actionProcCmd);
         
         geoirc.getContentPane().add( desktop_pane );
@@ -1212,15 +1212,17 @@ public class DisplayManager
 	class OpenSettingsDialogListener implements java.awt.event.ActionListener
 	{
 		XmlProcessable settings_manager;
-
-		OpenSettingsDialogListener(XmlProcessable settings_manager)
+		DisplayManager display_manager;
+		
+		OpenSettingsDialogListener(XmlProcessable settings_manager, DisplayManager display_manager)
 		{
 			this.settings_manager = settings_manager;
+			this.display_manager = display_manager;
 		}
 		public void actionPerformed(ActionEvent e)
 		{
-			//SettingsDialog dlg = new SettingsDialog(settings_manager);
-			//dlg.show();			
+			SettingsDialog dlg = new SettingsDialog(settings_manager, display_manager);
+			dlg.show();			
 		}
 	}
 }
