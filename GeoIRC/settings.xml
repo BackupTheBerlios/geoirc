@@ -115,11 +115,18 @@
             <node name="0">
               <map>
                 <entry key="filter" value="" />
-                <entry key="regexp" value=".*Pistos.*" />
+                <entry key="regexp" value=".*ooga.*" />
                 <entry key="format" value="bg0000ff" />
               </map>
             </node>
             <node name="1">
+              <map>
+                <entry key="filter" value="" />
+                <entry key="regexp" value=".*&lt;(.+)&gt;.*" />
+                <entry key="format" value="fgffffff" />
+              </map>
+            </node>
+            <node name="2">
               <map />
             </node>
           </node>

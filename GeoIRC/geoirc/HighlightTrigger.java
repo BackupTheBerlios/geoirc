@@ -55,19 +55,47 @@ public class HighlightTrigger implements GeoIRCConstants
     public String highlight( String line, String qualities )
     {
         String highlighted_line = line;
+        Matcher matcher = regexp.matcher( line );
+        String group = null;;
         
         try
         {
             if(
                 BoolExpEvaluator.evaluate( filter, qualities )
-                && regexp.matcher( line ).matches()
+                && matcher.matches()
             )
             {
-                highlighted_line =
-                    STYLE_ESCAPE_SEQUENCE
-                    + format
-                    + STYLE_TERMINATION_SEQUENCE
-                    + line;
+                if( matcher.groupCount() > 0 )
+                {
+                    group = matcher.group( 1 );
+                    if( ( group != null ) && ( ! group.equals( "" ) ) )
+                    {
+                        /* Problem: We're searching for the first match of this
+                         * matched group.  The ACTUAL match may not be the first
+                         * one!  :(  Ugh.
+                         */
+                        int index = line.indexOf( group );
+                        highlighted_line =
+                            line.substring( 0, index )
+                            + STYLE_ESCAPE_SEQUENCE
+                            + format
+                            + STYLE_TERMINATION_SEQUENCE
+                            + group
+                            + STYLE_ESCAPE_SEQUENCE
+                            + "normal"
+                            + STYLE_TERMINATION_SEQUENCE
+                            + line.substring( index + group.length() );
+                    }
+                }
+                else
+                {
+                    // No parentheses, so highlight the whole line.
+                    highlighted_line =
+                        STYLE_ESCAPE_SEQUENCE
+                        + format
+                        + STYLE_TERMINATION_SEQUENCE
+                        + line;
+                }
             }
         }
         catch( BadExpressionException e )

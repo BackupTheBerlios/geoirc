@@ -67,6 +67,10 @@ public class HighlightManager implements GeoIRCConstants
     
     public String highlight( String line, String qualities )
     {
+        /* TODO: There's the problem that the highlighting rules
+         * also apply to the raw formatting text, as well.  :(
+         */
+        
         int n = triggers.size();
         HighlightTrigger ht;
         String highlighted_line = line;
