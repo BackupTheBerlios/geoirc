@@ -1304,7 +1304,7 @@ public class DisplayManager
             
         }
     }
-
+    
     /* ************************************************************
      * Listener Implementations
      */
@@ -1313,6 +1313,7 @@ public class DisplayManager
     {
         GIWindow giw = (GIWindow) e.getInternalFrame();
         last_activated_frame = giw.getFrameWrapper();
+        giw.activateFirstTextPane();
     }
     
     public void internalFrameClosed( InternalFrameEvent e )
@@ -1404,7 +1405,11 @@ public class DisplayManager
         }
     }
     
-    public void windowActivated(WindowEvent e) {
+    public void windowActivated( WindowEvent e )
+    {
+        GIExternalWindow giew = (GIExternalWindow) e.getSource();
+        last_activated_frame = giew.getFrameWrapper();
+        giew.activateFirstTextPane();
     }
     
     public void windowClosed( WindowEvent e )
@@ -1450,7 +1455,6 @@ public class DisplayManager
             recordDesktopState();
         }
     }
-    
     
     /* ************************************************************ */
     

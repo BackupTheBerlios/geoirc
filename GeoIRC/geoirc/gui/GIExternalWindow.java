@@ -9,19 +9,22 @@ package geoirc.gui;
 import geoirc.SettingsManager;
 
 import java.awt.Container;
+import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
 /**
  *
  * @author  Pistos
  */
-public class GIExternalWindow extends JFrame implements geoirc.GeoIRCConstants
+public class GIExternalWindow
+    extends JFrame
+    implements geoirc.GeoIRCConstants, java.awt.event.MouseListener
 {
     
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected Container pane;
-    protected GIPaneWrapper pane_wrapper;
+    protected GIPaneWrapper gipw;
     protected GIFrameWrapper gifw;
     
     // No default constructor
@@ -42,13 +45,14 @@ public class GIExternalWindow extends JFrame implements geoirc.GeoIRCConstants
         
         addWindowListener( display_manager );
         addComponentListener( display_manager );
+        addMouseListener( this );
         
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
 
         pane = null;
         
-        pane_wrapper = new GIPaneWrapper(
+        gipw = new GIPaneWrapper(
             settings_manager,
             display_manager,
             getContentPane(),
@@ -56,11 +60,11 @@ public class GIExternalWindow extends JFrame implements geoirc.GeoIRCConstants
             EXTERNAL_CONTENT_PANE
         );
         
-        panes.add( pane_wrapper );
+        panes.add( gipw );
         
         gifw = new GIFrameWrapper( this );
         frames.add( gifw );
-        pane_wrapper.setFrame( gifw );
+        gipw.setFrame( gifw );
         
         selectFrame();
     }
@@ -86,15 +90,15 @@ public class GIExternalWindow extends JFrame implements geoirc.GeoIRCConstants
     
     public GIPaneWrapper getPaneWrapper()
     {
-        return pane_wrapper;
+        return gipw;
     }
     
-    public void setPaneWrapper( GIPaneWrapper pane_wrapper )
+    public void setPaneWrapper( GIPaneWrapper gipw )
     {
-        this.pane_wrapper = pane_wrapper;
+        this.gipw = gipw;
     }
     
-    public void setFrameWrapper( GIFrameWrapper gipw )
+    public void setFrameWrapper( GIFrameWrapper gifw )
     {
         this.gifw = gifw;
     }
@@ -108,4 +112,29 @@ public class GIExternalWindow extends JFrame implements geoirc.GeoIRCConstants
     {
         setVisible( true );
     }
+    
+    public boolean activateFirstTextPane()
+    {
+        boolean activated = false;
+        if( gipw != null )
+        {
+            GIPaneWrapper gitpw = gipw.getFirstTextPaneWrapper();
+            if( gitpw != null )
+            {
+                gitpw.activate();
+                activated = true;
+            }
+        }
+        return activated;
+    }
+    
+    public void mouseClicked( MouseEvent e ) { }
+    public void mouseEntered( MouseEvent e ) { }
+    public void mouseExited( MouseEvent e ) { }
+    public void mousePressed( MouseEvent e ) { }
+    public void mouseReleased( MouseEvent e )
+    {
+        activateFirstTextPane();
+    }
+    
 }

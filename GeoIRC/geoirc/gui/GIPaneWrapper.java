@@ -10,7 +10,9 @@ import geoirc.GeoIRC;
 import geoirc.SettingsManager;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import javax.swing.JSplitPane;
 
 /**
  * A wrapper class used to wrap content panes, split panes and GIPanes,
@@ -221,5 +223,45 @@ public class GIPaneWrapper implements geoirc.GeoIRCConstants
             Color colour = new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
             button.setForeground( colour );
         }
+    }
+    
+    public GIPaneWrapper getFirstTextPaneWrapper()
+    {
+        return getFirstTextPaneWrapper( pane );
+    }
+    
+    protected GIPaneWrapper getFirstTextPaneWrapper( Component component )
+    {
+        GIPaneWrapper retval = null;
+        if( component instanceof JSplitPane )
+        {
+            JSplitPane split_pane = (JSplitPane) component;
+            retval = getFirstTextPaneWrapper( split_pane.getTopComponent() );
+            if( retval == null )
+            {
+                retval = getFirstTextPaneWrapper( split_pane.getBottomComponent() );
+            }
+        }
+        else if( component instanceof GITextPane )
+        {
+            retval = ((GITextPane) component).getPaneWrapper();
+        }
+        else if(
+            ( component instanceof GIInfoPane )
+            || ( component instanceof org.jscroll.JScrollDesktopPane )
+        )
+        {
+            // Ignore
+        }
+        else // content pane
+        {
+            Container container = (Container) component;
+            if( container.getComponentCount() > 0 )
+            {
+                retval = getFirstTextPaneWrapper( container.getComponent( 0 ) );
+            }
+        }
+        
+        return retval;
     }
 }

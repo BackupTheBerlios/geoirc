@@ -10,6 +10,7 @@ import geoirc.SettingsManager;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.jscroll.*;
@@ -19,12 +20,14 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConstants
+public class GIWindow
+    extends JScrollInternalFrame
+    implements geoirc.GeoIRCConstants, java.awt.event.MouseListener
 {
     protected DisplayManager display_manager;
     protected SettingsManager settings_manager;
     protected Container pane;
-    protected GIPaneWrapper pane_wrapper;
+    protected GIPaneWrapper gipw;
     protected GIFrameWrapper gifw;
     
     // No default constructor
@@ -47,6 +50,12 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
         
         addInternalFrameListener( display_manager );
         addComponentListener( display_manager );
+        if( getComponentCount() > 1 )
+        {
+            // A wild guess that component 1 is the title bar.
+            getComponent( 1 ).addMouseListener( this );
+        }
+        addMouseListener( this );
         
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
@@ -54,17 +63,17 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
         pane = null;
         gifw = new GIFrameWrapper( this );
         
-        pane_wrapper = new GIPaneWrapper(
+        gipw = new GIPaneWrapper(
             settings_manager,
             display_manager,
             getContentPane(),
             "Content Pane",
             CHILD_CONTENT_PANE
         );
-        pane_wrapper.setFrame( gifw );
+        gipw.setFrame( gifw );
         
         frames.add( gifw );
-        panes.add( pane_wrapper );
+        panes.add( gipw );
         
         selectFrame();
     }
@@ -90,12 +99,12 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     
     public GIPaneWrapper getPaneWrapper()
     {
-        return pane_wrapper;
+        return gipw;
     }
     
-    public void setPaneWrapper( GIPaneWrapper pane_wrapper )
+    public void setPaneWrapper( GIPaneWrapper gipw )
     {
-        this.pane_wrapper = pane_wrapper;
+        this.gipw = gipw;
     }
     
     public void selectFrame()
@@ -120,4 +129,29 @@ public class GIWindow extends JScrollInternalFrame implements geoirc.GeoIRCConst
     {
         return gifw;
     }
+    
+    public boolean activateFirstTextPane()
+    {
+        boolean activated = false;
+        if( gipw != null )
+        {
+            GIPaneWrapper gitpw = gipw.getFirstTextPaneWrapper();
+            if( gitpw != null )
+            {
+                gitpw.activate();
+                activated = true;
+            }
+        }
+        return activated;
+    }
+    
+    public void mouseClicked( MouseEvent e ) { }
+    public void mouseEntered( MouseEvent e ) { }
+    public void mouseExited( MouseEvent e ) { }
+    public void mousePressed( MouseEvent e ) { }
+    public void mouseReleased( MouseEvent e )
+    {
+        activateFirstTextPane();
+    }
+    
 }
