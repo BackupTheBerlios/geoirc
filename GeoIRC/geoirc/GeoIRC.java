@@ -1002,9 +1002,9 @@ public class GeoIRC
                 break;
             case CMD_COMPLETE_NICK:
                 {
-                    if( current_rm instanceof Server )
+                    String input_line = input_field.getText();
+                    if( input_line.length() > 0 )
                     {
-                        String input_line = input_field.getText();
                         int caret_pos = input_field.getCaretPosition();
                         int left_space_pos;
                         if( caret_pos > 0 )
@@ -1025,26 +1025,69 @@ public class GeoIRC
                         {
                             word = input_line.substring( left_space_pos + 1 );
                         }
-
+                        
+                        
                         if( word != null )
                         {
-                            Server s = (Server) current_rm;
-                            Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
-                            if( channel != null )
+                            String replacement_text = "";
+                            
+                            if( ( word.length() > 0 ) && ( word.charAt( 0 ) == '/' ) )
                             {
-                                String completed_nick = channel.completeNick( word, (left_space_pos == -1) );
+                                word = word.substring( 1 );
+                                Vector commands_found = new Vector();
+                                
+                                for( int i = 0, n = CMDS.length; i < n; i++ )
+                                {
+                                    if( CMDS[ i ].startsWith( word ) )
+                                    {
+                                        commands_found.add( CMDS[ i ] );
+                                    }
+                                }
+                                
+                                if( commands_found.size() == 0 )
+                                {
+                                    display_manager.printlnDebug(
+                                        "No command found starting with " + word + "."
+                                    );
+                                }
+                                else if( commands_found.size() == 1 )
+                                {
+                                    replacement_text = "/" + (String) commands_found.elementAt( 0 );
+                                }
+                                else
+                                {
+                                    for( int i = 0, n = commands_found.size(); i < n; i++ )
+                                    {
+                                        display_manager.printlnDebug(
+                                            "/" + (String) commands_found.elementAt( i )
+                                        );
+                                    }
+                                }
+                            }
+                            else if( current_rm instanceof Server )
+                            {
+                                Server s = (Server) current_rm;
+                                Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
+                                if( channel != null )
+                                {
+                                    replacement_text = channel.completeNick( word, (left_space_pos == -1) );
+                                }
+                            }
+                            
+                            if( replacement_text != "" )
+                            {
                                 if( right_space_pos > -1 )
                                 {
                                     input_line =
                                         input_line.substring( 0, left_space_pos + 1 )
-                                        + completed_nick
+                                        + replacement_text
                                         + input_line.substring( right_space_pos );
                                 }
                                 else
                                 {
                                     input_line =
                                         input_line.substring( 0, left_space_pos + 1 )
-                                        + completed_nick;
+                                        + replacement_text;
                                 }
                                 input_field.setText( input_line );
                             }
@@ -1221,7 +1264,10 @@ public class GeoIRC
                     for( int i = 0; i < n; i++ )
                     {
                         ((RemoteMachine) remote_machines.elementAt( i )).send(
-                            "QUIT"
+                            "QUIT :" + settings_manager.getString(
+                                "/misc/quit message",
+                                "http://geoirc.berlios.de"
+                            )
                         );
                     }
                     // Do we need a more graceful termination?  :)
