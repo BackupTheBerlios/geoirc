@@ -11,10 +11,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
-import java.util.prefs.*;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.prefs.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.jscroll.*;
@@ -324,6 +326,21 @@ public class GeoIRC
         }
         
         return retval;
+    }
+    
+    public static String getATimeStamp( String pattern )
+    {
+        // http://java.sun.com/docs/books/tutorial/i18n/format/datepattern.html
+
+        String timestamp = "";
+        SimpleDateFormat formatter;
+        if( ! pattern.equals( "" ) )
+        {
+            formatter = new SimpleDateFormat( pattern );
+            timestamp = formatter.format( new Date() ) + " ";
+        }
+        
+        return timestamp;
     }
     
     /** This method is called from within the constructor to
@@ -725,8 +742,14 @@ public class GeoIRC
                                 text = "<" + current_nick + "> " + text;
                             }
                             display_manager.println(
-                                text,
+                                getATimeStamp(
+                                    settings_manager.getString(
+                                        "/gui/format/timestamp", ""
+                                    )
+                                )
+                                + text,
                                 s.toString() + " " + args[ 1 ]
+                                + " from=" + current_nick
                             );
                         }
                         result = CommandExecutor.EXEC_SUCCESS;

@@ -30,3 +30,7 @@ to go for a current_remote_machine sort of system.  We'll see how this goes.
 Pistos 2003-07-06
 
 Added code which saves and restores channel membership.
+Pistos 2003-07-06
+
+Added timestamps.  See http://java.sun.com/docs/books/tutorial/i18n/format/datepattern.html
+Pistos 2003-07-06

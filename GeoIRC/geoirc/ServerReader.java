@@ -20,6 +20,7 @@ public class ServerReader
     protected Server server;
     protected BufferedReader in;
     protected DisplayManager display_manager;
+    protected SettingsManager settings_manager;
     
     // No default constructor.
     private ServerReader() { }
@@ -27,11 +28,13 @@ public class ServerReader
     public ServerReader(
         Server parent,
         DisplayManager display_manager,
+        SettingsManager settings_manager,
         BufferedReader in
     )
     {
         this.in = in;
         this.display_manager = display_manager;
+        this.settings_manager = settings_manager;
         server = parent;
     }
     
@@ -88,8 +91,12 @@ public class ServerReader
                     text = "<" + nick + "> " + text;
                 }
                 
+                String timestamp = GeoIRC.getATimeStamp(
+                    settings_manager.getString( "/gui/format/timestamp", "" )
+                );
+
                 display_manager.println(
-                    text,
+                    timestamp + text,
                     server.toString()
                     + " " + tokens[ 2 ]
                     + " from=" + nick

@@ -52,6 +52,7 @@ public class Server
                 server_reader = new ServerReader( 
                     this,
                     display_manager,
+                    settings_manager,
                     new BufferedReader(
                         new InputStreamReader(
                             socket.getInputStream()
