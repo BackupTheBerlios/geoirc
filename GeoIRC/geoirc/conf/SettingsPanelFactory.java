@@ -8,9 +8,10 @@ package geoirc.conf;
 import geoirc.DisplayManager;
 import geoirc.XmlProcessable;
 import geoirc.conf.panes.ChannelPane;
+import geoirc.conf.panes.CommandAliasesPane;
 import geoirc.conf.panes.ConnectionPane;
 import geoirc.conf.panes.GeneralPane;
-import geoirc.conf.panes.HighlightningPane;
+import geoirc.conf.panes.HighlightingPane;
 import geoirc.conf.panes.RootPane;
 import geoirc.conf.panes.VisualPane;
 
@@ -42,14 +43,16 @@ public class SettingsPanelFactory
 		if (panels.size() == 0)
 		{
 			//Generell Settings
-			panels.add(new GeneralPane(settings_manager, valueRules, "Generell Settings"));
+			BaseSettingsPanel genPane = new GeneralPane(settings_manager, valueRules, "Generell Settings");
+			genPane.addChild(new CommandAliasesPane(settings_manager, valueRules, "Command Aliases"));
+			panels.add(genPane);
 			//Connection Settings
 			BaseSettingsPanel conPane = new ConnectionPane(settings_manager, valueRules, "Connection Settings");
 			conPane.addChild(new ChannelPane(settings_manager, valueRules, "IRC Server/Channels"));
 			panels.add(conPane);
 			//Visual Settings
 			BaseSettingsPanel visPane = new VisualPane(settings_manager, valueRules, "Visual Settings");
-			visPane.addChild(new HighlightningPane(settings_manager, valueRules, "Highlightning"));
+			visPane.addChild(new HighlightingPane(settings_manager, valueRules, "Highlighting"));
 			
 			panels.add(visPane);
 		}

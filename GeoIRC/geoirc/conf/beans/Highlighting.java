@@ -1,5 +1,5 @@
 /*
- * Highlightning.java
+ * Highlighting.java
  * 
  * Created on 21.08.2003
  */
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  * @author netseeker aka Michael Manske
  */
-public class Highlightning
+public class Highlighting
 {
 	private Pattern regexp;
 	private String filter;
@@ -19,11 +19,11 @@ public class Highlightning
 	/**
 	 * 
 	 */
-	public Highlightning()
+	public Highlighting()
 	{
 	}
 	
-	public Highlightning(String filter, String regexp, String format)
+	public Highlighting(String filter, String regexp, String format)
 	{
 		setFilter(filter);
 		setRegexp(regexp);

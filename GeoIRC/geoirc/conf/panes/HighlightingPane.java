@@ -1,5 +1,5 @@
 /*
- * HighlightningPane.java
+ * HighlightingPane.java
  * 
  * Created on 21.08.2003
  */
@@ -12,7 +12,7 @@ import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.Storable;
 import geoirc.conf.TableCellColorRenderer;
 import geoirc.conf.TitlePane;
-import geoirc.conf.beans.Highlightning;
+import geoirc.conf.beans.Highlighting;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JRegExTextField;
 import geoirc.util.Util;
@@ -47,7 +47,7 @@ import javax.swing.table.TableColumn;
  * TODO: Pistos please add correct handling of /gui/text windows/highlighting/format<br>
  * i don't know exactly how to handle that... 
  */
-public class HighlightningPane
+public class HighlightingPane
 	extends BaseSettingsPanel
 	implements Storable, GeoIRCConstants
 {
@@ -61,14 +61,14 @@ public class HighlightningPane
 	 * @param valueRules
 	 * @param name
 	 */
-	public HighlightningPane(
+	public HighlightingPane(
 		XmlProcessable settings,
 		GeoIRCDefaults valueRules,
 		String name)
 	{
 		super(settings, valueRules, name);
 		colorRule = rules.getValueRule("COLOR");
-		ltm.setData(getHighlightnings());
+		ltm.setData(getHighlightings());
 		initComponents();
 	}
 
@@ -108,7 +108,7 @@ public class HighlightningPane
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				ltm.addRow(new Highlightning("new highlightning", ".+", colorRule.getValue().toString()));				
+				ltm.addRow(new Highlighting("new highlighting", ".+", colorRule.getValue().toString()));				
 			}			
 		});
 		
@@ -118,7 +118,7 @@ public class HighlightningPane
 		addLayoutStopper(0,3);		
 	}
 
-	private List getHighlightnings()
+	private List getHighlightings()
 	{
 		String path = "/gui/text windows/highlighting/";
 		int i = 0;
@@ -133,7 +133,7 @@ public class HighlightningPane
 				settings_manager.getString(
 					node + "format",
 					colorRule.getValue().toString());
-			data.add(new Highlightning(filter, regexp, format));
+			data.add(new Highlighting(filter, regexp, format));
 
 			i++;
 			node = path + String.valueOf(i) + "/";
@@ -154,7 +154,7 @@ public class HighlightningPane
 		for(int i = 0; i < list.size(); i++)
 		{
 			node = path + String.valueOf(i) + "/";
-			Highlightning hl = (Highlightning)list.get(i);
+			Highlighting hl = (Highlighting)list.get(i);
 			settings_manager.setString(node + "filter", hl.getFilter());
 			settings_manager.setString(node + "regexp", hl.getRegexp());
 			settings_manager.setString(node + "format", hl.getFormat());
@@ -172,7 +172,7 @@ public class HighlightningPane
 		
 		while( it.hasNext() )
 		{
-			Highlightning hl = (Highlightning)it.next();
+			Highlighting hl = (Highlighting)it.next();
 			try
 			{
 				Pattern.compile(hl.getRegexp());
@@ -297,7 +297,7 @@ public class HighlightningPane
 
 		private void setListValue(Object value, int row, int col)
 		{
-			Highlightning hl = (Highlightning) data.get(row);
+			Highlighting hl = (Highlighting) data.get(row);
 			switch (col)
 			{
 				case 0 :
@@ -318,7 +318,7 @@ public class HighlightningPane
 
 		private Object getListValue(int row, int col)
 		{
-			Highlightning hl = (Highlightning) data.get(row);
+			Highlighting hl = (Highlighting) data.get(row);
 			Object result = null;
 
 			switch (col)
