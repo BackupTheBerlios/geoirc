@@ -95,14 +95,14 @@ public class SettingsDialog
 		Ok.setText("OK");
 		Ok.addActionListener(new SettingsDialog_Ok_actionAdapter(this));
 		Ok.setActionCommand("onOk");
-		Ok.setToolTipText("Save settings");
+		Ok.setToolTipText("Save settings and close this window.");
 		Ok.setPreferredSize(new Dimension(80, 25));
 		Ok.setMinimumSize(new Dimension(80, 25));
 		Ok.setMaximumSize(new Dimension(80, 25));
 		Apply.setMaximumSize(new Dimension(80, 25));
 		Apply.setMinimumSize(new Dimension(80, 25));
 		Apply.setPreferredSize(new Dimension(80, 25));
-		Apply.setToolTipText("Save settings and close this window.");
+		Apply.setToolTipText("Save settings.");
 		Apply.setActionCommand("onApply");
 		Apply.setText("Apply");
 		Apply.addActionListener(new SettingsDialog_Apply_actionAdapter(this));
@@ -187,6 +187,7 @@ public class SettingsDialog
 
 	void Apply_actionPerformed(ActionEvent e)
 	{
+		saveAllPanelData();
 	}
 
 	void Cancel_actionPerformed(ActionEvent e)
@@ -197,8 +198,46 @@ public class SettingsDialog
 
 	void Ok_actionPerformed(ActionEvent e)
 	{
+		saveAllPanelData();
 		close();
 		this.dispose();
+	}
+	
+	private void saveAllPanelData()
+	{
+		Iterator it = this.panels.iterator();
+		
+		while ( it.hasNext() )
+		{
+			Object obj = it.next();
+			if(obj instanceof BaseSettingsPanel)
+			{
+				savePaneData((BaseSettingsPanel)obj);
+			}
+		}
+	}
+	
+	private void savePaneData(BaseSettingsPanel pane)
+	{
+		//store pane itself
+		if(pane instanceof Storable)
+		{
+			Storable store = (Storable)pane;
+			if(store.hasErrors() == false)
+			store.saveData();
+		}
+		
+		//store pane's children
+		Iterator it = pane.getChilds().iterator();
+
+		while ( it.hasNext() )
+		{
+			Object obj = it.next();
+			if(obj instanceof BaseSettingsPanel)
+			{
+				savePaneData((BaseSettingsPanel)obj);
+			}
+		}
 	}
 
 	/* (non-Javadoc)

@@ -554,10 +554,10 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 
 			int a = 0;
 			String childPath = nodePath + "channels/";
-			String childNodePath = childPath + String.valueOf(a) + "/";
 			Iterator cIt = server.getChannels().iterator();
 			while (cIt.hasNext())
 			{
+				String childNodePath = childPath + String.valueOf(a) + "/";
 				Channel channel = (Channel) cIt.next();
 				settings_manager.setString(
 					childNodePath + "name",
@@ -565,7 +565,9 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 				settings_manager.setBoolean(
 					childNodePath + "autojoin",
 					channel.isAutojoin());
+				a++;				
 			}
+			i++;			
 		}
 
 		return true;
