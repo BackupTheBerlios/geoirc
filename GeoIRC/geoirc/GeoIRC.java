@@ -152,6 +152,18 @@ public class GeoIRC
         
         // Map input (keystrokes, mouseclicks, etc.)
         
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F1 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F2 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F3 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F4 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F5 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F6 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F7 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F8 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F9 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F10 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F11 );
+        setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_F12 );
         setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_UP );
         setupKeyMapping( NO_MODIFIER_KEYS, KeyEvent.VK_DOWN );
         setupKeyMapping( ALT, KeyEvent.VK_RIGHT );
@@ -451,7 +463,10 @@ public class GeoIRC
     public void focusLost( FocusEvent e )
     {
         Component thief = e.getOppositeComponent();
-        if( thief instanceof JTextPane )
+        if(
+            ( thief instanceof JTextPane )
+            || ( thief instanceof SkinWindowButton )
+        )
         {
             SwingUtilities.invokeLater( new Runnable()
                 {

@@ -75,7 +75,7 @@
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="irc.freenode.net" />
               <entry key="x" value="0" />
-              <entry key="y" value="464" />
+              <entry key="y" value="463" />
               <entry key="height" value="464" />
               <entry key="width" value="633" />
               <entry key="filter" value="irc.freenode.net" />
@@ -130,6 +130,7 @@
           <entry key="|Up" value="previous_history_entry" />
           <entry key="|F2" value="nick Pistos|GeoIRC" />
           <entry key="|F3" value="nick GeoIRC_User" />
+          <entry key="|F9" value="nick Pistos" />
         </map>
       </node>
       <node name="personal">
@@ -145,8 +146,8 @@
           <map />
           <node name="0">
             <map>
-              <entry key="filter" value="from=Pistos" />
-              <entry key="regexp" value=".*" />
+              <entry key="filter" value="" />
+              <entry key="regexp" value="[G|g]eo[I|i][R|r][C|c]" />
               <entry key="filename" value="./bloop.wav" />
             </map>
           </node>

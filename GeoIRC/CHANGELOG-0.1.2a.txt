@@ -1,0 +1,11 @@
+Changelog for GeoIRC 0.1.2a
+---------------------------
+
+Changed the sound code so that the antelmann material is no longer needed.
+Pistos, Jaykul 2003-07-07
+
+Fixed another focus-theft bug, to do with selecting/changing child windows.
+Pistos 2003-07-07
+
+Filled out the keymapping code in GeoIRC.java.
+Pistos 2003-07-07

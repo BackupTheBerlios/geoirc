@@ -6,8 +6,12 @@
 
 package geoirc;
 
-import com.antelmann.sound.*;
+//import com.antelmann.sound.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.io.*;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.regex.*;
 
 /**
@@ -17,9 +21,10 @@ import java.util.regex.*;
 public class SoundTrigger
 {
     String filter;
-    SoundPlayer player;
+    //SoundPlayer player;
     DisplayManager display_manager;
     Pattern regexp;
+    AudioClip clip;
     
     // No default constructor.
     private SoundTrigger() { }
@@ -49,6 +54,24 @@ public class SoundTrigger
             throw e;
         }
         
+        URL url = null;
+        clip = null;
+        try
+        {
+            url = new File( sound_file ).toURL(); 
+            clip = Applet.newAudioClip( url );
+        }
+        catch ( MalformedURLException e )
+        {
+            display_manager.printlnDebug( e.getMessage() );
+            display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
+        }
+        if( clip == null )
+        {
+            display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
+        }
+        
+        /*
         try
         {
             player = new SoundPlayer( new File( sound_file ) );
@@ -58,6 +81,7 @@ public class SoundTrigger
             display_manager.printlnDebug( e.getMessage() );
             display_manager.printlnDebug( "Failed to load '" + sound_file + "'" );
         }
+         */
     }
     
     /* Check against a message which has certain qualities.
@@ -80,7 +104,8 @@ public class SoundTrigger
         
         if( passed )
         {
-            player.play();
+            //player.play();
+            clip.play();
         }
         
         return passed;
