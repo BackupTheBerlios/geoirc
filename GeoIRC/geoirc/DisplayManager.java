@@ -34,20 +34,24 @@ public class DisplayManager
     protected SettingsManager settings_manager;
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
-    protected Vector windows;
-    protected JScrollDesktopPane desktop_pane;
-    protected GIWindow last_activated_frame;
-    protected JTextField input_field;
     protected boolean listening;
+
+    protected JTextField input_field;
+    
+    protected Container content_pane;
+    protected JScrollDesktopPane desktop_pane;
+    
+    protected Vector windows;
+    protected JInternalFrame last_activated_frame;
+    protected int last_added_frame_x;
+    protected int last_added_frame_y;
+    
     protected Vector inactive_info_panes;
     protected Vector active_info_panes;
-    protected Container content_pane;
     protected Vector docked_panes;
     protected Vector undocked_panes;
     protected Vector panes;
     
-    protected int last_added_frame_x;
-    protected int last_added_frame_y;
     protected static final int MAX_NEW_WINDOW_X = 500;
     protected static final int MAX_NEW_WINDOW_Y = 400;
     protected static final int MIN_NEW_WINDOW_X = 10;
@@ -139,7 +143,7 @@ public class DisplayManager
             this, settings_manager, title
         );
         GITextPane gitp = new GITextPane(
-            this, settings_manager, style_manager, title, filter
+            this, settings_manager, style_manager, text_window, title, filter
         );
         text_window.addPane( gitp );
         undocked_panes.add( gitp );
@@ -158,7 +162,7 @@ public class DisplayManager
         }
         GIWindow info_window = new GIWindow( this, settings_manager, actual_title );
         GIInfoPane giip = new GIInfoPane(
-            this, settings_manager, actual_title, path
+            this, settings_manager, info_window, actual_title, path
         );
         info_window.addPane( giip );
         undocked_panes.add( giip );
@@ -215,7 +219,7 @@ public class DisplayManager
             {
                 giip.deactivate();
                 active_info_panes.remove( i );
-                inactive_info_panes.add( giiw );
+                inactive_info_panes.add( giip );
             }
         }
     }
@@ -254,7 +258,7 @@ public class DisplayManager
     {
         GIPane pane;
         String retval = null;
-        GIWindow giw = last_activated_frame;
+        GIWindow giw = (GIWindow) last_activated_frame;
         if( giw == null )
         {
             giw = getSelectedFrame();
@@ -314,15 +318,23 @@ public class DisplayManager
             )
             {
                 GIWindow giw = (GIWindow) windows.elementAt( window );
+                GIPane pane = giw.getPane();
                 JSplitPane split_pane = null;
-                content_pane.remove( desktop_pane );
+                Container desktop_container = desktop_pane.getParent();
+                boolean was_primary = true;
+                if( desktop_container instanceof JSplitPane )
+                {
+                    JSplitPane sp = (JSplitPane) desktop_container;
+                    was_primary = ( sp.getTopComponent() == desktop_pane );
+                }
+                desktop_container.remove( desktop_pane );
                 switch( location )
                 {
                     case DOCK_TOP:
                         {
                             split_pane = new JSplitPane(
                                 JSplitPane.VERTICAL_SPLIT,
-                                giw.getScrollPane(),
+                                pane,
                                 desktop_pane
                             );
                         }
@@ -332,7 +344,7 @@ public class DisplayManager
                             split_pane = new JSplitPane(
                                 JSplitPane.HORIZONTAL_SPLIT,
                                 desktop_pane, 
-                                giw.getScrollPane()
+                                pane
                             );
                         }
                         break;
@@ -341,7 +353,7 @@ public class DisplayManager
                             split_pane = new JSplitPane(
                                 JSplitPane.VERTICAL_SPLIT,
                                 desktop_pane, 
-                                giw.getScrollPane()
+                                pane
                             );
                         }
                         break;
@@ -349,7 +361,7 @@ public class DisplayManager
                         {
                             split_pane = new JSplitPane(
                                 JSplitPane.HORIZONTAL_SPLIT,
-                                giw.getScrollPane(),
+                                pane,
                                 desktop_pane
                             );
                         }
@@ -357,8 +369,26 @@ public class DisplayManager
                     default:
                         break;
                 }
-                content_pane.add( split_pane );
-                docked_panes.add( split_pane );
+                
+                if( desktop_container instanceof JSplitPane )
+                {
+                    JSplitPane sp = (JSplitPane) desktop_container;
+                    if( was_primary )
+                    {
+                        sp.setTopComponent( split_pane );
+                    }
+                    else
+                    {
+                        sp.setBottomComponent( split_pane );
+                    }
+                }
+                else
+                {
+                    desktop_container.add( split_pane );
+                }
+                
+                docked_panes.add( pane );
+                undocked_panes.remove( pane );
                 success = true;
             }
         }
@@ -377,7 +407,17 @@ public class DisplayManager
     
     public void internalFrameClosed(InternalFrameEvent e)
     {
-        windows.remove( e.getSource() );
+        GIWindow window = (GIWindow) e.getSource();
+        GIPane pane = window.getPane();
+        
+        panes.remove( pane );
+        docked_panes.remove( pane );
+        undocked_panes.remove( pane );
+        active_info_panes.remove( pane );
+        inactive_info_panes.remove( pane );
+        
+        windows.remove( window );
+        
         if( listening )
         {
             recordDesktopState();
@@ -510,9 +550,42 @@ public class DisplayManager
     protected void recordDesktopState()
     {
         settings_manager.removeNode( "/gui/desktop/" );
-        int n = windows.size();
-        JInternalFrame frame;
+        
+        int n = panes.size();
         String i_str;
+        GIPane pane;
+        String setting_path;
+        
+        for( int i = 0; i < n; i++ )
+        {
+            pane = (GIPane) panes.elementAt( i );
+            i_str = Integer.toString( i );
+            
+            setting_path = "/gui/desktop/panes/" + i_str;
+            
+            settings_manager.putString(
+                setting_path + "/type",
+                pane.getClass().toString()
+            );
+
+            if( pane instanceof GITextPane )
+            {
+                settings_manager.putString(
+                    setting_path + "/filter",
+                    ((GITextPane) pane).getFilter()
+                );
+            }
+            else if( pane instanceof GIInfoPane )
+            {
+                settings_manager.putString(
+                    setting_path + "/path",
+                    ((GIInfoPane) pane).getPath()
+                );
+            }
+        }
+        
+        n = windows.size();
+        JInternalFrame frame;
         for( int i = 0; i < n; i++ )
         {
             frame = (JInternalFrame) windows.elementAt( i );
@@ -563,31 +636,17 @@ public class DisplayManager
                 frame.isSelected()
             );
             
-            if( frame instanceof GITextWindow )
-            {
-                settings_manager.putString(
-                    "/gui/desktop/" + i_str + "/filter",
-                    ((GITextWindow) frame).getFilter()
-                );
-            }
-            else if( frame instanceof GIInfoWindow )
-            {
-                settings_manager.putString(
-                    "/gui/desktop/" + i_str + "/path",
-                    ((GIInfoWindow) frame).getPath()
-                );
-            }
-            
         }
     }
 
     protected void restoreDesktopState()
     {
-        int i = 0;
+        int i;
         String i_str;
         
         String type;
         String title;
+        String path;
         int x;
         int y;
         int width;
@@ -595,6 +654,23 @@ public class DisplayManager
         int state;
         boolean is_selected;
         
+        i = 0;
+        while( GOD_IS_GOOD )
+        {
+            i_str = Integer.toString( i );
+            
+            path = settings_manager.getString(
+                "/gui/desktop/panes/" + i_str + "/path",
+                ""
+            );
+            
+            if( path.equals( "" ) )
+            {
+                break;
+            }
+        }
+
+        i = 0;
         while( GOD_IS_GOOD )
         {
             i_str = Integer.toString( i );

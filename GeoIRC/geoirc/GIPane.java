@@ -14,17 +14,18 @@ import javax.swing.JScrollPane;
  */
 public class GIPane extends JScrollPane
 {
+    String title;
+    protected DisplayManager display_manager;
+    protected SettingsManager settings_manager;
+    protected GIWindow window;
     
     // No default constructor
     private GIPane() { }
 
-    String title;
-    protected DisplayManager display_manager;
-    protected SettingsManager settings_manager;
-
     public GIPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
+        GIWindow window,
         String title,
         java.awt.Component contents
     )
@@ -33,7 +34,7 @@ public class GIPane extends JScrollPane
         
         this.display_manager = display_manager;
         this.settings_manager = settings_manager;
-        
+        this.window = window;
     }
     
 }
