@@ -229,7 +229,7 @@ public class GeoIRC
         }
         */
         
-        script_interface = new ScriptInterface( this, settings_manager, display_manager );
+        script_interface = new ScriptInterface( this, settings_manager, display_manager, variable_manager, python_interpreter );
         
         python_interpreter = new PythonInterpreter();
         python_interpreter.set( "geoirc", new PyJavaInstance( script_interface ) );
@@ -415,7 +415,10 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, settings_manager, trigger_manager, info_manager, variable_manager, hostname, port );
+        Server s = new Server(
+            this, display_manager, settings_manager, trigger_manager,
+            info_manager, variable_manager, script_interface, hostname, port
+        );
         remote_machines.add( s );
         if( listening_to_connections )
         {

@@ -34,6 +34,7 @@ public class Server
     protected String current_nick;
     protected InfoManager info_manager;
     protected VariableManager variable_manager;
+    protected ScriptInterface script_interface;
     protected HashSet users;
     
     public Server(
@@ -43,6 +44,7 @@ public class Server
         TriggerManager trigger_manager,
         InfoManager info_manager,
         VariableManager variable_manager,
+        ScriptInterface script_interface,
         String hostname,
         String port
     )
@@ -56,6 +58,7 @@ public class Server
         current_nick = "";
         this.info_manager = info_manager;
         this.variable_manager = variable_manager;
+        this.script_interface = script_interface;
     }
     
     // Returns whether a connection has been established.
@@ -1055,6 +1058,7 @@ public class Server
             }
 
             display_manager.println( line, Server.this.toString() + " " + FILTER_SPECIAL_CHAR + "raw" );
+            script_interface.onRaw( line );
         }
     }
 }
