@@ -55,11 +55,11 @@ public class JValidatingTextField
 	 * @param value value to be inserted in the text field
 	 * @param regex regular expression to use for validating input
 	 */
-	public JValidatingTextField(Object value, String regex)
+	public JValidatingTextField(String value, String regex)
 	{
 		super();
 		setPattern(regex);
-		this.setText(value.toString());
+		this.setText(value);
 	}
 
 	/* (non-Javadoc)
