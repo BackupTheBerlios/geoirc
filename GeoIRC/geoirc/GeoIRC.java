@@ -130,7 +130,7 @@ public class GeoIRC
     protected Hashtable processes;
     protected Hashtable audio_clips;
     protected Vector dcc_requests;
-    protected Vector dcc_chat_offers;
+    protected Vector dcc_offers;
     
     protected IdentServer ident_server;
     
@@ -256,7 +256,7 @@ public class GeoIRC
         listening_to_connections = true;
         processes = new Hashtable();
         dcc_requests = new Vector();
-        dcc_chat_offers = new Vector();
+        dcc_offers = new Vector();
         audio_clips = new Hashtable();
         mouse_button_depressed = false;
         
@@ -1083,9 +1083,9 @@ public class GeoIRC
 
                             DCCConnection dcc;
 
-                            for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
+                            for( int i = 0, n = dcc_offers.size(); i < n; i++ )
                             {
-                                dcc = (DCCConnection) dcc_chat_offers.elementAt( i );
+                                dcc = (DCCConnection) dcc_offers.elementAt( i );
                                 if( dcc.getRemoteIPString().equals( dcc_ip ) )
                                 {
                                     display_manager.println(
@@ -1274,9 +1274,12 @@ public class GeoIRC
                         try
                         {
                             int index = Integer.parseInt( args[ 0 ] );
-                            DCCRequest request = (DCCRequest) dcc_requests.elementAt( index );
-                            request.accept( preferred_nick );
-                            problem = false;
+                            if( ( index > 0 ) && ( index < dcc_requests.size() ) )
+                            {
+                                DCCRequest request = (DCCRequest) dcc_requests.elementAt( index );
+                                request.accept( preferred_nick );
+                                problem = false;
+                            }
                         }
                         catch( NumberFormatException e ) { }
                     }
@@ -1577,7 +1580,7 @@ public class GeoIRC
                                         args[ 0 ],
                                         s.getCurrentNick()
                                     );
-                                    dcc_chat_offers.add( dcc );
+                                    dcc_offers.add( dcc );
                                     int port = dcc.listen();
 
                                     execute(
@@ -2003,9 +2006,9 @@ public class GeoIRC
             case CMD_LIST_DCC_OFFERS:
                 {
                     DCCConnection offer;
-                    for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
+                    for( int i = 0, n = dcc_offers.size(); i < n; i++ )
                     {
-                        offer = (DCCConnection) dcc_chat_offers.elementAt( i );
+                        offer = (DCCConnection) dcc_offers.elementAt( i );
                         display_manager.printlnDebug(
                             Integer.toString( i ) + ": "
                             + offer.toString()
