@@ -2342,8 +2342,6 @@ public class GeoIRC
             System.out.println( "\t-c, --config\t<settings filepath>" );
         }
         
-        // Register all scripting engines.
-        
         GeoIRC geoirc = new GeoIRC( settings_filepath );
     }
     

@@ -181,7 +181,8 @@ public class HighlightingPane
         for (int i = 0; i < list.size(); i++) {
             node = path + String.valueOf(a) + "/";
             Highlighting hl = (Highlighting)list.get(i);
-            if(hl.getFilter().length() > 0 && hl.getFormat().length() > 0)
+            //if(hl.getFilter().length() > 0 && hl.getFormat().length() > 0)
+            if( hl.getFormat().length() > 0 )
             {
                 settings_manager.setString(node + "filter", hl.getFilter());
                 settings_manager.setString(node + "regexp", hl.getRegexp());
