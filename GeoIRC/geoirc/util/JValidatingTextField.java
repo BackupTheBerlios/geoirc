@@ -119,7 +119,7 @@ public class JValidatingTextField extends JTextField implements DocumentListener
      * @return true if the inserted value validates
      * otherwise false
      */
-    public boolean isTextValid() {
+    public boolean isValid() {
         return textValid;
     }
 
@@ -168,5 +168,5 @@ public class JValidatingTextField extends JTextField implements DocumentListener
     {
         super.setEnabled(enabled);
         validateText();
-    }
+    }    
 }

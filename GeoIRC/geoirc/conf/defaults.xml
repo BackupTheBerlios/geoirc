@@ -89,7 +89,7 @@
 		</rule>
 		<rule name="CTCP_VERSION">
 			<default></default>
-            <pattern>\d{0,}</pattern>
+            <pattern>.{0,}</pattern>
             <javaType>java.lang.String</javaType>			
 		</rule>
 		<rule name="USER_INFO">
