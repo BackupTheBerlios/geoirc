@@ -67,7 +67,7 @@ public interface GeoIRCConstants
     };
     static final int IRCMSG_PRIVMSG = 0;
     static final int IRCMSG_JOIN = 1;
-    static final int IRCMSG_PART = 1;
+    static final int IRCMSG_PART = 2;
     
     static final boolean NEXT_WINDOW = false;
     static final boolean PREVIOUS_WINDOW = true;

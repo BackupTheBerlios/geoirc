@@ -120,7 +120,7 @@ public class ServerReader
             {
                 String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
                 String channel = tokens[ 2 ];
-                String message = tokens[ 3 ].substring( 1 );  // remove leading colon
+                String message = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
                 String text = nick + " left " + channel + " (" + message + ").";
                 display_manager.println(
                     GeoIRC.getATimeStamp(
