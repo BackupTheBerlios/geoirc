@@ -36,7 +36,9 @@ public interface GeoIRCConstants
         "listchannels",
         "set",
         "setfilter",
-        "settitle"
+        "settitle",
+        "privmsg",
+        "msg"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -45,6 +47,7 @@ public interface GeoIRCConstants
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_SERVERS = 13;
+    public static final int CMD_MSG = 20;
     public static final int CMD_NEW_SERVER = 5;
     public static final int CMD_NEW_TEXT_WINDOW = 1;
     public static final int CMD_NEXT_HISTORY_ENTRY = 9;
@@ -53,6 +56,7 @@ public interface GeoIRCConstants
     public static final int CMD_PART = 14;
     public static final int CMD_PREVIOUS_WINDOW = 8;
     public static final int CMD_PREVIOUS_HISTORY_ENTRY = 10;
+    public static final int CMD_PRIVMSG = 19;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
     public static final int CMD_SET = 16;

@@ -811,6 +811,25 @@ public class GeoIRC
             case CMD_PREVIOUS_WINDOW:
                 display_manager.switchToNextWindow( PREVIOUS_WINDOW );
                 break;
+            case CMD_PRIVMSG:
+            case CMD_MSG:
+                if( ( args != null ) || ( args.length < 2 ) )
+                {
+                    String dest = args[ 0 ];
+                    String message = Util.stringArrayToString( args, 1 );
+                    execute(
+                        CMDS[ CMD_SEND_RAW ]
+                        + " PRIVMSG "
+                        + dest
+                        + " :"
+                        + message
+                    );
+                }
+                else
+                {
+                    display_manager.printlnDebug( "/privmsg <nick/channel> <message>" );
+                }
+                break;
             case CMD_SEND_RAW:
                 {
                     //Server s = (Server) display_manager.getSelectedRemoteMachine();

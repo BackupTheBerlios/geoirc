@@ -13,6 +13,18 @@
           <entry key="default download directory" value="downloads/" />
         </map>
       </node>
+      <node name="command aliases">
+        <map />
+        <node name="0">
+          <map>
+            <entry key="alias" value="ns" />
+            <entry key="expansion" value="sendraw PRIVMSG nickserv :$r" />
+          </map>
+        </node>
+        <node name="1">
+          <map />
+        </node>
+      </node>
       <node name="connections">
         <map />
         <node name="0">

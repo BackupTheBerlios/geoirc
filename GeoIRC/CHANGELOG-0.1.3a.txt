@@ -3,3 +3,6 @@ Changelog for GeoIRC 0.1.3a
 
 Added settings for default foreground and background colour.
 Pistos 2003-07-09
+
+Added privmsg and msg commands.
+Pistos 2003-07-09
