@@ -73,6 +73,7 @@ public class GeoIRC
     protected InputMap input_map;
     protected ActionMap action_map;
     
+    // SETMGR
     protected String current_nick;
 
     /* **************************************************************** */
