@@ -1020,7 +1020,7 @@ public class GeoIRC
             {
                 GIWindow giw = display_manager.getSelectedFrame();
                 boolean handled = false;
-                if( giw.getPaneType() == TEXT_PANE )
+                if( ( giw != null ) && ( giw.getPaneType() == TEXT_PANE ) )
                 {
                     JComponent pane = (JComponent) giw.getActualPane();
                     if( pane instanceof GITextPane )
@@ -2820,7 +2820,8 @@ public class GeoIRC
                                     + " " + FILTER_SPECIAL_CHAR + "privmsg";
                                 
                                 if(
-                                    ( text.charAt( 0 ) == (char) 1 )
+                                    ( text.length() > 0 )
+                                    && ( text.charAt( 0 ) == (char) 1 )
                                     && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                                 )
                                 {
