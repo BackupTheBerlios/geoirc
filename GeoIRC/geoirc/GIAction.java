@@ -34,4 +34,9 @@ public class GIAction extends AbstractAction
         executor.execute( command );
     }
     
+    public String getCommand()
+    {
+        return this.command;
+    }
+    
 }
