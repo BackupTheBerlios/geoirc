@@ -181,4 +181,9 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     {
         return qualities;
     }
+    
+    public String getRemoteIPString()
+    {
+        return remote_ip;
+    }
 }

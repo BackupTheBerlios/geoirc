@@ -964,7 +964,7 @@ public class GeoIRC
                 }
                 else
                 {
-                    String dcc_ip = display_manager.getSelectedDCCConnection();
+                    String dcc_ip = display_manager.getSelectedDCCConnection().substring( "dcc=".length() );
                     if( dcc_ip != null )
                     {
                         // Send to a dcc connection.
@@ -974,7 +974,7 @@ public class GeoIRC
                         for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
                         {
                             dcc = (DCCConnection) dcc_chat_offers.elementAt( i );
-                            if( dcc.toString().equals( dcc_ip ) )
+                            if( dcc.getRemoteIPString().equals( dcc_ip ) )
                             {
                                 display_manager.println(
                                     getATimeStamp(
@@ -1330,7 +1330,7 @@ public class GeoIRC
                                         + " PRIVMSG "
                                         + args[ 0 ]
                                         + " :\001DCC CHAT chat "
-                                        + addr_str + " "
+                                        + Util.get32BitAddressString( addr_str ) + " "
                                         + Integer.toString( port )
                                         + "\001"
                                     );
