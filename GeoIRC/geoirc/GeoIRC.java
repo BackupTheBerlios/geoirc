@@ -1309,6 +1309,7 @@ public class GeoIRC
                                     int matches_up_to = ((String) commands_found.elementAt( 0 )).length();
                                     String cmd;
                                     String prev_cmd;
+                                    String available_commands = "";
                                     for( int i = 0, n = commands_found.size(); i < n; i++ )
                                     {
                                         cmd = (String) commands_found.elementAt( i );
@@ -1332,10 +1333,10 @@ public class GeoIRC
                                                 }
                                             }
                                         }
-                                        display_manager.printlnDebug(
-                                            "/" + cmd
-                                        );
+                                        available_commands += "/" + cmd + " ";
                                     }
+                                    
+                                    display_manager.printlnDebug( available_commands );
                                     
                                     replacement_text =
                                         "/" + ((String) commands_found.elementAt( 0 )).substring( 0, matches_up_to );
@@ -1682,14 +1683,23 @@ public class GeoIRC
                 break;
             case CMD_EXIT:
                 {
+                    String quit_message;
+                    if( arg_string != null )
+                    {
+                        quit_message = arg_string;
+                    }
+                    else
+                    {
+                        quit_message = settings_manager.getString(
+                            "/misc/quit message",
+                            "http://geoirc.berlios.de"
+                        );
+                    }
                     int n = remote_machines.size();
                     for( int i = 0; i < n; i++ )
                     {
                         ((RemoteMachine) remote_machines.elementAt( i )).send(
-                            "QUIT :" + settings_manager.getString(
-                                "/misc/quit message",
-                                "http://geoirc.berlios.de"
-                            )
+                            "QUIT :" + quit_message
                         );
                     }
                     // Do we need a more graceful termination?  :)

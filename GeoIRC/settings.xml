@@ -183,7 +183,7 @@
           <map>
             <entry key="timestamp" value="HH:mm:ss" />
             <entry key="maximum nick width" value="20" />
-			<entry key="complete join message" value="true" />
+            <entry key="complete join message" value="true" />
           </map>
           <node name="mirc colours">
             <map>

@@ -1067,120 +1067,125 @@ public class Server
                     if( text.length() > 0 )
                     {
                         if(
-                            ( text.charAt( 0 ) == (char) 1 )
-                            && ( text.substring( 1, 7 ).equals( "ACTION" ) )
+                            ( text.charAt( 0 ) == CTCP_MARKER )
+                            && ( text.charAt( text.length() - 1 ) == CTCP_MARKER )
                         )
                         {
-                            String text2 = Util.stringArrayToString( tokens, 4 );
-                            words = Util.tokensToArray(
-                                text2.substring( 0, text2.length() - 1 )
-                            );
-                            text =
-                                getPadded( "* " + nick )
-                                + text.substring( 7, text.length() - 1 );
-                            qualities += " " + FILTER_SPECIAL_CHAR + "action";
-                        }
-                        else if( text.charAt( 0 ) == CTCP_MARKER )
-                        {
                             // CTCP message.
-
+                            
                             qualities += " " + FILTER_SPECIAL_CHAR + "ctcp";
-
-                            String ctcp_message = text.substring(
-                                1,
-                                text.lastIndexOf( CTCP_MARKER )
-                            );
-
-                            int space_index = ctcp_message.indexOf( " " );
-                            String command_name;
-                            String arg_string;
-                            if( space_index > -1 )
+                            
+                            if( text.substring( 1, 7 ).equals( "ACTION" ) )
                             {
-                                command_name = ctcp_message.substring( 0, space_index );
-                                arg_string = ctcp_message.substring( space_index + 1 );
+                                // For legacy reasons, we'll treat ACTIONs in a different way.
+                                
+                                String text2 = Util.stringArrayToString( tokens, 4 );
+                                words = Util.tokensToArray(
+                                    text2.substring( 0, text2.length() - 1 )
+                                );
+                                text =
+                                    getPadded( "* " + nick )
+                                    + text.substring( 7, text.length() - 1 );
+                                qualities += " " + FILTER_SPECIAL_CHAR + "action";
                             }
                             else
                             {
-                                command_name = ctcp_message;
-                                arg_string = null;
-                            }
-                            String [] args = Util.tokensToArray( arg_string );
+                                String ctcp_message = text.substring(
+                                    1,
+                                    text.lastIndexOf( CTCP_MARKER )
+                                );
 
-                            int command_id = UNKNOWN_CTCP_CMD;
-                            for( int i = 0; i < CTCP_CMDS.length; i++ )
-                            {
-                                if( command_name.equals( CTCP_CMDS[ i ] ) )
+                                int space_index = ctcp_message.indexOf( " " );
+                                String command_name;
+                                String arg_string;
+                                if( space_index > -1 )
                                 {
-                                    command_id = i;
-                                    break;
+                                    command_name = ctcp_message.substring( 0, space_index );
+                                    arg_string = ctcp_message.substring( space_index + 1 );
                                 }
-                            }
+                                else
+                                {
+                                    command_name = ctcp_message;
+                                    arg_string = null;
+                                }
+                                String [] args = Util.tokensToArray( arg_string );
 
-                            if( command_id != UNKNOWN_CTCP_CMD )
-                            {
-                                text = "Received CTCP " + CTCP_CMDS[ command_id ]
-                                    + " from " + nick;
-                            }
+                                int command_id = UNKNOWN_CTCP_CMD;
+                                for( int i = 0; i < CTCP_CMDS.length; i++ )
+                                {
+                                    if( command_name.equals( CTCP_CMDS[ i ] ) )
+                                    {
+                                        command_id = i;
+                                        break;
+                                    }
+                                }
 
-                            switch( command_id )
-                            {
-                                case CTCP_CMD_SOURCE:
-                                    send(
-                                        IRCMSGS[ IRCMSG_NOTICE ] + " "
-                                        + nick + " :"
-                                        + CTCP_MARKER 
-                                        + CTCP_CMDS[ CTCP_CMD_SOURCE ]
-                                        + " http://geoirc.berlios.de"
-                                        + CTCP_MARKER
-                                    );
-                                    break;
-                                case CTCP_CMD_USERINFO:
-                                    send(
-                                        IRCMSGS[ IRCMSG_NOTICE ] + " "
-                                        + nick + " :"
-                                        + CTCP_MARKER 
-                                        + CTCP_CMDS[ CTCP_CMD_USERINFO ]
-                                        + " "
-                                        + settings_manager.getString(
-                                            "/personal/ctcp/userinfo", ""
-                                        )
-                                        + CTCP_MARKER
-                                    );
-                                    break;
-                                case CTCP_CMD_VERSION:
-                                    send(
-                                        IRCMSGS[ IRCMSG_NOTICE ] + " "
-                                        + nick + " :"
-                                        + CTCP_MARKER 
-                                        + CTCP_CMDS[ CTCP_CMD_VERSION ]
-                                        + " GeoIRC/" + GEOIRC_VERSION + " "
-                                        + settings_manager.getString(
-                                            "/personal/ctcp/version", ""
-                                        )
-                                        + CTCP_MARKER
-                                    );
-                                    break;
-                                case CTCP_CMD_PAGE:
-                                    qualities += " " + FILTER_SPECIAL_CHAR + "page";
-                                    break;
-                                case CTCP_CMD_DCC:
-                                    try
-                                    {
-                                        geoirc.addDCCChatRequest( args, nick );
-                                    }
-                                    catch( ArrayIndexOutOfBoundsException e )
-                                    {
-                                        // Someone tried to send us an invalid DCC command.
-                                    }
-                                    catch( NumberFormatException e )
-                                    {
-                                        // Bad long integer...
-                                    }
-                                    break;
-                                default:
-                                    text = "Unknown CTCP command from " + nick + ": "
-                                        + ctcp_message;
-                                    break;
+                                if( command_id != UNKNOWN_CTCP_CMD )
+                                {
+                                    text = "Received CTCP " + CTCP_CMDS[ command_id ]
+                                        + " from " + nick;
+                                }
+
+                                switch( command_id )
+                                {
+                                    case CTCP_CMD_SOURCE:
+                                        send(
+                                            IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                            + nick + " :"
+                                            + CTCP_MARKER 
+                                            + CTCP_CMDS[ CTCP_CMD_SOURCE ]
+                                            + " http://geoirc.berlios.de"
+                                            + CTCP_MARKER
+                                        );
+                                        break;
+                                    case CTCP_CMD_USERINFO:
+                                        send(
+                                            IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                            + nick + " :"
+                                            + CTCP_MARKER 
+                                            + CTCP_CMDS[ CTCP_CMD_USERINFO ]
+                                            + " "
+                                            + settings_manager.getString(
+                                                "/personal/ctcp/userinfo", ""
+                                            )
+                                            + CTCP_MARKER
+                                        );
+                                        break;
+                                    case CTCP_CMD_VERSION:
+                                        send(
+                                            IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                            + nick + " :"
+                                            + CTCP_MARKER 
+                                            + CTCP_CMDS[ CTCP_CMD_VERSION ]
+                                            + " GeoIRC/" + GEOIRC_VERSION + " "
+                                            + settings_manager.getString(
+                                                "/personal/ctcp/version", ""
+                                            )
+                                            + CTCP_MARKER
+                                        );
+                                        break;
+                                    case CTCP_CMD_PAGE:
+                                        qualities += " " + FILTER_SPECIAL_CHAR + "page";
+                                        break;
+                                    case CTCP_CMD_DCC:
+                                        try
+                                        {
+                                            geoirc.addDCCChatRequest( args, nick );
+                                        }
+                                        catch( ArrayIndexOutOfBoundsException e )
+                                        {
+                                            // Someone tried to send us an invalid DCC command.
+                                        }
+                                        catch( NumberFormatException e )
+                                        {
+                                            // Bad long integer...
+                                        }
+                                        break;
+                                    default:
+                                        text = "Unknown CTCP command from " + nick + ": "
+                                            + ctcp_message;
+                                        break;
+                                }
                             }
                         }
                         else
