@@ -177,10 +177,10 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         addComponent(new TitlePane("Format"), 0, 12, 5, 1, 0, 0);
         path = "/gui/format/";
         //nick width
-        value = settings_manager.getString(path + "nick width", nickWidthRule.getValue().toString());
-        addComponent(new JLabel("Nick width"), 0, 13, 1, 1, 0, 0);
+        value = settings_manager.getString(path + "maximum nick width", nickWidthRule.getValue().toString());
+        addComponent(new JLabel("max. nick width"), 0, 13, 1, 1, 0, 0);
         nick_width = new JValidatingTextField(nickWidthRule.getPattern(), value, 40);
-        save_handler.register(addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "nick width");
+        save_handler.register(addComponent(nick_width, 1, 13, 1, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "maximum nick width");
         //timestamp
         value = settings_manager.getString(path + "timestamp", timestampRule.getValue().toString());
         addComponent(new JLabel("Timestamp"), 0, 14, 1, 1, 0, 0);

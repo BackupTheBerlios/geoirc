@@ -82,7 +82,7 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
 
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+        table.setRowHeight(18);
         hotkey_field.setEnabled(false);
         command_field.setEnabled(false);
 
@@ -104,7 +104,7 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         addComponent(new JLabel("Hotkey: "), 0, 2, 1, 1, 0, 0);
         addComponent(hotkey_field, 1, 2, 1, 1, 0, 0);
         addComponent(new JLabel("Command: "), 0, 3, 1, 1, 0, 0, GridBagConstraints.WEST);
-        command_field.setPreferredSize(new Dimension(250, 20));
+        command_field.setPreferredSize(new Dimension(250, JValidatingTextField.PREFERED_HEIGHT));
         addComponent(command_field, 1, 3, 1, 1, 0, 0, GridBagConstraints.WEST);
 
         addComponent(newButton, 2, 3, 1, 1, 0, 0);

@@ -73,6 +73,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
 
         table = new JTable(ltm);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setRowHeight(18);
         colorRule = rules.getValueRule("COLOR");
         ltm.setData(getHighlightings());
 

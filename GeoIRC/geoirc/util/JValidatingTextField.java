@@ -28,7 +28,7 @@ public class JValidatingTextField extends JTextField implements DocumentListener
     protected static final Border normalBorder = BorderFactory.createLineBorder(Color.BLACK);
     protected static final Border errorBorder = BorderFactory.createLineBorder(Color.RED);
     public static final int PREFERED_WIDTH = 100;
-    public static final int PREFERED_HEIGHT = 20;
+    public static final int PREFERED_HEIGHT = 18;
 
     protected boolean textValid = true;
     protected Pattern pattern;
@@ -107,7 +107,7 @@ public class JValidatingTextField extends JTextField implements DocumentListener
 
     protected void validateText() {
         String t = getText();
-        int pos = (pattern.pattern().indexOf(".+") != -1) ? 1 : 0;
+        int pos = (pattern.pattern().indexOf("+") != -1) ? 1 : 0;
 
         boolean valid = ( t.length() >= pos && pattern.matcher(t).matches() ) || isEnabled() == false;
         firePropertyChange("textValid", !valid, valid);
