@@ -1559,7 +1559,7 @@ public class Server
                                         case CTCP_CMD_DCC:
                                             try
                                             {
-                                                geoirc.addDCCChatRequest( args, nick );
+                                                geoirc.addDCCRequest( args, nick );
                                             }
                                             catch( ArrayIndexOutOfBoundsException e )
                                             {

@@ -20,18 +20,22 @@ public class DCCRequest implements GeoIRCConstants
     protected String ip_str;
     protected String port_str;
     protected String remote_nick;
+    protected int filesize;
     protected DCCAgent dcc_agent;
+    protected SettingsManager settings_manager;
     
     private DCCRequest() { }
     
     /**
      * @param args the arguments given to a DCC command sent from a remote client
      */
-    public DCCRequest( String [] args, DCCAgent agent, String remote_nick )
+    public DCCRequest( String [] args, DCCAgent agent, String remote_nick, SettingsManager settings_manager )
         throws ArrayIndexOutOfBoundsException,
             NumberFormatException,
             IllegalArgumentException
     {
+        this.settings_manager = settings_manager;
+        
         if( args[ 0 ].toUpperCase().equals( "CHAT" ) )
         {
             type = DCC_CHAT;
@@ -47,12 +51,30 @@ public class DCCRequest implements GeoIRCConstants
         
         arg1 = args[ 1 ];
         String address_str = args[ 2 ];
-        port_str = args[ 3 ];
-
         ip_str = Util.getIPAddressString( address_str );
-
-        // Parse for the sake of checking data correctness.
+        port_str = args[ 3 ];
+        // Parse the port string for the sake of checking data correctness.
         Integer.parseInt( port_str );
+        if( args.length > 4 )
+        {
+            filesize = Integer.parseInt( args[ 4 ] );
+            int max_size = settings_manager.getInt(
+                "/dcc/file transfers/maximum received file size",
+                DEFAULT_MAX_DCC_SEND_FILESIZE
+            );
+            if( ( filesize < 1 ) || ( filesize > max_size ) )
+            {
+                throw new IllegalArgumentException();
+            }
+        }
+        else if( type == DCC_SEND )
+        {
+            throw new IllegalArgumentException();
+        }
+        else
+        {
+            filesize = -1;
+        }
         
         if( agent != null )
         {
@@ -68,7 +90,7 @@ public class DCCRequest implements GeoIRCConstants
     public void accept( String user_nick )
     {
         DCCClient dcc_client = dcc_agent.addDCCClient(
-            ip_str, port_str, type, user_nick, remote_nick
+            ip_str, port_str, type, user_nick, remote_nick, arg1, filesize
         );
         dcc_client.connect();
     }
@@ -80,6 +102,18 @@ public class DCCRequest implements GeoIRCConstants
     
     public String toString()
     {
-        return remote_nick + " @ " + ip_str + ":" + port_str + " (" + arg1 + ")";
+        String retval = "";
+        switch( type )
+        {
+            case DCC_CHAT:
+                retval += "Chat: ";
+                break;
+            case DCC_SEND:
+                retval += "Send: ";
+                break;
+        }
+        retval += remote_nick + " @ " + ip_str + ":" + port_str + " (" + arg1 + ")";
+        
+        return retval;
     }
 }

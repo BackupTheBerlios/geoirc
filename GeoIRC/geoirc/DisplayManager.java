@@ -553,7 +553,7 @@ public class DisplayManager
         {
             if( ! BoolExpEvaluator.evaluate( prefilter, qualities ) )
             {
-                return 0;
+                return 1;
             }
         }
         catch( BadExpressionException e )

@@ -17,6 +17,8 @@ public interface DCCAgent
         String port,
         int type,
         String user_nick,
-        String remote_nick
+        String remote_nick,
+        String arg1,
+        int filesize
     );
 }

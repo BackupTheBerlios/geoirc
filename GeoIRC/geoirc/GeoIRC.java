@@ -129,7 +129,7 @@ public class GeoIRC
     
     protected Hashtable processes;
     protected Hashtable audio_clips;
-    protected Vector dcc_chat_requests;
+    protected Vector dcc_requests;
     protected Vector dcc_chat_offers;
     
     protected IdentServer ident_server;
@@ -281,7 +281,7 @@ public class GeoIRC
         display_manager.beginListening();
         listening_to_connections = true;
         processes = new Hashtable();
-        dcc_chat_requests = new Vector();
+        dcc_requests = new Vector();
         dcc_chat_offers = new Vector();
         audio_clips = new Hashtable();
         mouse_button_depressed = false;
@@ -568,7 +568,9 @@ public class GeoIRC
         String port,
         int type,
         String user_nick,
-        String remote_nick
+        String remote_nick,
+        String arg1,
+        int filesize
     )
     {
         DCCClient dcc_client = new DCCClient(
@@ -580,14 +582,19 @@ public class GeoIRC
             port,
             type,
             user_nick,
-            remote_nick
+            remote_nick,
+            arg1,
+            filesize
         );
         addRemoteMachine( dcc_client );
         
-        display_manager.addTextWindow(
-            remote_nick + " @ " + dcc_client.toString(),
-            dcc_client.toString()
-        );
+        if( type == DCC_CHAT )
+        {
+            display_manager.addTextWindow(
+                remote_nick + " @ " + dcc_client.toString(),
+                dcc_client.toString()
+            );
+        }
         
         return dcc_client;
     }
@@ -841,15 +848,15 @@ public class GeoIRC
         }
     }
 
-    public int addDCCChatRequest( String [] args, String remote_nick )
+    public int addDCCRequest( String [] args, String remote_nick )
     {
-        int index = dcc_chat_requests.size();
-        dcc_chat_requests.add( new DCCRequest( args, this, remote_nick ) );
+        int index = dcc_requests.size();
+        dcc_requests.add( new DCCRequest( args, this, remote_nick, settings_manager ) );
         return index;
     }
-    public String [] removeDCCChatRequest( int index )
+    public String [] removeDCCRequest( int index )
     {
-        return (String []) dcc_chat_requests.remove( index );
+        return (String []) dcc_requests.remove( index );
     }
 
     protected void insertCharAtCaret( char char_to_insert )
@@ -1282,7 +1289,7 @@ public class GeoIRC
         
         switch( command_id )
         {
-            case CMD_ACCEPT_DCC_CHAT:
+            case CMD_ACCEPT_DCC_REQUEST:
                 {
                     boolean problem = true;
                     
@@ -1291,7 +1298,7 @@ public class GeoIRC
                         try
                         {
                             int index = Integer.parseInt( args[ 0 ] );
-                            DCCRequest request = (DCCRequest) dcc_chat_requests.elementAt( index );
+                            DCCRequest request = (DCCRequest) dcc_requests.elementAt( index );
                             request.accept( preferred_nick );
                             problem = false;
                         }
@@ -1301,10 +1308,10 @@ public class GeoIRC
                     if( problem )
                     {
                         display_manager.printlnDebug(
-                            "/" + CMDS[ CMD_LIST_DCC_CHAT_REQUESTS ]
+                            "/" + CMDS[ CMD_LIST_DCC_REQUESTS ]
                         );
                         display_manager.printlnDebug(
-                            "/" + CMDS[ CMD_ACCEPT_DCC_CHAT ]
+                            "/" + CMDS[ CMD_ACCEPT_DCC_REQUEST ]
                             + " <dcc request index>"
                         );
                     }
@@ -2007,7 +2014,7 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_LIST_DCC_CHAT_OFFERS:
+            case CMD_LIST_DCC_OFFERS:
                 {
                     DCCConnection offer;
                     for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
@@ -2020,19 +2027,16 @@ public class GeoIRC
                     }
                 }
                 break;
-            case CMD_LIST_DCC_CHAT_REQUESTS:
+            case CMD_LIST_DCC_REQUESTS:
                 {
                     DCCRequest request;
-                    for( int i = 0, n = dcc_chat_requests.size(); i < n; i++ )
+                    for( int i = 0, n = dcc_requests.size(); i < n; i++ )
                     {
-                        request = (DCCRequest) dcc_chat_requests.elementAt( i );
-                        if( request.getType() == DCC_CHAT )
-                        {
-                            display_manager.printlnDebug(
-                                Integer.toString( i ) + ": "
-                                + request.toString()
-                            );
-                        }
+                        request = (DCCRequest) dcc_requests.elementAt( i );
+                        display_manager.printlnDebug(
+                            Integer.toString( i ) + ": "
+                            + request.toString()
+                        );
                     }
                 }
                 break;
@@ -2604,7 +2608,7 @@ public class GeoIRC
                     );
                 }
                 break;
-            case CMD_REJECT_DCC_CHAT:
+            case CMD_REJECT_DCC_REQUEST:
                 {
                     boolean problem = true;
 
@@ -2613,7 +2617,7 @@ public class GeoIRC
                         try
                         {
                             int index = Integer.parseInt( args[ 0 ] );
-                            dcc_chat_requests.remove( index );
+                            dcc_requests.remove( index );
                         }
                         catch( NumberFormatException e ) { }
                     }
@@ -2621,10 +2625,10 @@ public class GeoIRC
                     if( problem )
                     {
                         display_manager.printlnDebug(
-                            "/" + CMDS[ CMD_LIST_DCC_CHAT_REQUESTS ]
+                            "/" + CMDS[ CMD_LIST_DCC_REQUESTS ]
                         );
                         display_manager.printlnDebug(
-                            "/" + CMDS[ CMD_REJECT_DCC_CHAT ]
+                            "/" + CMDS[ CMD_REJECT_DCC_REQUEST ]
                             + " <dcc request index>"
                         );
                     }

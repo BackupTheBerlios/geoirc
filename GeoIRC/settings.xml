@@ -84,7 +84,8 @@
         <node name="file transfers">
           <map>
             <entry key="confirm receive" value="true" />
-            <entry key="default download directory" value="./downloads/" />
+            <entry key="download directory" value="./downloads/" />
+            <entry key="maximum received file size" value="20480000" />
           </map>
         </node>
       </node>
