@@ -241,4 +241,9 @@ public interface GeoIRCConstants
     static final int VAR_LINES_UNREAD = 1;
     
     static final java.awt.Color DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR = new java.awt.Color( 0, 0, 0 );
+    
+    static final int SORT_UNSORTED = -1;
+    static final int SORT_ALPHABETICAL_ASCENDING = 0;
+    static final int SORT_TIME_SINCE_LAST_ASCENDING = 1;
+    static final int DEFAULT_SORT_ORDER = SORT_ALPHABETICAL_ASCENDING;
 }

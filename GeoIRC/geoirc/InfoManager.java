@@ -61,7 +61,7 @@ public class InfoManager
         return success;
     }
     
-    public void addRemoteMachine( RemoteMachine rm )
+    public synchronized void addRemoteMachine( RemoteMachine rm )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( rm );
         root.add( node );
@@ -73,7 +73,7 @@ public class InfoManager
         display_manager.activateInfoPanes( path, model );
     }
     
-    public void removeRemoteMachine( RemoteMachine rm )
+    public synchronized void removeRemoteMachine( RemoteMachine rm )
     {
         DefaultMutableTreeNode rm_node = (DefaultMutableTreeNode) tree_inverse.get( rm );
         root.remove( rm_node );
@@ -86,7 +86,7 @@ public class InfoManager
         display_manager.deactivateInfoPanes( path );
     }
     
-    public void addChannel( Channel c )
+    public synchronized void addChannel( Channel c )
     {
         Server server = c.getServer();
         DefaultMutableTreeNode node
@@ -101,7 +101,7 @@ public class InfoManager
         display_manager.activateInfoPanes( path, model );
     }
     
-    public void removeChannel( Channel c )
+    public synchronized void removeChannel( Channel c )
     {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_inverse.get( c );
         ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
@@ -112,12 +112,44 @@ public class InfoManager
         display_manager.deactivateInfoPanes( path );
     }
     
-    public void addMember( User u, Channel c )
+    public synchronized void removeAllMembers( Channel c )
+    {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_inverse.get( c );
+        node.removeAllChildren();
+        tree.reload( node );
+    }
+    
+    public synchronized void addMembers( Channel c, java.util.Vector members )
+    {
+        DefaultMutableTreeNode channel_node
+            = (DefaultMutableTreeNode) tree_inverse.get( c );
+
+        User u;
+        DefaultMutableTreeNode user_node;
+        String path;
+        DefaultTreeModel model;
+        for( int i = 0, n = members.size(); i < n; i++ )
+        {
+            u = (User) members.elementAt( i );
+            user_node = new DefaultMutableTreeNode( u );
+            channel_node.add( user_node );
+            path = "/" + c.getServer().toString()
+                + "/" + c.getName()
+                + "/" + u.getNick();
+            model = new DefaultTreeModel( user_node );
+            tree_for_path.put( path, model );
+            display_manager.activateInfoPanes( path, model );
+        }
+        
+        tree.reload( channel_node );
+    }
+    
+    public synchronized void addMember( User u, Channel c, int index )
     {
         DefaultMutableTreeNode channel_node
             = (DefaultMutableTreeNode) tree_inverse.get( c );
         DefaultMutableTreeNode user_node = new DefaultMutableTreeNode( u );
-        channel_node.add( user_node );
+        channel_node.insert( user_node, index );
         tree.reload( channel_node );
 
         String path = "/" + c.getServer().toString()
@@ -128,7 +160,7 @@ public class InfoManager
         display_manager.activateInfoPanes( path, model );
     }
     
-    public void removeMember( User u, Channel c )
+    public synchronized void removeMember( User u, Channel c )
     {
         DefaultMutableTreeNode channel_node = (DefaultMutableTreeNode) tree_inverse.get( c );
         if( channel_node != null )
@@ -154,8 +186,29 @@ public class InfoManager
         display_manager.deactivateInfoPanes( path );
     }
     
-    public void acknowledgeNickChange( Channel c )
+    public synchronized void acknowledgeNickChange( Channel c, User u, int new_index )
     {
-        tree.reload( (DefaultMutableTreeNode) tree_inverse.get( c ) );
+        DefaultMutableTreeNode channel_node = (DefaultMutableTreeNode) tree_inverse.get( c );
+        java.util.Enumeration children = channel_node.children();
+        DefaultMutableTreeNode user_node;
+        User user;
+        DefaultMutableTreeNode the_user_node = null;
+        while( children.hasMoreElements() )
+        {
+            user_node = (DefaultMutableTreeNode) children.nextElement();
+            user = (User) user_node.getUserObject();
+            if( user == u )
+            {
+                the_user_node = user_node;
+                break;
+            }
+        }
+        
+        if( the_user_node != null )
+        {
+            channel_node.remove( the_user_node );
+            channel_node.insert( the_user_node, new_index );
+            tree.reload( channel_node );
+        }
     }
 }

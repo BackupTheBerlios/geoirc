@@ -7,6 +7,7 @@
 package geoirc;
 
 import geoirc.util.Util;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
 
@@ -14,7 +15,7 @@ import java.util.Vector;
  *
  * @author  Pistos
  */
-public class Channel
+public class Channel implements GeoIRCConstants
 {
     protected String name;
     protected String topic;
@@ -24,6 +25,8 @@ public class Channel
     protected Server server;
     protected InfoManager info_manager;
     protected SettingsManager settings_manager;
+    protected int sort_order;
+    protected UserComparator comparator;
     
     // No default constructor
     private Channel() { }
@@ -42,6 +45,16 @@ public class Channel
         topic = null;
         topic_setter = null;
         topic_set_date = null;
+        if( ! setSortOrder( 
+                settings_manager.getInt(
+                    "/gui/info windows/sort order",
+                    DEFAULT_SORT_ORDER
+                )
+            )
+        )
+        {
+            throw new IllegalArgumentException( "Invalid sort order." );
+        }
         
         members = new Vector();
     }
@@ -67,31 +80,58 @@ public class Channel
      */
     public void setChannelMembership( Vector new_member_list )
     {
-        info_manager.removeChannel( this );
-        /*
-        if( new_member_list == null )
-        {
-            members = new Vector();
-        }
-        else
-         */
-        {
-            members = new_member_list;
-        }
-        info_manager.addChannel( this );
+        info_manager.removeAllMembers( this );
         
-        User user;
+        members = new_member_list;
         for( int i = 0, n = members.size(); i < n; i++ )
         {
-            user = (User) members.elementAt( i );
-            info_manager.addMember( user, this );
+            ( (User) members.elementAt( i ) ).lock( this );
         }
+        
+        Collections.sort( members, comparator );
+        
+        for( int i = 0, n = members.size(); i < n; i++ )
+        {
+            ( (User) members.elementAt( i ) ).unlock( this );
+        }
+        
+        info_manager.addMembers( this, members );
+    }
+    
+    public void sortMembers()
+    {
+        Collections.sort( members, comparator );
+    }
+    
+    public int getSortOrder()
+    {
+        return sort_order;
+    }
+    
+    public boolean setSortOrder( int new_sort_order )
+    {
+        boolean success = false;
+        
+        if( Util.isValidSortOrder( new_sort_order ) )
+        {
+            sort_order = new_sort_order;
+            comparator = new UserComparator( sort_order );
+            success = true;
+        }
+        
+        return success;
     }
     
     public void addMember( User user )
     {
-        members.add( user );
-        info_manager.addMember( user, this );
+        int insertion_point = Collections.binarySearch(
+            members,
+            user,
+            comparator
+        );
+        members.insertElementAt( user, insertion_point );
+        //members.add( user );
+        info_manager.addMember( user, this, insertion_point );
     }
     
     public User removeMember( String nick )
@@ -170,5 +210,15 @@ public class Channel
         }
         
         return completed_nick;
+    }
+    
+    public void acknowledgeNickChange( User user )
+    {
+        if( sort_order == SORT_ALPHABETICAL_ASCENDING )
+        {
+            sortMembers();
+        }
+        int new_index = members.indexOf( user );
+        info_manager.acknowledgeNickChange( this, user, new_index );
     }
 }

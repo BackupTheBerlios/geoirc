@@ -70,11 +70,6 @@
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
-            <node name="1">
-              <map>
-                <entry key="name" value="#geocards" />
-              </map>
-            </node>
           </node>
         </node>
         <node name="1">
@@ -204,6 +199,9 @@
           <map>
             <entry key="timestamp" value="HH:mm:ss" />
           </map>
+        </node>
+        <node name="info windows">
+          <map />
         </node>
         <node name="input field">
           <map>

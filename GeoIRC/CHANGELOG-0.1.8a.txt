@@ -12,3 +12,6 @@ Pistos 2003-07-23
 Added a %lines_unread variable, and reworked variables internally into a
 VariableManager class.
 Pistos 2003-07-23
+
+Channel member lists can now be sorted.  For now, only by nickname.
+Pistos 2003-07-25

@@ -7,13 +7,14 @@
 package geoirc.util;
 
 import geoirc.DisplayManager;
+import geoirc.GeoIRCConstants;
 import java.util.*;
 
 /**
  *
  * @author  Pistos
  */
-public class Util
+public class Util implements GeoIRCConstants
 {
     
     // No default constructor
@@ -108,5 +109,20 @@ public class Util
         {
             display_manager.printlnDebug( stes[ i ].toString() );
         }
+    }
+    
+    public static boolean isValidSortOrder( int sort_order )
+    {
+        boolean is_valid = false;
+        
+        switch( sort_order )
+        {
+            case SORT_ALPHABETICAL_ASCENDING:
+            case SORT_TIME_SINCE_LAST_ASCENDING:
+                is_valid = true;
+                break;
+        }
+        
+        return is_valid;
     }
 }

@@ -6,18 +6,22 @@
 
 package geoirc;
 
+import java.util.Date;
 import java.util.Vector;
 
 /**
  *
  * @author  Pistos
  */
-public class User implements GeoIRCConstants
+public class User
+    implements GeoIRCConstants
 {
     protected String nick;
     protected String username;
     protected String host;
     protected String mode_flags;
+    protected Date time_of_last_activity;
+    protected Object lock_owner;
     
     // No default constructor
     private User() { }
@@ -28,6 +32,7 @@ public class User implements GeoIRCConstants
         username = null;
         host = null;
         mode_flags = "";
+        lock_owner = null;
         
         boolean mode_char_found;
         do
@@ -91,5 +96,45 @@ public class User implements GeoIRCConstants
     public int hashCode()
     {
         return nick.hashCode();
+    }
+    
+    public void noteActivity()
+    {
+        Date date = new Date();
+        lock( this );
+        time_of_last_activity = date;
+        unlock( this );
+    }
+    
+    public Date getTimeOfLastActivity()
+    {
+        return time_of_last_activity;
+    }
+    
+    public synchronized void lock( Object requester )
+    {
+        while( lock_owner != null )
+        {
+            try
+            {
+                wait();
+            } catch( InterruptedException e ) { }
+        }
+        
+        lock_owner = requester;
+    }
+    
+    public synchronized boolean unlock( Object requester )
+    {
+        boolean retval = false;
+        
+        if( requester == lock_owner )
+        {
+            lock_owner = null;
+            notifyAll();
+            retval = true;
+        }
+        
+        return retval;
     }
 }

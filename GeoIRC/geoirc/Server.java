@@ -490,7 +490,8 @@ public class Server
                         {
                             c = (Channel) channels.elementAt( i );
                             qualities += " " + c.getName();
-                            info_manager.acknowledgeNickChange( c );
+                            c.acknowledgeNickChange( user );
+                            //info_manager.acknowledgeNickChange( c );
                         }
                         
                         qualities += " " + FILTER_SPECIAL_CHAR + "self";
@@ -506,7 +507,8 @@ public class Server
                             if( c.nickIsPresent( new_nick ) )
                             {
                                 qualities += " " + c.getName();
-                                info_manager.acknowledgeNickChange( c );
+                                c.acknowledgeNickChange( user );
+                                //info_manager.acknowledgeNickChange( c );
                             }
                         }
                     }
