@@ -33,6 +33,7 @@ public class User
         host = null;
         mode_flags = "";
         lock_owner = null;
+        noteActivity();
         
         boolean mode_char_found;
         do

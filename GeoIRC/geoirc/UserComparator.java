@@ -48,7 +48,8 @@ public class UserComparator
                 comparison = u1.getNick().compareTo( u2.getNick() );
                 break;
             case SORT_TIME_SINCE_LAST_ASCENDING:
-                comparison = u1.getTimeOfLastActivity().compareTo( u2.getTimeOfLastActivity() );
+                // Reverse sort because these are "times OF", not "times SINCE"
+                comparison = u2.getTimeOfLastActivity().compareTo( u1.getTimeOfLastActivity() );
                 break;
             default:
                 throw new IllegalArgumentException( "Invalid sort order." );

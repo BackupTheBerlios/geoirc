@@ -186,7 +186,7 @@ public class InfoManager
         display_manager.deactivateInfoPanes( path );
     }
     
-    public synchronized void acknowledgeNickChange( Channel c, User u, int new_index )
+    public synchronized void acknowledgeUserChange( Channel c, User u, int new_index )
     {
         DefaultMutableTreeNode channel_node = (DefaultMutableTreeNode) tree_inverse.get( c );
         java.util.Enumeration children = channel_node.children();

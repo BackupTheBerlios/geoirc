@@ -178,6 +178,10 @@ public class GeoIRC
             Font.PLAIN,
             settings_manager.getInt( "/gui/input field/font size", 14 )
         ) );
+        int [] rgb = Util.getRGB( settings_manager.getString( "/gui/input field/foreground colour", DEFAULT_INPUT_FIELD_FOREGROUND ) );
+        input_field.setForeground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
+        rgb = Util.getRGB( settings_manager.getString( "/gui/input field/background colour", DEFAULT_INPUT_FIELD_BACKGROUND ) );
+        input_field.setBackground( new Color( rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] ) );
         input_field.addFocusListener( this );
         
         // Un-map the Tab-related default mappings which have to do with focus traversal.
@@ -1116,6 +1120,25 @@ public class GeoIRC
                     display_manager.printlnDebug( fonts[ i ].getName() + " -- " + fonts[ i ].getFontName() );
                 }
                 break;
+            case CMD_LIST_MEMBERS:
+                if( current_rm instanceof Server )
+                {
+                    Server s = (Server) current_rm;
+                    Channel channel = s.getChannelByName( display_manager.getSelectedChannel() );
+                    if( channel != null )
+                    {
+                        User [] members = channel.getMembers();
+                        for( int i = 0; i < members.length; i++ )
+                        {
+                            display_manager.printlnDebug(
+                                Integer.toString( i ) + ": "
+                                + members[ i ].getNick()
+                            );
+                        }
+                    }
+                }
+                
+                break;
             case CMD_LIST_WINDOWS:
                 display_manager.listWindows();
                 break;
@@ -1339,9 +1362,19 @@ public class GeoIRC
                     if( current_rm instanceof Server )
                     {
                         Server s = (Server) current_rm;
+                        User u = s.getUserObject();
+                        if( u != null )
+                        {
+                            u.noteActivity();
+                        }
                         s.send( arg_string );
                         if( args[ 0 ].toUpperCase().equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
                         {
+                            if( u != null )
+                            {
+                                s.noteActivity( args[ 1 ], u );
+                            }
+                            
                             String text = Util.stringArrayToString( args, 2 ).substring( 1 );
                             if(
                                 ( text.charAt( 0 ) == (char) 1 )

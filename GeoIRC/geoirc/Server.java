@@ -131,7 +131,7 @@ public class Server
     {
         if( isConnected() )
         {
-            Channel channel = new Channel( this, channel_name, info_manager, settings_manager );
+            Channel channel = new Channel( this, channel_name, info_manager, settings_manager, display_manager );
             channels.add( channel );
             info_manager.addChannel( channel );
         }
@@ -244,6 +244,15 @@ public class Server
 
         return retval;
     }
+    
+    public void noteActivity( String channel_name, User user )
+    {
+        Channel c = getChannelByName( channel_name );
+        if( c != null )
+        {
+            c.acknowledgeUserChange( user );
+        }
+    }
 
     protected boolean acknowledgeNickChange( String old_nick, String new_nick )
     {
@@ -262,6 +271,14 @@ public class Server
         }
         
         return changed;
+    }
+    
+    /**
+     * @return the User object for the GeoIRC user
+     */
+    public User getUserObject()
+    {
+        return getUserByNick( current_nick );
     }
 
     /* Searches the memberships of all channels, returning the first
@@ -287,25 +304,27 @@ public class Server
 
     protected User addMember( String nick )
     {
-        User u = new User( nick );
-        if( users.contains( u ) )
+        User user = new User( nick );
+        User u;
+        if( users.contains( user ) )
         {
             Iterator it = users.iterator();
             while( it.hasNext() )
             {
                 u = (User) it.next();
-                if( u.getNick().equals( nick ) )
+                if( u.equals( user ) )
                 {
+                    user = u;
                     break;
                 }
             }
         }
         else
         {
-            users.add( u );
+            users.add( user );
         }
         
-        return u;
+        return user;
     }
 
     /* ******************************************************************** */
@@ -391,17 +410,10 @@ public class Server
             String [] nicks = Util.tokensToArray( namlist );
             for( int i = 0; i < nicks.length; i++ )
             {
-                user = getUserByNick( nicks[ i ] );
-                if( user == null )
-                {
-                    user = new User( nicks[ i ] );
-                    users.add( user );
-                }
+                user = addMember( nicks[ i ] );
                 list_members.add( user );
             }
 
-            //users.addAll( list_members );
-            
             return list_members;
         }
         
@@ -477,6 +489,7 @@ public class Server
                     if( user != null )
                     {
                         user.setNick( new_nick );
+                        user.noteActivity();
                     }
 
                     Channel c;
@@ -490,7 +503,7 @@ public class Server
                         {
                             c = (Channel) channels.elementAt( i );
                             qualities += " " + c.getName();
-                            c.acknowledgeNickChange( user );
+                            c.acknowledgeUserChange( user );
                             //info_manager.acknowledgeNickChange( c );
                         }
                         
@@ -507,7 +520,7 @@ public class Server
                             if( c.nickIsPresent( new_nick ) )
                             {
                                 qualities += " " + c.getName();
-                                c.acknowledgeNickChange( user );
+                                c.acknowledgeUserChange( user );
                                 //info_manager.acknowledgeNickChange( c );
                             }
                         }
@@ -529,6 +542,24 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String text = Util.stringArrayToString( tokens, 3 );
                     text = text.substring( 1 );  // Remove leading colon.
+                    
+                    User user = getUserByNick( nick );
+                    if( user != null )
+                    {
+                        user.noteActivity();
+                        
+                        Channel c;
+                        int n = channels.size();
+                        for( int i = 0; i < n; i++ )
+                        {
+                            c = (Channel) channels.elementAt( i );
+                            if( c.isMember( user ) )
+                            {
+                                qualities += " " + c.getName();
+                                c.acknowledgeUserChange( user );
+                            }
+                        }
+                    }
                     
                     extractLastURL( text );
                     
@@ -600,6 +631,11 @@ public class Server
                         message = message.substring( 1 );  // remove leading colon
                         extractLastURL( message );
                     }
+                    User user = getUserByNick( nick );
+                    if( user != null )
+                    {
+                        user.noteActivity();
+                    }
                     
                     String text = nick + " left " + channel + " (" + message + ").";
                     qualities += " " + channel
@@ -636,6 +672,24 @@ public class Server
                     String nick = getNick( tokens[ 0 ] );
                     String text = Util.stringArrayToString( tokens, 3 );
                     text = text.substring( 1 );  // Remove leading colon.
+                    User user = getUserByNick( nick );
+                    if( user != null )
+                    {
+                        user.noteActivity();
+                        
+                        Channel c = Server.this.getChannelByName( tokens[ 2 ] );
+                        if( c != null )
+                        {
+                            c.acknowledgeUserChange( user );
+                        }
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug(
+                            "Warning: User '" + nick + "' not in user list for "
+                            + Server.this.toString()
+                        );
+                    }
 
                     extractLastURL( text );
                     

@@ -20,6 +20,8 @@
 
 package org.jscroll.widgets;
 
+import geoirc.GeoIRCConstants;
+import geoirc.SettingsManager;
 import org.jscroll.*;
 
 import javax.swing.*;
@@ -35,7 +37,9 @@ import java.awt.event.*;
  * @author <a href="mailto:tessier@gabinternet.com">Tom Tessier</a>
  * @version 1.0  11-Aug-2001
  */
-public class DesktopMediator implements DesktopConstants {
+public class DesktopMediator
+    implements DesktopConstants, GeoIRCConstants
+{
     private DesktopScrollPane desktopScrollpane;
     private DesktopResizableToolBar desktopResizableToolbar;
     private DesktopListener dListener;
@@ -47,14 +51,41 @@ public class DesktopMediator implements DesktopConstants {
      * @param mainPane a reference to the JScrollDesktopPane that this
      *      object is to mediate.
      */
-    public DesktopMediator(JScrollDesktopPane mainPane) {
+    public DesktopMediator( SettingsManager settings_manager, JScrollDesktopPane mainPane )
+    {
         desktopScrollpane = new DesktopScrollPane(this);
         desktopResizableToolbar = new DesktopResizableToolBar(this);
         dListener = new DesktopListener(this);
 
-        mainPane.add(desktopResizableToolbar, BorderLayout.NORTH);
-        mainPane.add(desktopScrollpane, BorderLayout.CENTER);
-        mainPane.addComponentListener(dListener);
+        String toolbar_position = BorderLayout.NORTH;
+        String windowbar_position = settings_manager.getString(
+            "/gui/windowbar position",
+            DEFAULT_WINDOWBAR_POSITION
+        );
+        
+        if( windowbar_position.equals( POSITION_TOP ) )
+        {
+            toolbar_position = BorderLayout.NORTH;
+        }
+        else if( windowbar_position.equals( POSITION_RIGHT ) )
+        {
+            toolbar_position = BorderLayout.EAST;
+        }
+        if( windowbar_position.equals( POSITION_BOTTOM ) )
+        {
+            toolbar_position = BorderLayout.SOUTH;
+        }
+        if( windowbar_position.equals( POSITION_LEFT ) )
+        {
+            toolbar_position = BorderLayout.WEST;
+        }
+        
+        mainPane.add(
+            desktopResizableToolbar,
+            toolbar_position
+        );
+        mainPane.add( desktopScrollpane, BorderLayout.CENTER );
+        mainPane.addComponentListener( dListener );
     }
 
     /**

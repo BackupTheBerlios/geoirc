@@ -13,5 +13,15 @@ Added a %lines_unread variable, and reworked variables internally into a
 VariableManager class.
 Pistos 2003-07-23
 
-Channel member lists can now be sorted.  For now, only by nickname.
+Channel member lists can now be sorted.  By nickname, or by most recent activity.
+Pistos 2003-07-25
+
+Added foreground colour and background colour settings for the input field.
+Pistos 2003-07-25
+
+The "/gui/windowbar position" setting works now.  Valid values are "top",
+"right", "bottom" and "left", but only top and bottom really work.
+Pistos 2003-07-25
+
+Fixed nicklist asynchronicity?
 Pistos 2003-07-25

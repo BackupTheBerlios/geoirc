@@ -65,7 +65,8 @@ public interface GeoIRCConstants
         "nudgeup",
         "nudgedown",
         "connect",
-        "exec"
+        "exec",
+        "listmembers"
     };
     public static final int UNKNOWN_COMMAND = -1;
     public static final int CMD_ACTION = 3;
@@ -81,9 +82,10 @@ public interface GeoIRCConstants
     public static final int CMD_HELP = 23;
     public static final int CMD_JOIN = 2;
     public static final int CMD_LIST_CHANNELS = 15;
+    public static final int CMD_LIST_CONNECTIONS = 13;
     public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
-    public static final int CMD_LIST_CONNECTIONS = 13;
+    public static final int CMD_LIST_MEMBERS = 41;
     public static final int CMD_LIST_WINDOWS = 27;
     public static final int CMD_MSG = 20;
     public static final int CMD_NEW_INFO_WINDOW = 29;
@@ -240,7 +242,14 @@ public interface GeoIRCConstants
     static final int VAR_LAST_URL = 0;
     static final int VAR_LINES_UNREAD = 1;
     
+    static final String POSITION_TOP = "top";
+    static final String POSITION_RIGHT = "right";
+    static final String POSITION_BOTTOM = "bottom";
+    static final String POSITION_LEFT = "left";
+    static final String DEFAULT_WINDOWBAR_POSITION = POSITION_TOP;
     static final java.awt.Color DEFAULT_WINDOW_BUTTON_FOREGROUND_COLOUR = new java.awt.Color( 0, 0, 0 );
+    static final String DEFAULT_INPUT_FIELD_FOREGROUND = "000000";
+    static final String DEFAULT_INPUT_FIELD_BACKGROUND = "ffffff";
     
     static final int SORT_UNSORTED = -1;
     static final int SORT_ALPHABETICAL_ASCENDING = 0;

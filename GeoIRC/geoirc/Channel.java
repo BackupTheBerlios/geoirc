@@ -25,6 +25,7 @@ public class Channel implements GeoIRCConstants
     protected Server server;
     protected InfoManager info_manager;
     protected SettingsManager settings_manager;
+    protected DisplayManager display_manager;
     protected int sort_order;
     protected UserComparator comparator;
     
@@ -35,13 +36,15 @@ public class Channel implements GeoIRCConstants
         Server server,
         String name,
         InfoManager info_manager,
-        SettingsManager settings_manager
+        SettingsManager settings_manager,
+        DisplayManager display_manager
     )
     {
         this.server = server;
         this.name = name;
         this.info_manager = info_manager;
         this.settings_manager = settings_manager;
+        this.display_manager = display_manager;
         topic = null;
         topic_setter = null;
         topic_set_date = null;
@@ -129,9 +132,18 @@ public class Channel implements GeoIRCConstants
             user,
             comparator
         );
-        members.insertElementAt( user, insertion_point );
-        //members.add( user );
-        info_manager.addMember( user, this, insertion_point );
+        try
+        {
+            members.insertElementAt( user, insertion_point + 1 );
+            info_manager.addMember( user, this, insertion_point + 1 );
+        }
+        catch( ArrayIndexOutOfBoundsException e )
+        {
+            display_manager.printlnDebug(
+                "Bad insertion point for new member: "
+                + Integer.toString( insertion_point )
+            );
+        }
     }
     
     public User removeMember( String nick )
@@ -176,6 +188,11 @@ public class Channel implements GeoIRCConstants
         return is_present;
     }
     
+    public boolean isMember( User user )
+    {
+        return members.contains( user );
+    }
+    
     public String completeNick( String incomplete_nick, boolean decorated )
     {
         String completed_nick = incomplete_nick;
@@ -212,13 +229,19 @@ public class Channel implements GeoIRCConstants
         return completed_nick;
     }
     
-    public void acknowledgeNickChange( User user )
+    public void acknowledgeUserChange( User user )
     {
-        if( sort_order == SORT_ALPHABETICAL_ASCENDING )
+        if( user != null )
         {
             sortMembers();
+            int new_index = members.indexOf( user );
+            info_manager.acknowledgeUserChange( this, user, new_index );
         }
-        int new_index = members.indexOf( user );
-        info_manager.acknowledgeNickChange( this, user, new_index );
+    }
+    
+    public User [] getMembers()
+    {
+        User [] retval = new User[ 0 ];
+        return (User []) members.toArray( retval );
     }
 }

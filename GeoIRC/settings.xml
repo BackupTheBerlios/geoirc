@@ -70,6 +70,11 @@
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
+            <node name="1">
+              <map>
+                <entry key="name" value="#geoshell" />
+              </map>
+            </node>
           </node>
         </node>
         <node name="1">
@@ -94,8 +99,8 @@
           <entry key="new content button colour" value="ff0000" />
           <entry key="main frame x" value="-4" />
           <entry key="main frame y" value="-4" />
-          <entry key="main frame width" value="1160" />
-          <entry key="main frame height" value="872" />
+          <entry key="main frame width" value="1288" />
+          <entry key="main frame height" value="1032" />
           <entry key="main frame state" value="6" />
         </map>
         <node name="desktop">
@@ -104,14 +109,14 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="4" />
                 <entry key="location" value="0" />
                 <entry key="divider location" value="149" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="4" />
+                <entry key="pane" value="5" />
                 <entry key="location" value="1" />
                 <entry key="divider location" value="961" />
               </map>
@@ -143,11 +148,18 @@
             <node name="3">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="#geoshell on irc.freenode.net" />
+                <entry key="filter" value="irc.freenode.net and #geoshell" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
                 <entry key="title" value="debug" />
                 <entry key="filter" value="debug" />
               </map>
             </node>
-            <node name="4">
+            <node name="5">
               <map>
                 <entry key="type" value="class geoirc.GIInfoPane" />
                 <entry key="title" value="Info" />
@@ -162,8 +174,8 @@
                 <entry key="title" value="#geoirc" />
                 <entry key="x" value="0" />
                 <entry key="y" value="0" />
-                <entry key="height" value="198" />
-                <entry key="width" value="1057" />
+                <entry key="height" value="257" />
+                <entry key="width" value="946" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
@@ -173,9 +185,9 @@
               <map>
                 <entry key="title" value="irc.freenode.net" />
                 <entry key="x" value="0" />
-                <entry key="y" value="198" />
-                <entry key="height" value="198" />
-                <entry key="width" value="1057" />
+                <entry key="y" value="257" />
+                <entry key="height" value="257" />
+                <entry key="width" value="946" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="1" />
@@ -185,12 +197,24 @@
               <map>
                 <entry key="title" value="#geocards on irc.freenode.net" />
                 <entry key="x" value="0" />
-                <entry key="y" value="396" />
-                <entry key="height" value="198" />
-                <entry key="width" value="1057" />
+                <entry key="y" value="514" />
+                <entry key="height" value="257" />
+                <entry key="width" value="946" />
                 <entry key="state" value="0" />
                 <entry key="selected" value="false" />
                 <entry key="pane" value="2" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="title" value="#geoshell on irc.freenode.net" />
+                <entry key="x" value="20" />
+                <entry key="y" value="20" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="3" />
               </map>
             </node>
           </node>
@@ -201,12 +225,16 @@
           </map>
         </node>
         <node name="info windows">
-          <map />
+          <map>
+            <entry key="sort order" value="1" />
+          </map>
         </node>
         <node name="input field">
           <map>
             <entry key="font face" value="Lucida Console" />
             <entry key="font size" value="14" />
+            <entry key="foreground colour" value="000000" />
+            <entry key="background colour" value="ffffff" />
           </map>
         </node>
         <node name="text windows">

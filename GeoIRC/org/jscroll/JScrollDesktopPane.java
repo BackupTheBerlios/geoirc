@@ -20,6 +20,8 @@
 
 package org.jscroll;
 
+import geoirc.SettingsManager;
+
 import org.jscroll.widgets.*;
 
 import javax.swing.*;
@@ -108,9 +110,10 @@ public class JScrollDesktopPane extends JPanel implements DesktopConstants {
      * @param defaultFrameIcon the default icon to use within the title bar of
      *      internal frames.
      */
-    public JScrollDesktopPane(JMenuBar mb, ImageIcon defaultFrameIcon) {
-        this();
-        registerMenuBar(mb);
+    public JScrollDesktopPane( SettingsManager settings_manager, JMenuBar mb, ImageIcon defaultFrameIcon )
+    {
+        this( settings_manager );
+        registerMenuBar( mb );
         this.defaultFrameIcon = defaultFrameIcon;
     }
 
@@ -119,17 +122,19 @@ public class JScrollDesktopPane extends JPanel implements DesktopConstants {
      *
      * @param mb the menubar with which to register the scrollable desktop
      */
-    public JScrollDesktopPane(JMenuBar mb) {
-        this();
-        registerMenuBar(mb);
+    public JScrollDesktopPane( SettingsManager settings_manager, JMenuBar mb )
+    {
+        this( settings_manager );
+        registerMenuBar( mb );
     }
 
     /**
      * creates the JScrollDesktopPane object.
      */
-    public JScrollDesktopPane() {
+    public JScrollDesktopPane( SettingsManager settings_manager )
+    {
         setLayout(new BorderLayout());
-        desktopMediator = new DesktopMediator(this);
+        desktopMediator = new DesktopMediator( settings_manager, this );
     }
 
     /**

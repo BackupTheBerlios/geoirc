@@ -91,7 +91,7 @@ public class DisplayManager
         undocked_panes = new Vector();
         panes = new Vector();
         
-        desktop_pane = new JScrollDesktopPane( menu_bar );
+        desktop_pane = new JScrollDesktopPane( settings_manager, menu_bar );
         geoirc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
         
