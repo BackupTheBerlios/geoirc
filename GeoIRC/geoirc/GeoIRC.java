@@ -6,7 +6,7 @@
 
 package geoirc;
 
-import com.l2fprod.gui.plaf.skin.*;
+//import com.l2fprod.gui.plaf.skin.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
@@ -431,6 +431,7 @@ public class GeoIRC
      */
     public static void main( String args[] )
     {
+        /*
         Skin skin = null;
         
         if( args.length > 0 )
@@ -447,6 +448,7 @@ public class GeoIRC
                 e.printStackTrace();
             }
         }
+         */
         
         GeoIRC geoirc = new GeoIRC();
         geoirc.setExtendedState( MAXIMIZED_BOTH );
