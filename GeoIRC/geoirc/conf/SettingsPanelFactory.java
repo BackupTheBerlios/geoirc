@@ -10,6 +10,7 @@ import geoirc.XmlProcessable;
 import geoirc.conf.panes.ChannelPane;
 import geoirc.conf.panes.ConnectionPane;
 import geoirc.conf.panes.GeneralPane;
+import geoirc.conf.panes.HighlightningPane;
 import geoirc.conf.panes.RootPane;
 import geoirc.conf.panes.VisualPane;
 
@@ -48,6 +49,7 @@ public class SettingsPanelFactory
 			panels.add(conPane);
 			//Visual Settings
 			BaseSettingsPanel visPane = new VisualPane(settings_manager, valueRules, "Visual Settings");
+			visPane.addChild(new HighlightningPane(settings_manager, valueRules, "Highlightning"));
 			
 			panels.add(visPane);
 		}
