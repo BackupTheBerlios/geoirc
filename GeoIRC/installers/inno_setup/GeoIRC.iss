@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppVerName=GeoIRC 0.3.4a
-InfoAfterFile=C:\GeoIRC\CHANGELOG-0.3.4a.txt
+AppVerName=GeoIRC 0.3.5a
+InfoAfterFile=C:\GeoIRC\CHANGELOG-0.3.5a.txt
 OutputDir=C:\
 Compression=bzip
 AppName=GeoIRC
