@@ -496,10 +496,20 @@ public class GeoIRC
     
     public RemoteMachine getRemoteMachineByName( String name )
     {
+        RemoteMachine rm;
+        RemoteMachine retval = null;
+        
         for( int i = 0, n = remote_machines.size(); i < n; i++ )
         {
-            
+            rm = (RemoteMachine) remote_machines.elementAt( i );
+            if( rm.getHostname().equals( name ) )
+            {
+                retval = rm;
+                break;
+            }
         }
+        
+        return retval;
     }
     
     public static String getATimeStamp( String pattern )
