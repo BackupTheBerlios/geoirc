@@ -39,7 +39,7 @@ public class InfoManager
         // Temporary line:
         //display_manager.addNewInfoWindow( "Info", "/" );
         
-        display_manager.activateInfoWindows( "/", tree );
+        display_manager.activateInfoPanes( "/", tree );
     }
     
     public void addRemoteMachine( RemoteMachine rm )
@@ -48,7 +48,7 @@ public class InfoManager
         root.add( node );
         tree.reload( root );
         tree_inverse.put( rm, node );
-        display_manager.activateInfoWindows(
+        display_manager.activateInfoPanes(
             "/" + rm.toString(),
             new DefaultTreeModel( node )
         );
@@ -66,7 +66,7 @@ public class InfoManager
         root.remove( (DefaultMutableTreeNode) tree_inverse.get( rm ) );
         tree.reload( root );
         tree_inverse.remove( rm );
-        display_manager.deactivateInfoWindows(
+        display_manager.deactivateInfoPanes(
             "/" + rm.toString()
         );
     }
@@ -80,7 +80,7 @@ public class InfoManager
         node.add( channel_node );
         tree.reload( node );
         tree_inverse.put( c, channel_node );
-        display_manager.activateInfoWindows(
+        display_manager.activateInfoPanes(
             "/" + c.getServer().toString() + "/" + c.getName(),
             new DefaultTreeModel( channel_node )
         );
@@ -92,7 +92,7 @@ public class InfoManager
         ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
         tree.reload( node );
         tree_inverse.remove( c );
-        display_manager.deactivateInfoWindows(
+        display_manager.deactivateInfoPanes(
             "/" + c.getServer().toString() + "/" + c.getName()
         );
     }
@@ -106,7 +106,7 @@ public class InfoManager
         node.add( user_node );
         tree.reload( node );
         tree_inverse.put( u, user_node );
-        display_manager.activateInfoWindows(
+        display_manager.activateInfoPanes(
             "/" + channel.getServer().toString()
                 + "/" + channel.getName()
                 + "/" + u.getNick(),
@@ -121,7 +121,7 @@ public class InfoManager
         tree.reload( node );
         tree_inverse.remove( u );
         Channel c = u.getChannel();
-        display_manager.deactivateInfoWindows(
+        display_manager.deactivateInfoPanes(
             "/" + c.toString()
                 + "/" + c.getName()
                 + "/" + u.getNick()

@@ -21,12 +21,11 @@ public class GIInfoPane extends GIPane
     public GIInfoPane(
         DisplayManager display_manager,
         SettingsManager settings_manager,
-        GIWindow window,
         String title,
         String path
     )
     {
-        super( display_manager, settings_manager, window, title, null );
+        super( display_manager, settings_manager, title, null );
         this.path = path;
         tree = null;
     }
