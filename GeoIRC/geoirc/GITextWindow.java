@@ -104,8 +104,13 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         s = text_pane.addStyle( "bold", style_normal );
         StyleConstants.setBold( s, true );
         
+        s = text_pane.addStyle( "underline", style_normal );
+        StyleConstants.setUnderline( s, true );
+        
+        /*
         s = text_pane.addStyle( "blue", style_normal );
         StyleConstants.setBackground( s, new Color( 0, 0, 255 ) );
+         */
         
         selectFrameAndAssociatedButtons();
         
@@ -121,12 +126,50 @@ public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstant
         // Split this string into fragments along the style markings.
         
         StringTokenizer st = new StringTokenizer( text, Character.toString( STYLE_ESCAPE_CHAR ) );
-        boolean first_had_escape_char = ( text.charAt( 0 ) == STYLE_ESCAPE_CHAR );
+        boolean has_escape_char = ( text.charAt( 0 ) == STYLE_ESCAPE_CHAR );
         String fragment;
         
         while( st.hasMoreTokens() )
         {
             fragment = st.nextToken();
+            
+            if( has_escape_char )
+            {
+                String control_string = fragment.substring( 0, fragment.indexOf( STYLE_TERMINATOR_CHAR ) );
+                int len = control_string.length();
+                for( int c = 0; c < len; c++ )
+                {
+                    if( c > len - 2 )
+                    {
+                        display_manager.printlnDebug( "Invalid style control string: "
+                            + control_string );
+                        break;
+                    }
+                    else
+                    {
+                        String code = control_string.substring( c, 2 );
+                        if( code.equals( STYLE_FOREGROUND ) )
+                        {
+                        }
+                        else if( code.equals( STYLE_BACKGROUND ) )
+                        {
+                        }
+                        else if( code.equals( STYLE_BOLD ) )
+                        {
+                        }
+                        else if( code.equals( STYLE_ITALIC ) )
+                        {
+                        }
+                        else if( code.equals( STYLE_UNDERLINE ) )
+                        {
+                        }
+                    }
+                }
+            }
+            else
+            {
+                has_escape_char = true;
+            }
         
             Style style = text_pane.getStyle( style_string );
             if( style == null )

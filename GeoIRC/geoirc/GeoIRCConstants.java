@@ -104,4 +104,10 @@ public interface GeoIRCConstants
     static final int GI_MINIMIZED = 2;
     
     static final char STYLE_ESCAPE_CHAR = (char) 255;
+    static final String STYLE_TERMINATOR_CHAR = ";";
+    static final String STYLE_FOREGROUND = "fg";
+    static final String STYLE_BACKGROUND = "bg";
+    static final String STYLE_BOLD = "bo";
+    static final String STYLE_ITALIC = "it";
+    static final String STYLE_UNDERLINE = "un";
 }
