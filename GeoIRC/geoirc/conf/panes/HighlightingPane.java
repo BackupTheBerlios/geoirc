@@ -10,7 +10,6 @@ import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.JValidatingTable;
-import geoirc.conf.SettingsDialog;
 import geoirc.conf.Storable;
 import geoirc.conf.TableCellColorRenderer;
 import geoirc.conf.TitlePane;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -42,6 +40,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
@@ -107,16 +106,11 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         table.setDefaultRenderer(Color.class, new TableCellColorRenderer(true));
         setUpColorEditor(table);
 
-        try
-        {
-            upButton = new JButton(new ImageIcon(SettingsDialog.class.getResource("images/up.png")));
-            downButton = new JButton(new ImageIcon(SettingsDialog.class.getResource("images/down.png")));
-        }
-        catch (Exception e)
-        {
-            upButton = new JButton("up");
-            downButton = new JButton("down");
-        }
+        upButton = new BasicArrowButton(BasicArrowButton.NORTH);
+        downButton = new BasicArrowButton(BasicArrowButton.SOUTH);
+        
+        upButton.setToolTipText("move selected highlighting pne position up");
+        downButton.setToolTipText("move selected highlighting pne position down");
         upButton.setEnabled(false);
         downButton.setEnabled(false);
         
