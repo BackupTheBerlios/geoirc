@@ -8,6 +8,7 @@ package geoirc;
 
 import geoirc.util.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.util.StringTokenizer;
 import java.util.regex.*;
@@ -20,7 +21,9 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GITextWindow extends GIWindow implements GeoIRCConstants
+public class GITextWindow
+    extends GIWindow
+    implements GeoIRCConstants
 {
     protected JTextPane text_pane;
     protected Document document;
@@ -147,18 +150,23 @@ public class GITextWindow extends GIWindow implements GeoIRCConstants
             display_manager.printlnDebug( e.getMessage() );
         }
 
-        SwingUtilities.invokeLater(
-            new Runnable()
-            {
-                public void run()
-                {   
-                    try {
-                        Thread.sleep( 200 );
-                    } catch( InterruptedException e ) { }
-                    scrollbar.setValue( scrollbar.getMaximum() );                   
+        if( ! scrollbar.getValueIsAdjusting() )
+        {
+            SwingUtilities.invokeLater(
+                new Runnable()
+                {
+                    public void run()
+                    {   
+                        /*
+                        try {
+                            Thread.sleep( 200 );
+                        } catch( InterruptedException e ) { }
+                         */
+                        scrollbar.setValue( scrollbar.getMaximum() );                   
+                    }
                 }
-            }
-        );
+            );
+        }
         
     }
     
@@ -194,5 +202,4 @@ public class GITextWindow extends GIWindow implements GeoIRCConstants
         this.filter = filter;
         setTitle( filter );
     }
-    
 }

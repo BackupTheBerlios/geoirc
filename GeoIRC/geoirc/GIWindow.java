@@ -55,4 +55,9 @@ public class GIWindow extends JScrollInternalFrame
         getContentPane().remove( scroll_pane );
         scroll_pane = null;
     }
+    
+    public JScrollPane getScrollPane()
+    {
+        return scroll_pane;
+    }
 }

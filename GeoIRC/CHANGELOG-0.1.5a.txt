@@ -16,3 +16,6 @@ Pistos 2003-07-15
 
 Added listwindows and dockwindow commands.
 Pistos 2003-07-16
+
+Began adding code for window docking.
+Pistos 2003-07-16

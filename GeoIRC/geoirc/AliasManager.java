@@ -82,7 +82,13 @@ public class AliasManager implements GeoIRCConstants
     
     public String [] getAliases()
     {
-        String [] retval = new String[ 0 ];
-        return (String []) aliases.toArray( retval );
+        CommandAlias [] alias_array = new CommandAlias[ 0 ];
+        alias_array = (CommandAlias []) aliases.toArray( alias_array );
+        String [] retval = new String[ alias_array.length ];
+        for( int i = 0; i < alias_array.length; i++ )
+        {
+            retval[ i ] = alias_array[ i ].getAlias();
+        }
+        return retval;
     }
 }

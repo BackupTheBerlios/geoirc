@@ -89,6 +89,7 @@
           <entry key="skin1" value="themes/aqua/gtk/gtkrc" />
           <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
           <entry key="start maximized" value="True" />
+          <entry key="windowbar position" value="top" />
         </map>
         <node name="desktop">
           <map />
@@ -97,9 +98,9 @@
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="debug" />
               <entry key="x" value="0" />
-              <entry key="y" value="252" />
-              <entry key="height" value="252" />
-              <entry key="width" value="1134" />
+              <entry key="y" value="463" />
+              <entry key="height" value="463" />
+              <entry key="width" value="533" />
               <entry key="state" value="0" />
               <entry key="selected" value="false" />
               <entry key="filter" value="debug" />
@@ -109,10 +110,10 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="irc.freenode.net" />
-              <entry key="x" value="0" />
-              <entry key="y" value="504" />
-              <entry key="height" value="252" />
-              <entry key="width" value="1134" />
+              <entry key="x" value="533" />
+              <entry key="y" value="0" />
+              <entry key="height" value="308" />
+              <entry key="width" value="533" />
               <entry key="state" value="0" />
               <entry key="selected" value="false" />
               <entry key="filter" value="irc.freenode.net" />
@@ -122,12 +123,12 @@
             <map>
               <entry key="type" value="class geoirc.GIInfoWindow" />
               <entry key="title" value="Info" />
-              <entry key="x" value="743" />
-              <entry key="y" value="57" />
-              <entry key="height" value="634" />
-              <entry key="width" value="310" />
+              <entry key="x" value="0" />
+              <entry key="y" value="0" />
+              <entry key="height" value="463" />
+              <entry key="width" value="533" />
               <entry key="state" value="0" />
-              <entry key="selected" value="false" />
+              <entry key="selected" value="true" />
               <entry key="path" value="/" />
             </map>
           </node>
@@ -135,10 +136,10 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geoirc on irc.freenode.net" />
-              <entry key="x" value="0" />
-              <entry key="y" value="0" />
-              <entry key="height" value="252" />
-              <entry key="width" value="1134" />
+              <entry key="x" value="533" />
+              <entry key="y" value="308" />
+              <entry key="height" value="308" />
+              <entry key="width" value="533" />
               <entry key="state" value="0" />
               <entry key="selected" value="false" />
               <entry key="filter" value="irc.freenode.net AND #geoirc" />
@@ -148,17 +149,14 @@
             <map>
               <entry key="type" value="class geoirc.GITextWindow" />
               <entry key="title" value="#geocards" />
-              <entry key="x" value="20" />
-              <entry key="y" value="20" />
-              <entry key="height" value="500" />
-              <entry key="width" value="700" />
+              <entry key="x" value="533" />
+              <entry key="y" value="616" />
+              <entry key="height" value="308" />
+              <entry key="width" value="533" />
               <entry key="state" value="0" />
-              <entry key="selected" value="true" />
+              <entry key="selected" value="false" />
               <entry key="filter" value="#geocards" />
             </map>
-          </node>
-          <node name="5">
-            <map />
           </node>
         </node>
         <node name="format">
@@ -274,6 +272,9 @@
               <entry key="regexp" value=".*" />
               <entry key="filename" value="./motion.wav" />
             </map>
+          </node>
+          <node name="3">
+            <map />
           </node>
         </node>
       </node>

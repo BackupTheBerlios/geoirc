@@ -626,9 +626,12 @@ public class Server
                     :calvino.freenode.net 353 GeoIRC_User = #geoirc :GeoIRC_User GeoBot Fluff @ChanServ 
                      */
                     Channel channel = getChannelByName( tokens[ 4 ] );
-                    String namlist = Util.stringArrayToString( tokens, 5 );
-                    namlist = namlist.substring( 1 );  // remove leading colon
-                    channel.setChannelMembership( namlist );
+                    if( channel != null )
+                    {
+                        String namlist = Util.stringArrayToString( tokens, 5 );
+                        namlist = namlist.substring( 1 );  // remove leading colon
+                        channel.setChannelMembership( namlist );
+                    }
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
                 {

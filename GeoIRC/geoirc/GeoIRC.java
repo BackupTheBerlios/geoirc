@@ -787,6 +787,47 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_DOCK_WINDOW:
+                if( ( args != null ) && ( args.length > 1 ) )
+                {
+                    int location = DOCK_NOWHERE;
+                    int window_index = -1;
+                    
+                    for( int i = 0; i < DOCK_STR.length; i++ )
+                    {
+                        if( args[ 0 ].equals( DOCK_STR[ i ] ) )
+                        {
+                            location = i;
+                            break;
+                        }
+                    }
+                    
+                    try
+                    {
+                        window_index = Integer.parseInt( args[ 1 ] );
+                    }
+                    catch( NumberFormatException e ) { }
+                    
+                    if( ( location != DOCK_NOWHERE ) && ( window_index > -1 ) )
+                    {
+                        if( display_manager.dock( location, window_index ) )
+                        {
+                            pack();
+                            display_manager.printlnDebug( "Window docked." );
+                        }
+                        else
+                        {
+                            display_manager.printlnDebug( "Failed to dock window." );
+                        }
+                    }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/dockwindow [t|r|b|l] [window id number]"
+                    );
+                }
+                break;
             case CMD_FOCUS_ON_INPUT_FIELD:
                 input_field.grabFocus();
                 break;

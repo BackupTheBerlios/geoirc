@@ -83,13 +83,6 @@ public interface GeoIRCConstants
     public static final int CMD_SET_TITLE = 18;
     public static final int CMD_SWITCH_WINDOW = 21;
     
-    /*
-:einstein.freenode.net 311 Pistos Pistos ~Pistos CPE0050ba18d2d5-CM000039ed745e.cpe.net.cable.rogers.com * :Pi Gi
-:einstein.freenode.net 319 Pistos Pistos :#geoshell #geoirc 
-:einstein.freenode.net 312 Pistos Pistos einstein.freenode.net :New York, NY, US
-:einstein.freenode.net 317 Pistos Pistos 58 1058180283 :seconds idle, signon time
-:einstein.freenode.net 318 Pistos Pistos :End of /WHOIS list.
-     */
     static final String [] IRCMSGS =
     {
         "PRIVMSG",
@@ -168,6 +161,7 @@ public interface GeoIRCConstants
     static final int GI_NORMAL = 0;
     static final int GI_MAXIMIZED = 1;
     static final int GI_MINIMIZED = 2;
+    static final java.awt.Dimension GI_WINDOW_MINIMUM_SIZE = new java.awt.Dimension( 30, 30 );
     
     static final String STYLE_ESCAPE_SEQUENCE = Character.toString( (char) 255 );
     static final String STYLE_TERMINATION_SEQUENCE = ";";
@@ -190,4 +184,11 @@ public interface GeoIRCConstants
     
     static final String MODE_OP = "o";
     static final String MODE_VOICE = "v";
+    
+    static final int DOCK_NOWHERE = -1;
+    static final int DOCK_TOP = 0;
+    static final int DOCK_RIGHT = 1;
+    static final int DOCK_BOTTOM = 2;
+    static final int DOCK_LEFT = 3;
+    static final String [] DOCK_STR = { "t", "r", "b", "l" };
 }

@@ -40,6 +40,8 @@ public class DisplayManager
     protected JTextField input_field;
     protected boolean listening;
     protected Vector inactive_info_windows;
+    protected Container content_pane;
+    protected Vector docked_panes;
     
     protected int last_added_frame_x;
     protected int last_added_frame_y;
@@ -70,7 +72,9 @@ public class DisplayManager
 
         windows = new Vector();
         inactive_info_windows = new Vector();
+        docked_panes = new Vector();
         
+        this.content_pane = content_pane;
         desktop_pane = new JScrollDesktopPane( menu_bar );
         content_pane.add( desktop_pane );
         this.input_field = input_field;
@@ -298,6 +302,75 @@ public class DisplayManager
     {
         windows.add( jif );
         jif.addComponentListener( this );
+    }
+    
+    public boolean dock( int location, int window )
+    {
+        boolean success = false;
+        
+        if( ( windows != null )
+            && ( windows.size() > 0 )
+            && ( window < windows.size() )
+        )
+        {
+            if(
+                ( location == DOCK_TOP )
+                || ( location == DOCK_BOTTOM )
+                || ( location == DOCK_LEFT )
+                || ( location == DOCK_RIGHT )
+            )
+            {
+                GIWindow giw = (GIWindow) windows.elementAt( window );
+                JSplitPane split_pane = null;
+                content_pane.remove( desktop_pane );
+                switch( location )
+                {
+                    case DOCK_TOP:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.VERTICAL_SPLIT,
+                                giw.getScrollPane(),
+                                desktop_pane
+                            );
+                        }
+                        break;
+                    case DOCK_RIGHT:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.HORIZONTAL_SPLIT,
+                                desktop_pane, 
+                                giw.getScrollPane()
+                            );
+                        }
+                        break;
+                    case DOCK_BOTTOM:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.VERTICAL_SPLIT,
+                                desktop_pane, 
+                                giw.getScrollPane()
+                            );
+                        }
+                        break;
+                    case DOCK_LEFT:
+                        {
+                            split_pane = new JSplitPane(
+                                JSplitPane.HORIZONTAL_SPLIT,
+                                giw.getScrollPane(),
+                                desktop_pane
+                            );
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                content_pane.add( split_pane );
+                docked_panes.add( split_pane );
+                success = true;
+            }
+        }
+
+        return success;
     }
     
     /* ************************************************************
