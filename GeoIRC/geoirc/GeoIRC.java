@@ -119,6 +119,7 @@ public class GeoIRC
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
     protected I18nManager i18n_manager;
+    protected MenuManager menu_manager;
     protected PythonScriptInterface python_script_interface;
     protected TclScriptInterface tcl_script_interface;
     
@@ -447,6 +448,7 @@ public class GeoIRC
         display_manager.setLogManager( log_manager );
         trigger_manager = new TriggerManager( this, settings_manager, display_manager, i18n_manager );
         alias_manager = new AliasManager( settings_manager, display_manager, variable_manager );
+        menu_manager = new MenuManager( this, settings_manager, display_manager );
         
         display_manager.applySettings();
     }
@@ -596,6 +598,11 @@ public class GeoIRC
     public HighlightManager getHighlightManager()
     {
         return highlight_manager;
+    }
+    
+    public MenuManager getMenuManager()
+    {
+        return menu_manager;
     }
     
     public ActionMap getActionMap()

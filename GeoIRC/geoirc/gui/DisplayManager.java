@@ -752,6 +752,11 @@ public class DisplayManager
         return retval;
     }
     
+    public int getPaneIndexByPaneWrapper( GIPaneWrapper gipw )
+    {
+        return panes.indexOf( gipw );
+    }
+    
     public GITextPane getTextPaneByTitle( String title )
     {
         GIPaneWrapper gipw;
@@ -959,7 +964,7 @@ public class DisplayManager
     public boolean clearTextPane( int index )
     {
         boolean success = false;
-        GIPaneWrapper gipw = getPaneByIndex( index );
+        GIPaneWrapper gipw = getPaneByIndex( userIndexToTrueIndex( index ) );
         
         if( gipw == null )
         {
@@ -1963,6 +1968,11 @@ public class DisplayManager
             gifw = (GIFrameWrapper) frames.elementAt( i );
             printlnDebug( Integer.toString( i ) + ": " + gifw.toString() );
         }
+    }
+    
+    public MenuManager getMenuManager()
+    {
+        return geo_irc.getMenuManager();
     }
     
     public void openSettingsDialog()

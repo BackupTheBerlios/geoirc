@@ -515,4 +515,8 @@ public interface GeoIRCConstants
     
     static final boolean CASE_SENSITIVE = false;
     static final boolean CASE_INSENSITIVE = true;
+    
+    static final int MENU_PANE = 0;
+    static final int MENU_TEXT_PANE = 1;
+    static final int MENU_INFO_PANE = 2;
 }

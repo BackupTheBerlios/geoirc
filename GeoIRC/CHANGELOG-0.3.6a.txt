@@ -1,2 +1,8 @@
 Changelog for GeoIRC 0.3.6a
 ---------------------------
+
+Context menus added.
+Pistos 2003-11-05
+
+Fixed clearpane indexing bug.
+Pistos 2003-11-05
