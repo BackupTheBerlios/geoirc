@@ -437,4 +437,9 @@ public interface GeoIRCConstants
     
     static final int SERVER_READER_POLLING_INTERVAL = 200; // milliseconds
     
+    static final int MSG_TEXT = 0;
+    static final int MSG_QUALITIES = 1;
+    
+    static final int STAGE_SCRIPTING = 0;
+    static final int STAGE_PROCESSING = 1;
 }

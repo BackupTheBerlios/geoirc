@@ -139,7 +139,13 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
             {
                 try
                 {
-                    interpretLine( line );
+                    interpretLine(
+                        STAGE_SCRIPTING,
+                        new String [] {
+                            line,
+                            DCCClient.this.toString() + " " + FILTER_SPECIAL_CHAR + "dccchat"
+                        }
+                    );
                 }
                 catch( NullPointerException e )
                 {
@@ -192,20 +198,29 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
             }
         }
         
-        protected void interpretLine( String line )
+        protected void interpretLine( int stage, String [] transformed_message )
         {
-            String [] transformed_message = geoirc.onRaw(
-                line,
-                DCCClient.this.toString() + " " + FILTER_SPECIAL_CHAR + "dccchat"
-            );
-            
-            display_manager.println(
-                GeoIRC.getATimeStamp(
-                    settings_manager.getString( "/gui/format/timestamp", "" )
-                ) + "<" + remote_nick + "> " + transformed_message[ 0 ],
-                transformed_message[ 1 ]
-            );
-            trigger_manager.check( transformed_message[ 0 ], transformed_message[ 1 ] );
+            switch( stage )
+            {
+                case STAGE_SCRIPTING:
+                    interpretLine(
+                        STAGE_PROCESSING,
+                        geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                        )
+                    );
+                    break;
+                case STAGE_PROCESSING:
+                    display_manager.println(
+                        GeoIRC.getATimeStamp(
+                            settings_manager.getString( "/gui/format/timestamp", "" )
+                        ) + "<" + remote_nick + "> " + transformed_message[ MSG_TEXT ],
+                        transformed_message[ MSG_QUALITIES ]
+                    );
+                    trigger_manager.check( transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ] );
+                    break;
+            }
         }
         
     }    

@@ -892,14 +892,14 @@ public class GeoIRC
     public String [] onRaw( String line, String qualities )
     {
         String [] transformed_message = new String[ 2 ];
-        transformed_message[ 0 ] = line;
-        transformed_message[ 1 ] = qualities;
+        transformed_message[ MSG_TEXT ] = line;
+        transformed_message[ MSG_QUALITIES ] = qualities;
         
         transformed_message = python_script_interface.onRaw(
-            transformed_message[ 0 ], transformed_message[ 1 ]
+            transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
         );
         transformed_message = tcl_script_interface.onRaw(
-            transformed_message[ 0 ], transformed_message[ 1 ]
+            transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
         );
         
         return transformed_message;

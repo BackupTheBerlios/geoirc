@@ -389,7 +389,7 @@ public class Server
             {
                 try
                 {
-                    interpretLine( line );
+                    interpretLine( STAGE_SCRIPTING, new String [] { line, Server.this.toString() } );
                 }
                 catch( NullPointerException e )
                 {
@@ -556,464 +556,590 @@ public class Server
             }
         }
         
-        protected void interpretLine( String line )
+        protected void interpretLine( int stage, String [] transformed_message_ )
         {
-            String [] transformed_message =
-                geoirc.onRaw( line, Server.this.toString() );
+            String [] transformed_message = transformed_message_;
             
-            String [] tokens = Util.tokensToArray( transformed_message[ 0 ] );
             int windows_printed_to = 0;
-            if( tokens != null )
+            String [] tokens = Util.tokensToArray( transformed_message[ MSG_TEXT ] );
+            if( tokens == null )
             {
-                String qualities = transformed_message[ 1 ];
-                
-                if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_ERR_NICKNAMEINUSE ] ) )
+                return;
+            }
+            
+            String irc_code = "";
+            if( tokens.length > 1 )
+            {
+                irc_code = tokens[ 1 ];
+            }
+
+            if( irc_code.equals( IRCMSGS[ IRCMSG_ERR_NICKNAMEINUSE ] ) )
+            {
+                switch( stage )
                 {
-                    int nick_index = 1;
-                    String another_nick;
-                    while( GOD_IS_GOOD )
-                    {
-                        another_nick = settings_manager.getString(
-                            "/personal/nick" + Integer.toString( nick_index ),
-                            ""
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " ncode="
+                                + irc_code
                         );
-                        
-                        if( another_nick.equals( current_nick ) )
+                        break;
+                    case STAGE_PROCESSING:
                         {
-                            nick_index++;
-                            another_nick = settings_manager.getString(
-                                "/personal/nick" + Integer.toString( nick_index ),
-                                ""
-                            );
-                            if( another_nick.equals( "" ) )
+                            int nick_index = 1;
+                            String another_nick;
+                            while( GOD_IS_GOOD )
                             {
-                                another_nick = current_nick;
-                                display_manager.printlnDebug( "No more alternate nicks." );
+                                another_nick = settings_manager.getString(
+                                    "/personal/nick" + Integer.toString( nick_index ),
+                                    ""
+                                );
+
+                                if( another_nick.equals( current_nick ) )
+                                {
+                                    nick_index++;
+                                    another_nick = settings_manager.getString(
+                                        "/personal/nick" + Integer.toString( nick_index ),
+                                        ""
+                                    );
+                                    if( another_nick.equals( "" ) )
+                                    {
+                                        another_nick = current_nick;
+                                        display_manager.printlnDebug( "No more alternate nicks." );
+                                    }
+                                    break;
+                                }
+                                else if( another_nick.equals( "" ) )
+                                {
+                                    // Current nick is not any of the nicks in the settings.
+                                    current_nick = settings_manager.getString(
+                                        "/personal/nick1",
+                                        ""
+                                    );
+                                    break;
+                                }
+
+                                nick_index++;
                             }
-                            break;
-                        }
-                        else if( another_nick.equals( "" ) )
-                        {
-                            // Current nick is not any of the nicks in the settings.
-                            current_nick = settings_manager.getString(
-                                "/personal/nick1",
-                                ""
-                            );
-                            break;
-                        }
-                        
-                        nick_index++;
-                    }
-                    
-                    if( ! another_nick.equals( "" ) )
-                    {
-                        send( "NICK " + another_nick );
-                    }
-                    
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_JOIN ] ) )
-                {
-                    String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ].toLowerCase();
-                    if( channel.charAt( 0 ) == ':' )
-                    {
-                        // Remove leading colon.
-                        channel = channel.substring( 1 );
-                    }
-                    String text = getPadded( nick );                                        
-                    //show dns username and host?
-                    if( settings_manager.getBoolean("/gui/format/complete join message", false) == true )
-                    {                    
-                        text += " (" + getUserNameAndHost( tokens[ 0 ] ) + ")";
-                    }
-                    text += " has joined " + channel + ".";
-                    
-                    qualities += " " + channel
-                        + " from=" + nick
-                        + " " + FILTER_SPECIAL_CHAR + "join";
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                    
-                    if( nick.equals( current_nick ) )
-                    {
-                        addChannel( channel );
-                    }
-                    else
-                    {
-                        Channel chan_obj = getChannelByName( channel );
-                        if( chan_obj != null )
-                        {
-                            User user = addMember( chan_obj, nick );
-                            chan_obj.addMember( user );
-                        }
-                        else
-                        {
-                            display_manager.printlnDebug(
-                                "Warning: No associated channel object for '"
-                                + channel + "'."
-                            );
-                        }
-                    }
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_KICK ] ) )
-                {
-                    // :kez!kez@modem-302.bear.dialup.pol.co.uk KICK #GeoShell GeoBot :kez
-                    String kicker = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ].toLowerCase();
-                    String nick = tokens[ 3 ];
-                    String message = Util.stringArrayToString( tokens, 4 );
-                    if( message != null )
-                    {
-                        message = message.substring( 1 );  // remove leading colon
-                    }
-                    User user = getUserByNick( nick );
-                    if( user != null )
-                    {
-                        user.noteActivity();
-                    }
-                    
-                    String text = getPadded( kicker ) + " has kicked " + nick + " from " + channel + " (" + message + ").";
-                    qualities += " " + channel
-                        + " from=" + kicker
-                        + " victim=" + nick
-                        + " " + FILTER_SPECIAL_CHAR + "kick";
-                    
-                    if( message != null )
-                    {
-                        extractVariables( message, qualities );
-                    }
-                    
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                    
-                    if( nick.equals( current_nick ) )
-                    {
-                        removeChannel( channel );
-                    }
-                    else
-                    {
-                        Channel chan_obj = getChannelByName( channel );
-                        if( chan_obj != null )
-                        {
-                            chan_obj.removeMember( nick );
-                        }
-                    }
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_MODE ] ) )
-                {
-                    // For now, this only handles single argument MODE commands.
-                    
-                    String channel_or_nick = tokens[ 2 ];
-                    
-                    if( channel_or_nick.charAt( 0 ) == '#' )
-                    {
-                        try
-                        {
-                            String nick = getNick( tokens[ 0 ] );
-                            User user = null;
-                            if( nick == null )
+
+                            if( ! another_nick.equals( "" ) )
                             {
-                                // No nick; it could be the server itself doing the action.
-                                nick = tokens[ 0 ];
+                                send( "NICK " + another_nick );
+                            }
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_JOIN ] ) ) && ( tokens.length > 2 ) )
+            {
+                String nick = getNick( tokens[ 0 ] );
+                String channel = tokens[ 2 ].toLowerCase();
+                if( channel.charAt( 0 ) == ':' )
+                {
+                    // Remove leading colon.
+                    channel = channel.substring( 1 );
+                }
+
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + channel
+                                + " from=" + nick
+                                + " " + FILTER_SPECIAL_CHAR + "join"
+                                + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String text = getPadded( nick );                                        
+                            //show dns username and host?
+                            if( settings_manager.getBoolean("/gui/format/complete join message", false) == true )
+                            {                    
+                                text += " (" + getUserNameAndHost( tokens[ 0 ] ) + ")";
+                            }
+                            text += " has joined " + channel + ".";
+
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+
+                            if( nick.equals( current_nick ) )
+                            {
+                                addChannel( channel );
                             }
                             else
                             {
-                                user = getUserByNick( nick );
-                                if( user != null )
+                                Channel chan_obj = getChannelByName( channel );
+                                if( chan_obj != null )
                                 {
-                                    user.noteActivity();
+                                    User user = addMember( chan_obj, nick );
+                                    chan_obj.addMember( user );
+                                }
+                                else
+                                {
+                                    display_manager.printlnDebug(
+                                        "Warning: No associated channel object for '"
+                                        + channel + "'."
+                                    );
                                 }
                             }
-                            String channel = channel_or_nick;
-                            String polarity = tokens[ 3 ].substring( 0, 1 );
-                            String mode = tokens[ 3 ].substring( 1, 2 );
-                            String arg = tokens[ 4 ];
-                            Channel c = Server.this.getChannelByName( channel );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_KICK ] ) ) && ( tokens.length > 3 ) )
+            {
+                // :kez!kez@modem-302.bear.dialup.pol.co.uk KICK #GeoShell GeoBot :kez
+                
+                String kicker = getNick( tokens[ 0 ] );
+                String channel = tokens[ 2 ].toLowerCase();
+                String nick = tokens[ 3 ];
+                String message = Util.stringArrayToString( tokens, 4 );
+                
+                if( ( message != null ) && ( message.charAt( 0 ) == ':' ) )
+                {
+                    message = message.substring( 1 );  // remove leading colon
+                }
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + channel
+                                + " from=" + kicker
+                                + " victim=" + nick
+                                + " " + FILTER_SPECIAL_CHAR + "kick"
+                                + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String text =
+                                getPadded( kicker ) + " has kicked " + nick
+                                + " from " + channel + " (" + message + ").";
 
-                            String text = null;
-                            qualities += " " + channel
-                                + " from=" + nick
-                                + " " + FILTER_SPECIAL_CHAR + "mode"
-                                + " mode=" + mode
-                                + " polarity=" + polarity;
+                            User user = getUserByNick( nick );
+                            if( user != null )
+                            {
+                                user.noteActivity();
+                            }
 
-                            if( mode.equals( MODE_OP ) )
+                            if( message != null )
                             {
-                                User recipient_user = getUserByNick( arg );
-                                if( recipient_user != null )
-                                {
-                                    if( polarity.equals( "+" ) )
-                                    {
-                                        recipient_user.addModeFlag( c, MODE_OP );
-                                        c.acknowledgeUserChange( user );
-                                        c.acknowledgeUserChange( recipient_user );
-                                        text = getPadded( nick ) + " has given channel operator privileges for "
-                                            + channel + " to " + arg + ".";
-                                    }
-                                    else if( polarity.equals( "-" ) )
-                                    {
-                                        recipient_user.removeModeFlag( c, MODE_OP );
-                                        c.acknowledgeUserChange( user );
-                                        c.acknowledgeUserChange( recipient_user );
-                                        text = getPadded( nick ) + " has taken channel operator privileges for "
-                                            + channel + " from " + arg + ".";
-                                    }
-
-                                    qualities += " recipient=" + nick;
-                                }
-                            }
-                            else if( mode.equals( MODE_HALFOP ) )
-                            {
-                                User recipient_user = getUserByNick( arg );
-                                if( recipient_user != null )
-                                {
-                                    if( polarity.equals( "+" ) )
-                                    {
-                                        recipient_user.addModeFlag( c, MODE_HALFOP );
-                                        c.acknowledgeUserChange( user );
-                                        c.acknowledgeUserChange( recipient_user );
-                                        text = getPadded( nick ) + " has given half operator privileges for "
-                                            + channel + " to " + arg + ".";
-                                    }
-                                    else if( polarity.equals( "-" ) )
-                                    {
-                                        recipient_user.removeModeFlag( c, MODE_HALFOP );
-                                        c.acknowledgeUserChange( user );
-                                        c.acknowledgeUserChange( recipient_user );
-                                        text = getPadded( nick ) + " has taken half operator privileges for "
-                                            + channel + " from " + arg + ".";
-                                    }
-
-                                    qualities += " recipient=" + nick;
-                                }
-                            }
-                            else if( mode.equals( "p" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has made " + channel
-                                        + " a private channel.";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has removed the private status of "
-                                        + channel + ".";
-                                }
-                            }
-                            else if( mode.equals( "s" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has made " + channel
-                                        + " a secret channel.";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has removed the secret status of "
-                                        + channel + ".";
-                                }
-                            }
-                            else if( mode.equals( "i" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has made " + channel
-                                        + " invite-only.";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has removed the invite-only status of "
-                                        + channel + ".";
-                                }
-                            }
-                            else if( mode.equals( "t" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has made the topic of " + channel
-                                        + " settable only by channel operators.";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has made the topic of " + channel
-                                        + " settable by anyone.";
-                                }
-                            }
-                            else if( mode.equals( "n" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has blocked messages to  " + channel
-                                        + " from people who are not in the channel.";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has allowed messages to  " + channel
-                                        + " from people who are not in the channel.";
-                                }
-                            }
-                            else if( mode.equals( "m" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has made " + channel
-                                        + " a moderated channel.";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has made " + channel
-                                        + " an unmoderated channel.";
-                                }
-                            }
-                            else if( mode.equals( "b" ) )
-                            {
-                                if( polarity.equals( "+" ) )
-                                {
-                                    text = getPadded( nick ) + " has added the ban " + arg + " for "
-                                        + channel + ".";
-                                }
-                                else if( polarity.equals( "-" ) )
-                                {
-                                    text = getPadded( nick ) + " has lifted the ban " + arg + " for "
-                                        + channel + ".";
-                                }
-                            }
-                            else if( mode.equals( MODE_VOICE ) )
-                            {
-                                User recipient_user = getUserByNick( arg );
-                                if( recipient_user != null )
-                                {
-                                    if( polarity.equals( "+" ) )
-                                    {
-                                        recipient_user.addModeFlag( c, MODE_VOICE );
-                                        c.acknowledgeUserChange( user );
-                                        c.acknowledgeUserChange( recipient_user );
-                                        text = getPadded( nick ) + " has given voice in "
-                                            + channel + " to " + arg + ".";
-                                    }
-                                    else if( polarity.equals( "-" ) )
-                                    {
-                                        recipient_user.removeModeFlag( c, MODE_VOICE );
-                                        c.acknowledgeUserChange( user );
-                                        c.acknowledgeUserChange( recipient_user );
-                                        text = getPadded( nick ) + " has taken voice in "
-                                            + channel + " from " + arg + ".";
-                                    }
-
-                                    qualities += " recipient=" + nick;
-                                }
+                                extractVariables( message, transformed_message[ MSG_QUALITIES ] );
                             }
 
                             windows_printed_to += display_manager.println(
                                 GeoIRC.getATimeStamp(
                                     settings_manager.getString( "/gui/format/timestamp", "" )
                                 ) + text,
-                                qualities
+                                transformed_message[ MSG_QUALITIES ]
                             );
-                            trigger_manager.check( text, qualities );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+
+                            if( nick.equals( current_nick ) )
+                            {
+                                removeChannel( channel );
+                            }
+                            else
+                            {
+                                Channel chan_obj = getChannelByName( channel );
+                                if( chan_obj != null )
+                                {
+                                    chan_obj.removeMember( nick );
+                                }
+                            }
                         }
-                        catch( ArrayIndexOutOfBoundsException e )
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_MODE ] ) ) && ( tokens.length > 2 ) )
+            {
+                // For now, this only handles single argument MODE commands.
+
+                String channel_or_nick = tokens[ 2 ];
+
+                if( channel_or_nick.charAt( 0 ) == '#' )
+                {
+                    try
+                    {
+                        String nick = getNick( tokens[ 0 ] );
+                        User user = null;
+                        if( nick == null )
                         {
+                            // No nick; it could be the server itself doing the action.
+                            nick = tokens[ 0 ];
+                        }
+                        else
+                        {
+                            user = getUserByNick( nick );
+                        }
+                        String channel = channel_or_nick;
+                        String polarity = tokens[ 3 ].substring( 0, 1 );
+                        String mode = tokens[ 3 ].substring( 1, 2 );
+                        String arg = tokens[ 4 ];
+                        Channel c = Server.this.getChannelByName( channel );
+
+                        switch( stage )
+                        {
+                            case STAGE_SCRIPTING:
+                                {
+                                    String qualities = transformed_message[ MSG_QUALITIES ]
+                                        + " " + channel
+                                        + " from=" + nick
+                                        + " " + FILTER_SPECIAL_CHAR + "mode"
+                                        + " mode=" + mode
+                                        + " polarity=" + polarity
+                                        + " acode=" + irc_code;
+                                    
+                                    if(
+                                        ( mode.equals( MODE_OP ) )
+                                        || ( mode.equals( MODE_HALFOP ) )
+                                        || ( mode.equals( MODE_VOICE ) )
+                                    )
+                                    {
+                                        qualities += " recipient=" + nick;
+                                    }
+
+                                    transformed_message = geoirc.onRaw(
+                                        transformed_message[ MSG_TEXT ],
+                                        qualities
+                                    );
+                                }
+                                break;
+                            case STAGE_PROCESSING:
+                                {
+                                    String text = null;
+                                    if( user != null )
+                                    {
+                                        user.noteActivity();
+                                    }
+
+                                    if( mode.equals( MODE_OP ) )
+                                    {
+                                        User recipient_user = getUserByNick( arg );
+                                        if( recipient_user != null )
+                                        {
+                                            if( polarity.equals( "+" ) )
+                                            {
+                                                recipient_user.addModeFlag( c, MODE_OP );
+                                                c.acknowledgeUserChange( user );
+                                                c.acknowledgeUserChange( recipient_user );
+                                                text = getPadded( nick ) + " has given channel operator privileges for "
+                                                    + channel + " to " + arg + ".";
+                                            }
+                                            else if( polarity.equals( "-" ) )
+                                            {
+                                                recipient_user.removeModeFlag( c, MODE_OP );
+                                                c.acknowledgeUserChange( user );
+                                                c.acknowledgeUserChange( recipient_user );
+                                                text = getPadded( nick ) + " has taken channel operator privileges for "
+                                                    + channel + " from " + arg + ".";
+                                            }
+                                        }
+                                    }
+                                    else if( mode.equals( MODE_HALFOP ) )
+                                    {
+                                        User recipient_user = getUserByNick( arg );
+                                        if( recipient_user != null )
+                                        {
+                                            if( polarity.equals( "+" ) )
+                                            {
+                                                recipient_user.addModeFlag( c, MODE_HALFOP );
+                                                c.acknowledgeUserChange( user );
+                                                c.acknowledgeUserChange( recipient_user );
+                                                text = getPadded( nick ) + " has given half operator privileges for "
+                                                    + channel + " to " + arg + ".";
+                                            }
+                                            else if( polarity.equals( "-" ) )
+                                            {
+                                                recipient_user.removeModeFlag( c, MODE_HALFOP );
+                                                c.acknowledgeUserChange( user );
+                                                c.acknowledgeUserChange( recipient_user );
+                                                text = getPadded( nick ) + " has taken half operator privileges for "
+                                                    + channel + " from " + arg + ".";
+                                            }
+                                        }
+                                    }
+                                    else if( mode.equals( "p" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made " + channel
+                                                + " a private channel.";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has removed the private status of "
+                                                + channel + ".";
+                                        }
+                                    }
+                                    else if( mode.equals( "s" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made " + channel
+                                                + " a secret channel.";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has removed the secret status of "
+                                                + channel + ".";
+                                        }
+                                    }
+                                    else if( mode.equals( "i" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made " + channel
+                                                + " invite-only.";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has removed the invite-only status of "
+                                                + channel + ".";
+                                        }
+                                    }
+                                    else if( mode.equals( "t" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made the topic of " + channel
+                                                + " settable only by channel operators.";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made the topic of " + channel
+                                                + " settable by anyone.";
+                                        }
+                                    }
+                                    else if( mode.equals( "n" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has blocked messages to  " + channel
+                                                + " from people who are not in the channel.";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has allowed messages to  " + channel
+                                                + " from people who are not in the channel.";
+                                        }
+                                    }
+                                    else if( mode.equals( "m" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made " + channel
+                                                + " a moderated channel.";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has made " + channel
+                                                + " an unmoderated channel.";
+                                        }
+                                    }
+                                    else if( mode.equals( "b" ) )
+                                    {
+                                        if( polarity.equals( "+" ) )
+                                        {
+                                            text = getPadded( nick ) + " has added the ban " + arg + " for "
+                                                + channel + ".";
+                                        }
+                                        else if( polarity.equals( "-" ) )
+                                        {
+                                            text = getPadded( nick ) + " has lifted the ban " + arg + " for "
+                                                + channel + ".";
+                                        }
+                                    }
+                                    else if( mode.equals( MODE_VOICE ) )
+                                    {
+                                        User recipient_user = getUserByNick( arg );
+                                        if( recipient_user != null )
+                                        {
+                                            if( polarity.equals( "+" ) )
+                                            {
+                                                recipient_user.addModeFlag( c, MODE_VOICE );
+                                                c.acknowledgeUserChange( user );
+                                                c.acknowledgeUserChange( recipient_user );
+                                                text = getPadded( nick ) + " has given voice in "
+                                                    + channel + " to " + arg + ".";
+                                            }
+                                            else if( polarity.equals( "-" ) )
+                                            {
+                                                recipient_user.removeModeFlag( c, MODE_VOICE );
+                                                c.acknowledgeUserChange( user );
+                                                c.acknowledgeUserChange( recipient_user );
+                                                text = getPadded( nick ) + " has taken voice in "
+                                                    + channel + " from " + arg + ".";
+                                            }
+                                        }
+                                    }
+
+                                    windows_printed_to += display_manager.println(
+                                        GeoIRC.getATimeStamp(
+                                            settings_manager.getString( "/gui/format/timestamp", "" )
+                                        ) + text,
+                                        transformed_message[ MSG_QUALITIES ]
+                                    );
+                                    trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                                }
+                                break;
                         }
                     }
+                    catch( ArrayIndexOutOfBoundsException e )
+                    {
+                    }
                 }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NICK ] ) )
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_NICK ] ) ) && ( tokens.length > 2 ) )
+            {
+                String old_nick = getNick( tokens[ 0 ] );
+                String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
+                User user = null;
+                if( stage == STAGE_PROCESSING )
                 {
-                    String old_nick = getNick( tokens[ 0 ] );
-                    String new_nick = tokens[ 2 ].substring( 1 );  // Remove leading colon.
-                    User user = getUserByNick( old_nick );
+                    user = getUserByNick( old_nick );
                     if( user != null )
                     {
                         user.setNick( new_nick );
                         user.noteActivity();
                     }
-
-                    Channel c;
-                    if( old_nick.equals( current_nick ) )
-                    {
-                        // Server acknowledged and allowed our nick change.
-                        current_nick = new_nick;
-                        
-                        int n = channels.size();
-                        for( int i = 0; i < n; i++ )
-                        {
-                            c = (Channel) channels.elementAt( i );
-                            qualities += " " + c.getName();
-                            c.acknowledgeUserChange( user );
-                        }
-                        
-                        qualities += " " + FILTER_SPECIAL_CHAR + "self";
-                    }
-                    else
-                    {
-                        // Someone else's nick changed.
-                        
-                        int n = channels.size();
-                        for( int i = 0; i < n; i++ )
-                        {
-                            c = (Channel) channels.elementAt( i );
-                            if( c.nickIsPresent( new_nick ) )
-                            {
-                                qualities += " " + c.getName();
-                                c.acknowledgeUserChange( user );
-                                //info_manager.acknowledgeNickChange( c );
-                            }
-                        }
-                    }
-                    
-                    String text = getPadded( old_nick ) + " is now known as " + new_nick + ".";
-                    qualities += " from=" + new_nick
-                        + " " + FILTER_SPECIAL_CHAR + "nick";
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
                 }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NOTICE ] ) )
-                {
-                    String nick = getNick( tokens[ 0 ] );
-                    String text = Util.stringArrayToString( tokens, 3 );
-                    text = text.substring( 1 );  // Remove leading colon.
-                    
-                    User user = getUserByNick( nick );
-                    if( user != null )
-                    {
-                        user.noteActivity();
 
-                        if( tokens[ 2 ].equals( current_nick ) )
+                Channel c;
+                if( old_nick.equals( current_nick ) )
+                {
+                    // Server acknowledged and allowed our nick change.
+                    current_nick = new_nick;
+
+                    int n = channels.size();
+                    for( int i = 0; i < n; i++ )
+                    {
+                        c = (Channel) channels.elementAt( i );
+                        switch( stage )
                         {
-                            // Notice to GeoIRC user.
-                            
-                            String query_window_title = Util.getQueryWindowFilter( nick );
-                            
-                            if(
-                                display_manager.getTextPaneByTitle(
-                                    query_window_title
-                                ) == null
-                            )
-                            {
-                                display_manager.addTextWindow(
-                                    query_window_title,
-                                    query_window_title
-                                );
-                            }
-                            
-                            qualities += " " + FILTER_SPECIAL_CHAR + "self";
+                            case STAGE_SCRIPTING:
+                                transformed_message[ MSG_QUALITIES ] += " " + c.getName();
+                                break;
+                            case STAGE_PROCESSING:
+                                c.acknowledgeUserChange( user );
+                                break;
                         }
-                        
+                    }
+
+                    if( stage == STAGE_SCRIPTING )
+                    {
+                        transformed_message[ MSG_QUALITIES ] += " " + FILTER_SPECIAL_CHAR + "self";
+                    }
+                }
+                else
+                {
+                    // Someone else's nick changed.
+
+                    int n = channels.size();
+                    for( int i = 0; i < n; i++ )
+                    {
+                        c = (Channel) channels.elementAt( i );
+                        if( c.nickIsPresent( new_nick ) )
+                        {
+                            switch( stage )
+                            {
+                                case STAGE_SCRIPTING:
+                                    transformed_message[ MSG_QUALITIES ] += " " + c.getName();
+                                    break;
+                                case STAGE_PROCESSING:
+                                    c.acknowledgeUserChange( user );
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " from=" + new_nick
+                                + " " + FILTER_SPECIAL_CHAR + "nick"
+                                + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String text = getPadded( old_nick ) + " is now known as " + new_nick + ".";
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_NOTICE ] ) ) && ( tokens.length > 3 ) )
+            {
+                String nick = getNick( tokens[ 0 ] );
+                String text = Util.stringArrayToString( tokens, 3 );
+                text = text.substring( 1 );  // Remove leading colon.
+
+                if( stage == STAGE_SCRIPTING )
+                {
+                    transformed_message[ MSG_QUALITIES ] +=
+                        " " + FILTER_SPECIAL_CHAR + "notice"
+                        + " " + tokens[ 2 ]
+                        + " from=" + nick;
+                }
+                
+                User user = getUserByNick( nick );
+                if( user != null )
+                {
+                    user.noteActivity();
+
+                    if( tokens[ 2 ].equals( current_nick ) )
+                    {
+                        // Notice to GeoIRC user.
+
+                        switch( stage )
+                        {
+                            case STAGE_SCRIPTING:
+                                transformed_message[ MSG_QUALITIES ] += " " + FILTER_SPECIAL_CHAR + "self";
+                                break;
+                            case STAGE_PROCESSING:
+                                {
+                                    String query_window_title = Util.getQueryWindowFilter( nick );
+
+                                    if(
+                                        display_manager.getTextPaneByTitle(
+                                            query_window_title
+                                        ) == null
+                                    )
+                                    {
+                                        display_manager.addTextWindow(
+                                            query_window_title,
+                                            query_window_title
+                                        );
+                                    }
+                                }
+                                break;
+                        }
+                    }
+
+                    if( stage == STAGE_PROCESSING )
+                    {
                         Channel c;
                         int n = channels.size();
                         for( int i = 0; i < n; i++ )
@@ -1025,205 +1151,21 @@ public class Server
                             }
                         }
                     }
-                    
-                    qualities += " " + FILTER_SPECIAL_CHAR + "notice";
-
-                    if( 
-                        ( text.length() > 0 )
-                        && ( text.charAt( 0 ) == CTCP_MARKER )
-                    )
-                    {
-                        // CTCP message.
-                        
-                        qualities += " " + FILTER_SPECIAL_CHAR + "ctcp";
-                        
-                        String ctcp_message = text.substring(
-                            1,
-                            text.lastIndexOf( CTCP_MARKER )
-                        );
-                        
-                        int space_index = ctcp_message.indexOf( " " );
-                        String command_name;
-                        String arg_string;
-                        if( space_index > -1 )
-                        {
-                            command_name = ctcp_message.substring( 0, space_index );
-                            arg_string = ctcp_message.substring( space_index + 1 );
-                        }
-                        else
-                        {
-                            command_name = ctcp_message;
-                            arg_string = null;
-                        }
-                        String [] args = Util.tokensToArray( arg_string );
-
-                        int command_id = UNKNOWN_CTCP_CMD;
-                        for( int i = 0; i < CTCP_CMDS.length; i++ )
-                        {
-                            if( command_name.equals( CTCP_CMDS[ i ] ) )
-                            {
-                                command_id = i;
-                                break;
-                            }
-                        }
-
-                        text = "Received CTCP " + CTCP_CMDS[ command_id ]
-                            + " from " + nick;
-                    }
-                    else
-                    {
-                        text = "-" + nick + "- " + text;
-                    }
-
-                    String timestamp = GeoIRC.getATimeStamp(
-                        settings_manager.getString( "/gui/format/timestamp", "" )
-                    );
-                    qualities += " " + tokens[ 2 ]
-                        + " from=" + nick;
-
-                    extractVariables( text, qualities );
-                    windows_printed_to += display_manager.println(
-                        timestamp + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
                 }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PART ] ) )
-                {
-                    String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ].toLowerCase();
-                    String message = Util.stringArrayToString( tokens, 3 );
-                    if( message != null )
-                    {
-                        message = message.substring( 1 );  // remove leading colon
-                    }
-                    User user = getUserByNick( nick );
-                    if( user != null )
-                    {
-                        user.noteActivity();
-                    }
-                    
-                    String text = getPadded( nick ) + " has left " + channel + " (" + message + ").";
-                    qualities += " " + channel
-                        + " from=" + nick
-                        + " " + FILTER_SPECIAL_CHAR + "part";
-                    
-                    if( message != null )
-                    {
-                        extractVariables( message, qualities );
-                    }
-                    
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                    
-                    if( nick.equals( current_nick ) )
-                    {
-                        removeChannel( channel );
-                        display_manager.closeWindows( Server.this.toString() + " and " + channel );
-                    }
-                    else
-                    {
-                        Channel chan_obj = getChannelByName( channel );
-                        if( chan_obj != null )
-                        {
-                            chan_obj.removeMember( nick );
-                        }
-                    }
-                }
-                else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
-                {
-                    String pong_arg = "GeoIRC";
-                    if( tokens.length > 1 )
-                    {
-                        pong_arg = tokens[ 1 ];
-                    }
-                    send( "PONG " + pong_arg );
-                    display_manager.println(
-                        "PONG sent to " + Server.this.toString(),
-                        Server.this.toString() + " "
-                        + FILTER_SPECIAL_CHAR + "pong"
-                    );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) )
-                {
-                    String nick = getNick( tokens[ 0 ] );
-                    String text = Util.stringArrayToString( tokens, 3 );
-                    text = text.substring( 1 );  // Remove leading colon.
-                    qualities += " " + FILTER_SPECIAL_CHAR + "privmsg";
-                    String [] words = null;
-                    
-                    User user = getUserByNick( nick );
-                    if( user != null )
-                    {
-                        user.noteActivity();
-                        
-                        if( tokens[ 2 ].equals( current_nick ) )
-                        {
-                            // Message to GeoIRC user.
-                            
-                            String query_window_title = Util.getQueryWindowFilter( nick );
-                            
-                            if(
-                                display_manager.getTextPaneByTitle(
-                                    query_window_title
-                                ) == null
-                            )
-                            {
-                                display_manager.addTextWindow(
-                                    query_window_title,
-                                    query_window_title
-                                );
-                            }
-                            
-                            qualities += " " + FILTER_SPECIAL_CHAR + "self";
-                        }
-                        else
-                        {
-                            Channel c = Server.this.getChannelByName( tokens[ 2 ] );
-                            if( c != null )
-                            {
-                                c.acknowledgeUserChange( user );
-                            }
-                        }
-                    }
-                    else
-                    {
-                        display_manager.printlnDebug(
-                            "Warning: User '" + nick + "' not in user list for "
-                            + Server.this.toString()
-                        );
-                    }
 
-                    if( text.length() > 0 )
+                if( 
+                    ( text.length() > 0 )
+                    && ( text.charAt( 0 ) == CTCP_MARKER )
+                )
+                {
+                    // CTCP message.
+
+                    switch( stage )
                     {
-                        if(
-                            ( text.charAt( 0 ) == CTCP_MARKER )
-                            && ( text.charAt( text.length() - 1 ) == CTCP_MARKER )
-                        )
-                        {
-                            // CTCP message.
-                            
-                            qualities += " " + FILTER_SPECIAL_CHAR + "ctcp";
-                            
-                            if( text.substring( 1, 7 ).equals( "ACTION" ) )
-                            {
-                                // For legacy reasons, we'll treat ACTIONs in a different way.
-                                
-                                String text2 = Util.stringArrayToString( tokens, 4 );
-                                words = Util.tokensToArray(
-                                    text2.substring( 0, text2.length() - 1 )
-                                );
-                                text =
-                                    getPadded( "* " + nick )
-                                    + text.substring( 7, text.length() - 1 );
-                                qualities += " " + FILTER_SPECIAL_CHAR + "action";
-                            }
-                            else
+                        case STAGE_SCRIPTING:
+                            transformed_message[ MSG_QUALITIES ] += " " + FILTER_SPECIAL_CHAR + "ctcp";
+                            break;
+                        case STAGE_PROCESSING:
                             {
                                 String ctcp_message = text.substring(
                                     1,
@@ -1255,292 +1197,725 @@ public class Server
                                     }
                                 }
 
-                                if( command_id != UNKNOWN_CTCP_CMD )
-                                {
-                                    text = "Received CTCP " + CTCP_CMDS[ command_id ]
-                                        + " from " + nick;
-                                }
+                                text = "Received CTCP " + CTCP_CMDS[ command_id ]
+                                    + " from " + nick;
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    if( stage == STAGE_PROCESSING )
+                    {
+                        text = "-" + nick + "- " + text;
+                    }
+                }
 
-                                switch( command_id )
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                            + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String timestamp = GeoIRC.getATimeStamp(
+                                settings_manager.getString( "/gui/format/timestamp", "" )
+                            );
+
+                            extractVariables( text, transformed_message[ MSG_QUALITIES ] );
+                            windows_printed_to += display_manager.println(
+                                timestamp + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_PART ] ) ) && ( tokens.length > 2 ) )
+            {
+                String nick = getNick( tokens[ 0 ] );
+                String channel = tokens[ 2 ].toLowerCase();
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + channel
+                                + " from=" + nick
+                                + " " + FILTER_SPECIAL_CHAR + "part"
+                                + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String message = Util.stringArrayToString( tokens, 3 );
+                            if( message != null )
+                            {
+                                message = message.substring( 1 );  // remove leading colon
+                            }
+                            User user = getUserByNick( nick );
+                            if( user != null )
+                            {
+                                user.noteActivity();
+                            }
+
+                            String text = getPadded( nick ) + " has left " + channel + " (" + message + ").";
+
+                            if( message != null )
+                            {
+                                extractVariables( message, transformed_message[ MSG_QUALITIES ] );
+                            }
+
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+
+                            if( nick.equals( current_nick ) )
+                            {
+                                removeChannel( channel );
+                                display_manager.closeWindows( Server.this.toString() + " and " + channel );
+                            }
+                            else
+                            {
+                                Channel chan_obj = getChannelByName( channel );
+                                if( chan_obj != null )
                                 {
-                                    case CTCP_CMD_SOURCE:
-                                        send(
-                                            IRCMSGS[ IRCMSG_NOTICE ] + " "
-                                            + nick + " :"
-                                            + CTCP_MARKER 
-                                            + CTCP_CMDS[ CTCP_CMD_SOURCE ]
-                                            + " http://geoirc.berlios.de"
-                                            + CTCP_MARKER
-                                        );
-                                        break;
-                                    case CTCP_CMD_USERINFO:
-                                        send(
-                                            IRCMSGS[ IRCMSG_NOTICE ] + " "
-                                            + nick + " :"
-                                            + CTCP_MARKER 
-                                            + CTCP_CMDS[ CTCP_CMD_USERINFO ]
-                                            + " "
-                                            + settings_manager.getString(
-                                                "/personal/ctcp/userinfo", ""
-                                            )
-                                            + CTCP_MARKER
-                                        );
-                                        break;
-                                    case CTCP_CMD_VERSION:
-                                        send(
-                                            IRCMSGS[ IRCMSG_NOTICE ] + " "
-                                            + nick + " :"
-                                            + CTCP_MARKER 
-                                            + CTCP_CMDS[ CTCP_CMD_VERSION ]
-                                            + " GeoIRC/" + GEOIRC_VERSION + " "
-                                            + settings_manager.getString(
-                                                "/personal/ctcp/version", ""
-                                            )
-                                            + CTCP_MARKER
-                                        );
-                                        break;
-                                    case CTCP_CMD_PAGE:
-                                        qualities += " " + FILTER_SPECIAL_CHAR + "page";
-                                        break;
-                                    case CTCP_CMD_DCC:
-                                        try
-                                        {
-                                            geoirc.addDCCChatRequest( args, nick );
-                                        }
-                                        catch( ArrayIndexOutOfBoundsException e )
-                                        {
-                                            // Someone tried to send us an invalid DCC command.
-                                        }
-                                        catch( NumberFormatException e )
-                                        {
-                                            // Bad long integer...
-                                        }
-                                        break;
-                                    default:
-                                        text = "Unknown CTCP command from " + nick + ": "
-                                            + ctcp_message;
-                                        break;
+                                    chan_obj.removeMember( nick );
                                 }
+                            }
+                        }
+                        break;
+                }
+            }
+            else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )
+            {
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                            + " " + FILTER_SPECIAL_CHAR + "pong"
+                            + " acode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String pong_arg = "GeoIRC";
+                            if( tokens.length > 1 )
+                            {
+                                pong_arg = tokens[ 1 ];
+                            }
+                            send( "PONG " + pong_arg );
+                            display_manager.println(
+                                "PONG sent to " + Server.this.toString(),
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_PRIVMSG ] ) ) && ( tokens.length > 3 ) )
+            {
+                String nick = getNick( tokens[ 0 ] );
+                if( stage == STAGE_SCRIPTING )
+                {
+                    transformed_message[ MSG_QUALITIES ]
+                        += " " + FILTER_SPECIAL_CHAR + "privmsg"
+                        + " " + tokens[ 2 ]
+                        + " from=" + nick
+                        + " acode=" + irc_code;
+                }
+                String text = Util.stringArrayToString( tokens, 3 );
+                text = text.substring( 1 );  // Remove leading colon.
+                String [] words = null;
+
+                User user = getUserByNick( nick );
+                if( user != null )
+                {
+                    switch( stage )
+                    {
+                        case STAGE_SCRIPTING:
+                            if( tokens[ 2 ].equals( current_nick ) )
+                            {
+                                transformed_message[ MSG_QUALITIES ]
+                                    += " " + FILTER_SPECIAL_CHAR + "self";
+                            }
+                            break;
+                        case STAGE_PROCESSING:
+                            {
+                                user.noteActivity();
+                                
+                                if( tokens[ 2 ].equals( current_nick ) )
+                                {
+                                    // Message to GeoIRC user.
+
+                                    String query_window_title = Util.getQueryWindowFilter( nick );
+
+                                    if(
+                                        display_manager.getTextPaneByTitle(
+                                            query_window_title
+                                        ) == null
+                                    )
+                                    {
+                                        display_manager.addTextWindow(
+                                            query_window_title,
+                                            query_window_title
+                                        );
+                                    }
+                                }
+                                else
+                                {
+                                    Channel c = Server.this.getChannelByName( tokens[ 2 ] );
+                                    if( c != null )
+                                    {
+                                        c.acknowledgeUserChange( user );
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+                else if( stage == STAGE_PROCESSING )
+                {
+                    display_manager.printlnDebug(
+                        "Warning: User '" + nick + "' not in user list for "
+                        + Server.this.toString()
+                    );
+                }
+
+                if( text.length() > 0 )
+                {
+                    if(
+                        ( text.charAt( 0 ) == CTCP_MARKER )
+                        && ( text.charAt( text.length() - 1 ) == CTCP_MARKER )
+                    )
+                    {
+                        // CTCP message.
+
+                        if( stage == STAGE_SCRIPTING )
+                        {
+                            transformed_message[ MSG_QUALITIES ]
+                                += " " + FILTER_SPECIAL_CHAR + "ctcp";
+                        }
+
+                        if( text.substring( 1, 7 ).equals( "ACTION" ) )
+                        {
+                            // For legacy reasons, we'll treat ACTIONs in a different way.
+
+                            switch( stage )
+                            {
+                                case STAGE_SCRIPTING:
+                                    transformed_message[ MSG_QUALITIES ]
+                                        += " " + FILTER_SPECIAL_CHAR + "action";
+                                    break;
+                                case STAGE_PROCESSING:
+                                    {
+                                        String text2 = Util.stringArrayToString( tokens, 4 );
+                                        words = Util.tokensToArray(
+                                            text2.substring( 0, text2.length() - 1 )
+                                        );
+                                        text =
+                                            getPadded( "* " + nick )
+                                            + text.substring( 7, text.length() - 1 );
+                                    }
+                                    break;
                             }
                         }
                         else
                         {
-                            words = Util.tokensToArray( text );
-                            text = getPadded( "<" + nick + ">" ) + " " + text;
-                        }
-                    }
-                    else
-                    {
-                        text = getPadded( "<" + nick + ">" );
-                    }
-                    
-                    if( words != null )
-                    {
-                        for( int i = 0; i < words.length; i++ )
-                        {
-                            if(
-                                words[ i ].length() >= settings_manager.getInt(
-                                    "/misc/word memory/minimum word length",
-                                    DEFAULT_MINIMUM_WORD_LENGTH
-                                )
-                            )
+                            String ctcp_message = text.substring(
+                                1,
+                                text.lastIndexOf( CTCP_MARKER )
+                            );
+
+                            int space_index = ctcp_message.indexOf( " " );
+                            String command_name;
+                            String arg_string;
+                            if( space_index > -1 )
                             {
-                                conversation_words.add( words[ i ] );
+                                command_name = ctcp_message.substring( 0, space_index );
+                                arg_string = ctcp_message.substring( space_index + 1 );
+                            }
+                            else
+                            {
+                                command_name = ctcp_message;
+                                arg_string = null;
+                            }
+                            String [] args = Util.tokensToArray( arg_string );
+
+                            int command_id = UNKNOWN_CTCP_CMD;
+                            for( int i = 0; i < CTCP_CMDS.length; i++ )
+                            {
+                                if( command_name.equals( CTCP_CMDS[ i ] ) )
+                                {
+                                    command_id = i;
+                                    break;
+                                }
+                            }
+
+                            if( ( command_id != UNKNOWN_CTCP_CMD ) && ( stage == STAGE_PROCESSING ) )
+                            {
+                                text = "Received CTCP " + CTCP_CMDS[ command_id ]
+                                    + " from " + nick;
+                            }
+
+                            switch( stage )
+                            {
+                                case STAGE_SCRIPTING:
+                                    switch( command_id )
+                                    {
+                                        case CTCP_CMD_PAGE:
+                                            transformed_message[ MSG_QUALITIES ]
+                                                += " " + FILTER_SPECIAL_CHAR + "page";
+                                            break;
+                                    }
+                                    break;
+                                case STAGE_PROCESSING:
+                                    switch( command_id )
+                                    {
+                                        case CTCP_CMD_SOURCE:
+                                            send(
+                                                IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                                + nick + " :"
+                                                + CTCP_MARKER 
+                                                + CTCP_CMDS[ CTCP_CMD_SOURCE ]
+                                                + " http://geoirc.berlios.de"
+                                                + CTCP_MARKER
+                                            );
+                                            break;
+                                        case CTCP_CMD_USERINFO:
+                                            send(
+                                                IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                                + nick + " :"
+                                                + CTCP_MARKER 
+                                                + CTCP_CMDS[ CTCP_CMD_USERINFO ]
+                                                + " "
+                                                + settings_manager.getString(
+                                                    "/personal/ctcp/userinfo", ""
+                                                )
+                                                + CTCP_MARKER
+                                            );
+                                            break;
+                                        case CTCP_CMD_VERSION:
+                                            send(
+                                                IRCMSGS[ IRCMSG_NOTICE ] + " "
+                                                + nick + " :"
+                                                + CTCP_MARKER 
+                                                + CTCP_CMDS[ CTCP_CMD_VERSION ]
+                                                + " GeoIRC/" + GEOIRC_VERSION + " "
+                                                + settings_manager.getString(
+                                                    "/personal/ctcp/version", ""
+                                                )
+                                                + CTCP_MARKER
+                                            );
+                                            break;
+                                        case CTCP_CMD_DCC:
+                                            try
+                                            {
+                                                geoirc.addDCCChatRequest( args, nick );
+                                            }
+                                            catch( ArrayIndexOutOfBoundsException e )
+                                            {
+                                                // Someone tried to send us an invalid DCC command.
+                                            }
+                                            catch( NumberFormatException e )
+                                            {
+                                                // Bad long integer...
+                                            }
+                                            break;
+                                        default:
+                                            text = "Unknown CTCP command from " + nick + ": "
+                                                + ctcp_message;
+                                            break;
+                                    }
+                                    break;
                             }
                         }
                     }
-                    
-                    String timestamp = GeoIRC.getATimeStamp(
-                        settings_manager.getString( "/gui/format/timestamp", "" )
-                    );
-                    qualities += " " + tokens[ 2 ]
-                        + " from=" + nick;
-                    
-                    extractVariables( text, qualities );
-
-                    windows_printed_to += display_manager.println(
-                        timestamp + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_QUIT ] ) )
-                {
-                    String nick = getNick( tokens[ 0 ] );
-                    String message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
-
-                    String text = getPadded( nick ) + " has quit (" + message + ").";
-                    qualities += " from=" + nick
-                        + " " + FILTER_SPECIAL_CHAR + "quit";
-                    
-                    if( nick.equals( current_nick ) )
+                    else if( stage == STAGE_PROCESSING )
                     {
-                        geoirc.execute(
-                            CMDS[ CMD_DISCONNECT ] + " "
-                            + geoirc.getRemoteMachineID( Server.this )
-                        );
+                        words = Util.tokensToArray( text );
+                        text = getPadded( "<" + nick + ">" ) + " " + text;
                     }
-                    else
-                    {
-                        Channel channel = null;
-                        int n = channels.size();
-                        User user = null;
-                        for( int i = 0; i < n; i++ )
+                }
+                else if( stage == STAGE_PROCESSING )
+                {
+                    text = getPadded( "<" + nick + ">" );
+                }
+
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                        );
+                        break;
+                    case STAGE_PROCESSING:
                         {
-                            channel = (Channel) channels.elementAt( i );
-                            if( channel.nickIsPresent( nick ) )
+                            if( words != null )
                             {
-                                qualities += " " + channel.getName();
-                                user = channel.removeMember( nick );
+                                for( int i = 0; i < words.length; i++ )
+                                {
+                                    if(
+                                        words[ i ].length() >= settings_manager.getInt(
+                                            "/misc/word memory/minimum word length",
+                                            DEFAULT_MINIMUM_WORD_LENGTH
+                                        )
+                                    )
+                                    {
+                                        conversation_words.add( words[ i ] );
+                                    }
+                                }
                             }
+
+                            String timestamp = GeoIRC.getATimeStamp(
+                                settings_manager.getString( "/gui/format/timestamp", "" )
+                            );
+
+                            extractVariables( text, transformed_message[ MSG_QUALITIES ] );
+
+                            windows_printed_to += display_manager.println(
+                                timestamp + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
                         }
-                        if( user != null )
-                        {
-                            users.remove( user );
-                        }
-                    }
-                    
-                    extractVariables( message, qualities );
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
-                {
-                    /* Example:
-                    :calvino.freenode.net 366 GeoIRC_User #geoirc :End of /NAMES list.
-                     */
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NAMREPLY ] ) )
-                {
-                    /* Example:
-                    :calvino.freenode.net 353 GeoIRC_User = #geoirc :GeoIRC_User GeoBot Fluff @ChanServ 
-                     */
-                    Channel channel = getChannelByName( tokens[ 4 ] );
-                    if( channel != null )
-                    {
-                        String namlist = Util.stringArrayToString( tokens, 5 );
-                        namlist = namlist.substring( 1 );  // remove leading colon
-                        Vector v = handleNamesList( channel, namlist );
-                        //channel.setChannelMembership( v );
-                        channel.addToChannelMembership( v );
-                    }
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) )
-                {
-                    String channel = tokens[ 3 ].toLowerCase();
-                    
-                    qualities += " " + FILTER_SPECIAL_CHAR + "topic"
-                        + " " + channel;
-                    String text = channel + " has no topic set.";
-                    
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) )
-                {
-                    String channel = tokens[ 3 ].toLowerCase();
-                    String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
-                    
-                    qualities += " " + FILTER_SPECIAL_CHAR + "topic"
-                        + " " + channel;
-                    String text = "The topic of " + channel + " is: " + topic;
-                    
-                    extractVariables( topic, qualities );
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) )
-                {
-                    String channel = tokens[ 3 ].toLowerCase();
-                    String setter = tokens[ 4 ];
-                    String time_str = tokens[ 5 ];
-                    long time_in_seconds;
-                    String time = "an unknown date and time";
-                    try
-                    {
-                        time_in_seconds = Integer.parseInt( time_str );
-                        DateFormat df = DateFormat.getDateTimeInstance(
-                            DateFormat.LONG, DateFormat.LONG
-                        );
-                        time = df.format( new Date( time_in_seconds * 1000 ) );
-                    } catch( NumberFormatException e ) { }
-                    
-                    qualities += " " + FILTER_SPECIAL_CHAR + "topicsetter"
-                        + " " + channel;
-                    String text = "The topic for " + channel + " was set by "
-                        + setter + " on " + time;
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_TOPIC ] ) )
-                {
-                    String nick = getNick( tokens[ 0 ] );
-                    String channel = tokens[ 2 ].toLowerCase();
-                    String topic = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
-                    
-                    qualities += " " + FILTER_SPECIAL_CHAR + "topic"
-                        + " " + channel
-                        + " from=" + nick;
-                    String text = getPadded( nick ) + " has changed the topic for " + channel + " to: " + topic;
-                    
-                    extractVariables( topic, qualities );
-                    windows_printed_to += display_manager.println(
-                        GeoIRC.getATimeStamp(
-                            settings_manager.getString( "/gui/format/timestamp", "" )
-                        ) + text,
-                        qualities
-                    );
-                    trigger_manager.check( text, qualities );
-                }
-                else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_WELCOME ] ) )
-                {
-                    if( ! listening_to_channels )
-                    {
-                        restoreChannels();
-                        listening_to_channels = true;
-                        info_manager.addRemoteMachine( Server.this );
-                    }
-                    
-                    /* Perhaps our suggested nick is longer than the maximum
-                     * nick length allowed by the server, and was truncated.
-                     * We shall use the welcome message to help us identify
-                     * the nick that the server knows us by.
-                     */
-                    current_nick = tokens[ 2 ];
-                    String message = Util.stringArrayToString( tokens, 3 );
+                        break;
                 }
             }
+            else if( irc_code.equals( IRCMSGS[ IRCMSG_QUIT ] ) )
+            {
+                String nick = getNick( tokens[ 0 ] );
+                String message = null;
+                String text = "";
+                
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message[ MSG_QUALITIES ]
+                            += " from=" + nick
+                            + " " + FILTER_SPECIAL_CHAR + "quit"
+                            + " acode=" + irc_code;
+                        if( ! nick.equals( current_nick ) )
+                        {
+                            Channel channel = null;
+                            for( int i = 0, n = channels.size(); i < n; i++ )
+                            {
+                                channel = (Channel) channels.elementAt( i );
+                                if( channel.nickIsPresent( nick ) )
+                                {
+                                    transformed_message[ MSG_QUALITIES ] += " " + channel.getName();
+                                }
+                            }
+                        }
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        message = Util.stringArrayToString( tokens, 2 ).substring( 1 );  // remove leading colon
+                        text = getPadded( nick ) + " has quit (" + message + ").";
 
-            display_manager.println(
-                transformed_message[ 0 ],
-                transformed_message[ 1 ] + " "
-                    + FILTER_SPECIAL_CHAR + "raw"
-                    + (
-                        ( windows_printed_to > 0 )
-                        ? ( " " + FILTER_SPECIAL_CHAR + "printed" )
-                        : ""
-                    )
-            );
+                        if( nick.equals( current_nick ) )
+                        {
+                            geoirc.execute(
+                                CMDS[ CMD_DISCONNECT ] + " "
+                                + geoirc.getRemoteMachineID( Server.this )
+                            );
+                        }
+                        else
+                        {
+                            Channel channel = null;
+                            int n = channels.size();
+                            User user = null;
+                            for( int i = 0; i < n; i++ )
+                            {
+                                channel = (Channel) channels.elementAt( i );
+                                if( channel.nickIsPresent( nick ) )
+                                {
+                                    user = channel.removeMember( nick );
+                                }
+                            }
+                            if( user != null )
+                            {
+                                users.remove( user );
+                            }
+                        }
+
+                        extractVariables( message, transformed_message[ MSG_QUALITIES ] );
+                        windows_printed_to += display_manager.println(
+                            GeoIRC.getATimeStamp(
+                                settings_manager.getString( "/gui/format/timestamp", "" )
+                            ) + text,
+                            transformed_message[ MSG_QUALITIES ]
+                        );
+                        trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        break;
+                }
+            }
+            else if( irc_code.equals( IRCMSGS[ IRCMSG_RPL_ENDOFNAMES ] ) )
+            {
+                /* Example:
+                :calvino.freenode.net 366 GeoIRC_User #geoirc :End of /NAMES list.
+                 */
+                if( stage == STAGE_SCRIPTING )
+                {
+                    transformed_message = geoirc.onRaw(
+                        transformed_message[ MSG_TEXT ],
+                        transformed_message[ MSG_QUALITIES ]
+                        + " ncode=" + irc_code
+                    );
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_NAMREPLY ] ) ) && ( tokens.length > 5 ) )
+            {
+                /* Example:
+                :calvino.freenode.net 353 GeoIRC_User = #geoirc :GeoIRC_User GeoBot Fluff @ChanServ 
+                 */
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                            + " ncode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            Channel channel = getChannelByName( tokens[ 4 ] );
+                            if( channel != null )
+                            {
+                                String namlist = Util.stringArrayToString( tokens, 5 );
+                                namlist = namlist.substring( 1 );  // remove leading colon
+                                Vector v = handleNamesList( channel, namlist );
+                                channel.addToChannelMembership( v );
+                            }
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_NOTOPIC ] ) ) && ( tokens.length > 3 ) )
+            {
+                String channel = tokens[ 3 ].toLowerCase();
+
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + FILTER_SPECIAL_CHAR + "topic"
+                                + " " + channel
+                                + " ncode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String text = channel + " has no topic set.";
+
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_TOPIC ] ) ) && ( tokens.length > 3 ) )
+            {
+                String channel = tokens[ 3 ].toLowerCase();
+                
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + FILTER_SPECIAL_CHAR + "topic"
+                                + " " + channel
+                                + " ncode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String topic = Util.stringArrayToString( tokens, 4 ).substring( 1 );  // remove leading colon
+                            String text = "The topic of " + channel + " is: " + topic;
+
+                            extractVariables( topic, transformed_message[ MSG_QUALITIES ] );
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_RPL_TOPIC_SETTER ] ) ) && ( tokens.length > 3 ) )
+            {
+                String channel = tokens[ 3 ].toLowerCase();
+                
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + FILTER_SPECIAL_CHAR + "topicsetter"
+                                + " " + channel
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String setter = tokens[ 4 ];
+                            String time_str = tokens[ 5 ];
+                            long time_in_seconds;
+                            String time = "an unknown date and time";
+                            try
+                            {
+                                time_in_seconds = Integer.parseInt( time_str );
+                                DateFormat df = DateFormat.getDateTimeInstance(
+                                    DateFormat.LONG, DateFormat.LONG
+                                );
+                                time = df.format( new Date( time_in_seconds * 1000 ) );
+                            } catch( NumberFormatException e ) { }
+
+                            String text = "The topic for " + channel + " was set by "
+                                + setter + " on " + time;
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_TOPIC ] ) ) && ( tokens.length > 2 ) )
+            {
+                String nick = getNick( tokens[ 0 ] );
+                String channel = tokens[ 2 ].toLowerCase();
+                
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                                + " " + FILTER_SPECIAL_CHAR + "topic"
+                                + " " + channel
+                                + " from=" + nick
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        {
+                            String topic = Util.stringArrayToString( tokens, 3 ).substring( 1 );  // remove leading colon
+
+                            String text = getPadded( nick ) + " has changed the topic for " + channel + " to: " + topic;
+
+                            extractVariables( topic, transformed_message[ MSG_QUALITIES ] );
+                            windows_printed_to += display_manager.println(
+                                GeoIRC.getATimeStamp(
+                                    settings_manager.getString( "/gui/format/timestamp", "" )
+                                ) + text,
+                                transformed_message[ MSG_QUALITIES ]
+                            );
+                            trigger_manager.check( text, transformed_message[ MSG_QUALITIES ] );
+                        }
+                        break;
+                }
+            }
+            else if( ( irc_code.equals( IRCMSGS[ IRCMSG_WELCOME ] ) ) && ( tokens.length > 2 ) )
+            {
+                switch( stage )
+                {
+                    case STAGE_SCRIPTING:
+                        transformed_message = geoirc.onRaw(
+                            transformed_message[ MSG_TEXT ],
+                            transformed_message[ MSG_QUALITIES ]
+                            + " ncode=" + irc_code
+                        );
+                        break;
+                    case STAGE_PROCESSING:
+                        if( ! listening_to_channels )
+                        {
+                            restoreChannels();
+                            listening_to_channels = true;
+                            info_manager.addRemoteMachine( Server.this );
+                        }
+
+                        /* Perhaps our suggested nick is longer than the maximum
+                         * nick length allowed by the server, and was truncated.
+                         * We shall use the welcome message to help us identify
+                         * the nick that the server knows us by.
+                         */
+                        current_nick = tokens[ 2 ];
+                        //String message = Util.stringArrayToString( tokens, 3 );
+                        break;
+                }
+            }
+            else
+            {
+                // This IRC message is not [yet] handled by GeoIRC.
+                
+                String code_string;
+                
+                try
+                {
+                    Integer.parseInt( irc_code );
+                    code_string = " ncode=";
+                }
+                catch( NumberFormatException e )
+                {
+                    code_string = " acode=";
+                }
+                
+                transformed_message = geoirc.onRaw(
+                    transformed_message[ MSG_TEXT ],
+                    transformed_message[ MSG_QUALITIES ]
+                    + code_string + irc_code
+                );
+            }
+
+            switch( stage )
+            {
+                case STAGE_SCRIPTING:
+                    interpretLine( STAGE_PROCESSING, transformed_message );
+                    break;
+                case STAGE_PROCESSING:
+                    display_manager.println(
+                        transformed_message_[ MSG_TEXT ],
+                        Server.this.toString() + " "
+                            + FILTER_SPECIAL_CHAR + "raw"
+                            + (
+                                ( windows_printed_to > 0 )
+                                ? ( " " + FILTER_SPECIAL_CHAR + "printed" )
+                                : ""
+                            )
+                    );
+                    break;
+            }
         }
     }
 }

@@ -12,6 +12,6 @@ package geoirc;
  */
 public abstract class RemoteMachineReader extends Thread
 {
-    protected abstract void interpretLine( String line );
+    protected abstract void interpretLine( int stage, String [] transformed_message_ );
     public abstract void run();
 }

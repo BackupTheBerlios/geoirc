@@ -70,14 +70,6 @@
                 <entry key="name" value="#geoirc" />
               </map>
             </node>
-            <node name="1">
-              <map>
-                <entry key="name" value="#geocards" />
-              </map>
-            </node>
-            <node name="2">
-              <map />
-            </node>
           </node>
         </node>
         <node name="1">
@@ -109,6 +101,122 @@
           <entry key="main frame height" value="1024" />
           <entry key="main frame state" value="6" />
         </map>
+        <node name="desktop">
+          <map />
+          <node name="docked panes">
+            <map />
+            <node name="0">
+              <map>
+                <entry key="pane" value="4" />
+                <entry key="location" value="2" />
+                <entry key="divider location" value="825" />
+              </map>
+            </node>
+            <node name="1">
+              <map>
+                <entry key="pane" value="5" />
+                <entry key="location" value="1" />
+                <entry key="divider location" value="990" />
+              </map>
+            </node>
+          </node>
+          <node name="panes">
+            <map />
+            <node name="0">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="tolkien.freenode.net and %raw and not %printed" />
+                <entry key="filter" value="tolkien.freenode.net and %raw and not %printed" />
+              </map>
+            </node>
+            <node name="1">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="from=ChanServ and %self or ChanServ and from=%self" />
+                <entry key="filter" value="from=ChanServ and %self or ChanServ and from=%self" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="from=NickServ and %self or NickServ and from=%self" />
+                <entry key="filter" value="from=NickServ and %self or NickServ and from=%self" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="#geoirc on tolkien.freenode.net" />
+                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
+              </map>
+            </node>
+            <node name="4">
+              <map>
+                <entry key="type" value="class geoirc.GITextPane" />
+                <entry key="title" value="%debug" />
+                <entry key="filter" value="%debug" />
+              </map>
+            </node>
+            <node name="5">
+              <map>
+                <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="title" value="Info" />
+                <entry key="path" value="/" />
+              </map>
+            </node>
+          </node>
+          <node name="windows">
+            <map />
+            <node name="0">
+              <map>
+                <entry key="title" value="tolkien.freenode.net and %raw and not %printed" />
+                <entry key="x" value="0" />
+                <entry key="y" value="0" />
+                <entry key="height" value="779" />
+                <entry key="width" value="971" />
+                <entry key="state" value="1" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="0" />
+              </map>
+            </node>
+            <node name="1">
+              <map>
+                <entry key="title" value="from=ChanServ and %self or ChanServ and from=%self" />
+                <entry key="x" value="140" />
+                <entry key="y" value="140" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="1" />
+              </map>
+            </node>
+            <node name="2">
+              <map>
+                <entry key="title" value="from=NickServ and %self or NickServ and from=%self" />
+                <entry key="x" value="160" />
+                <entry key="y" value="160" />
+                <entry key="height" value="500" />
+                <entry key="width" value="700" />
+                <entry key="state" value="0" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="2" />
+              </map>
+            </node>
+            <node name="3">
+              <map>
+                <entry key="title" value="#geoirc on tolkien.freenode.net" />
+                <entry key="x" value="0" />
+                <entry key="y" value="0" />
+                <entry key="height" value="779" />
+                <entry key="width" value="971" />
+                <entry key="state" value="1" />
+                <entry key="selected" value="false" />
+                <entry key="pane" value="3" />
+              </map>
+            </node>
+          </node>
+        </node>
         <node name="format">
           <map>
             <entry key="timestamp" value="HH:mm:ss" />
