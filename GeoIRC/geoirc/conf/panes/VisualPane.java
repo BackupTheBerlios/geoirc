@@ -91,14 +91,14 @@ public class VisualPane extends BaseSettingsPanel implements Storable
         String value = settings_manager.getString(path + "skin1", (String)kdercRule.getValue());
         kderc = new JValidatingTextField(kdercRule.getPattern(), value, 250);
         save_handler.register(addComponent(kderc, 1, 1, 3, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "skin1");
-        chooseKderc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(kderc, this));
+        chooseKderc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(kderc, this, value));
         addComponent(chooseKderc, 4, 1, 1, 1, 1, 0, new Insets(5, 0, 5, 5));
 
         addComponent(new JLabel("Path to .gtkrc:"), 0, 2, 1, 1, 0, 0);
         value = settings_manager.getString(path + "skin2", (String)gtkrcRule.getValue());
         gtkrc = new JValidatingTextField(gtkrcRule.getPattern(), value, 250);
         save_handler.register(addComponent(gtkrc, 1, 2, 3, 1, 0, 0, new Insets(5, 5, 5, 2)), path + "skin2");
-        chooseGtkrc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(gtkrc, this));
+        chooseGtkrc = ComponentFactory.getFurtherInfoButton(new FileChooserHandler(gtkrc, this, value));
         addComponent(chooseGtkrc, 4, 2, 1, 1, 1, 0, new Insets(5, 0, 5, 5));
 
         //INPUT BOX

@@ -55,8 +55,8 @@ public class DCCPane extends BaseSettingsPanel implements Storable
             path + "Download directory");
 
         addComponent(
-            ComponentFactory.getFurtherInfoButton(new FileChooserHandler(dirField, this)),
-            2,
+            ComponentFactory.getFurtherInfoButton(new FileChooserHandler(dirField, this, value)),
+            3,
             2,
             1,
             1,
