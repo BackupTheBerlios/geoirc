@@ -256,6 +256,8 @@
           <entry key="Ctrl|1" value="switchwindow .*geoshell.*" />
           <entry key="Ctrl|2" value="switchwindow .*geoirc.*" />
           <entry key="Ctrl|3" value="switchwindow .*geocards.*" />
+          <entry key="Ctrl|4" value="switchwindow .*christian.*" />
+          <entry key="Ctrl|3" value="switchwindow .*statfreak.*" />
           <entry key="Ctrl|9" value="switchwindow Pistos" />
           <entry key="Ctrl|0" value="switchwindow .*%raw.*" />
           <entry key="|Tab" value="completenick" />
@@ -365,7 +367,7 @@
             <map />
           </node>
         </node>
-        <node name="constants">
+        <node name="constants"> 
           <map />
           <node name="0">
             <map />

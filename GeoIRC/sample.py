@@ -2,8 +2,8 @@ from java.util import Random
 generator = Random()
 
 # RawListeners have the ability to change the line that they receive and
-# send it back to GeoIRC in an altered state.  You can define your class by
-# any name you like, as long as it has "text" and "qualities" attributes.
+# send it back to GeoIRC in an altered state.  You can define your message class
+# by any name you like, as long as it has "text" and "qualities" attributes.
 class Message:
     def __init__( self, text_, qualities_ ):
         self.text = text_
@@ -39,6 +39,7 @@ rando = Rand()
 
 # Any method of any class can be registered with GeoIRC.
 
+# Load your script into GeoIRC with the "loadpy <script filename>" command.
 # GeoIRC executes the method by the command
 # "execpymethod instance.methodname args"
 
