@@ -7,6 +7,8 @@
 package geoirc;
 
 import java.awt.Component;
+import java.io.File;
+import java.io.FileNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -24,11 +26,33 @@ public class GITreeCellRenderer
     ImageIcon voiced_icon;
     ImageIcon op_icon;
     
-    public GITreeCellRenderer()
+    public GITreeCellRenderer() throws FileNotFoundException
     {
-        regular_icon = new ImageIcon( "regular_icon.gif" );
-        voiced_icon = new ImageIcon( "voiced_icon.gif", "voiced" );
-        op_icon = new ImageIcon( "op_icon.gif", "operator" );
+        if( ( regular_icon = loadIcon( "regular_icon.png" ) ) == null )
+        {
+            throw new FileNotFoundException( "regular_icon.png" );
+        }
+        if( ( voiced_icon = loadIcon( "voiced_icon.png" ) ) == null )
+        {
+            throw new FileNotFoundException( "voiced_icon.png" );
+        }
+        if( ( op_icon = loadIcon( "op_icon.png" ) ) == null )
+        {
+            throw new FileNotFoundException( "op_icon.png" );
+        }
+    }
+    
+    protected ImageIcon loadIcon( String filename )
+    {
+        ImageIcon retval = null;
+        
+        File f = new File( filename );
+        if( f.exists() )
+        {
+            retval = new ImageIcon( filename );
+        }
+        
+        return retval;
     }
     
     public Component getTreeCellRendererComponent(

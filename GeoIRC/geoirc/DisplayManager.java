@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -31,6 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 
 import org.jscroll.JScrollDesktopPane;
@@ -71,7 +73,7 @@ public class DisplayManager
     
     protected boolean show_qualities;  // for debugging purposes
     
-    protected GITreeCellRenderer cell_renderer;
+    protected DefaultTreeCellRenderer cell_renderer;
     
     // No default constructor
     private DisplayManager() { }
@@ -106,7 +108,15 @@ public class DisplayManager
         geoirc.getContentPane().add( desktop_pane );
         this.input_field = input_field;
         
-        cell_renderer = new GITreeCellRenderer();
+        try
+        {
+            cell_renderer = new GITreeCellRenderer();
+        }
+        catch( FileNotFoundException e )
+        {
+            printlnDebug( "Could not find all user icons." );
+            cell_renderer = new DefaultTreeCellRenderer();
+        }
         
         last_activated_frame = null;
         last_added_frame_x = 0;
@@ -320,7 +330,7 @@ public class DisplayManager
         }
     }
     
-    public GITreeCellRenderer getCellRenderer()
+    public DefaultTreeCellRenderer getCellRenderer()
     {
         return cell_renderer;
     }
