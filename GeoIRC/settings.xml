@@ -93,7 +93,8 @@
       <_1 filter="not ( %join or %part or %quit or %pong )" regexp=".*" command="play sounds/blip.wav" />
       <_2 filter="%join or %part or %quit" regexp=".*" command="play sounds/motion.wav" />
       <_3 filter="%page" regexp=".*" command="play sounds/page.wav" />
-      <_4 command="" />
+      <_4 filter="%notice" regexp=".*" command="play sounds/notice.wav" />
+      <_5 command="" />
     </triggers>
     <variables>
       <captured>

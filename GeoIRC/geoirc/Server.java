@@ -1232,7 +1232,7 @@ public class Server
                         + " from=" + nick;
                 }
                 
-                boolean notices_in_active = settings_manager.getBoolean(
+                boolean print_to_active = settings_manager.getBoolean(
                     "/gui/notices in active window",
                     true
                 );
@@ -1252,7 +1252,7 @@ public class Server
                                 transformed_message[ MSG_QUALITIES ] += " " + FILTER_SPECIAL_CHAR + "self";
                                 break;
                             case STAGE_PROCESSING:
-                                if( ! notices_in_active )
+                                if( ! print_to_active )
                                 {
                                     String query_window_title = Util.getQueryWindowFilter( nick );
 
@@ -1270,6 +1270,10 @@ public class Server
                                 }
                                 break;
                         }
+                    }
+                    else if( print_to_active && ( tokens[ 2 ].indexOf( '#' ) > -1 ) )
+                    {
+                        print_to_active = false;
                     }
 
                     if( stage == STAGE_PROCESSING )
@@ -1363,7 +1367,7 @@ public class Server
                             );
 
                             extractVariables( text, transformed_message[ MSG_QUALITIES ] );
-                            if( notices_in_active )
+                            if( print_to_active )
                             {
                                 windows_printed_to++;
                                 display_manager.printlnToActiveTextPane( timestamp + text );
