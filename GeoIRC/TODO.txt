@@ -1,0 +1,16 @@
+TODO
+---------------------------
+
+(1)    internationalization    => Pistos
+(2)    variables config in settings gui    => netseeker
+(3)    add "choose command to insert" to command alias pane    => netseeker
+(4)    include the regexp test dialog in settings gui    => netseeker
+(5)    windows installer    => netseeker
+(5.5)  linux installer   => Striker"
+(6)    switch away from Preferences!    => netseeker
+(7)    add a switch which clears out the server list + windows on close    => netseeker
+(8)    /newconsolewindow    => Pistos
+(9)    write our own MDI window manager    => Pistos
+(10)   ability to dock any pane into any frame    => Pistos
+(11)   user definition of menus    => netseeker
+(12)   user definition of mouse events, e.g. click on tree node brings up such and such menu.    => Pistos
