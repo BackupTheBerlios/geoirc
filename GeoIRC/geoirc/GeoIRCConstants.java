@@ -18,5 +18,6 @@ public interface GeoIRCConstants
     };
     static final int IRCMSG_PRIVMSG = 0;
     
-    
+    static final boolean NEXT_WINDOW = false;
+    static final boolean PREVIOUS_WINDOW = true;
 }

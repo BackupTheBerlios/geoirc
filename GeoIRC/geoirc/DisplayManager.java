@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
 import org.jscroll.*;
+import org.jscroll.widgets.JScrollInternalFrame;
 
 /**
  *
@@ -89,7 +90,7 @@ public class DisplayManager implements InternalFrameListener
             last_added_frame_y = MIN_NEW_WINDOW_Y;
         }
         desktop_pane.add( text_window, last_added_frame_x, last_added_frame_y );
-        text_window.setBounds( last_added_frame_x, last_added_frame_y, 600, 700 );
+        text_window.setBounds( last_added_frame_x, last_added_frame_y, 700, 700 );
         
         windows.add( text_window );
         
@@ -216,5 +217,40 @@ public class DisplayManager implements InternalFrameListener
     public void internalFrameDeiconified(InternalFrameEvent e) {    }
     public void internalFrameIconified(InternalFrameEvent e) {    }
     public void internalFrameOpened(InternalFrameEvent e) {    }
-    
+
+    public boolean switchToNextWindow( boolean previous )
+    {
+        if( ( windows == null ) || ( windows.size() < 2 ) )
+        {
+            return false;
+        }
+        
+        JScrollInternalFrame jif;
+        JScrollInternalFrame next_window = (JScrollInternalFrame) windows.elementAt( 0 );
+        int n = windows.size();
+        for( int i = 0; i < n; i++ )
+        {
+            jif = (JScrollInternalFrame) windows.elementAt( i );
+            if( jif == last_activated_frame )
+            {
+                int next_index = i + ( previous ? -1 : 1 );
+                if( next_index == n )
+                {
+                    next_index = 0;
+                }
+                else if( next_index == -1 )
+                {
+                    next_index = n - 1;
+                }
+                
+                next_window = (JScrollInternalFrame) windows.elementAt( next_index );
+                
+                break;
+            }
+        }
+        
+        next_window.selectFrameAndAssociatedButtons();
+        
+        return true;
+    }
 }

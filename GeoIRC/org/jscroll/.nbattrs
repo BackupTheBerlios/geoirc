@@ -3,6 +3,5 @@
 <attributes version="1.0">
     <fileobject name="JScrollDesktopPane.java">
         <attr name="class_dependency_org.jscroll.widgets.DesktopConstants" stringvalue="JScrollDesktopPane"/>
-        <attr name="class_dependency_javax.swing.JPanel" stringvalue="JScrollDesktopPane"/>
     </fileobject>
 </attributes>
