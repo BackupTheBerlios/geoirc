@@ -1306,8 +1306,10 @@ public class Server
                                     }
                                 }
 
-                                text = "Received CTCP " + CTCP_CMDS[ command_id ]
-                                    + " from " + nick;
+                                text = i18n_manager.getString(
+                                    "received ctcp",
+                                    new Object [] { nick, ctcp_message }
+                                );
                             }
                             break;
                     }

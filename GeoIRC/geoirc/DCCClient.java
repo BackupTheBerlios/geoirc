@@ -8,7 +8,8 @@ package geoirc;
 
 import geoirc.util.Util;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
@@ -122,18 +123,13 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                             while( file.exists() )
                             {
                                 i++;
-                                file = new File( filename + "." + Integer.toString( i ) );
+                                file = new File( directory + filename + "." + Integer.toString( i ) );
                             }
                             
                             if( file.createNewFile() )
                             {
                                 reader = new DCCSendReader(
-                                    /*
-                                    new BufferedReader( new InputStreamReader(
-                                        socket.getInputStream()
-                                    ) ),
-                                     */
-                                    new InputStreamReader(
+                                    new BufferedInputStream(
                                         socket.getInputStream()
                                     ),
                                     file, 
@@ -322,8 +318,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         extends RemoteMachineReader
         implements GeoIRCConstants
     {
-        //protected BufferedReader in;
-        protected InputStreamReader in;
+        protected BufferedInputStream in;
         protected java.io.OutputStream outstream;
         File file;
         int filesize;
@@ -332,8 +327,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         private DCCSendReader() { }
 
         public DCCSendReader(
-            //BufferedReader in,
-            InputStreamReader in,
+            BufferedInputStream in,
             File file,
             int filesize
         )
@@ -356,7 +350,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
 
             int character = 0;
             int bytes_written = 0;
-            BufferedWriter file_out = null;
+            BufferedOutputStream file_out = null;
             try
             {
                 display_manager.printlnDebug(
@@ -365,7 +359,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                         new Object [] { file.getName() }
                     )
                 );
-                file_out = new BufferedWriter( new FileWriter( file ) );
+                file_out = new BufferedOutputStream( new java.io.FileOutputStream( file ) );
                 outstream = socket.getOutputStream();
                 
                 byte [] bytes_written_;
@@ -378,7 +372,7 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                 {
                     try
                     {
-                        if( ! in.ready() )
+                        if( in.available() == 0 )
                         {
                             // Report progress to sender, as per DCC SEND protocol.
                             
