@@ -38,7 +38,9 @@ public class TypeConverter
 	{
 		Object target = null;
 		
-		if(targetType.equals(BYTE))
+		if(targetType.equals(STRING))
+			return source;
+		else if(targetType.equals(BYTE))
 		{
 			target = new Byte(Byte.parseByte(source));
 		}
