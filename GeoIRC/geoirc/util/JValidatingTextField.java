@@ -7,6 +7,8 @@ package geoirc.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -44,6 +46,7 @@ public class JValidatingTextField
 		super();
         setPattern(".+");
 		this.setPreferredSize(new Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
+        init();
 	}
 	
 	/**
@@ -56,7 +59,7 @@ public class JValidatingTextField
 		this();
 		setPattern(regex);
 		if(value != null)
-			this.setText(value);
+			this.setText(value);         
 	}
 
 	public JValidatingTextField(String regex, String value, int width)
@@ -64,6 +67,21 @@ public class JValidatingTextField
 		this(regex, value);
 		this.setPreferredSize(new Dimension(width, PREFERED_HEIGHT));
 	}
+
+    protected void init()
+    {
+        this.addFocusListener(new FocusListener(){
+
+            public void focusGained(FocusEvent arg0) {                
+                validateText();
+            }
+
+            public void focusLost(FocusEvent arg0) {
+            }});
+        setIgnoreRepaint(true);
+        setOpaque(true);
+        setVerifyInputWhenFocusTarget(true);        
+    }
 
 	/* (non-Javadoc)
 	 * @see javax.swing.text.JTextComponent#setDocument(javax.swing.text.Document)

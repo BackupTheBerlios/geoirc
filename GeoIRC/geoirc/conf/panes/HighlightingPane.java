@@ -89,6 +89,7 @@ public class HighlightingPane
             new DefaultCellEditor(valueField));
 
         final JRegExTextField patternField = new JRegExTextField();
+
         table.getColumnModel().getColumn(1).setCellEditor(
             new DefaultCellEditor(patternField));
 
