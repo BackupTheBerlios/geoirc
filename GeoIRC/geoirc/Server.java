@@ -106,7 +106,7 @@ public class Server
     {
         if( isConnected() )
         {
-            Channel channel = new Channel( this, channel_name );
+            Channel channel = new Channel( this, channel_name, info_manager );
             channels.add( channel );
             info_manager.addChannel( channel );
         }
@@ -245,6 +245,45 @@ public class Server
         {
             return nick_and_username_and_host.substring( 1, nick_and_username_and_host.indexOf( "!" ) );
         }
+        
+        protected Channel getChannelByName( String name )
+        {
+            int n = channels.size();
+            Channel retval = null;
+            Channel c;
+            for( int i = 0; i < n; i++ )
+            {
+                c = (Channel) channels.elementAt( i );
+                if( c.getName().equals( name ) )
+                {
+                    retval = c;
+                    break;
+                }
+            }
+            
+            return retval;
+        }
+        
+        /* Searches the memberships of all channels, returning the first
+         * User object which matches.
+         */
+        protected User getUserByNick( String nick )
+        {
+            int n = channels.size();
+            User retval = null;
+            Channel c;
+            for( int i = 0; i < n; i++ )
+            {
+                c = (Channel) channels.elementAt( i );
+                retval = c.getUserByNick( nick );
+                if( retval != null )
+                {
+                    break;
+                }
+            }
+            
+            return retval;
+        }
 
         protected void interpretLine( String line )
         {
@@ -273,6 +312,14 @@ public class Server
                     {
                         addChannel( channel );
                     }
+                    else
+                    {
+                        Channel chan_obj = getChannelByName( channel );
+                        if( chan_obj != null )
+                        {
+                            chan_obj.addMember( nick );
+                        }
+                    }
                 }
                 else if( tokens[ 1 ].equals( IRCMSGS[ IRCMSG_NICK ] ) )
                 {
@@ -286,6 +333,8 @@ public class Server
                     else
                     {
                         // Someone else's nick changed.
+                        
+                        getUserByNick( old_nick ).setNick( new_nick );
                         
                         String text = old_nick + " is now known as " + new_nick + ".";
                         qualities += " from=" + new_nick
@@ -382,6 +431,14 @@ public class Server
                     if( nick.equals( current_nick ) )
                     {
                         removeChannel( channel );
+                    }
+                    else
+                    {
+                        Channel chan_obj = getChannelByName( channel );
+                        if( chan_obj != null )
+                        {
+                            chan_obj.removeMember( nick );
+                        }
                     }
                 }
                 else if( tokens[ 0 ].equals( IRCMSGS[ IRCMSG_PING ] ) )

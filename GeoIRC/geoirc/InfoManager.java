@@ -97,14 +97,34 @@ public class InfoManager
         );
     }
     
-    /**
-     * Clears any current membership list, and reinitializes it
-     * using the provided content of a RPL_NAMREPLY message.
-     */
-    public void setChannelMembership( Channel channel, String namlist )
+    public void addMember( User u )
     {
-        // Prefixes:
-        // +   voiced
-        // @   channel operator
+        Channel channel = u.getChannel();
+        DefaultMutableTreeNode node
+            = (DefaultMutableTreeNode) tree_inverse.get( channel );
+        DefaultMutableTreeNode user_node = new DefaultMutableTreeNode( u );
+        node.add( user_node );
+        tree.reload( node );
+        tree_inverse.put( u, user_node );
+        display_manager.activateInfoWindows(
+            "/" + channel.getServer().toString()
+                + "/" + channel.getName()
+                + "/" + u.getNick(),
+            new DefaultTreeModel( user_node )
+        );
+    }
+    
+    public void removeMember( User u )
+    {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree_inverse.get( u );
+        ( (DefaultMutableTreeNode) node.getParent() ).remove( node );
+        tree.reload( node );
+        tree_inverse.remove( u );
+        Channel c = u.getChannel();
+        display_manager.deactivateInfoWindows(
+            "/" + c.toString()
+                + "/" + c.getName()
+                + "/" + u.getNick()
+        );
     }
 }
