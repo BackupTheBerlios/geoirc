@@ -366,14 +366,21 @@ public class GeoIRC
     public void focusLost( FocusEvent e )
     {
         Component thief = e.getOppositeComponent();
-        while( ( thief != null ) && ( thief != menu_bar ) )
+        if( thief instanceof JTextPane )
         {
-            thief = thief.getParent();
+            SwingUtilities.invokeLater( new Runnable()
+                {
+                    public void run()
+                    {
+                        input_field.grabFocus();
+                    }
+                }
+            );
         }
-        
-        if( e.getOppositeComponent() != menu_bar )
+        else
         {
-            input_field.grabFocus();
+            display_manager.printlnDebug( "Focus stolen by: " 
+            + thief.getClass().toString() );
         }
     }
     
@@ -585,8 +592,6 @@ public class GeoIRC
                 result = CommandExecutor.EXEC_BAD_COMMAND;
                 break;
         }
-
-        input_field.grabFocus();
 
         return result;
     }
