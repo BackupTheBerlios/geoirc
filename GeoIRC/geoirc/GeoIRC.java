@@ -145,7 +145,9 @@ public class GeoIRC
             getContentPane(), menu_bar, settings_manager
         );
         display_manager.printlnDebug( skin_errors );
-        display_manager.println( "blue text", "debug", "blue" );
+        display_manager.println(
+            "normal text, " + (char) STYLE_ESCAPE_CHAR + "b01;blue text", "debug"
+        );
         
         // Read settings.
         

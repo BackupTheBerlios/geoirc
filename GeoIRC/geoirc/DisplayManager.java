@@ -180,11 +180,6 @@ public class DisplayManager
     
     public void println( String line, String qualities )
     {
-        println( line, qualities, "normal" );
-    }
-    
-    public void println( String line, String qualities, String style )
-    {
         int n = windows.size();
         GITextWindow tw;
         Object window;
@@ -197,7 +192,7 @@ public class DisplayManager
                 tw = (GITextWindow) windows.elementAt( i );
                 if( tw.accepts( qualities ) )
                 {
-                    tw.appendLine( line, style );
+                    tw.appendLine( line );
                 }
             }
         }

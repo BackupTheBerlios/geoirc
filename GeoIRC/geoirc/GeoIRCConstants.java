@@ -102,4 +102,6 @@ public interface GeoIRCConstants
     static final int GI_NORMAL = 0;
     static final int GI_MAXIMIZED = 1;
     static final int GI_MINIMIZED = 2;
+    
+    static final char STYLE_ESCAPE_CHAR = (char) 255;
 }

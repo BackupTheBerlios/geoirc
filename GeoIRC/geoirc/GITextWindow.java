@@ -19,7 +19,7 @@ import org.jscroll.widgets.*;
  *
  * @author  Pistos
  */
-public class GITextWindow extends JScrollInternalFrame
+public class GITextWindow extends JScrollInternalFrame implements GeoIRCConstants
 //public class GITextWindow extends JInternalFrame
 {
     protected JScrollPane scroll_pane;
@@ -122,9 +122,11 @@ public class GITextWindow extends JScrollInternalFrame
         
         StringTokenizer st = new StringTokenizer( text, Character.toString( STYLE_ESCAPE_CHAR ) );
         boolean first_had_escape_char = ( text.charAt( 0 ) == STYLE_ESCAPE_CHAR );
+        String fragment;
         
         while( st.hasMoreTokens() )
         {
+            fragment = st.nextToken();
         
             Style style = text_pane.getStyle( style_string );
             if( style == null )
