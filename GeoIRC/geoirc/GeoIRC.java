@@ -378,67 +378,60 @@ public class GeoIRC
     {
         python_script_interface = null;
         
-        if( settings_manager.getBoolean( "/modules/python", false ) == true )
-        {            
-            try
-            {
-                Class python_script_interface_class = Class.forName( "geoircscripting.PythonScriptInterfaceClass" );
-                Class [] arg_template =
-                    new Class []
-                    { 
-                        CommandExecutor.class,
-                        SettingsManager.class,
-                        DisplayManager.class,
-                        VariableManager.class,
-                        I18nManager.class
-                    };
-                Constructor constructor = python_script_interface_class.getConstructor( arg_template );
-                python_script_interface = (PythonScriptInterface) constructor.newInstance(
-                    new Object [] {
-                        this, settings_manager, display_manager, variable_manager, i18n_manager,
-                    }
-                );
-                
+        try
+        {
+            Class python_script_interface_class = Class.forName( "geoircscripting.PythonScriptInterfaceClass" );
+            Class [] arg_template =
+                new Class []
+                { 
+                    CommandExecutor.class,
+                    SettingsManager.class,
+                    DisplayManager.class,
+                    VariableManager.class,
+                    I18nManager.class
+                };
+            Constructor constructor = python_script_interface_class.getConstructor( arg_template );
+            python_script_interface = (PythonScriptInterface) constructor.newInstance(
+                new Object [] {
+                    this, settings_manager, display_manager, variable_manager, i18n_manager,
+                }
+            );
 
-                display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
-            }
-            catch( Exception e )
-            {
-                Util.printException( display_manager, e, i18n_manager.getString( "python init error" ) );
-            }
+            display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
+        }
+        catch( Exception e )
+        {
+            Util.printException( display_manager, e, i18n_manager.getString( "python init error" ) );
         }
         
         tcl_script_interface = null;
         tcl_procs = null;
         
-        if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+        try
         {
+            Class tcl_script_interface_class = Class.forName( "geoircscripting.TclScriptInterfaceClass" );
+            Class [] arg_template =
+                new Class []
+                { 
+                    CommandExecutor.class,
+                    SettingsManager.class,
+                    DisplayManager.class,
+                    VariableManager.class,
+                    I18nManager.class,
+                    Vector.class
+                };
+            Constructor constructor = tcl_script_interface_class.getConstructor( arg_template );
+            tcl_script_interface = (TclScriptInterface) constructor.newInstance(
+                new Object [] {
+                    this, settings_manager, display_manager, variable_manager, i18n_manager, tcl_procs
+                }
+            );
             tcl_procs = new Vector();
-            try
-            {
-                Class tcl_script_interface_class = Class.forName( "geoircscripting.TclScriptInterfaceClass" );
-                Class [] arg_template =
-                    new Class []
-                    { 
-                        CommandExecutor.class,
-                        SettingsManager.class,
-                        DisplayManager.class,
-                        VariableManager.class,
-                        I18nManager.class,
-                        Vector.class
-                    };
-                Constructor constructor = tcl_script_interface_class.getConstructor( arg_template );
-                tcl_script_interface = (TclScriptInterface) constructor.newInstance(
-                    new Object [] {
-                        this, settings_manager, display_manager, variable_manager, i18n_manager, tcl_procs
-                    }
-                );
-                display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
-            }
-            catch( Exception e )
-            {
-                Util.printException( display_manager, e, i18n_manager.getString( "tcl init error" ) );
-            }
+            display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
+        }
+        catch( Exception e )
+        {
+            Util.printException( display_manager, e, i18n_manager.getString( "tcl init error" ) );
         }
     }
     
@@ -887,14 +880,14 @@ public class GeoIRC
         transformed_message[ MSG_TEXT ] = line;
         transformed_message[ MSG_QUALITIES ] = qualities;
         
-        if( settings_manager.getBoolean( "/modules/python", false ) == true )
+        if( python_script_interface != null )
         {
             transformed_message = python_script_interface.onRaw(
                 transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
             );
         }
         
-        if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+        if( tcl_script_interface != null )
         {
             transformed_message = tcl_script_interface.onRaw(
                 transformed_message[ MSG_TEXT ], transformed_message[ MSG_QUALITIES ]
@@ -962,11 +955,11 @@ public class GeoIRC
         }
         input_saved = false;
 
-        if( settings_manager.getBoolean( "/modules/python", false ) == true )
+        if( python_script_interface != null )
         {
             text = python_script_interface.onInput( text );
         }
-        if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+        if( tcl_script_interface != null )
         {
             text = tcl_script_interface.onInput( text );
         }
@@ -1871,7 +1864,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_EXEC_PY_METHOD:
-                if( settings_manager.getBoolean( "/modules/python", false ) == true )
+                if( python_script_interface != null )
                 {
                     if( args.length > 0 )
                     {
@@ -1893,7 +1886,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_EXEC_TCL:
-                if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+                if( tcl_script_interface != null )
                 {
                     if( arg_string != null )
                     {
@@ -2158,7 +2151,7 @@ public class GeoIRC
                 display_manager.listWindows();
                 break;
             case CMD_LOAD_PY:
-                if( settings_manager.getBoolean( "/modules/python", false ) == true )
+                if( python_script_interface != null )
                 {
                     if( arg_string != null )
                     {
@@ -2183,7 +2176,7 @@ public class GeoIRC
                 }
                 break;
             case CMD_LOAD_TCL:
-                if( settings_manager.getBoolean( "/modules/tcl", false ) == true )
+                if( tcl_script_interface != null )
                 {
                     if( arg_string != null )
                     {

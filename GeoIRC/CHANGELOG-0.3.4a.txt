@@ -26,9 +26,9 @@ netseeker 2003-10-07
 Added "/dcc/file transfers/packet size" setting.  Added /dccsend command.
 Pistos 2003-10-09
 
-Added "/modules/" node to settings, and entries "python", "tcl" and "skinning"
-underneath it.
-Pistos 2003-10-09
+Made changes so that jython.jar, jacl.jar and tcljava.jar can all
+be omitted, and GeoIRC will run without using their functionality.
+Pistos 2003-10-09 and 2003-10-10
 
 Adjusted server inactivity handling.  Added "/misc/server timeout" setting.
 Pistos 2003-10-09
