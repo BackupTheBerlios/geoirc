@@ -71,7 +71,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
      */
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
-        super(display_manager.getGeoIRCInstance(), title, true);
+        super(display_manager.getGeoIRCInstance(), title, false);
         this.parent = display_manager.getGeoIRCInstance();
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;

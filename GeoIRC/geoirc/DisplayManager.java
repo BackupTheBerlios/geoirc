@@ -1440,7 +1440,8 @@ public class DisplayManager
 		public void actionPerformed(ActionEvent e)
 		{
 			SettingsDialog dlg = new SettingsDialog(settings_manager, display_manager);
-			dlg.show();			
+			dlg.setVisible( true );
+            //dlg.show();			
 		}
 	}
 }

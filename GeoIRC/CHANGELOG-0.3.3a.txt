@@ -11,3 +11,7 @@ Pistos 2003-09-26
 Fixed parsing bug which assumed JOIN messages always have a colon before the
 channel name.
 Pistos 2003-09-26
+
+Setting dialog is now non-modal, which means it will stay on the top but GeoIRC
+is also usable as long as settings dialog is open.
+netseeker 2003-09-26
