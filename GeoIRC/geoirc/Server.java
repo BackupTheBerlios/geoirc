@@ -933,6 +933,27 @@ public class Server
                     if( user != null )
                     {
                         user.noteActivity();
+
+                        if( tokens[ 2 ].equals( current_nick ) )
+                        {
+                            // Notice to GeoIRC user.
+                            
+                            String query_window_title = Util.getQueryWindowFilter( nick );
+                            
+                            if(
+                                display_manager.getTextPaneByTitle(
+                                    query_window_title
+                                ) == null
+                            )
+                            {
+                                display_manager.addTextWindow(
+                                    query_window_title,
+                                    query_window_title
+                                );
+                            }
+                            
+                            qualities += " " + FILTER_SPECIAL_CHAR + "self";
+                        }
                         
                         Channel c;
                         int n = channels.size();
@@ -1082,10 +1103,38 @@ public class Server
                     {
                         user.noteActivity();
                         
-                        Channel c = Server.this.getChannelByName( tokens[ 2 ] );
-                        if( c != null )
+                        if( tokens[ 2 ].equals( current_nick ) )
                         {
-                            c.acknowledgeUserChange( user );
+                            // Message to GeoIRC user.
+                            
+                            String query_window_title = 
+                                FILTER_SPECIAL_CHAR + "self and "
+                                + "from=" + nick
+                                + " or "
+                                + nick + " and "
+                                + "from=" + FILTER_SPECIAL_CHAR + "self";
+                            
+                            if(
+                                display_manager.getTextPaneByTitle(
+                                    query_window_title
+                                ) == null
+                            )
+                            {
+                                display_manager.addTextWindow(
+                                    query_window_title,
+                                    query_window_title
+                                );
+                            }
+                            
+                            qualities += " " + FILTER_SPECIAL_CHAR + "self";
+                        }
+                        else
+                        {
+                            Channel c = Server.this.getChannelByName( tokens[ 2 ] );
+                            if( c != null )
+                            {
+                                c.acknowledgeUserChange( user );
+                            }
                         }
                     }
                     else

@@ -339,12 +339,15 @@ public class GITextPane extends GIPane implements GeoIRCConstants
         );
     }
     
-    public boolean accepts( String text )
+    /**
+     * @return true if and only if the filter for this text pane accepts messages with the given qualities
+     */
+    public boolean accepts( String qualities )
     {
         boolean result = false;
         try
         {
-            result = BoolExpEvaluator.evaluate( filter, text );
+            result = BoolExpEvaluator.evaluate( filter, qualities );
         }
         catch( BadExpressionException e )
         {

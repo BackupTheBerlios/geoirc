@@ -64,6 +64,8 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -990,56 +992,88 @@ public class GeoIRC
             }
             else
             {
-                String process_id = display_manager.getSelectedProcess();
-                if( process_id != null )
+                GIWindow giw = display_manager.getSelectedFrame();
+                boolean handled = false;
+                if( giw.getPaneType() == TEXT_PANE )
                 {
-                    // Send to a process.
+                    GITextPane gitp = (GITextPane) giw.getPane();
+                    String filter = gitp.getFilter();
                     
-                    process_id = process_id.substring( process_id.indexOf( "=" ) + 1 );
-                    Integer pid;
-                    try
+                    if( filter.matches( ".*from=%self.*" ) )
                     {
-                        pid = new Integer( Integer.parseInt( process_id ) );
-                        GIProcess gip = (GIProcess) processes.get( pid );
-                        gip.println( text );
-                    }
-                    catch( NumberFormatException e )
-                    {
-                        display_manager.printlnDebug(
-                            "Invalid process id found: " + process_id
-                        );
+                        // Determine the other party in this query conversation
+                        // based on the filter.
+
+                        Pattern p = Pattern.compile( "from=([^%]\\S*)" );
+                        Matcher m = p.matcher( filter );
+                        if( m.find() )
+                        {
+                            String recipient = m.group( 1 );
+                            execute(
+                                CMDS[ CMD_SEND_RAW ]
+                                + " privmsg "
+                                + recipient + " :"
+                                + text
+                            );
+                            handled = true;
+                        }
                     }
                 }
-                else
+                    
+                if( ! handled )
                 {
-                    String dcc_conn = display_manager.getSelectedDCCConnection();
-                    String dcc_ip = null;
-                    if( dcc_conn != null )
+                
+                    String process_id = display_manager.getSelectedProcess();
+                    if( process_id != null )
                     {
-                        dcc_ip = dcc_conn.substring( "dcc=".length() );
-                    }
-                    if( dcc_ip != null )
-                    {
-                        // Send to a dcc connection.
-                        
-                        DCCConnection dcc;
-                        
-                        for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
+                        // Send to a process.
+
+                        process_id = process_id.substring( process_id.indexOf( "=" ) + 1 );
+                        Integer pid;
+                        try
                         {
-                            dcc = (DCCConnection) dcc_chat_offers.elementAt( i );
-                            if( dcc.getRemoteIPString().equals( dcc_ip ) )
+                            pid = new Integer( Integer.parseInt( process_id ) );
+                            GIProcess gip = (GIProcess) processes.get( pid );
+                            gip.println( text );
+                        }
+                        catch( NumberFormatException e )
+                        {
+                            display_manager.printlnDebug(
+                                "Invalid process id found: " + process_id
+                            );
+                        }
+                    }
+                    else
+                    {
+                        String dcc_conn = display_manager.getSelectedDCCConnection();
+                        String dcc_ip = null;
+                        if( dcc_conn != null )
+                        {
+                            dcc_ip = dcc_conn.substring( "dcc=".length() );
+                        }
+                        if( dcc_ip != null )
+                        {
+                            // Send to a dcc connection.
+
+                            DCCConnection dcc;
+
+                            for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
                             {
-                                display_manager.println(
-                                    getATimeStamp(
-                                        settings_manager.getString(
-                                            "/gui/format/timestamp", ""
+                                dcc = (DCCConnection) dcc_chat_offers.elementAt( i );
+                                if( dcc.getRemoteIPString().equals( dcc_ip ) )
+                                {
+                                    display_manager.println(
+                                        getATimeStamp(
+                                            settings_manager.getString(
+                                                "/gui/format/timestamp", ""
+                                            )
                                         )
-                                    )
-                                        + "<" + dcc.getUserNick() + "> " + text,
-                                    dcc.getQualities()
-                                        + " from=" + FILTER_SPECIAL_CHAR + "self"
-                                );
-                                dcc.println( text );
+                                            + "<" + dcc.getUserNick() + "> " + text,
+                                        dcc.getQualities()
+                                            + " from=" + FILTER_SPECIAL_CHAR + "self"
+                                    );
+                                    dcc.println( text );
+                                }
                             }
                         }
                     }
@@ -2617,11 +2651,32 @@ public class GeoIRC
                                 {
                                     s.noteActivity( args[ 1 ], u );
                                 }
+                                
+                                // Create a query window, if not already existent.
+                                
+                                if( args[ 1 ].charAt( 0 ) != '#' )
+                                {
+                                    String nick = args[ 1 ];
+                                    String query_window_title = Util.getQueryWindowFilter( nick );
+
+                                    if(
+                                        display_manager.getTextPaneByTitle(
+                                            query_window_title
+                                        ) == null
+                                    )
+                                    {
+                                        display_manager.addTextWindow(
+                                            query_window_title, query_window_title
+                                        );
+                                    }
+                                }
 
                                 String text = Util.stringArrayToString( args, 2 ).substring( 1 );
                                 String qualities =
                                     s.toString() + " " + args[ 1 ]
-                                    + " from=" + FILTER_SPECIAL_CHAR + "self";
+                                    + " from=" + FILTER_SPECIAL_CHAR + "self"
+                                    + " " + FILTER_SPECIAL_CHAR + "privmsg";
+                                
                                 if(
                                     ( text.charAt( 0 ) == (char) 1 )
                                     && ( text.substring( 1, 7 ).equals( "ACTION" ) )
@@ -2635,6 +2690,7 @@ public class GeoIRC
                                 {
                                     text = s.getPadded( "<" + s.getCurrentNick() + ">" ) + " " + text;
                                 }
+                                
                                 display_manager.println(
                                     getATimeStamp(
                                         settings_manager.getString(

@@ -32,3 +32,6 @@ Pistos 2003-09-30
 Changed assumption that all IRC server hostnames fit the mask "irc.*".  Mask is
 now "\S+\.\S+\.\S+".
 Pistos 2003-09-30
+
+User-to-user PRIVMSGs and NOTICEs now spawn new windows.
+Pistos 2003-10-01

@@ -339,4 +339,14 @@ public class Util implements GeoIRCConstants
         
         return retval;
     }
+    
+    public static String getQueryWindowFilter( String remote_nick )
+    {
+        return
+            "from=" + remote_nick + " and "
+            + FILTER_SPECIAL_CHAR + "self "
+            + " or "
+            + remote_nick + " and "
+            + "from=" + FILTER_SPECIAL_CHAR + "self";
+    }
 }

@@ -346,6 +346,27 @@ public class DisplayManager
         return giw;
     }
     
+    public GITextPane getTextPaneByTitle( String title )
+    {
+        GIPane gip;
+        GITextPane retval = null;
+        for( int i = 0, n = panes.size(); i < n; i++ )
+        {
+            gip = (GIPane) panes.elementAt( i );
+            if( gip instanceof GITextPane )
+            {
+                GITextPane gitp = (GITextPane) gip;
+                if( gitp.getTitle().equals( title ) )
+                {
+                    retval = gitp;
+                    break;
+                }
+            }
+        }
+        
+        return retval;
+    }
+    
     public void closeWindow( int index )
     {
         GIWindow giw = getWindowByIndex( index );
