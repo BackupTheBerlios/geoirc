@@ -75,7 +75,7 @@ public class SkinManager
         return true;
     }
     
-    String getSkinMessages()
+    public String getSkinMessages()
     {
         return this.skin_messages;
     }
