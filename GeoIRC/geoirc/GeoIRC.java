@@ -443,6 +443,8 @@ public class GeoIRC
             this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
         );
         python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
+
+        display_manager.printlnDebug( "Python interface initialized." );
         
         tcl_procs = new Vector();
         tcl_interpreter = new Interp();
@@ -456,6 +458,8 @@ public class GeoIRC
                 ReflectObject.newInstance( tcl_interpreter, TclScriptInterface.class, tcl_script_interface ),
                 0
             );
+            
+            display_manager.printlnDebug( "Tcl interface initialized." );
         }
         catch( TclException e )
         {
@@ -1309,20 +1313,24 @@ public class GeoIRC
                             {
                                 // Command completion.
                                 
-                                String completion = Util.completeFrom( word.substring( 1 ), CMDS );
+                                String completion = Util.completeFrom(
+                                    word.substring( 1 ),
+                                    CMDS,
+                                    display_manager
+                                );
                                 int error = Util.getLastErrorCode();
                                 switch( error )
                                 {
                                     case COMPLETE_NONE_FOUND:
                                         display_manager.printlnDebug(
-                                            "No command found starting with " + word + "."
+                                            "No command found starting with " + word
                                         );
                                         break;
                                     case COMPLETE_ONE_FOUND:
-                                        replacement_text = completion + " ";
+                                        replacement_text = "/" + completion + " ";
                                         break;
                                     case COMPLETE_MORE_THAN_ONE_FOUND:
-                                        display_manager.printlnDebug( completion );
+                                        replacement_text = "/" + completion;
                                         break;
                                 }
                             }
@@ -1335,7 +1343,28 @@ public class GeoIRC
                                     // Channel name completion
                                     
                                     Channel [] channels = s.getChannels();
+                                    String [] channel_names = new String [ channels.length ];
+                                    for( int i = 0; i < channels.length; i++ )
+                                    {
+                                        channel_names[ i ] = channels[ i ].getName();
+                                    }
                                     
+                                    String completion = Util.completeFrom(
+                                        word, channel_names, display_manager
+                                    );
+                                    int error = Util.getLastErrorCode();
+                                    switch( error )
+                                    {
+                                        case COMPLETE_NONE_FOUND:
+                                            display_manager.printlnDebug(
+                                                "No channel found starting with " + word
+                                            );
+                                            break;
+                                        case COMPLETE_ONE_FOUND:
+                                        case COMPLETE_MORE_THAN_ONE_FOUND:
+                                            replacement_text = completion;
+                                            break;
+                                    }
                                 }
                                 else
                                 {

@@ -29,3 +29,6 @@ netseeker 2003-09-20
 Changed processing order, such that input history management comes *before*
 scripting engine processing.
 Pistos 2003-09-21
+
+Added channel-name completion.
+Pistos 2003-09-22

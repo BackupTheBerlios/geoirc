@@ -243,7 +243,7 @@ public class Util implements GeoIRCConstants
      * or the empty string if no words from among possible_words are a
      * completion for word.  Util.getLastErrorCode() gives ...
      */
-    public static String completeFrom( String word, String [] possible_words )
+    public static String completeFrom( String word, String [] possible_words, DisplayManager display_manager )
     {
         Vector words_found = new Vector();
         String retval = "";
@@ -268,17 +268,17 @@ public class Util implements GeoIRCConstants
         else
         {
             int word_len = word.length();
-            int matches_up_to = possible_words[ 0 ].length();
+            int matches_up_to = ((String) words_found.elementAt( 0 )).length();
             String wrd;
             String prev_wrd;
             String multiple_matches = "";
             
-            for( int i = 0, n = possible_words.length; i < n; i++ )
+            for( int i = 0, n = words_found.size(); i < n; i++ )
             {
-                wrd = possible_words[ i ];
+                wrd = ((String) words_found.elementAt( i ));
                 if( i > 0 )
                 {
-                    prev_wrd = possible_words[ i - 1 ];
+                    prev_wrd = ((String) words_found.elementAt( i - 1 ));
                     for( int j = matches_up_to; j >= word_len; j-- )
                     {
                         if( j > prev_wrd.length() )
@@ -296,14 +296,12 @@ public class Util implements GeoIRCConstants
                         }
                     }
                 }
-                multiple_matches += "/" + wrd + " ";
+                multiple_matches += wrd + " ";
             }
 
-            if( multiple_matches != "" )
-            {
-                retval = multiple_matches;
-                last_error_code = COMPLETE_MORE_THAN_ONE_FOUND;
-            }
+            display_manager.printlnDebug( multiple_matches );
+            retval = ((String) words_found.elementAt( 0 )).substring( 0, matches_up_to );
+            last_error_code = COMPLETE_MORE_THAN_ONE_FOUND;
         }
 
         return retval;
