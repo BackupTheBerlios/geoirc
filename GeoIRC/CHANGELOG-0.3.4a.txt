@@ -17,3 +17,7 @@ Pistos 2003-10-07
 Began adding internationalization code.  Added "/personal/language" and
 "/personal/country" settings.
 Pistos 2003-10-07
+
+Changed dcc dialog in settings gui to read/save according to the changed
+download directory node path
+netseeker 2003-10-07

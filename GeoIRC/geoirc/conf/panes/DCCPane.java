@@ -53,11 +53,11 @@ public class DCCPane extends BaseSettingsPanel implements Storable
 
         addComponent(new JLabel("Default download directory"), 0, 2, 1, 1, 0, 0);
         ValueRule rule = rules.getValueRule("DIRECTORY");
-        String value = settings_manager.getString(path + "default download directory", (String)rule.getValue());
+        String value = settings_manager.getString(path + "download directory", (String)rule.getValue());
         JValidatingTextField dirField = new JValidatingTextField(rule.getPattern(), value, validation_listener, 200);
         save_handler.register(
             addComponent(dirField, 1, 2, 2, 1, 0, 0, new Insets(2, 5, 5, 2)),
-            path + "Download directory");
+            path + "download directory");
 
         addComponent(
             ComponentFactory.getFurtherInfoButton(new FileChooserHandler(dirField, this, value)),
