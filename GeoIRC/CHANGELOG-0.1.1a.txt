@@ -44,3 +44,7 @@ channel when you had more than one channel window open.
 Pistos 2003-07-06
 
 Added support for parsing JOIN, PART and QUIT messages.
+Pistos 2003-07-06
+
+Began adding sound trigger support
+Pistos 2003-07-07
