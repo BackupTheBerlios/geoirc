@@ -7,7 +7,6 @@ package geoirc.conf;
 
 import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
-import geoirc.util.JValidatingTextField;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,7 +15,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,25 +46,6 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
 		this.name = name;
 		setMinimumSize(new Dimension());
 		setLayout(layout);
-	}
-
-	/**
-	 * @param valueRules
-	 * @return
-	 */
-	public boolean checkDefaults(Map valueRules)
-	{
-		for (int i = 0; i < getComponentCount(); i++)
-		{
-			Component c = getComponent(i);
-			if (c instanceof JValidatingTextField)
-			{
-				if (!((JValidatingTextField) c).isTextValid())
-					return false;
-			}
-		}
-
-		return true;
 	}
 
 	/**
@@ -165,7 +144,7 @@ public abstract class BaseSettingsPanel extends JPanel implements GeoIRCConstant
 		gbc.anchor = align;
 		gbc.insets = insets;
 		layout.setConstraints(c, gbc);
-
+        
 		return add(c);
 	}
 
