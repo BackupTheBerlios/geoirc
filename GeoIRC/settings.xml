@@ -9,15 +9,15 @@
       <map />
       <node name="personal">
       	<map>
-     	  <entry key="nick1" value="Pistos|GeoIRC" />
-     	  <entry key="nick2" value="Pistos[GeoIRC]" />
-     	  <entry key="nick3" value="Pistos_GeoIRC" />
+     	  <entry key="nick1" value="GeoIRC_User" />
+     	  <entry key="nick2" value="GeoIRC|User" />
+     	  <entry key="nick3" value="GeoIRCUser" />
      	</map>
       </node>
       <node name="gui">
         <map>
-          <entry key="skin1" value="themes\aqua\gtk\gtkrc" />
-          <entry key="skin2" value="themes\aqua\kde\kde.themerc" />
+          <entry key="skin1" value="themes/aqua/gtk/gtkrc" />
+          <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
           <entry key="start maximized" value="True" />
         </map>
         <node name="text windows">

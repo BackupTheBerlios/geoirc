@@ -159,6 +159,8 @@ public class GeoIRC
             setExtendedState( MAXIMIZED_BOTH );
         }
         
+        this.setTitle( "GeoIRC" );
+        
         display_manager = new DisplayManager( getContentPane(), menu_bar, settings_manager );
         display_manager.printlnDebug( skin_errors );
         
