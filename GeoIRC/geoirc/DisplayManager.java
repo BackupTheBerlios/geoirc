@@ -432,11 +432,13 @@ public class DisplayManager
         GIWindow window = (GIWindow) e.getSource();
         GIPane pane = window.getPane();
         
-        panes.remove( pane );
-        docked_panes.remove( pane );
-        undocked_panes.remove( pane );
-        active_info_panes.remove( pane );
-        inactive_info_panes.remove( pane );
+        if( ! docked_panes.contains( pane ) )
+        {
+            panes.remove( pane );
+            undocked_panes.remove( pane );
+            active_info_panes.remove( pane );
+            inactive_info_panes.remove( pane );
+        }
         
         windows.remove( window );
         
