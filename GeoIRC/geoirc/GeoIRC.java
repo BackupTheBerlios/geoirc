@@ -503,6 +503,11 @@ public class GeoIRC
         return highlight_manager;
     }
     
+    public ActionMap getActionMap()
+    {
+        return this.action_map;
+    }
+    
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
