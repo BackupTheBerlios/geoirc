@@ -14,18 +14,28 @@
      	  <entry key="nick3" value="Pistos_GeoIRC" />
      	</map>
       </node>
-      <node name="GUI">
+      <node name="gui">
         <map>
           <entry key="skin1" value="themes\aqua\gtk\gtkrc" />
           <entry key="skin2" value="themes\aqua\kde\kde.themerc" />
-          <entry key="font face" value="Lucida Console" />
-          <entry key="font size" value="14" />
           <entry key="start maximized" value="True" />
         </map>
+        <node name="text windows">
+          <map>
+            <entry key="font face" value="Lucida Console" />
+            <entry key="font size" value="14" />
+          </map>
+        </node>
+        <node name="input field">
+          <map>
+            <entry key="font face" value="Lucida Console" />
+            <entry key="font size" value="14" />
+          </map>
+        </node>
       </node>
       <node name="config">
         <map>
-          <entry key="default download directory" value="downloads\" />
+          <entry key="default download directory" value="downloads/" />
           <entry key="confirm receive" value="true" />
         </map>
       </node>
