@@ -12,3 +12,6 @@ Pistos 2003-07-07
 
 Minimized, restored and maximized states are also now saved and restored.
 Pistos 2003-07-07
+
+Began adding styling and highlighting features.
+Pistos 2003-07-07

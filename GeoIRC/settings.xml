@@ -110,6 +110,18 @@
             <entry key="font face" value="Lucida Console" />
             <entry key="font size" value="14" />
           </map>
+          <node name="highlighting">
+            <map />
+            <node name="0">
+              <map>
+                <entry key="regexp" value="Pistos" />
+                <entry key="format" value="fg00ff00bg0000ff" />
+              </map>
+            </node>
+            <node name="1">
+              <map />
+            </node>
+          </node>
         </node>
       </node>
       <node name="keyboard">

@@ -89,7 +89,7 @@ public class StyleManager
                     Style style = styles.addStyle( format, base_style );
                     
                     String arg;
-                    String code = format.substring( c, 2 );
+                    String code = format.substring( c, c + 2 );
                     c += 2;
                     if( code.equals( STYLE_FOREGROUND ) )
                     {
@@ -99,7 +99,7 @@ public class StyleManager
                             break;
                         }
                         
-                        arg = format.substring( c, 6 );
+                        arg = format.substring( c, c + 6 );
                         c += 6;
                         int red = 0xff;
                         int green = 0xff;
@@ -126,7 +126,7 @@ public class StyleManager
                             break;
                         }
                         
-                        arg = format.substring( c, 6 );
+                        arg = format.substring( c, c + 6 );
                         c += 6;
                         int red = 0xff;
                         int green = 0xff;
