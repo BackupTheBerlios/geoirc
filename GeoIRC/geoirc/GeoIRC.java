@@ -183,6 +183,11 @@ public class GeoIRC
         
         remote_machines = new Vector();
         restoreConnections();
+        
+        // Final miscellaneous initialization
+        
+        settings_manager.listenToPreferences();
+        display_manager.beginListening();
 
         show();
     }

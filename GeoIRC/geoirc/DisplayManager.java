@@ -30,6 +30,7 @@ public class DisplayManager
     protected Vector windows;
     protected JScrollDesktopPane desktop_pane;
     protected JInternalFrame last_activated_frame;
+    protected boolean listening;
     
     protected int last_added_frame_x;
     protected int last_added_frame_y;
@@ -51,6 +52,8 @@ public class DisplayManager
         SettingsManager settings_manager
     )
     {
+        listening = false;
+        
         this.settings_manager = settings_manager;
         windows = new Vector();
         
@@ -59,16 +62,23 @@ public class DisplayManager
         
         restoreDesktopState();
         
+        /*
         if( getDebugWindow() == null )
         {
             addTextWindow( "Debug", "debug" );
         }
+         */
         
         printlnDebug( "GeoIRC started." );
         
         last_activated_frame = null;
         last_added_frame_x = 0;
         last_added_frame_y = 0;
+    }
+    
+    public void beginListening()
+    {
+        listening = true;
     }
     
     /* @return null if no window accepts debug quality messages
@@ -244,14 +254,14 @@ public class DisplayManager
         return retval;
     }
 
-    /* ************************************************************
-     * Listener Implementations
-     */
-    
     public JInternalFrame getLastActivated()
     {
         return last_activated_frame;
     }
+    
+    /* ************************************************************
+     * Listener Implementations
+     */
     
     public void internalFrameActivated( InternalFrameEvent e )
     {
@@ -260,8 +270,11 @@ public class DisplayManager
     
     public void internalFrameClosed(InternalFrameEvent e)
     {
-        windows.remove( e.getSource() );
-        recordDesktopState();
+        if( listening )
+        {
+            windows.remove( e.getSource() );
+            recordDesktopState();
+        }
     }
     public void internalFrameClosing(InternalFrameEvent e) {    }
     public void internalFrameDeactivated(InternalFrameEvent e) {    }
@@ -269,21 +282,30 @@ public class DisplayManager
     public void internalFrameIconified(InternalFrameEvent e) {    }
     public void internalFrameOpened(InternalFrameEvent e)
     {
-        JInternalFrame jif = (JInternalFrame) e.getSource();
-        windows.add( jif );
-        jif.addComponentListener( this );
-        recordDesktopState();
+        if( listening )
+        {
+            JInternalFrame jif = (JInternalFrame) e.getSource();
+            windows.add( jif );
+            jif.addComponentListener( this );
+            recordDesktopState();
+        }
     }
 
     public void componentHidden(java.awt.event.ComponentEvent e) { }
     public void componentShown(java.awt.event.ComponentEvent e) { }
     public void componentMoved(java.awt.event.ComponentEvent e)
     {
-        recordDesktopState();
+        if( listening )
+        {
+            recordDesktopState();
+        }
     }
     public void componentResized(java.awt.event.ComponentEvent e)
     {
-        recordDesktopState();
+        if( listening )
+        {
+            recordDesktopState();
+        }
     }
     
     /* ************************************************************ */

@@ -9,19 +9,22 @@
       <map />
       <node name="config">
         <map>
-          <entry key="default download directory" value="downloads/" />
           <entry key="confirm receive" value="true" />
+          <entry key="default download directory" value="downloads/" />
         </map>
       </node>
       <node name="connections">
         <map />
+        <node name="0">
+          <map />
+        </node>
       </node>
       <node name="dcc">
         <map />
         <node name="file transfers">
           <map>
-            <entry key="default download directory" value="./downloads/" />
             <entry key="confirm receive" value="true" />
+            <entry key="default download directory" value="./downloads/" />
           </map>
         </node>
       </node>
@@ -35,13 +38,24 @@
           <map />
           <node name="0">
             <map>
-              <entry key="type" value="class geoirc.GITextWindow" />
-              <entry key="title" value="Debug" />
-              <entry key="x" value="1" />
-              <entry key="y" value="492" />
-              <entry key="height" value="137" />
-              <entry key="width" value="1005" />
               <entry key="filter" value="debug" />
+              <entry key="height" value="137" />
+              <entry key="title" value="Debug" />
+              <entry key="type" value="class geoirc.GITextWindow" />
+              <entry key="width" value="997" />
+              <entry key="x" value="1" />
+              <entry key="y" value="480" />
+            </map>
+          </node>
+          <node name="1">
+            <map>
+              <entry key="filter" value="x" />
+              <entry key="height" value="500" />
+              <entry key="title" value="x" />
+              <entry key="type" value="class geoirc.GITextWindow" />
+              <entry key="width" value="700" />
+              <entry key="x" value="20" />
+              <entry key="y" value="20" />
             </map>
           </node>
         </node>
@@ -60,10 +74,10 @@
       </node>
       <node name="keyboard">
         <map>
-          <entry key="|Up" value="previous_history_entry" />
-          <entry key="|Down" value="next_history_entry" />
           <entry key="Alt|Left" value="previouswindow" />
           <entry key="Alt|Right" value="nextwindow" />
+          <entry key="|Down" value="next_history_entry" />
+          <entry key="|Up" value="previous_history_entry" />
         </map>
       </node>
       <node name="personal">

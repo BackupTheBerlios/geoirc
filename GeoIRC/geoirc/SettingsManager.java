@@ -49,6 +49,11 @@ public class SettingsManager
         }
     }
     
+    public void listenToPreferences()
+    {
+        listenToPreference( root );
+    }
+    
     protected void listenToPreference( Preferences p )
     {
         p.addNodeChangeListener( this );
@@ -89,9 +94,6 @@ public class SettingsManager
             printlnDebug("I/O problem while trying to load settings from '" + filepath + "'.");
             success = false;
         }
-        
-        // Register as a listener for every preference node.
-        listenToPreference( root );
         
         return success;
     }

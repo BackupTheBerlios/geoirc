@@ -64,8 +64,6 @@ public class GITextWindow extends JScrollInternalFrame
         this.associated_machine = associated_machine;
         this.settings_manager = settings_manager;
         
-        addInternalFrameListener( display_manager );
-        
         text_pane = new JTextPane();
         text_pane.setEditable( false );
         text_pane.setForeground( new Color( 204, 204, 204 ) );
