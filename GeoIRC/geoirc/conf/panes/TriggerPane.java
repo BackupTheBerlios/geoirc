@@ -9,11 +9,9 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
-import geoirc.conf.InputChangeListener;
 import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.Trigger;
 import geoirc.util.JBoolRegExTextField;
 import geoirc.util.JRegExTextField;
@@ -49,9 +47,9 @@ public class TriggerPane extends BaseSettingsPanel implements Storable, GeoIRCCo
      * @param valueRules
      * @param name
      */
-    public TriggerPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
+    public TriggerPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
     {
-        super(settings, valueRules, validationListener, changeListener, name);
+        super(settings, valueRules, name);
     }
 
     public void initialize()

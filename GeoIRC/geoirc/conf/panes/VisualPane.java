@@ -12,11 +12,9 @@ import geoirc.conf.ColorChooserHandler;
 import geoirc.conf.ComponentFactory;
 import geoirc.conf.FileChooserHandler;
 import geoirc.conf.GeoIRCDefaults;
-import geoirc.conf.InputChangeListener;
 import geoirc.conf.SettingsSaveHandler;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
@@ -64,9 +62,9 @@ public class VisualPane extends BaseSettingsPanel implements Storable
      * @param valueRules
      * @param name
      */
-    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
+    public VisualPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
     {
-        super(settings, valueRules, validationListener, changeListener, name);
+        super(settings, valueRules, name);
         save_handler = new SettingsSaveHandler(settings);
     }
 

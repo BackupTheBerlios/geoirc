@@ -9,12 +9,10 @@ import geoirc.GeoIRCConstants;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
-import geoirc.conf.InputChangeListener;
 import geoirc.conf.JValidatingTable;
 import geoirc.conf.Storable;
 import geoirc.conf.TableCellColorRenderer;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.Highlighting;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JBoolRegExTextField;
@@ -64,11 +62,9 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
     public HighlightingPane(
         XmlProcessable settings,
         GeoIRCDefaults valueRules,
-        ValidationListener validationListener,
-        InputChangeListener changeListener,
         String name)
     {
-        super(settings, valueRules, validationListener, changeListener, name);
+        super(settings, valueRules, name);
     }
 
     public void initialize()

@@ -9,10 +9,8 @@ import geoirc.SettingsManager;
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
-import geoirc.conf.InputChangeListener;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValidationListener;
 import geoirc.util.JKeyRecordField;
 import geoirc.util.JValidatingTextField;
 
@@ -67,10 +65,10 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
      * @param valueRules
      * @param name
      */
-    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, ValidationListener validationListener, InputChangeListener changeListener, String name)
+    public HotkeyPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
     {
-        super(settings, valueRules, validationListener, changeListener, name);
-        command_field = new JValidatingTextField( validationListener );
+        super(settings, valueRules, name);
+        command_field = new JValidatingTextField( validation_listener );
         hotkey_field = new JKeyRecordField( validation_listener );
     }
 

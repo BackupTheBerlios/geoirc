@@ -26,7 +26,7 @@ public class RootPane extends BaseSettingsPanel
 	 */
 	public RootPane(XmlProcessable settings, GeoIRCDefaults valueRules, String name)
 	{
-		super(settings, valueRules, null, null, name);
+		super(settings, valueRules, name);
 	}
 
     public void initialize()
@@ -42,5 +42,10 @@ public class RootPane extends BaseSettingsPanel
 		addComponent(new JLabel("netseeker"), 0, 7, 1, 1, 1, 0, new Insets(2, 5, 20, 5));
 		
 		addLayoutStopper(0,8);
-	}    
+	}
+    
+    public boolean saveData()
+    {
+        return false;    
+    }
 }

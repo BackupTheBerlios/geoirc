@@ -7,14 +7,12 @@ package geoirc.conf.panes;
 
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
-import geoirc.conf.InputChangeListener;
 import geoirc.conf.ComponentFactory;
 import geoirc.conf.FileChooserHandler;
 import geoirc.conf.GeoIRCDefaults;
 import geoirc.conf.SettingsSaveHandler;
 import geoirc.conf.Storable;
 import geoirc.conf.TitlePane;
-import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
@@ -38,11 +36,9 @@ public class DCCPane extends BaseSettingsPanel implements Storable
     public DCCPane(
         XmlProcessable settings,
         GeoIRCDefaults valueRules,
-        ValidationListener validationListener,
-        InputChangeListener changeListener,
         String name)
     {
-        super(settings, valueRules, validationListener, changeListener, name);
+        super(settings, valueRules, name);
         save_handler = new SettingsSaveHandler(settings);
     }
 

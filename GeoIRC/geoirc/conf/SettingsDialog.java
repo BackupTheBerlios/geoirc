@@ -10,6 +10,7 @@ import geoirc.GeoIRC;
 import geoirc.XmlProcessable;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -21,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -30,6 +32,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 public class SettingsDialog extends JDialog implements TreeSelectionListener, WindowListener
@@ -54,7 +57,6 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private ValidationListener validation_listener;
     private InputChangeListener change_listener;
     private Set invalid_input_components = new HashSet();
-    private Set changed_panes = new HashSet();
 
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
     {
@@ -67,48 +69,30 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             void validationPerformed(Object source, boolean isvalid)
             {
-                if ( !isvalid )
+                if (!isvalid)
                 {
-                    if( invalid_input_components.isEmpty() )
+                    if (invalid_input_components.isEmpty())
                     {
-                        Apply.setEnabled( false );
-                        Ok.setEnabled( false );                                                
-                    }                    
-
-                    if(invalid_input_components.contains(source) == false)
-                    {
-                        invalid_input_components.add( source );
-                        enableErrorDecoratorForSelectedTreeNode( true );
+                        Apply.setEnabled(false);
+                        Ok.setEnabled(false);
                     }
+
+                    invalid_input_components.add(source);
                 }
                 else
                 {
-                    invalid_input_components.remove( source );
-                    
-                    if( invalid_input_components.isEmpty() )
+                    invalid_input_components.remove(source);
+
+                    if (invalid_input_components.isEmpty())
                     {
-                        Apply.setEnabled( true );
-                        Ok.setEnabled( true );                        
+                        Apply.setEnabled(true);
+                        Ok.setEnabled(true);
                     }
-                    
-                    enableErrorDecoratorForSelectedTreeNode( false );
                 }
             }
         };
-        
-        this.change_listener = new InputChangeListener()
-        {
-            public void valueChanged(Object source)
-            {
-                if(changed_panes.contains(source) == false)
-                {
-                    changed_panes.add( source );
-                    enableChangeDecoratorForSelectedTreeNode();
-                }                
-            }
-        };
-        
-        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener, change_listener);
+
+        this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
 
         try
         {
@@ -163,6 +147,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         categoryTree.setShowsRootHandles(true);
         categoryTree.setScrollsOnExpand(true);
         categoryTree.setAutoscrolls(true);
+        categoryTree.setCellRenderer(new TreeRenderer());
         JScrollPane scrollTree = new JScrollPane(categoryTree);
         scrollTree.setAutoscrolls(true);
 
@@ -181,7 +166,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         ButtonPanel.add(Cancel, null);
         ButtonPanel.add(Ok, null);
         ButtonPanel.add(Apply, null);
-        
+
         //restore window positions
         open();
     }
@@ -244,30 +229,49 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     void Ok_actionPerformed(ActionEvent e)
     {
         hide();
-        
+
         saveAllPanelData();
         close();
-        
+
         if (parent instanceof GeoIRC)
         {
-             ((GeoIRC)parent).applySettings();
+            ((GeoIRC)parent).applySettings();
         }
-                     
+
         dispose();
     }
 
     private void saveAllPanelData()
     {
-        //we save only data for panes from which we have received a change event 
-        Iterator it = this.changed_panes.iterator();
+        Iterator it = this.panels.iterator();
 
         while (it.hasNext())
         {
             Object obj = it.next();
-            if (obj instanceof Storable)
+            if (obj instanceof BaseSettingsPanel)
             {
-                Storable store = (Storable)obj;
-                store.saveData();
+                savePaneData((BaseSettingsPanel)obj);
+            }
+        }
+    }
+
+    private void savePaneData(BaseSettingsPanel pane)
+    {
+        //store pane itself
+        if (pane.isInitialized() == true && (pane.hasChanges() && pane.hasErrors() == false))
+        {
+            pane.saveData();
+        }
+
+        //store pane's children
+        Iterator it = pane.getChilds().iterator();
+
+        while (it.hasNext())
+        {
+            Object obj = it.next();
+            if (obj instanceof BaseSettingsPanel)
+            {
+                savePaneData((BaseSettingsPanel)obj);
             }
         }
     }
@@ -294,70 +298,6 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         {
             ce.printStackTrace();
         }
-    }
-
-    private synchronized void enableChangeDecoratorForSelectedTreeNode()
-    {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)categoryTree.getLastSelectedPathComponent();
-        if (node == null)
-            return;
-
-        try
-        {
-            BaseSettingsPanel panel = (BaseSettingsPanel)node.getUserObject();
-            String name = panel.getName();            
-            if(name.indexOf("! ") == -1)
-            {
-                int pos = name.indexOf("* ");
-                if(pos == -1)
-                {
-                    panel.setName( "* " + panel.getName());
-                    categoryTree.validate();
-                }                
-            }            
-        }
-        catch (ClassCastException ce)
-        {
-            ce.printStackTrace();
-        }
-    }
-    
-    private synchronized void enableErrorDecoratorForSelectedTreeNode( boolean show )
-    {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)categoryTree.getLastSelectedPathComponent();
-        if (node == null)
-            return;
-
-        try
-        {
-            BaseSettingsPanel panel = (BaseSettingsPanel)node.getUserObject();
-            String name = panel.getName();
-            int pos = name.indexOf("! ");
-            
-            if(show == true)            
-            {                
-                if(pos == -1)
-                {
-                    int change_pos = name.indexOf("* "); 
-                    if(change_pos != -1)
-                    {
-                        name = name.substring(2);
-                    }
-                    
-                    panel.setName( "! " + name);
-                }                
-            }
-            else if( pos != -1)
-            {
-                 panel.setName("* " + name.substring(2));
-            }
-            
-            categoryTree.validate();                        
-        }
-        catch (ClassCastException ce)
-        {
-            ce.printStackTrace();
-        }        
     }
 
     /**
@@ -407,6 +347,111 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     {}
     public void windowDeactivated(WindowEvent arg0)
     {}
+
+    private final class TreeRenderer extends DefaultTreeCellRenderer
+    {
+        ImageIcon leaf_icon;
+        ImageIcon leaf_change_icon;
+        ImageIcon leaf_error_icon;
+        ImageIcon folder_open_change_icon;
+        ImageIcon folder_closed_change_icon;
+        ImageIcon folder_open_error_icon;
+        ImageIcon folder_closed_error_icon;
+        ImageIcon folder_open_icon;
+        ImageIcon folder_closed_icon;
+        
+
+        public TreeRenderer()
+        {            
+            leaf_icon = new ImageIcon(SettingsDialog.class.getResource("images/leaf.png"));
+            leaf_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/change.png"));
+            leaf_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/error.png"));
+            
+            folder_open_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open_change.png"));
+            folder_closed_change_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_change.png"));
+            folder_open_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open_error.png"));
+            folder_closed_error_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_error.png"));
+            folder_open_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder_open.png"));
+            folder_closed_icon = new ImageIcon(SettingsDialog.class.getResource("images/folder.png"));
+        }
+
+        public Component getTreeCellRendererComponent(
+            JTree tree,
+            Object value,
+            boolean sel,
+            boolean expanded,
+            boolean leaf,
+            int row,
+            boolean hasFocus)
+        {
+
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+            BaseSettingsPanel pane = (BaseSettingsPanel) (node.getUserObject());
+
+            if (pane.hasChanges())
+            {
+                if (pane.hasErrors())
+                {
+                    if ( leaf)
+                    {
+                        setIcon(leaf_error_icon);
+                    }
+                    else
+                    {
+                        if( expanded )
+                        {
+                            setIcon(folder_open_error_icon);
+                        }
+                        else
+                        {
+                            setIcon(folder_closed_error_icon);
+                        }
+                    }                    
+                }
+                else
+                {
+                    if ( leaf)
+                    {
+                        setIcon(leaf_change_icon);
+                    }
+                    else
+                    {
+                        if( expanded )
+                        {
+                            setIcon(folder_open_change_icon);
+                        }
+                        else
+                        {
+                            setIcon(folder_closed_change_icon);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if ( leaf )
+                {
+                    setIcon(leaf_icon);                   
+                }
+                else
+                {
+                    if ( expanded )
+                    {
+                        setIcon(folder_open_icon);
+                    }
+                    else
+                    {
+                        setIcon(folder_closed_icon);
+                    }
+                }
+            }
+
+            return this;
+        }
+    }
+
 }
 
 class SettingsDialog_Apply_actionAdapter implements java.awt.event.ActionListener

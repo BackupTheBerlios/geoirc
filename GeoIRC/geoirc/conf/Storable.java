@@ -11,4 +11,6 @@ package geoirc.conf;
 public interface Storable
 {
 	public boolean saveData();
+    public boolean hasChanges();
+    public boolean hasErrors();
 }
