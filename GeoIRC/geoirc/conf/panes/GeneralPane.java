@@ -5,10 +5,6 @@
  */
 package geoirc.conf.panes;
 
-import java.awt.Component;
-import java.util.Iterator;
-import java.util.Map;
-
 import geoirc.XmlProcessable;
 import geoirc.conf.BaseSettingsPanel;
 import geoirc.conf.GeoIRCDefaults;
@@ -18,6 +14,10 @@ import geoirc.conf.TitlePane;
 import geoirc.conf.ValidationListener;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
+
+import java.awt.Component;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JLabel;
 
@@ -152,6 +152,15 @@ public class GeneralPane extends BaseSettingsPanel implements Storable
             }
         }
 
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasChanges()
+     */
+    public boolean hasChanges()
+    {
+        // TODO Auto-generated method stub
         return false;
     }
 }

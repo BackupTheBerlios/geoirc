@@ -553,4 +553,13 @@ public class ChannelPane extends BaseSettingsPanel implements Storable
 
         addChannelButton.setEnabled(state);
     }
+
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasChanges()
+     */
+    public boolean hasChanges()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

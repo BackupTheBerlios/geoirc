@@ -102,4 +102,13 @@ public class DCCPane extends BaseSettingsPanel implements Storable
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasChanges()
+     */
+    public boolean hasChanges()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

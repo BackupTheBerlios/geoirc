@@ -451,4 +451,13 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
             return editorComponent;
         }
     }
+
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasChanges()
+     */
+    public boolean hasChanges()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

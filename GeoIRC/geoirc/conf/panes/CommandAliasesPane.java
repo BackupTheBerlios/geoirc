@@ -280,4 +280,12 @@ public class CommandAliasesPane extends BaseSettingsPanel implements Storable, G
             return this.data;
         }
     }
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasChanges()
+     */
+    public boolean hasChanges()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

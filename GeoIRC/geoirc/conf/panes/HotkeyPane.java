@@ -454,4 +454,13 @@ public class HotkeyPane extends BaseSettingsPanel implements Storable, DocumentL
         checkInputState();
     }
 
+    /* (non-Javadoc)
+     * @see geoirc.conf.Storable#hasChanges()
+     */
+    public boolean hasChanges()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

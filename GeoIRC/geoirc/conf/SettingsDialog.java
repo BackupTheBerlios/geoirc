@@ -52,6 +52,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     private List panels;
     private Frame parent;
     private ValidationListener validation_listener;
+    private InputChangeListener change_listener;
     private Set invalid_input_components = new HashSet();
 
     public SettingsDialog(String title, XmlProcessable settings_manager, DisplayManager display_manager)
@@ -87,6 +88,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
                 }
             }
         };
+        
         this.panels = SettingsPanelFactory.create(settings_manager, display_manager, valueRules, validation_listener);
 
         try
@@ -183,7 +185,6 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         categoryTree.getSelectionModel().addTreeSelectionListener(this);
 
         return categoryTree;
-
     }
 
     /**
@@ -206,10 +207,11 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
 
     void Apply_actionPerformed(ActionEvent e)
     {
-        this.hide();
         saveAllPanelData();
         if (parent instanceof GeoIRC)
-             ((GeoIRC)parent).applySettings();
+        {
+            ((GeoIRC)parent).applySettings();
+        }
     }
 
     void Cancel_actionPerformed(ActionEvent e)
@@ -221,10 +223,15 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
     void Ok_actionPerformed(ActionEvent e)
     {
         this.hide();
+        
         saveAllPanelData();
         close();
+        
         if (parent instanceof GeoIRC)
+        {
              ((GeoIRC)parent).applySettings();
+        }
+                     
         this.dispose();
     }
 
@@ -248,7 +255,7 @@ public class SettingsDialog extends JDialog implements TreeSelectionListener, Wi
         if (pane instanceof Storable)
         {
             Storable store = (Storable)pane;
-            if (pane.isInitialized() == true && store.hasErrors() == false)
+            if ( pane.isInitialized() == true && (store.hasChanges() && store.hasErrors() == false) )
             {
                 store.saveData();
             }

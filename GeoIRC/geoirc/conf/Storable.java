@@ -12,4 +12,5 @@ public interface Storable
 {
 	public boolean saveData();
 	public boolean hasErrors();
+    public boolean hasChanges();    
 }
