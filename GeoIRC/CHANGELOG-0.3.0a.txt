@@ -32,3 +32,7 @@ Pistos 2003-08-14
 
 Added parsing for most channel mode messages.
 Pistos 2003-08-15
+
+Added DCC chat reception.  Added list_dcc_chat_requests, accept_dcc_chat, 
+and reject_dcc_chat commands.
+Pistos 2003-08-18 and 2003-08-19

@@ -86,7 +86,8 @@ public class GeoIRC
         CommandExecutor,
         FocusListener,
         ComponentListener,
-        WindowListener
+        WindowListener,
+        DCCAgent
 {
     protected Vector remote_machines;
     protected DisplayManager display_manager;
@@ -103,8 +104,8 @@ public class GeoIRC
     protected PythonInterpreter python_interpreter;
     
     protected Hashtable processes;
-    
     protected Hashtable audio_clips;
+    protected Vector dcc_chat_requests;
     
     protected IdentServer ident_server;
     
@@ -377,6 +378,7 @@ public class GeoIRC
         display_manager.beginListening();
         listening_to_connections = true;
         processes = new Hashtable();
+        dcc_chat_requests = new Vector();
         
 		/*
 		GeoIRCDefaults defs = new GeoIRCDefaults(display_manager);
@@ -464,7 +466,13 @@ public class GeoIRC
         return s;
     }
     
-    public DCCClient addDCCClient( String hostname, String port )
+    public DCCClient addDCCClient(
+        String hostname,
+        String port,
+        int type,
+        String user_nick,
+        String remote_nick
+    )
     {
         DCCClient dcc_client = new DCCClient(
             this,
@@ -473,9 +481,17 @@ public class GeoIRC
             trigger_manager,
             script_interface,
             hostname,
-            port
+            port,
+            type,
+            user_nick,
+            remote_nick
         );
         addRemoteMachine( dcc_client );
+        
+        display_manager.addTextWindow(
+            remote_nick + " @ " + dcc_client.toString(),
+            dcc_client.toString()
+        );
         
         return dcc_client;
     }
@@ -511,6 +527,11 @@ public class GeoIRC
             i_str = Integer.toString( i );
             rm = (RemoteMachine) remote_machines.elementAt( i );
             
+            if( rm instanceof DCCClient )
+            {
+                continue;
+            }
+            
             settings_manager.putString(
                 "/connections/" + i_str + "/type",
                 rm.getClass().toString()
@@ -523,7 +544,7 @@ public class GeoIRC
                 "/connections/" + i_str + "/port",
                 rm.getPort()
             );
-            
+
             if( rm instanceof Server )
             {
                 Server s = (Server) rm;
@@ -691,6 +712,26 @@ public class GeoIRC
         
         return timestamp;
     }
+
+    protected void addToInputHistory( String text )
+    {
+        input_history.addFirst( text );
+        if( input_history.size() > MAX_HISTORY_SIZE )
+        {
+            input_history.removeLast();
+        }
+    }
+
+    public int addDCCChatRequest( String [] args, String remote_nick )
+    {
+        int index = dcc_chat_requests.size();
+        dcc_chat_requests.add( new DCCRequest( args, this, remote_nick ) );
+        return index;
+    }
+    public String [] removeDCCChatRequest( int index )
+    {
+        return (String []) dcc_chat_requests.remove( index );
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -719,15 +760,6 @@ public class GeoIRC
         System.exit(0);
     }//GEN-LAST:event_exitForm
     
-    protected void addToInputHistory( String text )
-    {
-        input_history.addFirst( text );
-        if( input_history.size() > MAX_HISTORY_SIZE )
-        {
-            input_history.removeLast();
-        }
-    }
-
     /* *********************************************************************
      *
      * Listener Implementations
@@ -778,14 +810,13 @@ public class GeoIRC
         }
         else if( current_rm instanceof DCCClient )
         {
-            text = "<" + preferred_nick + "> " + text;
             display_manager.println(
                 getATimeStamp(
                     settings_manager.getString(
                         "/gui/format/timestamp", ""
                     )
                 )
-                + text,
+                + "<" + ((DCCClient) current_rm).getUserNick() + "> " + text,
                 current_rm.toString() + " "
                 + FILTER_SPECIAL_CHAR + "dccchat"
                 + " from=" + FILTER_SPECIAL_CHAR + "self"
@@ -931,6 +962,27 @@ public class GeoIRC
         
         switch( command_id )
         {
+            case CMD_ACCEPT_DCC_CHAT:
+                if( args != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        DCCRequest request = (DCCRequest) dcc_chat_requests.elementAt( index );
+                        request.accept( preferred_nick );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_LIST_DCC_CHAT_REQUESTS ]
+                        );
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_ACCEPT_DCC_CHAT ]
+                            + " <dcc request index>"
+                        );
+                    }
+                }
+                break;
             case CMD_ACTION:
                 {
                     String channel = display_manager.getSelectedChannel();
@@ -1283,6 +1335,22 @@ public class GeoIRC
                             Integer.toString( i ) + ": "
                             + rm.toString() + current_marker
                         );
+                    }
+                }
+                break;
+            case CMD_LIST_DCC_CHAT_REQUESTS:
+                {
+                    DCCRequest request;
+                    for( int i = 0, n = dcc_chat_requests.size(); i < n; i++ )
+                    {
+                        request = (DCCRequest) dcc_chat_requests.elementAt( i );
+                        if( request.getType() == DCC_CHAT )
+                        {
+                            display_manager.printlnDebug(
+                                Integer.toString( i ) + ": "
+                                + request.toString()
+                            );
+                        }
                     }
                 }
                 break;
@@ -1663,6 +1731,26 @@ public class GeoIRC
                         "/"
                         + CMDS[ CMD_PRIVMSG ]
                         + " <nick/channel> <message>" );
+                }
+                break;
+            case CMD_REJECT_DCC_CHAT:
+                if( args != null )
+                {
+                    try
+                    {
+                        int index = Integer.parseInt( args[ 0 ] );
+                        dcc_chat_requests.remove( index );
+                    }
+                    catch( NumberFormatException e )
+                    {
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_LIST_DCC_CHAT_REQUESTS ]
+                        );
+                        display_manager.printlnDebug(
+                            "/" + CMDS[ CMD_REJECT_DCC_CHAT ]
+                            + " <dcc request index>"
+                        );
+                    }
                 }
                 break;
             case CMD_REMOVE_LOG:

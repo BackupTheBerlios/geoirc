@@ -185,11 +185,13 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
                     display_manager.printlnDebug( "No longer connected to " + DCCClient.this.toString() );
                 }
                 
+                /*
                 if( ! closed )
                 {
                     display_manager.printlnDebug( "Attempting to reconnect..." );
                     connect();
                 }
+                 */
             }
         }
         

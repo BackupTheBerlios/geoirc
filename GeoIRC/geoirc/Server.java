@@ -1089,29 +1089,7 @@ public class Server
                                     // 217.230.15.119
                                     try
                                     {
-                                        String type = args[ 0 ];
-                                        String dcc_arg = args[ 1 ];
-                                        String address_str = args[ 2 ];
-                                        String port_str = args[ 3 ];
-                                        
-                                        long ip = Long.parseLong( address_str );
-                                        String ip_str =
-                                            Long.toString( ( ip & 0xFF000000 ) / 0x1000000 ) + "."
-                                            + Long.toString( ( ip & 0x00FF0000 ) / 0x10000 ) + "."
-                                            + Long.toString( ( ip & 0x0000FF00 ) / 0x100 ) + "."
-                                            + Long.toString( ip & 0x000000FF );
-                                        
-                                        // Parse for the sake of checking data correctness.
-                                        Integer.parseInt( port_str );
-                                        
-                                        DCCClient dcc_client = geoirc.addDCCClient(
-                                            ip_str, port_str
-                                        );
-                                        display_manager.addTextWindow(
-                                            dcc_client.toString(),
-                                            dcc_client.toString()
-                                        );
-                                        dcc_client.connect( DCC_CHAT );
+                                        geoirc.addDCCChatRequest( args, nick );
                                     }
                                     catch( ArrayIndexOutOfBoundsException e )
                                     {

@@ -84,13 +84,18 @@ public interface GeoIRCConstants
         "listprocesses",
         "killprocess",
         "execwithwindow",
-        "topic"
+        "topic",
+        "list_dcc_chat_requests",
+        "accept_dcc_chat",
+        "reject_dcc_chat"
     };
     public static final int UNKNOWN_COMMAND = -1;
+    public static final int CMD_ACCEPT_DCC_CHAT = 59;
     public static final int CMD_ACTION = 3;
     public static final int CMD_CHANGE_WINDOW = 22;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
+    public static final int CMD_LIST_DCC_CHAT_REQUESTS = 58;
     public static final int CMD_DISCONNECT = 12;
     public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_EXEC = 40;
@@ -134,6 +139,7 @@ public interface GeoIRCConstants
     public static final int CMD_PRIVMSG = 19;
     public static final int CMD_QUOTE = 45;
     public static final int CMD_RAW = 46;
+    public static final int CMD_REJECT_DCC_CHAT = 60;
     public static final int CMD_REMOVE_LOG = 49;
     public static final int CMD_SEND_RAW = 0;
     public static final int CMD_SERVER = 11;
