@@ -9,6 +9,7 @@ package geoirc;
 import geoirc.util.Util;
 import java.util.Hashtable;
 import java.util.Vector;
+import org.python.core.PyJavaInstance;
 import org.python.core.PyMethod;
 import org.python.core.PyObject;
 import org.python.core.PyString;
@@ -40,7 +41,6 @@ public class PythonScriptInterface
         DisplayManager display_manager,
         VariableManager variable_manager,
         I18nManager i18n_manager,
-        PythonInterpreter python_interpreter,
         Hashtable python_methods
     )
     {
@@ -49,8 +49,10 @@ public class PythonScriptInterface
         this.display_manager = display_manager;
         this.variable_manager = variable_manager;
         this.i18n_manager = i18n_manager;
-        this.python_interpreter = python_interpreter;
         this.python_methods = python_methods;
+        
+        python_interpreter = new PythonInterpreter();
+        python_interpreter.set( "geoirc", new PyJavaInstance( this ) );
         
         raw_listeners = new Vector();
         input_listeners = new Vector();
@@ -178,4 +180,8 @@ public class PythonScriptInterface
         return line;
     }
     
+    public void execfile( String python_file )
+    {
+        python_interpreter.execfile( python_file );
+    }
 }

@@ -80,10 +80,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.python.core.PyJavaInstance;
 import org.python.core.PyMethod;
 import org.python.core.PyString;
-import org.python.util.PythonInterpreter;
 
 import tcl.lang.TclException;
 
@@ -124,7 +122,6 @@ public class GeoIRC
     
     protected Hashtable python_methods;
     protected Vector tcl_procs;
-    protected PythonInterpreter python_interpreter;
     
     protected Hashtable processes;
     protected Hashtable audio_clips;
@@ -421,17 +418,14 @@ public class GeoIRC
     protected void initializeScriptingInterfaces()
     {
         python_methods = null;
-        python_interpreter = null;
         python_script_interface = null;
         
         if( settings_manager.getBoolean( "/modules/python", false ) == true )
         {
             python_methods = new Hashtable();
-            python_interpreter = new PythonInterpreter();
             python_script_interface = new PythonScriptInterface(
-                this, settings_manager, display_manager, variable_manager, i18n_manager, python_interpreter, python_methods
+                this, settings_manager, display_manager, variable_manager, i18n_manager, python_methods
             );
-            python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
             
             display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
         }
@@ -2200,7 +2194,7 @@ public class GeoIRC
                         display_manager.printlnDebug(
                             i18n_manager.getString( "loading", new Object [] { arg_string } )
                         );
-                        python_interpreter.execfile( arg_string );
+                        python_script_interface.execfile( arg_string );
                     }
                     else
                     {
