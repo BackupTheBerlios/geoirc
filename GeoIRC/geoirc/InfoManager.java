@@ -37,7 +37,7 @@ public class InfoManager
         tree_inverse = new Hashtable();
         
         // Temporary line:
-        display_manager.addNewInfoWindow( "Info", tree );
+        //display_manager.addNewInfoWindow( "Info", "/" );
     }
     
     public void addRemoteMachine( RemoteMachine rm )

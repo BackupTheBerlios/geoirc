@@ -38,6 +38,7 @@ public class DisplayManager
     protected JInternalFrame last_activated_frame;
     protected JTextField input_field;
     protected boolean listening;
+    protected Vector inactive_info_windows;
     
     protected int last_added_frame_x;
     protected int last_added_frame_y;
@@ -67,6 +68,7 @@ public class DisplayManager
         highlight_manager = new HighlightManager( settings_manager, this );
 
         windows = new Vector();
+        inactive_info_windows = new Vector();
         
         desktop_pane = new JScrollDesktopPane( menu_bar );
         content_pane.add( desktop_pane );
@@ -157,7 +159,7 @@ public class DisplayManager
         return text_window;
     }
     
-    public GIInfoWindow addNewInfoWindow( String title, TreeModel model )
+    public GIInfoWindow addInfoWindow( String title, String path )
     {
         String actual_title = title;
         if( actual_title == null )
@@ -165,10 +167,11 @@ public class DisplayManager
             actual_title = "";
         }
         GIInfoWindow info_window = new GIInfoWindow(
-            this, settings_manager, title, model
+            this, settings_manager, title, path
         );
 
         addNewWindow( info_window );
+        inactive_info_windows.add( info_window );
         
         return info_window;
     }
@@ -184,6 +187,20 @@ public class DisplayManager
             channel_name + " on " + s.toString(),
             s.toString() + " AND " + channel_name
         );
+    }
+    
+    public void activateInfoWindow( String path, TreeModel model )
+    {
+        int n = inactive_info_windows.size();
+        GIInfoWindow giiw;
+        for( int i = 0; i < n; i++ )
+        {
+            giiw = (GIInfoWindow) inactive_info_windows.elementAt( i );
+            if( giiw.getPath().equals( path ) )
+            {
+                giiw.activate( model );
+            }
+        }
     }
     
     public void printlnDebug( String line )
@@ -466,6 +483,13 @@ public class DisplayManager
                     ((GITextWindow) frame).getFilter()
                 );
             }
+            else if( frame instanceof GIInfoWindow )
+            {
+                settings_manager.putString(
+                    "/gui/desktop/" + i_str + "/path",
+                    ((GIInfoWindow) frame).getPath()
+                );
+            }
         }
     }
 
@@ -482,7 +506,6 @@ public class DisplayManager
         int height;
         int state;
         boolean is_selected;
-        String filter;
         
         while( GOD_IS_GOOD )
         {
@@ -531,41 +554,56 @@ public class DisplayManager
                 false
             );
             
+            boolean type_known = true;
             if( type.equals( "GITextWindow" ) )
             {
-                filter = settings_manager.getString(
+                String filter = settings_manager.getString(
                     "/gui/desktop/" + i_str + "/filter",
                     ""
                 );
                 
                 GITextWindow gitw = addTextWindow( title, filter );
-                gitw.setBounds( x, y, width, height );
+            }
+            else if( type.equals( "GIInfoWindow" ) )
+            {
+                String path = settings_manager.getString(
+                    "/gui/desktop/" + i_str + "/path",
+                    "/"
+                );
+                
+                GIInfoWindow giiw = addInfoWindow( title, path );
+            }
+            else
+            {
+                // Huh?  Unknown window type.
+                type_known = false;
+                printlnDebug( "Unknown window type in settings." );
+            }
+            
+            if( type_known )
+            {
+                frame.setBounds( x, y, width, height );
                 try
                 {
                     switch( state )
                     {
                         case GI_MAXIMIZED:
-                            gitw.setMaximum( true );
+                            frame.setMaximum( true );
                             break;
                         case GI_MINIMIZED:
-                            gitw.setIcon( true );
+                            frame.setIcon( true );
                             break;
                         case GI_NORMAL:
                         default:
-                            gitw.setMaximum( false );
+                            frame.setMaximum( false );
                             break;
                     }
-                    gitw.setSelected( is_selected );
+                    frame.setSelected( is_selected );
                 }
                 catch( java.beans.PropertyVetoException e )
                 {
                     // Do nothing about this error.
                 }
-            }
-            else
-            {
-                // Huh?  Unknown window type.
-                printlnDebug( "Unknown window type in settings." );
             }
             
             i++;

@@ -18,17 +18,34 @@ import org.jscroll.widgets.*;
 public class GIInfoWindow extends GIWindow
 {
     protected JTree tree;
+    String path;  // server-channel-user path
     
     public GIInfoWindow(
         DisplayManager display_manager,
         SettingsManager settings_manager,
         String title,
-        TreeModel model
+        String path
     )
     {
         super( display_manager, settings_manager, title );
+        this.path = path;
+        tree = null;
+        selectFrameAndAssociatedButtons();
+    }
+    
+    public boolean isActive()
+    {
+        return ( tree != null );
+    }
+    
+    public void activate( TreeModel model )
+    {
         tree = new JTree( model );
         createScrollPane( tree );
-        selectFrameAndAssociatedButtons();
+    }
+    
+    public String getPath()
+    {
+        return path;
     }
 }
