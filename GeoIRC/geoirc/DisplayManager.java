@@ -388,6 +388,11 @@ public class DisplayManager
         return getSelectedByPrefix( "process=" );
     }
     
+    public String getSelectedDCCConnection()
+    {
+        return getSelectedByPrefix( "dcc=" );
+    }
+    
     public String getSelectedByPrefix( String prefix )
     {
         GIPane pane;

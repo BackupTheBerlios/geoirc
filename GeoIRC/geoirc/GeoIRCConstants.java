@@ -97,7 +97,9 @@ public interface GeoIRCConstants
         "charunderline",
         "charcolour",
         "charnormal",
-        "extendedpaste"
+        "extendedpaste",
+        "dccchat",
+        "list_dcc_chat_offers"
     };
     
     public static final String[] IRC_CMDS =
@@ -128,7 +130,7 @@ public interface GeoIRCConstants
     public static final int CMD_CHAR_NORMAL = 67;
     public static final int CMD_COMPLETE_NICK = 24;
     public static final int CMD_CONNECT = 39;
-    public static final int CMD_LIST_DCC_CHAT_REQUESTS = 58;
+    public static final int CMD_DCC_CHAT = 69;
     public static final int CMD_DISCONNECT = 12;
     public static final int CMD_DOCK_WINDOW = 28;
     public static final int CMD_EXEC = 40;
@@ -145,6 +147,8 @@ public interface GeoIRCConstants
     public static final int CMD_KILL_PROCESS = 55;
     public static final int CMD_LIST_CHANNELS = 15;
     public static final int CMD_LIST_CONNECTIONS = 13;
+    public static final int CMD_LIST_DCC_CHAT_REQUESTS = 58;
+    public static final int CMD_LIST_DCC_CHAT_OFFERS = 70;
     public static final int CMD_LIST_DOCKED_WINDOWS = 32;
     public static final int CMD_LIST_FONTS = 4;
     public static final int CMD_LIST_LOGS = 50;
@@ -381,4 +385,7 @@ public interface GeoIRCConstants
 
     static final int DEFAULT_PASTE_FLOOD_ALLOWANCE = 4;
     static final int DEFAULT_PASTE_FLOOD_DELAY = 1000;  // milliseconds
+    
+    static final int DEFAULT_LOWEST_DCC_PORT = 35000;
+    static final int DEFAULT_HIGHEST_DCC_PORT = 35999;
 }

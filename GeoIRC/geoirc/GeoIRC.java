@@ -51,6 +51,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -112,6 +114,7 @@ public class GeoIRC
     protected Hashtable processes;
     protected Hashtable audio_clips;
     protected Vector dcc_chat_requests;
+    protected Vector dcc_chat_offers;
     
     protected IdentServer ident_server;
     
@@ -261,7 +264,8 @@ public class GeoIRC
         display_manager.beginListening();
         listening_to_connections = true;
         processes = new Hashtable();
-        dcc_chat_requests = new Vector();       
+        dcc_chat_requests = new Vector();
+        dcc_chat_offers = new Vector();
         audio_clips = new Hashtable();
         
         // Open the curtains!
@@ -790,6 +794,43 @@ public class GeoIRC
         input_field.setText( input_line );
     }
     
+    /**
+     * As opposed to an extended (multiline-capable) paste.
+     */
+    public void regularPaste( String text_to_paste )
+    {
+        String field_text = input_field.getText();
+        int selection_start = input_field.getCaretPosition();
+        int selection_end = selection_start;
+        if( input_field.getSelectedText() != null )
+        {
+            selection_start = input_field.getSelectionStart();
+            selection_end = input_field.getSelectionEnd();
+        }
+        
+        input_field.replaceSelection( text_to_paste );
+        int new_caret_pos = selection_start + text_to_paste.length();
+        input_field.setCaretPosition( new_caret_pos );
+        input_field.setSelectionStart( new_caret_pos );
+        input_field.setSelectionEnd( new_caret_pos );
+    }
+
+    public int getFloodAllowance()
+    {
+        return settings_manager.getInt(
+            "/misc/paste flood/allowance",
+            DEFAULT_PASTE_FLOOD_ALLOWANCE
+        );
+    }
+    
+    public int getFloodDelay()
+    {
+        return settings_manager.getInt(
+            "/misc/paste flood/delay",
+            DEFAULT_PASTE_FLOOD_DELAY
+        );
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -890,6 +931,8 @@ public class GeoIRC
             String channel = display_manager.getSelectedChannel();
             if( channel != null )
             {
+                // Send to a channel.
+                
                 execute(
                     CMDS[ CMD_SEND_RAW ]
                     + " privmsg "
@@ -902,6 +945,8 @@ public class GeoIRC
                 String process_id = display_manager.getSelectedProcess();
                 if( process_id != null )
                 {
+                    // Send to a process.
+                    
                     process_id = process_id.substring( process_id.indexOf( "=" ) + 1 );
                     Integer pid;
                     try
@@ -917,11 +962,41 @@ public class GeoIRC
                         );
                     }
                 }
+                else
+                {
+                    String dcc_ip = display_manager.getSelectedDCCConnection();
+                    if( dcc_ip != null )
+                    {
+                        // Send to a dcc connection.
+                        
+                        DCCConnection dcc;
+                        
+                        for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
+                        {
+                            dcc = (DCCConnection) dcc_chat_offers.elementAt( i );
+                            if( dcc.toString().equals( dcc_ip ) )
+                            {
+                                display_manager.println(
+                                    getATimeStamp(
+                                        settings_manager.getString(
+                                            "/gui/format/timestamp", ""
+                                        )
+                                    )
+                                        + "<" + dcc.getUserNick() + "> " + text,
+                                    dcc.getQualities()
+                                        + " from=" + FILTER_SPECIAL_CHAR + "self"
+                                );
+                                dcc.println( text );
+                            }
+                        }
+                    }
+                }
             }
         }
         
         // Clear the input field.
         input_field.setText( "" );
+        input_field.setCaretPosition( 0 );
     }
 
     public void focusGained( FocusEvent e ) { }
@@ -1225,6 +1300,78 @@ public class GeoIRC
                     }
                 }
                 break;
+            case CMD_DCC_CHAT:
+                if( args != null )
+                {
+                    if( current_rm instanceof Server )
+                    {
+                        Server s = (Server) current_rm;
+                    
+                        try
+                        {
+                            InetAddress addr = InetAddress.getLocalHost();
+                            String addr_str = addr.getHostAddress();
+                            if( addr_str != "127.0.0.1" )
+                            {
+                                try
+                                {
+                                    DCCConnection dcc = new DCCConnection(
+                                        settings_manager,
+                                        display_manager,
+                                        trigger_manager,
+                                        args[ 0 ],
+                                        s.getCurrentNick()
+                                    );
+                                    int port = dcc.listen();
+
+                                    execute(
+                                        CMDS[ CMD_SEND_RAW ]
+                                        + " PRIVMSG "
+                                        + args[ 0 ]
+                                        + " :\001DCC CHAT chat "
+                                        + addr_str
+                                        + Integer.toString( port )
+                                        + "\001"
+                                    );
+                                }
+                                catch( IOException e )
+                                {
+                                    display_manager.printlnDebug(
+                                        "Failed to setup DCC chat offer."
+                                    );
+                                }
+                            }
+                            else
+                            {
+                                display_manager.printlnDebug(
+                                    "Could not determine local IP for DCC chat offer."
+                                );
+                            }
+                        }
+                        catch( UnknownHostException e )
+                        {
+                            Util.printException(
+                                display_manager,
+                                e,
+                                "Could not determine local IP for DCC chat offer."
+                            );
+                        }
+                    }
+                    else
+                    {
+                        display_manager.printlnDebug(
+                            "First switch to a window associated with a server."
+                        );
+                    }
+                }
+                else
+                {
+                    display_manager.printlnDebug(
+                        "/"
+                        + CMDS[ CMD_DCC_CHAT ]
+                        + " <nick/channel> <message>" );
+                }
+                break;
             case CMD_DISCONNECT:
                 {
                     RemoteMachine rm = null;
@@ -1377,7 +1524,7 @@ public class GeoIRC
                     Transferable contents = clipboard.getContents( null );
                     String text = (String) contents.getTransferData( DataFlavor.stringFlavor );
                     
-                    MultilinePaster mp = new MultilinePaster( this, settings_manager, input_field, text );
+                    MultilinePaster mp = new MultilinePaster( this, text );
                     mp.start();
                 }
                 catch( UnsupportedFlavorException e ) { }
@@ -1416,14 +1563,11 @@ public class GeoIRC
                     if( current_rm instanceof Server )
                     {
                         Server s = (Server) current_rm;
-                        if( s != null )
+                        GIWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
+                        if( window != null )
                         {
-                            GIWindow window = display_manager.addChannelWindow( s, args[ 0 ] );
-                            if( window != null )
-                            {
-                                execute( CMDS[ CMD_SEND_RAW ] + " " + command );
-                                result = CommandExecutor.EXEC_SUCCESS;
-                            }
+                            execute( CMDS[ CMD_SEND_RAW ] + " " + command );
+                            result = CommandExecutor.EXEC_SUCCESS;
                         }
                     }
                     else
@@ -1499,6 +1643,19 @@ public class GeoIRC
                         display_manager.printlnDebug(
                             Integer.toString( i ) + ": "
                             + rm.toString() + current_marker
+                        );
+                    }
+                }
+                break;
+            case CMD_LIST_DCC_CHAT_OFFERS:
+                {
+                    DCCConnection offer;
+                    for( int i = 0, n = dcc_chat_offers.size(); i < n; i++ )
+                    {
+                        offer = (DCCConnection) dcc_chat_offers.elementAt( i );
+                        display_manager.printlnDebug(
+                            Integer.toString( i ) + ": "
+                            + offer.toString()
                         );
                     }
                 }

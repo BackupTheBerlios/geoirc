@@ -13,4 +13,7 @@ package geoirc;
 public interface InputFieldOwner
 {
     void useInputField();
+    void regularPaste( String text_to_paste );
+    int getFloodAllowance();
+    int getFloodDelay();
 }
