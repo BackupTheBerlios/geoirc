@@ -1284,7 +1284,7 @@ public class GeoIRC
                         try
                         {
                             int index = Integer.parseInt( args[ 0 ] );
-                            if( ( index > 0 ) && ( index < dcc_requests.size() ) )
+                            if( ( index >= 0 ) && ( index < dcc_requests.size() ) )
                             {
                                 DCCRequest request = (DCCRequest) dcc_requests.elementAt( index );
                                 request.accept( preferred_nick );
