@@ -123,11 +123,13 @@ public class Server
 
                 out.println( "PASS ooga7" );
                 out.println( "NICK " + nick_to_use );
-                out.println(
-                    "USER "
+                String user_line = "USER "
                     + settings_manager.getString( "/personal/ident/username", "geoircuser" )
-                    + " x x :Pi Gi" );
-                
+                    + " " + settings_manager.getString( "/personal/ident/hostname", "x" )
+                    + " " + settings_manager.getString( "/personal/ident/servername", "x" )
+                    + " :Pi Gi";
+                out.println( user_line );
+                display_manager.printlnDebug( user_line );
             }
         }
         catch( UnknownHostException e )
