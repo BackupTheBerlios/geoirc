@@ -322,11 +322,11 @@ public class GeoIRC
             else if( skin1 != null )
             {
                 skin = SkinLookAndFeel.loadSkin( skin1 );
-                skin_errors += "(No second skin specified.)\n";
+                skin_errors += i18n_manager.getString( "no second skin" );
             }
             else
             {
-                skin_errors += "(No skins specified.)\n";
+                skin_errors += i18n_manager.getString( "no skins" );
             }
 
             if( skin != null )
@@ -334,16 +334,16 @@ public class GeoIRC
                 SkinLookAndFeel.setSkin( skin );
                 UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
                 UIManager.setLookAndFeel( new SkinLookAndFeel() );
-                skin_errors += "Skin applied.\n";
+                skin_errors += i18n_manager.getString( "skin applied" );
             }
             else
             {
-                skin_errors += "No skin applied.\n";
+                skin_errors += i18n_manager.getString( "no skin applied" );
             }
         }
         catch( Exception e )
         {
-            skin_errors += "Failed to apply skin.\n";
+            skin_errors += i18n_manager.getString( "skin failure" );
             if( skin1 != null ) { skin_errors += "(" + skin1 + ")\n"; }
             if( skin2 != null ) { skin_errors += "(" + skin2 + ")\n"; }
             skin_errors += e.getMessage() + "\n";
@@ -451,7 +451,7 @@ public class GeoIRC
         );
         python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
 
-        display_manager.printlnDebug( "Python interface initialized." );
+        display_manager.printlnDebug( i18n_manager.getString( "python inited" ) );
         
         tcl_procs = new Vector();
         tcl_interpreter = new Interp();
@@ -466,11 +466,11 @@ public class GeoIRC
                 0
             );
             
-            display_manager.printlnDebug( "Tcl interface initialized." );
+            display_manager.printlnDebug( i18n_manager.getString( "tcl inited" ) );
         }
         catch( TclException e )
         {
-            Util.printException( display_manager, e, "Error during Tcl interpreter initialization:" );
+            Util.printException( display_manager, e, i18n_manager.getString( "tcl init error" ) );
         }
     }
     
@@ -690,7 +690,7 @@ public class GeoIRC
             else
             {
                 // Huh?  Unrecognized RemoteMachine type.
-                display_manager.printlnDebug( "Unknown remote machine type in settings." );
+                display_manager.printlnDebug( i18n_manager.getString( "unknown rm type" ) );
             }
             
             i++;
@@ -1082,7 +1082,7 @@ public class GeoIRC
                         catch( NumberFormatException e )
                         {
                             display_manager.printlnDebug(
-                                "Invalid process id found: " + process_id
+                                i18n_manager.getString( "bad process id", new Object [] { process_id } )
                             );
                         }
                     }
@@ -1438,7 +1438,7 @@ public class GeoIRC
                                 {
                                     case COMPLETE_NONE_FOUND:
                                         display_manager.printlnDebug(
-                                            "No command found starting with " + word
+                                            i18n_manager.getString( "no command" )
                                         );
                                         break;
                                     case COMPLETE_ONE_FOUND:
@@ -1472,7 +1472,7 @@ public class GeoIRC
                                     {
                                         case COMPLETE_NONE_FOUND:
                                             display_manager.printlnDebug(
-                                                "No channel found starting with " + word
+                                                i18n_manager.getString( "no channel" )
                                             );
                                             break;
                                         case COMPLETE_ONE_FOUND:
@@ -1544,7 +1544,7 @@ public class GeoIRC
                         }
                         else
                         {
-                            display_manager.printlnDebug( "Invalid machine id: '" + args[ 0 ] + "'" );
+                            display_manager.printlnDebug( i18n_manager.getString( "bad machine id", new Object[] { args[ 0 ] } ) );
                             display_manager.printlnDebug(
                                 "Try /"
                                 + CMDS[ CMD_LIST_CONNECTIONS ]
@@ -1560,7 +1560,7 @@ public class GeoIRC
                         else
                         {
                             display_manager.printlnDebug(
-                                "First switch to a window associated with a server."
+                                i18n_manager.getString( "go to server window" )
                             );
                         }
                     }
@@ -1609,14 +1609,14 @@ public class GeoIRC
                                 catch( IOException e )
                                 {
                                     display_manager.printlnDebug(
-                                        "Failed to setup DCC chat offer."
+                                        i18n_manager.getString( "dcc chat offer failed" )
                                     );
                                 }
                             }
                             else
                             {
                                 display_manager.printlnDebug(
-                                    "Could not determine local IP for DCC chat offer."
+                                    i18n_manager.getString( "unknown local ip" )
                                 );
                             }
                         }
@@ -1625,14 +1625,14 @@ public class GeoIRC
                             Util.printException(
                                 display_manager,
                                 e,
-                                "Could not determine local IP for DCC chat offer."
+                                i18n_manager.getString( "unknown local ip" )
                             );
                         }
                     }
                     else
                     {
                         display_manager.printlnDebug(
-                            "First switch to a window associated with a server."
+                            i18n_manager.getString( "go to server window" )
                         );
                     }
                 }
@@ -1655,9 +1655,10 @@ public class GeoIRC
                             GITextPane gitp = (GITextPane) pane;
                             gitp.setPaintMIRCCodes( false );
                             display_manager.printlnDebug(
-                                "Display of colour codes disabled for '"
-                                + giw.getTitle()
-                                + "'"
+                                i18n_manager.getString(
+                                    "codes disabled",
+                                    new Object [] { giw.getTitle() }
+                                )
                             );
                         }
                     }
