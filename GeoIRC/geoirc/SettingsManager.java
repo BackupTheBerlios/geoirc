@@ -168,15 +168,33 @@ public class SettingsManager
         return key;
     }
     
-    protected String getValue( Element node, String relative_path, String default_ )
+    /**
+     * Creates the node if it does not exist.
+     */
+    protected Element getNode( String absolute_path )
     {
+        if( absolute_path == null )
+        {
+            throw new NullPointerException();
+        }
+        
         if(
-            ( node == null )
-            || relative_path.endsWith( "/" )
-            || relative_path.startsWith( "/" )
+            ( ! absolute_path.startsWith( "/" ) )
+            || ( ! absolute_path.endsWith( "/" ) )
+            || ( absolute_path.length() < 2 )
         )
         {
-            return null;
+            throw new IllegalArgumentException();
+        }
+        
+        String path = absolute_path.substring( 1 );
+        Element element = root;
+        int index = path.indexOf( "/" );
+        while( index > -1 )
+        {
+            element = element.getChild( path.substring( 0, index ) );
+            path = path.substring( index + 1 );
+            index = path.indexOf( "/" );
         }
         
         int index = relative_path.indexOf( "/" );
