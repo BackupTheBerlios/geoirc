@@ -16,6 +16,10 @@ unzip geoirc-$1.zip
 chmod +x GeoIRC/geoirc
 rm GeoIRC/*.bat
 rm geoirc-*.tar.gz
+cat CHANGELOG-$1.txt | sed -e 's/\x0D//g' > temp
+mv -f temp CHANGELOG-$1.txt
+cat LICENSE | sed -e 's/\x0D//g' > temp
+mv -f temp LICENSE
 tar zcvf geoirc-$1.tar.gz GeoIRC
 
 exit 0
