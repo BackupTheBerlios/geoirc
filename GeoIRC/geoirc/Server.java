@@ -633,10 +633,19 @@ public class Server
                         try
                         {
                             String nick = getNick( tokens[ 0 ] );
-                            User user = getUserByNick( nick );
-                            if( user != null )
+                            User user = null;
+                            if( nick == null )
                             {
-                                user.noteActivity();
+                                // No nick; it could be the server itself doing the action.
+                                nick = tokens[ 0 ];
+                            }
+                            else
+                            {
+                                user = getUserByNick( nick );
+                                if( user != null )
+                                {
+                                    user.noteActivity();
+                                }
                             }
                             String channel = channel_or_nick;
                             String polarity = tokens[ 3 ].substring( 0, 1 );

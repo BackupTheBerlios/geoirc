@@ -70,3 +70,7 @@ Pistos 2003-08-29
 Added a "/misc/word memory" settings subtree.  Tab-completion now works on words
 in the conversation.
 Pistos 2003-08-29
+
+Fixed bug where the server itself (i.e. not a user with a nick) issues a MODE
+message.
+Pistos 2003-09-01
