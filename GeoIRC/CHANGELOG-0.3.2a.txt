@@ -32,3 +32,6 @@ Pistos 2003-09-21
 
 Added channel-name completion.
 Pistos 2003-09-22
+
+Added change/error indicators in settings gui for all dialogs
+netseeker 2003-09-22
