@@ -110,8 +110,6 @@ public class JValidatingTextField extends JTextField implements DocumentListener
         int pos = (pattern.pattern().indexOf("+") != -1) ? 1 : 0;
 
         boolean valid = ( t.length() >= pos && pattern.matcher(t).matches() ) || isEnabled() == false;
-        firePropertyChange("textValid", !valid, valid);
-        setBorder(valid ? normalBorder : errorBorder);
 
         setTextValid(valid);
     }
@@ -137,6 +135,8 @@ public class JValidatingTextField extends JTextField implements DocumentListener
 
     protected void setTextValid(boolean valid) {
         textValid = valid;
+        firePropertyChange("textValid", !valid, valid);
+        setBorder(valid ? normalBorder : errorBorder);        
     }
 
     /* (non-Javadoc)

@@ -87,7 +87,6 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(valueField));
 
         final JRegExTextField patternField = new JRegExTextField();
-
         table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(patternField));
 
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
@@ -119,7 +118,7 @@ public class HighlightingPane extends BaseSettingsPanel implements Storable, Geo
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                ltm.addRow(new Highlighting("new highlighting", ".+", colorRule.getValue().toString()));
+                ltm.addRow(new Highlighting("", ".+", colorRule.getValue().toString()));
             }
         });
 
