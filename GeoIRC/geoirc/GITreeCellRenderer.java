@@ -29,19 +29,19 @@ public class GITreeCellRenderer
     
     public GITreeCellRenderer() throws FileNotFoundException
     {
-        if( ( regular_icon = loadIcon( "regular_icon.png" ) ) == null )
+        if( ( regular_icon = loadIcon( ICON_PATH + "regular_icon.png" ) ) == null )
         {
             throw new FileNotFoundException( "regular_icon.png" );
         }
-        if( ( voiced_icon = loadIcon( "voiced_icon.png" ) ) == null )
+        if( ( voiced_icon = loadIcon( ICON_PATH + "voiced_icon.png" ) ) == null )
         {
             throw new FileNotFoundException( "voiced_icon.png" );
         }
-        if( ( halfop_icon = loadIcon( "halfop_icon.png" ) ) == null )
+        if( ( halfop_icon = loadIcon( ICON_PATH + "halfop_icon.png" ) ) == null )
         {
             throw new FileNotFoundException( "halfop_icon.png" );
         }
-        if( ( op_icon = loadIcon( "op_icon.png" ) ) == null )
+        if( ( op_icon = loadIcon( ICON_PATH + "op_icon.png" ) ) == null )
         {
             throw new FileNotFoundException( "op_icon.png" );
         }

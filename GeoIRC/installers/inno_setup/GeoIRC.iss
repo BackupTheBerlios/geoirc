@@ -2,9 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
+AppVerName=GeoIRC 0.3.4a
+InfoAfterFile=C:\GeoIRC\CHANGELOG-0.3.4a.txt
+OutputDir=C:\
 Compression=bzip
 AppName=GeoIRC
-AppVerName=GeoIRC 0.3.3.a
 AppPublisher=GeoIRC Development Team
 AppPublisherURL=http://geoirc.berlios.de
 AppSupportURL=http://geoirc.berlios.de
@@ -12,8 +14,7 @@ AppUpdatesURL=http://geoirc.berlios.de
 DefaultDirName={pf}\GeoIRC
 DefaultGroupName=GeoIRC
 AllowNoIcons=yes
-LicenseFile=D:\GeoIRC\LICENSE
-InfoAfterFile=D:\GeoIRC\CHANGELOG-0.3.3a.txt
+LicenseFile=C:\GeoIRC\LICENSE
 
 ;checking for jre is based on:
 ;Inno Setup Extensions Knowledge Base
@@ -45,13 +46,13 @@ begin
           //* No Java detected *//
           MsgBox('Setup was not able to detect an installed Java Runtime Enviroment.' + #13 +
                          'You must have installed at least Java Runtime 1.4 or higher (1.4.2 recommended) to run GeoIRC.' + #13 +
-                         'You can install the latest Java Runtime from http://java.sun.com.', mbInformation, MB_OK);
+                         'You can obtain the latest Java Runtime from http://java.sun.com.', mbInformation, MB_OK);
           end
      else begin
           //* Java version lower than 1.4 detected *//
           if (getJavaVersion()) < '1.4' then begin
                MsgBox('Setup was not able to detect at least Java Runtime 1.4.' + #13 +
-                         'You can install the latest Java Runtime from http://java.sun.com.', mbInformation, MB_OK);
+                         'You can obtain the latest Java Runtime from http://java.sun.com.', mbInformation, MB_OK);
           end
      end;
 end;
@@ -63,8 +64,15 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; Flags: unchecked
 
 [Files]
-Source: "D:\GeoIRC\*.*"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\GeoIRC\lib\*.*"; DestDir: "{app}\lib"; Flags: ignoreversion
+Source: "C:\GeoIRC\*.*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\GeoIRC\jar\*.*"; DestDir: "{app}\jar"; Flags: ignoreversion
+Source: "C:\GeoIRC\icons\*.*"; DestDir: "{app}\icons"; Flags: ignoreversion
+Source: "C:\GeoIRC\sounds\*.*"; DestDir: "{app}\sounds"; Flags: ignoreversion
+Source: "C:\GeoIRC\scripts\*.*"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "C:\GeoIRC\themes\whistler\*.*"; DestDir: "{app}\themes\whistler"; Flags: ignoreversion
+Source: "C:\GeoIRC\themes\whistler\gtk\*.*"; DestDir: "{app}\themes\whistler\gtk"; Flags: ignoreversion
+Source: "C:\GeoIRC\themes\whistler\icons\*.*"; DestDir: "{app}\themes\whistler\icons"; Flags: ignoreversion
+Source: "C:\GeoIRC\themes\whistler\kde\*.*"; DestDir: "{app}\themes\whistler\kde"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [INI]

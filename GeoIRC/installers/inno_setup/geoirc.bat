@@ -1,12 +1,14 @@
 @echo off
 rem Author netseeker aka michael manske
-rem 10/05/2003
+rem 2003-10-05
+rem Modifications made by Pistos (Alex Reyes)
+rem 2003-10-15
 
 if "%OS%"=="Windows_NT" @setlocal
 
 set _JAVACMD=java.exe
-set LOCALCLASSPATH=%CLASSPATH%;lib
-for %%i in ("lib\*.jar") do call "append.bat" %%i
+set LOCALCLASSPATH=%CLASSPATH%;jar\geoirc.jar;jar\jdom.jar;jar\jython.jar;jar\skinlf.jar;jar\jacl.jar;jar\tcljava.jar
+rem for %%i in ("jar\*.jar") do call "append.bat" %%i
 
 if "%JAVA_HOME%" == "" goto no_java_detected
 if not exist "%JAVA_HOME%\bin\java.exe" goto no_java_detected
@@ -24,8 +26,8 @@ echo.
 
 
 :run_geoirc
-echo %_JAVACMD% -cp %LOCALCLASSPATH% geoirc.GeoIRC
-%_JAVACMD% -cp %LOCALCLASSPATH% geoirc.GeoIRC
+echo %_JAVACMD% -cp "%LOCALCLASSPATH%" geoirc.GeoIRC
+%_JAVACMD% -cp "%LOCALCLASSPATH%" geoirc.GeoIRC
 goto end
 
 

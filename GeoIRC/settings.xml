@@ -92,8 +92,8 @@
       </node>
       <node name="gui">
         <map>
-          <entry key="skin1" value="themes/aqua/gtk/gtkrc" />
-          <entry key="skin2" value="themes/aqua/kde/kde.themerc" />
+          <entry key="skin1" value="themes/whistler/gtk/gtkrc" />
+          <entry key="skin2" value="themes/whistler/kde/kde.themerc" />
           <entry key="windowbar position" value="top" />
           <entry key="nudge amount" value="28" />
           <entry key="new content button colour" value="ff0000" />
@@ -110,18 +110,18 @@
             <map />
             <node name="0">
               <map>
-                <entry key="pane" value="3" />
+                <entry key="pane" value="2" />
                 <entry key="location" value="1" />
-                <entry key="divider location" value="530" />
-                <entry key="partner" value="2" />
+                <entry key="divider location" value="781" />
+                <entry key="partner" value="-1" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="pane" value="5" />
-                <entry key="location" value="1" />
-                <entry key="divider location" value="509" />
-                <entry key="partner" value="4" />
+                <entry key="pane" value="3" />
+                <entry key="location" value="0" />
+                <entry key="divider location" value="154" />
+                <entry key="partner" value="-1" />
               </map>
             </node>
           </node>
@@ -137,36 +137,22 @@
             <node name="1">
               <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="%debug" />
-                <entry key="filter" value="%debug" />
+                <entry key="title" value="#geoirc on tolkien.freenode.net" />
+                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
               </map>
             </node>
             <node name="2">
               <map>
-                <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc on tolkien.freenode.net" />
-                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
+                <entry key="type" value="class geoirc.GIInfoPane" />
+                <entry key="title" value="Info" />
+                <entry key="path" value="/" />
               </map>
             </node>
             <node name="3">
               <map>
-                <entry key="type" value="class geoirc.GIInfoPane" />
-                <entry key="title" value="Info" />
-                <entry key="path" value="/" />
-              </map>
-            </node>
-            <node name="4">
-              <map>
                 <entry key="type" value="class geoirc.GITextPane" />
-                <entry key="title" value="#geoirc on tolkien.freenode.net" />
-                <entry key="filter" value="tolkien.freenode.net and #geoirc" />
-              </map>
-            </node>
-            <node name="5">
-              <map>
-                <entry key="type" value="class geoirc.GIInfoPane" />
-                <entry key="title" value="Info" />
-                <entry key="path" value="/" />
+                <entry key="title" value="%debug" />
+                <entry key="filter" value="%debug" />
               </map>
             </node>
           </node>
@@ -175,20 +161,20 @@
             <node name="0">
               <map>
                 <entry key="title" value="tolkien.freenode.net and %raw and not %printed" />
-                <entry key="x" value="117" />
-                <entry key="y" value="36" />
+                <entry key="x" value="27" />
+                <entry key="y" value="16" />
                 <entry key="height" value="549" />
                 <entry key="width" value="712" />
                 <entry key="state" value="0" />
-                <entry key="selected" value="true" />
+                <entry key="selected" value="false" />
                 <entry key="pane" value="0" />
               </map>
             </node>
             <node name="1">
               <map>
-                <entry key="title" value="%debug" />
-                <entry key="x" value="40" />
-                <entry key="y" value="40" />
+                <entry key="title" value="#geoirc on tolkien.freenode.net" />
+                <entry key="x" value="60" />
+                <entry key="y" value="60" />
                 <entry key="height" value="500" />
                 <entry key="width" value="700" />
                 <entry key="state" value="0" />
@@ -386,28 +372,28 @@
           <map>
             <entry key="filter" value="" />
             <entry key="regexp" value=".*[Pp]istos.*" />
-            <entry key="command" value="play ./bloop.wav" />
+            <entry key="command" value="play sounds/bloop.wav" />
           </map>
         </node>
         <node name="1">
           <map>
-            <entry key="filter" value="not ( %join or %part or %quit )" />
+            <entry key="filter" value="not ( %join or %part or %quit or %pong )" />
             <entry key="regexp" value=".*" />
-            <entry key="command" value="play ./blip.wav" />
+            <entry key="command" value="play sounds/blip.wav" />
           </map>
         </node>
         <node name="2">
           <map>
             <entry key="filter" value="%join or %part or %quit" />
             <entry key="regexp" value=".*" />
-            <entry key="command" value="play ./motion.wav" />
+            <entry key="command" value="play sounds/motion.wav" />
           </map>
         </node>
         <node name="3">
           <map>
             <entry key="filter" value="%page" />
             <entry key="regexp" value=".*" />
-            <entry key="command" value="play ./page.wav" />
+            <entry key="command" value="play sounds/page.wav" />
           </map>
         </node>
         <node name="4">

@@ -453,4 +453,6 @@ public interface GeoIRCConstants
     static final int DEFAULT_SERVER_TIMEOUT = 60 * 1000; // milliseconds
     
     static final int DESKTOP_PANE = -1;
+    
+    static final String ICON_PATH = "icons" + java.io.File.separator;
 }
