@@ -35,6 +35,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     protected String user_nick;
     protected String remote_ip;
     protected String qualities;
+    protected int type;
     
     private DCCConnection() { }
     
@@ -43,6 +44,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         DisplayManager display_manager,
         TriggerManager trigger_manager,
         I18nManager i18n_manager,
+        int type,
         String offeree_nick,
         String user_nick
     ) throws IOException
@@ -51,6 +53,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         this.display_manager = display_manager;
         this.trigger_manager = trigger_manager;
         this.i18n_manager = i18n_manager;
+        this.type = type;
         this.offeree_nick = offeree_nick;
         this.user_nick = user_nick;
         
