@@ -398,7 +398,7 @@ public class GeoIRC
                                 && ( text.substring( 1, 7 ).equals( "ACTION" ) )
                             )
                             {
-                                text = current_nick + text.substring( 7, text.length() - 1 );
+                                text = "* " + current_nick + text.substring( 7, text.length() - 1 );
                             }
                             else
                             {

@@ -76,8 +76,20 @@ public class ServerReader
                 
                 String nick = tokens[ 0 ].substring( 1, tokens[ 0 ].indexOf( "!" ) );
                 
+                if(
+                    ( text.charAt( 0 ) == (char) 1 )
+                    && ( text.substring( 1, 7 ).equals( "ACTION" ) )
+                )
+                {
+                    text = "* " + nick + text.substring( 7, text.length() - 1 );
+                }
+                else
+                {
+                    text = "<" + nick + "> " + text;
+                }
+                
                 display_manager.println(
-                    "<" + nick + "> " + text,
+                    text,
                     server.toString()
                     + " " + tokens[ 2 ]
                     + " from=" + nick
