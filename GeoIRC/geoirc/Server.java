@@ -33,8 +33,8 @@ public class Server
     protected boolean listening_to_channels;
     protected String current_nick;
     protected InfoManager info_manager;
+    protected VariableManager variable_manager;
     protected HashSet users;
-    protected Hashtable variables;
     
     public Server(
         GeoIRC parent,
@@ -42,7 +42,7 @@ public class Server
         SettingsManager settings_manager,
         SoundManager sound_manager,
         InfoManager info_manager,
-        Hashtable variables,
+        VariableManager variable_manager,
         String hostname,
         String port
     )
@@ -55,7 +55,7 @@ public class Server
         users = new HashSet();
         current_nick = "";
         this.info_manager = info_manager;
-        this.variables = variables;
+        this.variable_manager = variable_manager;
     }
     
     // Returns whether a connection has been established.
@@ -422,7 +422,7 @@ public class Server
                 {
                     url = matcher.group();
 
-                    variables.put(
+                    variable_manager.setString(
                         VARS[ VAR_LAST_URL ],
                         url
                     );

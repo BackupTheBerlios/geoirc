@@ -28,7 +28,7 @@ public class CommandAlias implements GeoIRCConstants
         this.expansion = expansion;
     }
     
-    public String expand( String command_line, Hashtable variables )
+    public String expand( String command_line, VariableManager variable_manager )
     {
         String [] tokens = Util.tokensToArray( command_line );
         String retval = command_line;
@@ -69,20 +69,7 @@ public class CommandAlias implements GeoIRCConstants
             
             // Variable substitution
 
-            for( Enumeration enum = variables.keys(); enum.hasMoreElements(); )
-            {
-                String variable = (String) enum.nextElement();
-                String value = (String) variables.get( variable );
-                if( value == null )
-                {
-                    value = "";
-                }
-                
-                retval = retval.replaceAll(
-                    ALIAS_ARG_CHAR + variable,
-                    value
-                );
-            }
+            retval = variable_manager.replaceAll( retval );
         }
         
         return retval;

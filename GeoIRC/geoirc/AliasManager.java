@@ -20,8 +20,8 @@ public class AliasManager implements GeoIRCConstants
 {
     protected SettingsManager settings_manager;
     protected DisplayManager display_manager;
+    protected VariableManager variable_manager;
     protected Vector aliases;
-    protected Hashtable variables;
     
     // No default constructor
     private AliasManager() { }
@@ -29,12 +29,12 @@ public class AliasManager implements GeoIRCConstants
     public AliasManager(
         SettingsManager settings_manager,
         DisplayManager display_manager,
-        Hashtable variables
+        VariableManager variable_manager
     )
     {
         this.settings_manager = settings_manager;
         this.display_manager = display_manager;
-        this.variables = variables;
+        this.variable_manager = variable_manager;
         aliases = new Vector();
         
         int i = 0;
@@ -75,7 +75,7 @@ public class AliasManager implements GeoIRCConstants
         for( int i = 0; i < n; i++ )
         {
             ca = (CommandAlias) aliases.elementAt( i );
-            expansion = ca.expand( expansion, variables );
+            expansion = ca.expand( expansion, variable_manager );
         }
         
         return expansion;

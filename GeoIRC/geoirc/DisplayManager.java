@@ -37,6 +37,7 @@ public class DisplayManager
     protected SettingsManager settings_manager;
     protected StyleManager style_manager;
     protected HighlightManager highlight_manager;
+    protected VariableManager variable_manager;
     protected GeoIRC geoirc;
     protected boolean listening;
 
@@ -64,8 +65,6 @@ public class DisplayManager
     protected static final int DEFAULT_WINDOW_WIDTH = 700;
     protected static final int DEFAULT_WINDOW_HEIGHT = 500;
     
-    protected int lines_unread;
-    
     // No default constructor
     private DisplayManager() { }
     
@@ -73,6 +72,7 @@ public class DisplayManager
         GeoIRC parent,
         JMenuBar menu_bar,
         SettingsManager settings_manager,
+        VariableManager variable_manager,
         JTextField input_field
     )
     {
@@ -80,6 +80,7 @@ public class DisplayManager
         listening = false;
         
         this.settings_manager = settings_manager;
+        this.variable_manager = variable_manager;
         style_manager = new StyleManager( settings_manager, this );
         highlight_manager = new HighlightManager( settings_manager, this );
 
@@ -268,20 +269,17 @@ public class DisplayManager
                         line.length(),
                         qualities
                     );
-                    
-                    if( ! geoirc.isActive() )
-                    {
-                        lines_unread++;
-                        geoirc.setTitle(
-                            settings_manager.getString(
-                                "/misc/new content title prefix",
-                                DEFAULT_NEW_CONTENT_TITLE_PREFIX
-                            )
-                            + BASE_GEOIRC_TITLE
-                        );
-                    }
                 }
             }
+        }
+        
+        if( ! geoirc.isActive() )
+        {
+            int lines_unread = variable_manager.incrementInt( "lines_unread" );
+            geoirc.setTitle(
+                "(" + Integer.toString( lines_unread ) + ") "
+                + BASE_GEOIRC_TITLE
+            );
         }
     }
     

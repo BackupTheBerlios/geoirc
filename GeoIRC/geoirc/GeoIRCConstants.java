@@ -203,6 +203,7 @@ public interface GeoIRCConstants
     static final String ALIAS_ARG_CHAR = "%";
     static final String ALIAS_ARG_REST_CHAR = "&";
     static final int MAX_ALIAS_ARGS = 20;
+    static final String VARIABLE_CHAR = "%";
     
     static final char FILTER_SPECIAL_CHAR = '%';
     

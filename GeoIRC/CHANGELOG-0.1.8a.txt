@@ -5,6 +5,6 @@ If GeoIRC is not maximized, its window position and size are saved and restored
 open closure and re-open.
 Pistos 2003-07-23
 
-If GeoIRC is not the active window, new content causes a user-defined prefix
-to appear before the main window's title.
+If GeoIRC is not the active window, the number of unread lines appears in
+GeoIRC's title.
 Pistos 2003-07-23

@@ -62,7 +62,7 @@ public class GeoIRC
     protected SoundManager sound_manager;
     protected AliasManager alias_manager;
     protected InfoManager info_manager;
-    protected Hashtable variables;
+    protected VariableManager variable_manager;
     
     protected IdentServer ident_server;
     
@@ -110,6 +110,8 @@ public class GeoIRC
             ( settings_filepath == null ) ? DEFAULT_SETTINGS_FILEPATH : settings_filepath
         );
         settings_manager.loadSettingsFromXML();
+        
+        variable_manager = new VariableManager();
         
         // Apply skin, if any specified.
         
@@ -164,7 +166,7 @@ public class GeoIRC
         restoreMainFrameState();
         setFocusable( false );
         
-        this.setTitle( "GeoIRC" );
+        this.setTitle( BASE_GEOIRC_TITLE );
         
         addComponentListener( this );
         addWindowListener( this );
@@ -189,7 +191,7 @@ public class GeoIRC
         input_saved = false;
         
         display_manager = new DisplayManager(
-            this, menu_bar, settings_manager, input_field
+            this, menu_bar, settings_manager, variable_manager, input_field
         );
         display_manager.printlnDebug( skin_errors );
         
@@ -268,8 +270,7 @@ public class GeoIRC
         
         // Command aliases.
         
-        variables = new Hashtable();
-        alias_manager = new AliasManager( settings_manager, display_manager, variables );
+        alias_manager = new AliasManager( settings_manager, display_manager, variable_manager );
         
         // Ident server.
         
@@ -376,7 +377,7 @@ public class GeoIRC
     // Returns the Server created.
     protected Server addServer( String hostname, String port )
     {
-        Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, variables, hostname, port );
+        Server s = new Server( this, display_manager, settings_manager, sound_manager, info_manager, variable_manager, hostname, port );
         remote_machines.add( s );
         if( listening_to_connections )
         {
@@ -740,6 +741,7 @@ public class GeoIRC
 
     public void windowActivated(WindowEvent e)
     {
+        variable_manager.setInt( "lines_unread", 0 );
         setTitle( BASE_GEOIRC_TITLE );
     }
     public void windowClosed(WindowEvent e) { }
