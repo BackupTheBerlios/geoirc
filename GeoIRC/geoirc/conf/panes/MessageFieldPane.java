@@ -16,6 +16,7 @@ import geoirc.conf.TitlePane;
 import geoirc.conf.beans.ValueRule;
 import geoirc.util.JValidatingTextField;
 
+import java.awt.Dimension;
 import java.awt.Insets;
 
 import javax.swing.JButton;
@@ -89,8 +90,44 @@ public class MessageFieldPane extends BaseSettingsPanel implements Storable
         JButton chooseColor2 = ComponentFactory.getFurtherInfoButton(new ColorChooserHandler(bgColor1, this));
         addComponent(chooseColor2, 2, 6, 1, 1, 0, 0, new Insets(5, 0, 5, 5));
 
-        addHorizontalLayoutStopper(4, 6);
-        addLayoutStopper(0, 7);
+        //NICK COMPLETION
+        path = "/misc/";
+        addComponent(new TitlePane("Nickname completion"), 0, 7, 5, 1, 0, 0);
+
+        addComponent(new JLabel("nick completion suffix"), 0, 8, 1, 1, 0, 0);
+        ValueRule nick_rule = rules.getValueRule("NICK_COMPLETION_SUFFIX");
+        value = settings_manager.getString(path + "nick completion suffix", nick_rule.getValue().toString());
+        JValidatingTextField suffix_field = new JValidatingTextField(nick_rule.getPattern(), value, validation_listener);
+        suffix_field.setPreferredSize(new Dimension(30, JValidatingTextField.PREFERED_HEIGHT));
+        save_handler.register(addComponent(suffix_field, 1, 8, 1, 1, 0, 0), path + "nick completion suffix");
+        
+        addComponent(new JLabel("nick completion prefix"), 0, 9, 1, 1, 0, 0);
+        nick_rule = rules.getValueRule("NICK_COMPLETION_PREFIX");
+        value = settings_manager.getString(path + "nick completion prefix", nick_rule.getValue().toString());
+        JValidatingTextField prefix_field = new JValidatingTextField(nick_rule.getPattern(), value, validation_listener);
+        prefix_field.setPreferredSize(new Dimension(30, JValidatingTextField.PREFERED_HEIGHT));
+        save_handler.register(addComponent(prefix_field, 1, 9, 1, 1, 0, 0), path + "nick completion prefix");
+
+        //FLOOD SETTINGS
+        path += "paste flood/";
+        addComponent(new TitlePane("Flood protection"), 0, 10, 5, 1, 0, 0);
+        
+        addComponent(new JLabel("max. lines per paste/insert"), 0, 11, 1, 1, 0, 0);
+        ValueRule flood_rule = rules.getValueRule("FLOOD_PROTECTION_ALLOWANCE");
+        value = settings_manager.getString(path + "allowance", flood_rule.getValue().toString());
+        JValidatingTextField flood_allowance_field = new JValidatingTextField(flood_rule.getPattern(), value, validation_listener);
+        flood_allowance_field.setPreferredSize(new Dimension(40, JValidatingTextField.PREFERED_HEIGHT));
+        save_handler.register(addComponent(flood_allowance_field, 1, 11, 1, 1, 0, 0), path + "allowance");
+        
+        addComponent(new JLabel("delay when sending multiple lines"), 0, 12, 1, 1, 0, 0);
+        flood_rule = rules.getValueRule("FLOOD_PROTECTION_DELAY");
+        value = settings_manager.getString(path + "delay", flood_rule.getValue().toString());
+        JValidatingTextField flood_delay_field = new JValidatingTextField(flood_rule.getPattern(), value, validation_listener);
+        flood_delay_field.setPreferredSize(new Dimension(60, JValidatingTextField.PREFERED_HEIGHT));
+        save_handler.register(addComponent(flood_delay_field, 1, 12, 1, 1, 0, 0), path + "delay");
+
+        addHorizontalLayoutStopper(4, 12);
+        addLayoutStopper(0, 13);
     }
 
     /* (non-Javadoc)
@@ -98,7 +135,7 @@ public class MessageFieldPane extends BaseSettingsPanel implements Storable
      */
     public boolean saveData()
     {
-        save_handler.save();        
+        save_handler.save();
         return true;
     }
 

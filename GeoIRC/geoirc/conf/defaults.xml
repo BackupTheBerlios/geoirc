@@ -127,5 +127,25 @@
             <pattern>.{1,}</pattern>
             <javaType>java.lang.String</javaType>					
 		</rule>				
+		<rule name="NICK_COMPLETION_PREFIX">
+			<default></default>
+            <pattern>.*</pattern>
+            <javaType>java.lang.String</javaType>					
+		</rule>				
+		<rule name="NICK_COMPLETION_SUFFIX">
+			<default>: </default>
+            <pattern>.*</pattern>
+            <javaType>java.lang.String</javaType>					
+		</rule>				
+		<rule name="FLOOD_PROTECTION_ALLOWANCE">
+			<default>4</default>
+            <pattern>\d{1,2}</pattern>
+            <javaType>java.lang.Integer</javaType>					
+		</rule>				
+		<rule name="FLOOD_PROTECTION_DELAY">
+			<default>1000</default>
+            <pattern>\d{3,4}</pattern>
+            <javaType>java.lang.Integer</javaType>					
+		</rule>						
 	</defaults>
 </geoirc>
