@@ -41,7 +41,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
     protected String remote_ip;
     protected String qualities;
     protected int type;
-    protected FileInputStream file;
+    protected BufferedInputStream file;
     
     private DCCConnection() { }
     
@@ -53,7 +53,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
         int type,
         String offeree_nick,
         String user_nick,
-        FileInputStream file
+        BufferedInputStream file
     ) throws IOException
     {
         this.settings_manager = settings_manager;
@@ -193,6 +193,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
                             "/dcc/file transfers/packet size",
                             DEFAULT_PACKET_SIZE
                         );
+                        file.mark( packet_size + 1 );
                         
                         while(
                             ( ( character = file.read() ) != -1 )
@@ -201,7 +202,7 @@ public class DCCConnection extends Thread implements GeoIRCConstants
                         {
                             out.write( character );
                             bytes_sent++;
-                            if( bytes_sent % packet_size == 0 )
+                            if( ( bytes_sent % packet_size == 0 ) /*|| ( in.available() > 0 )*/ )
                             {
                                 out.flush();
                                 
@@ -215,11 +216,23 @@ public class DCCConnection extends Thread implements GeoIRCConstants
                                     );
                                 }
                                 int i_bytes_received = Util.networkByteOrderToInt( b_bytes_received );
-                                if( i_bytes_received != bytes_sent )
+                                if( i_bytes_received < bytes_sent )
                                 {
-                                    throw new IOException(
-                                        i18n_manager.getString( "bytes lost" )
-                                    );
+                                    /*
+                                    file.reset();
+                                    long num_skipped = file.skip( bytes_sent - i_bytes_received );
+                                    if( num_skipped != (long) (bytes_sent - i_bytes_received) )
+                                    {
+                                        throw new IOException(
+                                            i18n_manager.getString( "bytes lost" )
+                                        );
+                                    }
+                                    bytes_sent -= packet_size - num_skipped;
+                                     */
+                                }
+                                else
+                                {
+                                    file.mark( packet_size + 1 );
                                 }
                             }
                         }

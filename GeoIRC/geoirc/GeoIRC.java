@@ -52,6 +52,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -1618,15 +1619,31 @@ public class GeoIRC
                                         {
                                             if( args.length < 2 )
                                             {
+                                                display_manager.printlnDebug(
+                                                    "/"
+                                                    + CMDS[ CMD_DCC_SEND ]
+                                                    + " <nick> <file>" );
                                                 break;
                                             }
                                             f = new File( Util.stringArrayToString( args, 1 ) );
                                             if( ! f.exists() )
                                             {
+                                                display_manager.printlnDebug(
+                                                    i18n_manager.getString(
+                                                        "nonexistent file",
+                                                        new Object [] { f.getPath() }
+                                                    )
+                                                );
                                                 break;
                                             }
                                             
-                                            FileInputStream fis = new FileInputStream( f );
+                                            BufferedInputStream bis = new BufferedInputStream(
+                                                new FileInputStream( f ),
+                                                settings_manager.getInt(
+                                                    "/dcc/file transfers/packet size",
+                                                    DEFAULT_PACKET_SIZE
+                                                )
+                                            );
                                             dcc = new DCCConnection(
                                                 settings_manager,
                                                 display_manager,
@@ -1635,7 +1652,7 @@ public class GeoIRC
                                                 DCC_SEND,
                                                 args[ 0 ],
                                                 s.getCurrentNick(),
-                                                fis
+                                                bis
                                             );
                                             break;
                                         }
@@ -1709,7 +1726,7 @@ public class GeoIRC
                 {
                     display_manager.printlnDebug(
                         "/"
-                        + CMDS[ CMD_DCC_CHAT ]
+                        + CMDS[ command_id ]
                         + " <nick>" );
                 }
                 break;
