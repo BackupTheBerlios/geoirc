@@ -51,6 +51,7 @@ public class GeoIRCDefaults
 				new BufferedInputStream(
 					getClass().getResourceAsStream("defaults.xml"));
 			root.importPreferences(is);
+			is.close();
 			extractDefaults();
 			success = true;
 		}
