@@ -21,8 +21,6 @@ import java.net.UnknownHostException;
 public class DCCClient extends RemoteMachine implements GeoIRCConstants
 {
     protected int dcc_type;
-    protected PythonScriptInterface python_script_interface;
-    protected TclScriptInterface tcl_script_interface;
     protected String user_nick;
     protected String remote_nick;
     
@@ -31,8 +29,6 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         DisplayManager display_manager,
         SettingsManager settings_manager,
         TriggerManager trigger_manager,
-        PythonScriptInterface python_script_interface,
-        TclScriptInterface tcl_script_interface,
         String host_ip,
         String port,
         int dcc_type,
@@ -41,8 +37,6 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
     )
     {
         super( parent, display_manager, settings_manager, trigger_manager, host_ip, port );
-        this.python_script_interface = python_script_interface;
-        this.tcl_script_interface = tcl_script_interface;
         this.dcc_type = dcc_type;
         this.remote_nick = remote_nick;
         this.user_nick = user_nick;
@@ -200,13 +194,9 @@ public class DCCClient extends RemoteMachine implements GeoIRCConstants
         
         protected void interpretLine( String line )
         {
-            String [] transformed_message = python_script_interface.onRaw(
+            String [] transformed_message = geoirc.onRaw(
                 line,
                 DCCClient.this.toString() + " " + FILTER_SPECIAL_CHAR + "dccchat"
-            );
-            transformed_message = tcl_script_interface.onRaw(
-                transformed_message[ 0 ],
-                transformed_message[ 1 ]
             );
             
             display_manager.println(

@@ -8,3 +8,10 @@ netseeker 2003-09-18
 settings gui: changed textfield for ctcp version to accept
 alphanumeric input
 netseeker 2003-09-18
+
+/part now allows for provision of a part message, as well as no arguments at
+all.
+Pistos 2003-09-19
+
+Fixed resetscriptenvironment command.
+Pistos 2003-09-19

@@ -257,8 +257,6 @@ public class GeoIRC
         }
         */
         
-        python_methods = new Hashtable();
-        tcl_procs = new Vector();
         initializeScriptingInterfaces();
         
         // Ident server.
@@ -440,12 +438,14 @@ public class GeoIRC
     
     protected void initializeScriptingInterfaces()
     {
+        python_methods = new Hashtable();
         python_interpreter = new PythonInterpreter();
         python_script_interface = new PythonScriptInterface(
             this, settings_manager, display_manager, variable_manager, python_interpreter, python_methods
         );
         python_interpreter.set( "geoirc", new PyJavaInstance( python_script_interface ) );
         
+        tcl_procs = new Vector();
         tcl_interpreter = new Interp();
         tcl_script_interface = new TclScriptInterface(
             this, settings_manager, display_manager, variable_manager, tcl_interpreter, tcl_procs
@@ -546,8 +546,7 @@ public class GeoIRC
     {
         Server s = new Server(
             this, display_manager, settings_manager, trigger_manager,
-            info_manager, variable_manager, python_script_interface,
-            tcl_script_interface, conversation_words, hostname, port
+            info_manager, variable_manager, conversation_words, hostname, port
         );
         addRemoteMachine( s );
         
@@ -567,8 +566,6 @@ public class GeoIRC
             display_manager,
             settings_manager,
             trigger_manager,
-            python_script_interface,
-            tcl_script_interface,
             hostname,
             port,
             type,
@@ -868,6 +865,26 @@ public class GeoIRC
             "/misc/paste flood/delay",
             DEFAULT_PASTE_FLOOD_DELAY
         );
+    }
+    
+    /**
+     * Passes a message through the scripting engines, and returns it as
+     * modified by the scripting engines.
+     */
+    public String [] onRaw( String line, String qualities )
+    {
+        String [] transformed_message = new String[ 2 ];
+        transformed_message[ 0 ] = line;
+        transformed_message[ 1 ] = qualities;
+        
+        transformed_message = python_script_interface.onRaw(
+            transformed_message[ 0 ], transformed_message[ 1 ]
+        );
+        transformed_message = tcl_script_interface.onRaw(
+            transformed_message[ 0 ], transformed_message[ 1 ]
+        );
+        
+        return transformed_message;
     }
     
     /** This method is called from within the constructor to
@@ -2149,29 +2166,42 @@ public class GeoIRC
                 }
                 break;
             case CMD_PART:
-                if( args != null )
+                if( current_rm instanceof Server )
                 {
-                    if( current_rm instanceof Server )
+                    String channels = display_manager.getSelectedChannel();
+                    String part_message = null;
+
+                    if( args != null )
                     {
-                        Server s = (Server) current_rm;
-                        if( s != null )
+                        if( args[ 0 ].charAt( 0 ) == '#' )
                         {
-                            execute( CMDS[ CMD_SEND_RAW ] + " " + command );
-                            result = CommandExecutor.EXEC_SUCCESS;
+                            channels = args[ 0 ];
+                            if( args.length > 1 )
+                            {
+                                part_message = Util.stringArrayToString( args, 1 );
+                            }
+                        }
+                        else
+                        {
+                            part_message = arg_string;
                         }
                     }
-                    else
-                    {
-                        display_manager.printlnDebug(
-                            "First switch to a window associated with a server."
-                        );
-                    }
+
+                    Server s = (Server) current_rm;
+                    execute(
+                        CMDS[ CMD_SEND_RAW ] + " PART " + channels
+                        + (
+                            ( part_message != null )
+                            ? ( " :" + part_message )
+                            : ""
+                        )
+                    );
+                    result = CommandExecutor.EXEC_SUCCESS;
                 }
                 else
                 {
                     display_manager.printlnDebug(
-                        "/" + CMDS[ CMD_PART ]
-                        + " <channel to part>"
+                        "First switch to a window associated with a server."
                     );
                 }
                 break;
