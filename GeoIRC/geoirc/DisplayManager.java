@@ -174,19 +174,13 @@ public class DisplayManager
     
     protected void addNewWindow( GIWindow window )
     {
-        if( last_added_frame_x < MAX_NEW_WINDOW_X )
-        {
-            last_added_frame_x += NEW_WINDOW_X_INCREMENT;
-        }
-        else
+        last_added_frame_x += NEW_WINDOW_X_INCREMENT;
+        if( last_added_frame_x + DEFAULT_WINDOW_WIDTH > desktop_pane.getWidth() - 30 )
         {
             last_added_frame_x = MIN_NEW_WINDOW_X;
         }
-        if( last_added_frame_y < MAX_NEW_WINDOW_Y )
-        {
-            last_added_frame_y += NEW_WINDOW_Y_INCREMENT;
-        }
-        else
+        last_added_frame_y += NEW_WINDOW_Y_INCREMENT;
+        if( last_added_frame_y + DEFAULT_WINDOW_HEIGHT > desktop_pane.getHeight() - 30 )
         {
             last_added_frame_y = MIN_NEW_WINDOW_Y;
         }
